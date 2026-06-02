@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Comprehension Quiz</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 720px;
+      padding: 32px 36px;
+    }
+    .progress {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 20px;
+      font-family: "SF Pro Text", sans-serif;
+    }
+    .question {
+      font-size: 18px;
+      color: #2f2822;
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .option {
+      background: rgba(255,251,244,0.8);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-family: Georgia, serif;
+      color: #2f2822;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s;
+      width: 100%;
+    }
+    .option:hover:not(:disabled) { background: #efe6d8; }
+    .option.correct { background: #c8f0c8; border-color: #4a9a4a; color: #1a5a1a; }
+    .option.wrong   { background: #f0c8c8; border-color: #9a4a4a; color: #5a1a1a; }
+    .option:disabled { cursor: default; }
+    .explanation {
+      background: #e8f5e8;
+      border: 1px solid #90c890;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: #1a4a1a;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      display: none;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .score-label {
+      color: #7a6858;
+      font-size: 14px;
+      font-family: "SF Pro Text", sans-serif;
+    }
+    .btn-row { display: flex; gap: 8px; }
+    .btn {
+      background: rgba(255,251,244,0.55);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-family: "SF Pro Text", sans-serif;
+      color: #4a3e34;
+      cursor: pointer;
+      transition: background 0.12s;
+      min-width: 80px;
+    }
+    .btn:hover:not(:disabled) { background: #efe6d8; }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" style="display:inline-block;margin-bottom:18px;color:#7a6858;text-decoration:none;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;">&larr; All quizzes</a>
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options"  id="options"></div>
+    <div class="explanation" id="explanation"></div>
+    <div class="footer">
+      <span class="score-label" id="score">Score: 0/0</span>
+      <div class="btn-row">
+        <button class="btn" id="btn-retake" onclick="retake()" style="display:none">Retake</button>
+        <button class="btn" id="btn-next"   onclick="nextQ()"  disabled>Next →</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const questions = [{"correct": 0, "explanation": "Fatigue degrades cognitive functions such as attention, memory, and reaction time, which are all essential for accurate radio communication. This makes pilots more prone to missing or misinterpreting ATC messages.", "options": ["It can reduce attention, memory, and reaction time, making pilots more likely to miss or misinterpret messages.", "It usually improves concentration because pilots become more careful when tired.", "It only affects physical control of the aircraft, not radio communication."], "question": "How can fatigue indirectly create communication problems during flight operations?"}, {"correct": 1, "explanation": "The phrase 'Confirm…' is used to verify a specific piece of information before any action is taken, reducing the risk of acting on incorrect or misunderstood instructions.", "options": ["It cancels the previous ATC clearance automatically.", "It allows the speaker to verify a specific item before taking action.", "It means the pilot has already complied with the instruction."], "question": "Why is the phrase 'Confirm…' considered important in unclear situations during flight operations?"}, {"correct": 0, "explanation": "When two aircraft have similar call signs, both crews may interpret the same ATC instruction as being directed at them, leading to potentially dangerous situations.", "options": ["Two aircraft may believe the same instruction was meant for them.", "ATC may be unable to change the aircraft's frequency.", "The pilot may forget the aircraft's destination airport."], "question": "Which scenario best illustrates a communication risk caused by similar call signs?"}, {"correct": 2, "explanation": "During high workload phases, the pilot's attention must be focused on controlling the aircraft and monitoring safety-critical systems. Unnecessary transmissions divert this attention and increase the risk of error.", "options": ["ATC does not allow any communication during approach.", "Long messages are always clearer than short ones.", "Non-essential communication can distract from aircraft control and safety-critical monitoring."], "question": "Why should pilots avoid unnecessary transmissions during high workload phases of flight?"}, {"correct": 0, "explanation": "Standard ICAO phraseology ensures that messages are predictable and concise, reducing ambiguity especially when pilots and controllers come from varied linguistic and cultural backgrounds.", "options": ["To make communication predictable, concise, and less ambiguous across different accents and language backgrounds.", "To replace all plain language in every possible abnormal situation.", "To make pilots sound more formal during routine operations."], "question": "What is the deeper purpose of using standard ICAO phraseology in aviation?"}, {"correct": 2, "explanation": "A misunderstanding occurs when the message is received fully but interpreted incorrectly, as opposed to miscommunication where the message itself is not received properly.", "options": ["The transmission is blocked by another aircraft.", "The pilot cannot hear the last two digits of the frequency.", "The pilot hears the complete clearance but believes it means something different from what ATC intended."], "question": "Which example best reflects a misunderstanding rather than a simple miscommunication?"}, {"correct": 0, "explanation": "Accented speech can be difficult to understand under certain conditions such as high workload or a congested frequency, making it a genuine safety concern in international aviation.", "options": ["It may make pronunciation harder to understand, especially when combined with speed, workload, or frequency congestion.", "It automatically means the speaker is not proficient in English.", "It is only a problem for student pilots, not professional crews."], "question": "Why can accent become a safety issue in international aviation communication?"}, {"correct": 0, "explanation": "'Say again' is the standard phraseology used to ask for a repetition of the previous transmission, either in full or in part, when it was not clearly received.", "options": ["It requests repetition of all or part of the last transmission.", "It tells ATC that the pilot will comply with the instruction.", "It confirms that the instruction was understood correctly."], "question": "What does the standard phrase 'Say again' achieve in radio communication?"}, {"correct": 2, "explanation": "Expectation bias causes pilots to anticipate a known outcome, which can lead them to stop listening carefully and assume the clearance is the same as usual, even when it has changed.", "options": ["The controller must repeat every instruction twice.", "The pilot will always reject the clearance and ask for a new one.", "The pilot may stop actively listening and assume the clearance matches the usual pattern."], "question": "Why is expectation bias particularly dangerous when a pilot receives a familiar-sounding clearance?"}, {"correct": 1, "explanation": "Good situational awareness allows a pilot to cross-check ATC instructions against the current operational context. Without it, an unusual or unsafe instruction may go unquestioned.", "options": ["It prevents the radio from receiving ATC transmissions.", "Without understanding the traffic and operational context, a pilot may fail to notice that an instruction is unlikely or unsafe.", "It makes readback unnecessary because the pilot already knows the situation."], "question": "Which option best explains why a lack of situational awareness can worsen communication errors?"}];
+    let current = 0, score = 0, answered = false;
+
+    function showQuestion() {
+      const q = questions[current];
+      const total = questions.length;
+      document.getElementById('progress').textContent =
+        'Question ' + (current + 1) + ' of ' + total;
+      document.getElementById('question').textContent = q.question || '';
+
+      const expl = document.getElementById('explanation');
+      expl.style.display = 'none';
+      expl.textContent = '';
+
+      const opts = document.getElementById('options');
+      opts.innerHTML = '';
+      (q.options || []).forEach(function(text, i) {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = text;
+        btn.onclick = function() { selectOption(i); };
+        opts.appendChild(btn);
+      });
+
+      answered = false;
+      const btnNext = document.getElementById('btn-next');
+      btnNext.disabled = true;
+      btnNext.style.display = '';
+      btnNext.textContent = (current === total - 1) ? 'Finish' : 'Next →';
+      document.getElementById('btn-retake').style.display = 'none';
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + current;
+    }
+
+    function selectOption(idx) {
+      if (answered) return;
+      answered = true;
+      const q = questions[current];
+      const correct = (q.correct !== undefined) ? q.correct : 0;
+      const btns = document.querySelectorAll('.option');
+      btns.forEach(function(btn, i) {
+        btn.disabled = true;
+        if (i === correct) btn.classList.add('correct');
+        else if (i === idx) btn.classList.add('wrong');
+      });
+      if (idx === correct) score++;
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + (current + 1);
+      document.getElementById('btn-next').disabled = false;
+      if (q.explanation) {
+        const expl = document.getElementById('explanation');
+        expl.textContent = q.explanation;
+        expl.style.display = 'block';
+      }
+    }
+
+    function nextQ() {
+      if (current < questions.length - 1) {
+        current++;
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      const total = questions.length;
+      const pct = total ? Math.round(score / total * 100) : 0;
+      document.getElementById('progress').textContent = 'Quiz complete!';
+      document.getElementById('question').textContent =
+        'Final score: ' + score + '/' + total + '  (' + pct + '%)';
+      document.getElementById('options').innerHTML = '';
+      document.getElementById('explanation').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'none';
+      document.getElementById('btn-retake').style.display = '';
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + total;
+    }
+
+    function retake() {
+      current = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

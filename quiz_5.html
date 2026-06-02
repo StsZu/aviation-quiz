@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Comprehension Quiz</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 720px;
+      padding: 32px 36px;
+    }
+    .progress {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 20px;
+      font-family: "SF Pro Text", sans-serif;
+    }
+    .question {
+      font-size: 18px;
+      color: #2f2822;
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .option {
+      background: rgba(255,251,244,0.8);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-family: Georgia, serif;
+      color: #2f2822;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s;
+      width: 100%;
+    }
+    .option:hover:not(:disabled) { background: #efe6d8; }
+    .option.correct { background: #c8f0c8; border-color: #4a9a4a; color: #1a5a1a; }
+    .option.wrong   { background: #f0c8c8; border-color: #9a4a4a; color: #5a1a1a; }
+    .option:disabled { cursor: default; }
+    .explanation {
+      background: #e8f5e8;
+      border: 1px solid #90c890;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: #1a4a1a;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      display: none;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .score-label {
+      color: #7a6858;
+      font-size: 14px;
+      font-family: "SF Pro Text", sans-serif;
+    }
+    .btn-row { display: flex; gap: 8px; }
+    .btn {
+      background: rgba(255,251,244,0.55);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-family: "SF Pro Text", sans-serif;
+      color: #4a3e34;
+      cursor: pointer;
+      transition: background 0.12s;
+      min-width: 80px;
+    }
+    .btn:hover:not(:disabled) { background: #efe6d8; }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" style="display:inline-block;margin-bottom:18px;color:#7a6858;text-decoration:none;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;">&larr; All quizzes</a>
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options"  id="options"></div>
+    <div class="explanation" id="explanation"></div>
+    <div class="footer">
+      <span class="score-label" id="score">Score: 0/0</span>
+      <div class="btn-row">
+        <button class="btn" id="btn-retake" onclick="retake()" style="display:none">Retake</button>
+        <button class="btn" id="btn-next"   onclick="nextQ()"  disabled>Next →</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const questions = [{"correct": 1, "explanation": "The report states that half of the incidents took place during flight instruction within the airport environment and airspace, within 10 nautical miles of the airport, and below 1,000 feet.", "options": ["During cross-country flights above 5,000 feet", "During flight instruction within 10 nautical miles of the airport and below 1,000 feet", "During solo flights outside controlled airspace"], "question": "According to the report, where did half of the incidents take place?"}, {"correct": 2, "explanation": "The first and most frequently occurring problem was that the instructor made confusing statements, which caused the trainee to either delay action or act incorrectly.", "options": ["The instructor delayed a comment, causing the trainee to act incorrectly", "The instructor heard but misinterpreted cockpit communication", "The instructor made confusing statements, so the trainee delayed action or acted incorrectly"], "question": "What was the first most frequently occurring Trainee/Instructor interaction problem?"}, {"correct": 0, "explanation": "According to the report, aircraft damage was reported in 13 percent of the ground incidents described.", "options": ["13 percent", "30 percent", "50 percent"], "question": "What percentage of ground incidents mentioned in the report included aircraft damage?"}, {"correct": 1, "explanation": "At controlled airfields, internal verbal communication in the cockpit and external radio communication with ATC occur at the same time, making communication particularly challenging.", "options": ["Pilots must switch between multiple radio frequencies constantly", "Internal cockpit communication and external radio communication with ATC happen simultaneously", "Instructors and trainees often speak different languages"], "question": "Why is communication especially difficult at controlled airfields?"}, {"correct": 1, "explanation": "The report warns that pilots who do not concentrate on communications may lose situational awareness, which can have serious consequences for safety.", "options": ["They may receive incorrect clearances from ATC", "They may lose situational awareness, which can have serious consequences for safety", "They may fail their flight training examinations"], "question": "According to the report, what could happen if pilots do not concentrate on communications?"}, {"correct": 1, "explanation": "The report states that instructors should remind students to use standard phraseology with ATC, alongside reminders about airport surface operations and listening out on ATC frequencies.", "options": ["To avoid using the intercom during critical phases of flight", "To use standard phraseology with ATC", "To reduce radio communication when approaching the runway"], "question": "Which of the following is one of the three things instructors should remind students during briefings?"}, {"correct": 0, "explanation": "According to the report, trainees should try to improve clarity, economy, priority, and judgment in their verbal communications.", "options": ["Clarity, economy, priority, and judgment", "Speed, accuracy, tone, and volume", "Fluency, brevity, confidence, and timing"], "question": "What are the four things trainees should try to improve during communications?"}, {"correct": 1, "explanation": "The report explains that instructors may have special radio procedures to ensure that ATC communication volume is louder than the intercom volume in the cockpit.", "options": ["To ensure the trainee cannot hear ATC transmissions directly", "To make sure ATC communication volume is louder than intercom volume", "To allow the instructor to communicate privately with ATC"], "question": "Why may instructors have special radio procedures in the cockpit?"}, {"correct": 1, "explanation": "The three most frequently occurring interaction problems all involve unclear, misinterpreted, or delayed instructor communication leading to incorrect or absent trainee action, suggesting a direct link between the two.", "options": ["Trainees tend to ignore all instructor comments during busy phases of flight", "Unclear or delayed instructor communication can directly cause trainees to act incorrectly or not act at all", "Trainees perform better when instructors communicate less frequently"], "question": "What can be inferred about the relationship between unclear instructor communication and trainee behaviour?"}, {"correct": 1, "explanation": "The report specifies that instructors should remind students that airport surface operations can lead to safety incidents, making this an important topic to cover during briefings.", "options": ["That surface operations require a separate radio frequency", "That airport surface operations can lead to safety incidents", "That surface operations are only relevant to commercial pilots"], "question": "What should instructors remind students about airport surface operations during briefings?"}];
+    let current = 0, score = 0, answered = false;
+
+    function showQuestion() {
+      const q = questions[current];
+      const total = questions.length;
+      document.getElementById('progress').textContent =
+        'Question ' + (current + 1) + ' of ' + total;
+      document.getElementById('question').textContent = q.question || '';
+
+      const expl = document.getElementById('explanation');
+      expl.style.display = 'none';
+      expl.textContent = '';
+
+      const opts = document.getElementById('options');
+      opts.innerHTML = '';
+      (q.options || []).forEach(function(text, i) {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = text;
+        btn.onclick = function() { selectOption(i); };
+        opts.appendChild(btn);
+      });
+
+      answered = false;
+      const btnNext = document.getElementById('btn-next');
+      btnNext.disabled = true;
+      btnNext.style.display = '';
+      btnNext.textContent = (current === total - 1) ? 'Finish' : 'Next →';
+      document.getElementById('btn-retake').style.display = 'none';
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + current;
+    }
+
+    function selectOption(idx) {
+      if (answered) return;
+      answered = true;
+      const q = questions[current];
+      const correct = (q.correct !== undefined) ? q.correct : 0;
+      const btns = document.querySelectorAll('.option');
+      btns.forEach(function(btn, i) {
+        btn.disabled = true;
+        if (i === correct) btn.classList.add('correct');
+        else if (i === idx) btn.classList.add('wrong');
+      });
+      if (idx === correct) score++;
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + (current + 1);
+      document.getElementById('btn-next').disabled = false;
+      if (q.explanation) {
+        const expl = document.getElementById('explanation');
+        expl.textContent = q.explanation;
+        expl.style.display = 'block';
+      }
+    }
+
+    function nextQ() {
+      if (current < questions.length - 1) {
+        current++;
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      const total = questions.length;
+      const pct = total ? Math.round(score / total * 100) : 0;
+      document.getElementById('progress').textContent = 'Quiz complete!';
+      document.getElementById('question').textContent =
+        'Final score: ' + score + '/' + total + '  (' + pct + '%)';
+      document.getElementById('options').innerHTML = '';
+      document.getElementById('explanation').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'none';
+      document.getElementById('btn-retake').style.display = '';
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + total;
+    }
+
+    function retake() {
+      current = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

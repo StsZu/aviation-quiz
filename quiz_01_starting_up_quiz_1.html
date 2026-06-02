@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Comprehension Quiz</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 720px;
+      padding: 32px 36px;
+    }
+    .progress {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 20px;
+      font-family: "SF Pro Text", sans-serif;
+    }
+    .question {
+      font-size: 18px;
+      color: #2f2822;
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .option {
+      background: rgba(255,251,244,0.8);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-family: Georgia, serif;
+      color: #2f2822;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s;
+      width: 100%;
+    }
+    .option:hover:not(:disabled) { background: #efe6d8; }
+    .option.correct { background: #c8f0c8; border-color: #4a9a4a; color: #1a5a1a; }
+    .option.wrong   { background: #f0c8c8; border-color: #9a4a4a; color: #5a1a1a; }
+    .option:disabled { cursor: default; }
+    .explanation {
+      background: #e8f5e8;
+      border: 1px solid #90c890;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: #1a4a1a;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      display: none;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .score-label {
+      color: #7a6858;
+      font-size: 14px;
+      font-family: "SF Pro Text", sans-serif;
+    }
+    .btn-row { display: flex; gap: 8px; }
+    .btn {
+      background: rgba(255,251,244,0.55);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-family: "SF Pro Text", sans-serif;
+      color: #4a3e34;
+      cursor: pointer;
+      transition: background 0.12s;
+      min-width: 80px;
+    }
+    .btn:hover:not(:disabled) { background: #efe6d8; }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" style="display:inline-block;margin-bottom:18px;color:#7a6858;text-decoration:none;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;">&larr; All quizzes</a>
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options"  id="options"></div>
+    <div class="explanation" id="explanation"></div>
+    <div class="footer">
+      <span class="score-label" id="score">Score: 0/0</span>
+      <div class="btn-row">
+        <button class="btn" id="btn-retake" onclick="retake()" style="display:none">Retake</button>
+        <button class="btn" id="btn-next"   onclick="nextQ()"  disabled>Next →</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const questions = [{"correct": 0, "explanation": "Expectation bias is dangerous because it leads individuals to perceive what they expect rather than what was genuinely said, which can result in acting on incorrect information. This is particularly hazardous in safety-critical aviation communication.", "options": ["It may cause pilots or controllers to hear what they anticipate rather than what was actually transmitted.", "It usually prevents pilots from using standard ICAO phraseology during routine communication.", "It makes radio equipment less reliable during frequency changes."], "question": "What is the main reason why 'expectation bias' can be dangerous in pilot-ATC communication?"}, {"correct": 1, "explanation": "The text distinguishes the two terms by their nature: miscommunication relates to how a message is sent or received, whereas misunderstanding relates to how a correctly received message is interpreted. These are distinct failure points in communication.", "options": ["Miscommunication is caused only by technical radio failure, while misunderstanding is caused only by poor English.", "Miscommunication concerns the incorrect transmission or reception of a message, while misunderstanding concerns incorrect interpretation of a received message.", "Miscommunication happens between pilots, while misunderstanding happens between pilots and ATC."], "question": "Which option best explains the difference between miscommunication and misunderstanding in an operational context?"}, {"correct": 0, "explanation": "Readback and hearing errors are serious because they directly involve safety-critical data such as runways, levels, and headings. Errors with these items can lead to potentially catastrophic outcomes if not caught promptly.", "options": ["They may affect safety-critical items such as runway, level, heading, speed, squawk, or QNH.", "They mainly increase controller workload but rarely influence aircraft movement.", "They are only dangerous when the aircraft is already airborne."], "question": "Why are readback and hearing errors especially serious in aeronautical communication?"}, {"correct": 1, "explanation": "Ambiguous or incorrect phraseology is best illustrated when non-standard wording is used and can be interpreted in multiple ways, particularly during critical phases such as taxi or take-off. This creates genuine uncertainty about the intended instruction.", "options": ["A pilot says 'Confirm heading 270?' when unsure about an instruction.", "A controller uses non-standard wording that could be understood in more than one way during taxi or take-off.", "A pilot reads back runway, QNH, and squawk clearly."], "question": "Which situation best illustrates ambiguous or incorrect phraseology?"}, {"correct": 0, "explanation": "High workload reduces an individual's capacity to process all incoming information accurately, leading to missed transmissions, delayed replies, or faulty assumptions. This elevates the overall risk of communication breakdown.", "options": ["Because people under pressure may miss information, reply late, or make incorrect assumptions.", "Because standard phraseology becomes unnecessary when traffic levels are high.", "Because ATC automatically stops giving clearances during busy periods."], "question": "Why can high pilot or controller workload increase the risk of communication failure?"}, {"correct": 1, "explanation": "Saying 'Unable' clearly informs ATC that the instruction cannot be followed, allowing them to issue an alternative clearance. Providing a reason where possible helps controllers understand the constraint and respond appropriately.", "options": ["Say 'Roger' and follow the instruction as closely as possible.", "Say 'Unable' and, where appropriate, give the reason.", "Remain silent until ATC notices the problem."], "question": "What is the safest response if a pilot cannot comply with an ATC instruction?"}, {"correct": 0, "explanation": "Requesting a slower speech rate is a proactive measure by the listener to ensure information is received accurately. It reflects an active communication strategy aimed at minimising the chance of errors.", "options": ["The listener is taking active steps to reduce the risk of missing or incorrectly copying information.", "The speaker has made a procedural error and must cancel the clearance.", "The pilot wants ATC to change to another frequency immediately."], "question": "What does the use of 'Speak slower' suggest about effective communication strategy?"}, {"correct": 0, "explanation": "When call signs are similar, there is a real danger of an incorrect aircraft responding to or acting upon an instruction meant for another. Using full call signs helps ensure each transmission is clearly directed and correctly identified.", "options": ["To avoid one aircraft accepting or acting on an instruction intended for another aircraft.", "To reduce the number of required readbacks on a busy frequency.", "To show that the aircraft is operating under visual flight rules."], "question": "Why should pilots use full call signs when there is a risk of similar call signs?"}, {"correct": 0, "explanation": "A busy frequency creates congestion that can block or delay transmissions, making it harder to receive complete and accurate information. This represents a significant threat to communication integrity in an operational environment.", "options": ["It can lead to blocked transmissions, delayed responses, and incomplete reception of important information.", "It only affects ground vehicles, not aircraft.", "It removes the need for pilots to monitor other traffic."], "question": "Which inference can be made about a busy frequency as a communication threat?"}, {"correct": 0, "explanation": "Good situational awareness enables pilots to contextualise what they hear against the current operational picture, making it easier to identify when an instruction seems incorrect or unclear. This cross-check is a vital safety layer in aviation communication.", "options": ["Because understanding traffic, position, and operational context helps pilots detect unclear or incorrect instructions.", "Because pilots with good situational awareness do not need to read back clearances.", "Because ATC is responsible for all communication, while pilots only follow instructions."], "question": "Why is situational awareness closely connected with effective radio communication?"}];
+    let current = 0, score = 0, answered = false;
+
+    function showQuestion() {
+      const q = questions[current];
+      const total = questions.length;
+      document.getElementById('progress').textContent =
+        'Question ' + (current + 1) + ' of ' + total;
+      document.getElementById('question').textContent = q.question || '';
+
+      const expl = document.getElementById('explanation');
+      expl.style.display = 'none';
+      expl.textContent = '';
+
+      const opts = document.getElementById('options');
+      opts.innerHTML = '';
+      (q.options || []).forEach(function(text, i) {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = text;
+        btn.onclick = function() { selectOption(i); };
+        opts.appendChild(btn);
+      });
+
+      answered = false;
+      const btnNext = document.getElementById('btn-next');
+      btnNext.disabled = true;
+      btnNext.style.display = '';
+      btnNext.textContent = (current === total - 1) ? 'Finish' : 'Next →';
+      document.getElementById('btn-retake').style.display = 'none';
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + current;
+    }
+
+    function selectOption(idx) {
+      if (answered) return;
+      answered = true;
+      const q = questions[current];
+      const correct = (q.correct !== undefined) ? q.correct : 0;
+      const btns = document.querySelectorAll('.option');
+      btns.forEach(function(btn, i) {
+        btn.disabled = true;
+        if (i === correct) btn.classList.add('correct');
+        else if (i === idx) btn.classList.add('wrong');
+      });
+      if (idx === correct) score++;
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + (current + 1);
+      document.getElementById('btn-next').disabled = false;
+      if (q.explanation) {
+        const expl = document.getElementById('explanation');
+        expl.textContent = q.explanation;
+        expl.style.display = 'block';
+      }
+    }
+
+    function nextQ() {
+      if (current < questions.length - 1) {
+        current++;
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      const total = questions.length;
+      const pct = total ? Math.round(score / total * 100) : 0;
+      document.getElementById('progress').textContent = 'Quiz complete!';
+      document.getElementById('question').textContent =
+        'Final score: ' + score + '/' + total + '  (' + pct + '%)';
+      document.getElementById('options').innerHTML = '';
+      document.getElementById('explanation').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'none';
+      document.getElementById('btn-retake').style.display = '';
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + total;
+    }
+
+    function retake() {
+      current = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>
