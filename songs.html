@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviation English — Songs</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      color: #2f2822;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .module { width: 100%; max-width: 940px; margin: 0 auto; }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: #7a6858;
+      text-decoration: none;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .header {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      padding: 34px 38px;
+      margin-bottom: 18px;
+    }
+
+    .title { font-size: 32px; line-height: 1.2; margin-bottom: 8px; }
+    .subtitle { font-size: 17px; color: #7a6858; line-height: 1.5; }
+
+    .song {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .song-head {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .song-cover {
+      width: 120px;
+      height: 120px;
+      border-radius: 14px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid #d4c7b3;
+    }
+
+    .song-meta h2 { font-size: 22px; line-height: 1.25; margin-bottom: 4px; }
+    .song-meta .artist {
+      color: #7a6858;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    .song-meta .topic {
+      color: #4a3e34;
+      font-size: 15px;
+      line-height: 1.45;
+    }
+
+    .song audio {
+      width: 100%;
+      margin-bottom: 18px;
+    }
+
+    .lyrics-toggle {
+      display: inline-flex;
+      align-items: center;
+      min-height: 44px;
+      padding: 10px 18px;
+      background: rgba(255,251,244,0.8);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      color: #4a3e34;
+      cursor: pointer;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .lyrics-toggle:hover { background: #efe6d8; border-color: #b8a891; }
+
+    .lyrics {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e2d6c2;
+      font-size: 17px;
+      line-height: 1.5;
+    }
+    .lyrics.is-hidden { display: none; }
+
+    .lyrics .section {
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #b07d3a;
+      margin: 18px 0 6px;
+    }
+    .lyrics .section:first-child { margin-top: 0; }
+    .lyrics .line { color: #2f2822; }
+    .lyrics .blank { height: 8px; }
+
+    @media (max-width: 560px) {
+      body { padding: 24px 12px; }
+      .header { padding: 26px 22px; }
+      .title { font-size: 27px; }
+      .song { padding: 22px; }
+      .song-head { flex-direction: column; align-items: flex-start; }
+      .song-cover { width: 100%; height: auto; max-width: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="module">
+    <a href="index.html" class="back">&larr; All quizzes</a>
+
+    <header class="header">
+      <h1 class="title">Aviation English — Songs</h1>
+      <p class="subtitle">Grammar and safety concepts set to music. Play, then read along with the lyrics.</p>
+    </header>
+
+    <section id="songs" aria-label="Songs"></section>
+  </main>
+
+  <script>
+    const songs = [
+      {
+        file: "it-can-be-done",
+        title: "It Can Be Done",
+        artist: "sts_zubar",
+        topic: "Passive voice in aviation English — pairs with the Passive Voice Quiz.",
+        link: { href: "aviation-passive-voice-quiz.html", label: "Passive Voice Quiz" },
+        lyrics: `[Spoken Intro]
+In aviation English,
+we often focus on the action,
+not always on the person.
+Active voice says who did it.
+Passive voice says what was done.
+
+[Spoken-Sung Verse 1]
+The pilot checks the aircraft,
+that is active, clear and true.
+But in aviation speaking,
+there is another way to use.
+
+The aircraft is checked,
+the checklist was done.
+The focus is the action,
+not the person, not the one.
+
+[Chorus]
+It can be done,
+it must be done,
+it should be done safely.
+
+The aircraft is checked,
+the checklist is followed,
+the message is clear and easy.
+
+It can be done,
+it must be done,
+it should be done right.
+Passive voice is professional,
+for aviation flight.
+
+[Spoken-Sung Verse 2]
+The crew completed the checklist,
+now change the point of view.
+The checklist was completed,
+that sounds stronger too.
+
+The mechanic inspects the engine,
+the engine must be checked.
+The clearance was given,
+the procedure was correct.
+
+[Chorus]
+It can be done,
+it must be done,
+it should be done safely.
+
+The aircraft is checked,
+the checklist is followed,
+the message is clear and easy.
+
+It can be done,
+it must be done,
+it should be done right.
+Passive voice is professional,
+for aviation flight.
+
+[Bridge]
+Subject plus be,
+plus past participle.
+That is the pattern,
+simple and visible.
+
+Is checked,
+was cleared,
+must be inspected,
+should be followed,
+can be corrected.
+
+[Final Chorus]
+It can be done,
+it must be done,
+it should be done safely.
+
+The aircraft is checked,
+the checklist is followed,
+the message is clear and easy.
+
+It can be done,
+it must be done,
+it should be done right.
+Passive voice is professional,
+for aviation flight.
+
+[Spoken Outro]
+Remember the key pattern:
+something must be done.
+Something should be done.
+Something can be done.
+In aviation English,
+the action is often more important
+than the person.`
+      }
+    ];
+
+    const container = document.getElementById("songs");
+
+    function renderLyrics(text) {
+      return text.split("\n").map(line => {
+        const t = line.trim();
+        if (t === "") return '<div class="blank"></div>';
+        if (/^\[.*\]$/.test(t)) return `<div class="section">${t.slice(1, -1)}</div>`;
+        return `<div class="line">${t.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</div>`;
+      }).join("");
+    }
+
+    songs.forEach((song, i) => {
+      const sec = document.createElement("section");
+      sec.className = "song";
+      const linkHTML = song.link
+        ? ` &middot; <a href="${song.link.href}" style="color:#b07d3a;">${song.link.label} &rarr;</a>`
+        : "";
+      sec.innerHTML = `
+        <div class="song-head">
+          <img class="song-cover" src="img/${song.file}.jpg" alt="${song.title} cover">
+          <div class="song-meta">
+            <h2>${song.title}</h2>
+            <p class="artist">${song.artist}</p>
+            <p class="topic">${song.topic}${linkHTML}</p>
+          </div>
+        </div>
+        <audio controls preload="none" src="audio/${song.file}.mp3"></audio>
+        <div>
+          <button class="lyrics-toggle" type="button" aria-expanded="true" data-i="${i}">Hide lyrics</button>
+        </div>
+        <div class="lyrics" id="lyrics-${i}">${renderLyrics(song.lyrics)}</div>
+      `;
+      container.appendChild(sec);
+    });
+
+    container.addEventListener("click", (e) => {
+      const btn = e.target.closest(".lyrics-toggle");
+      if (!btn) return;
+      const lyrics = document.getElementById(`lyrics-${btn.dataset.i}`);
+      const hidden = lyrics.classList.toggle("is-hidden");
+      btn.textContent = hidden ? "Show lyrics" : "Hide lyrics";
+      btn.setAttribute("aria-expanded", String(!hidden));
+    });
+  </script>
+</body>
+</html>
