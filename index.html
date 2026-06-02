@@ -83,7 +83,8 @@
       margin-bottom: 22px;
     }
 
-    .quiz-card a {
+    .quiz-card button,
+    .quiz-actions button {
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -94,6 +95,7 @@
       border: 1px solid #d4c7b3;
       border-radius: 10px;
       color: #4a3e34;
+      cursor: pointer;
       font-family: "SF Pro Text", Arial, sans-serif;
       font-size: 15px;
       font-weight: 600;
@@ -102,11 +104,101 @@
       transition: background 0.12s, border-color 0.12s;
     }
 
-    .quiz-card a:hover,
-    .quiz-card a:focus {
+    .quiz-card button:hover,
+    .quiz-card button:focus,
+    .quiz-actions button:hover,
+    .quiz-actions button:focus,
+    .answer-option:hover,
+    .answer-option:focus {
       background: #efe6d8;
       border-color: #b8a891;
       outline: none;
+    }
+
+    .quiz-panel {
+      display: none;
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 18px;
+      padding: 24px;
+      margin-bottom: 18px;
+    }
+
+    .quiz-panel.is-active {
+      display: block;
+    }
+
+    .quiz-panel h2 {
+      font-size: 24px;
+      line-height: 1.3;
+      margin-bottom: 6px;
+    }
+
+    .quiz-progress {
+      color: #7a6858;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+      margin-bottom: 18px;
+    }
+
+    .question {
+      font-size: 20px;
+      line-height: 1.45;
+      margin-bottom: 16px;
+    }
+
+    .answers {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .answer-option {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255,251,244,0.8);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      color: #2f2822;
+      cursor: pointer;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.35;
+      text-align: left;
+      transition: background 0.12s, border-color 0.12s;
+    }
+
+    .answer-option.is-correct {
+      background: #dcebd7;
+      border-color: #8faa82;
+    }
+
+    .answer-option.is-wrong {
+      background: #efd8d2;
+      border-color: #b98d7f;
+    }
+
+    .feedback {
+      min-height: 28px;
+      color: #4a3e34;
+      font-size: 16px;
+      line-height: 1.55;
+      margin-bottom: 16px;
+    }
+
+    .quiz-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .quiz-actions button {
+      margin-top: 0;
+    }
+
+    .quiz-actions button:disabled {
+      cursor: not-allowed;
+      opacity: 0.55;
     }
 
     .note {
@@ -153,11 +245,13 @@
 
       .intro,
       .quiz-card p,
+      .question,
       .note {
         font-size: 15px;
       }
 
-      .quiz-card {
+      .quiz-card,
+      .quiz-panel {
         padding: 22px;
       }
     }
@@ -177,20 +271,33 @@
       <article class="quiz-card">
         <h2>1. Aviation Vocabulary Quiz</h2>
         <p>Match key aviation terms with their correct definitions before starting the comprehension tasks.</p>
-        <a href="aviation_vocabulary_quiz.html">Start Vocabulary Quiz</a>
+        <button type="button" data-quiz="vocabulary">Start Vocabulary Quiz</button>
       </article>
 
       <article class="quiz-card">
         <h2>2. Rejected Takeoffs Quiz</h2>
         <p>Practise comprehension of takeoff distances, decision speed, engine failure, and rejected takeoff logic.</p>
-        <a href="quiz_reject_takeoff.html">Start Rejected Takeoffs Quiz</a>
+        <button type="button" data-quiz="takeoff">Start Rejected Takeoffs Quiz</button>
       </article>
 
       <article class="quiz-card">
         <h2>3. Stall Recognition Quiz</h2>
         <p>Practise deeper safety reasoning about stalls, angle of attack, warning signs, and recovery.</p>
-        <a href="quiz_stall.html">Start Stall Quiz</a>
+        <button type="button" data-quiz="stall">Start Stall Quiz</button>
       </article>
+    </section>
+
+    <section class="quiz-panel" id="quiz-panel" aria-live="polite">
+      <h2 id="quiz-title"></h2>
+      <p class="quiz-progress" id="quiz-progress"></p>
+      <p class="question" id="question"></p>
+      <div class="answers" id="answers"></div>
+      <p class="feedback" id="feedback"></p>
+      <div class="quiz-actions">
+        <button type="button" id="next-question" disabled>Next Question</button>
+        <button type="button" id="restart-quiz">Restart Quiz</button>
+        <button type="button" id="close-quiz">Back to Menu</button>
+      </div>
     </section>
 
     <p class="note">
@@ -202,5 +309,189 @@
       These quizzes are separated on purpose. Short focused quizzes are easier to complete and better for diagnosing whether the problem is vocabulary, reading comprehension, or safety reasoning.
     </p>
   </main>
+
+  <script>
+    const quizzes = {
+      vocabulary: {
+        title: "Aviation Vocabulary Quiz",
+        questions: [
+          {
+            question: "What is V1 in takeoff performance?",
+            options: ["The decision speed to continue or reject takeoff", "The first flap setting", "The initial climb altitude"],
+            answer: 0
+          },
+          {
+            question: "What does a rejected takeoff mean?",
+            options: ["Stopping the aircraft during the takeoff roll", "Landing after a short circuit", "Delaying boarding before departure"],
+            answer: 0
+          },
+          {
+            question: "What is angle of attack?",
+            options: ["The angle between the wing chord and relative airflow", "The runway slope angle", "The bank angle in a turn"],
+            answer: 0
+          },
+          {
+            question: "What is a stall?",
+            options: ["A loss of lift caused by exceeding the critical angle of attack", "An engine flameout only", "A radio communication failure"],
+            answer: 0
+          }
+        ]
+      },
+      takeoff: {
+        title: "Rejected Takeoffs Quiz",
+        questions: [
+          {
+            question: "Before V1, what is usually expected after a serious engine failure?",
+            options: ["Reject the takeoff if runway distance allows", "Always continue the takeoff", "Rotate immediately at any speed"],
+            answer: 0
+          },
+          {
+            question: "After V1, why is continuing usually safer?",
+            options: ["The remaining runway may not be enough to stop safely", "The aircraft cannot climb with one engine", "Brakes stop working after V1"],
+            answer: 0
+          },
+          {
+            question: "Which factor increases stopping distance during a rejected takeoff?",
+            options: ["Wet or contaminated runway", "Lower aircraft weight", "More headwind"],
+            answer: 0
+          },
+          {
+            question: "What should pilots use to decide reject or continue actions?",
+            options: ["Performance data, SOPs, and current conditions", "Passenger preference", "The shortest taxi route"],
+            answer: 0
+          }
+        ]
+      },
+      stall: {
+        title: "Stall Recognition Quiz",
+        questions: [
+          {
+            question: "What primarily causes an aircraft to stall?",
+            options: ["Exceeding the critical angle of attack", "Flying below 10,000 feet", "Using landing lights"],
+            answer: 0
+          },
+          {
+            question: "What is a common first recovery action from a stall?",
+            options: ["Reduce angle of attack", "Pull back harder", "Increase bank angle"],
+            answer: 0
+          },
+          {
+            question: "Which warning can indicate an approaching stall?",
+            options: ["Buffet or stall warning activation", "Cabin light dimming", "Transponder code change"],
+            answer: 0
+          },
+          {
+            question: "Can an aircraft stall at high speed?",
+            options: ["Yes, if the critical angle of attack is exceeded", "No, stalls only happen at low speed", "Only if the landing gear is down"],
+            answer: 0
+          }
+        ]
+      }
+    };
+
+    const panel = document.getElementById("quiz-panel");
+    const title = document.getElementById("quiz-title");
+    const progress = document.getElementById("quiz-progress");
+    const question = document.getElementById("question");
+    const answers = document.getElementById("answers");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-question");
+    const restartButton = document.getElementById("restart-quiz");
+    const closeButton = document.getElementById("close-quiz");
+    let activeQuiz = null;
+    let currentQuestion = 0;
+    let score = 0;
+    let answered = false;
+
+    function startQuiz(quizKey) {
+      activeQuiz = quizzes[quizKey];
+      currentQuestion = 0;
+      score = 0;
+      answered = false;
+      panel.classList.add("is-active");
+      renderQuestion();
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function renderQuestion() {
+      const item = activeQuiz.questions[currentQuestion];
+      title.textContent = activeQuiz.title;
+      progress.textContent = `Question ${currentQuestion + 1} of ${activeQuiz.questions.length} | Score: ${score}`;
+      question.textContent = item.question;
+      feedback.textContent = "";
+      nextButton.disabled = true;
+      nextButton.textContent = currentQuestion === activeQuiz.questions.length - 1 ? "Show Result" : "Next Question";
+      answered = false;
+      answers.innerHTML = "";
+
+      item.options.forEach((option, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "answer-option";
+        button.textContent = option;
+        button.addEventListener("click", () => chooseAnswer(index));
+        answers.appendChild(button);
+      });
+    }
+
+    function chooseAnswer(index) {
+      if (answered) return;
+
+      const item = activeQuiz.questions[currentQuestion];
+      const answerButtons = answers.querySelectorAll("button");
+      answered = true;
+      nextButton.disabled = false;
+
+      answerButtons.forEach((button, buttonIndex) => {
+        button.disabled = true;
+        if (buttonIndex === item.answer) button.classList.add("is-correct");
+        if (buttonIndex === index && index !== item.answer) button.classList.add("is-wrong");
+      });
+
+      if (index === item.answer) {
+        score += 1;
+        feedback.textContent = "Correct.";
+      } else {
+        feedback.textContent = `Correct answer: ${item.options[item.answer]}`;
+      }
+
+      progress.textContent = `Question ${currentQuestion + 1} of ${activeQuiz.questions.length} | Score: ${score}`;
+    }
+
+    function showResult() {
+      title.textContent = activeQuiz.title;
+      progress.textContent = "Quiz complete";
+      question.textContent = `Your score: ${score} of ${activeQuiz.questions.length}.`;
+      answers.innerHTML = "";
+      feedback.textContent = score === activeQuiz.questions.length ? "Excellent work." : "Review the questions and try again.";
+      nextButton.disabled = true;
+    }
+
+    document.querySelectorAll("[data-quiz]").forEach((button) => {
+      button.addEventListener("click", () => startQuiz(button.dataset.quiz));
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (!activeQuiz || !answered) return;
+      currentQuestion += 1;
+      if (currentQuestion >= activeQuiz.questions.length) {
+        showResult();
+      } else {
+        renderQuestion();
+      }
+    });
+
+    restartButton.addEventListener("click", () => {
+      if (!activeQuiz) return;
+      currentQuestion = 0;
+      score = 0;
+      renderQuestion();
+    });
+
+    closeButton.addEventListener("click", () => {
+      panel.classList.remove("is-active");
+      activeQuiz = null;
+    });
+  </script>
 </body>
 </html>
