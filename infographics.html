@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviation English — Infographics</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      color: #2f2822;
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+
+    .module { width: 100%; max-width: 1040px; margin: 0 auto; }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: #7a6858;
+      text-decoration: none;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .header {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      padding: 34px 38px;
+      margin-bottom: 18px;
+    }
+
+    .title { font-size: 32px; line-height: 1.2; margin-bottom: 8px; }
+
+    .subtitle {
+      font-size: 17px;
+      color: #7a6858;
+      line-height: 1.5;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .item {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 18px;
+      padding: 14px;
+      cursor: zoom-in;
+      display: flex;
+      flex-direction: column;
+      transition: border-color 0.12s, transform 0.12s;
+    }
+
+    .item:hover { border-color: #b8a891; transform: translateY(-2px); }
+
+    .item img {
+      width: 100%;
+      height: 200px;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #fff;
+      display: block;
+    }
+
+    .item h2 {
+      font-size: 16px;
+      line-height: 1.35;
+      margin-top: 12px;
+      color: #2f2822;
+    }
+
+    /* Lightbox */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 16, 12, 0.92);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 50;
+      cursor: zoom-out;
+    }
+    .lightbox.is-open { display: flex; }
+    .lightbox img {
+      max-width: 100%;
+      max-height: 92vh;
+      border-radius: 10px;
+      cursor: default;
+    }
+    .lightbox-close {
+      position: fixed;
+      top: 18px;
+      right: 22px;
+      color: #f8f3e9;
+      font-size: 34px;
+      line-height: 1;
+      font-family: Arial, sans-serif;
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+    .lightbox-open-full {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: #f8f3e9;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+      text-decoration: underline;
+    }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      body { padding: 24px 12px; }
+      .grid { grid-template-columns: 1fr; }
+      .header { padding: 26px 22px; }
+      .title { font-size: 27px; }
+      .item img { height: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="module">
+    <a href="index.html" class="back">&larr; All quizzes</a>
+
+    <header class="header">
+      <h1 class="title">Aviation English — Infographics</h1>
+      <p class="subtitle">Visual references for ICAO exam prep. Tap any image to view it full size.</p>
+    </header>
+
+    <section class="grid" id="grid" aria-label="Infographics"></section>
+  </main>
+
+  <div class="lightbox" id="lightbox">
+    <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
+    <img id="lightbox-img" src="" alt="">
+    <a class="lightbox-open-full" id="lightbox-full" href="#" target="_blank" rel="noopener">Open original PNG in new tab</a>
+  </div>
+
+  <script>
+    const images = [
+      { file: "emergency-management",     title: "Emergency Management — Pilot Guide" },
+      { file: "starting-up",              title: "Aviation English — Starting Up" },
+      { file: "v-speeds-flight-phases",   title: "V-Speeds Through the Flight Phases" },
+      { file: "bristell-autopilot",       title: "Bristell Autopilot" },
+      { file: "vibrations",               title: "Vibrations" },
+      { file: "safe-safety-safely",       title: "Safe / Safety / Safely" },
+      { file: "describing-picture-1",     title: "Describing a Picture (1)" },
+      { file: "describing-picture-2",     title: "Describing a Picture (2)" }
+    ];
+
+    const grid = document.getElementById("grid");
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    const lightboxFull = document.getElementById("lightbox-full");
+
+    images.forEach(img => {
+      const full = `img/${img.file}.png`;
+      const thumb = `img/thumb/${img.file}.jpg`;
+      const item = document.createElement("article");
+      item.className = "item";
+      item.innerHTML = `<img src="${thumb}" alt="${img.title}" loading="lazy"><h2>${img.title}</h2>`;
+      item.addEventListener("click", () => openLightbox(full, img.title));
+      grid.appendChild(item);
+    });
+
+    function openLightbox(full, title) {
+      lightboxImg.src = full;
+      lightboxImg.alt = title;
+      lightboxFull.href = full;
+      lightbox.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeLightbox() {
+      lightbox.classList.remove("is-open");
+      lightboxImg.src = "";
+      document.body.style.overflow = "";
+    }
+
+    lightbox.addEventListener("click", (e) => {
+      if (e.target === lightboxImg || e.target === lightboxFull) return;
+      closeLightbox();
+    });
+    document.getElementById("lightbox-close").addEventListener("click", closeLightbox);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLightbox();
+    });
+  </script>
+</body>
+</html>
