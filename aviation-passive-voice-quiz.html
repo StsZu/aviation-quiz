@@ -1,0 +1,766 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Aviation English Passive Voice Quiz</title>
+  <style>
+    :root {
+      --ink: #17212b;
+      --muted: #5f6c76;
+      --line: #d8dee4;
+      --panel: rgba(255, 255, 255, 0.88);
+      --panel-solid: #ffffff;
+      --navy: #243447;
+      --teal: #147d7e;
+      --amber: #c68222;
+      --green: #198754;
+      --red: #c33a32;
+      --green-bg: #e8f6ef;
+      --red-bg: #fae9e7;
+      --focus: #0f766e;
+      --shadow: 0 18px 42px rgba(23, 33, 43, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(231, 223, 210, 0.95), rgba(218, 232, 231, 0.9) 52%, rgba(244, 236, 220, 0.95));
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1040px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+
+    .hero {
+      display: grid;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      width: fit-content;
+      padding: 7px 10px;
+      border: 1px solid rgba(20, 125, 126, 0.35);
+      border-radius: 8px;
+      color: #0f5f60;
+      background: rgba(255, 255, 255, 0.58);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.05rem;
+      line-height: 1.1;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      max-width: 720px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card,
+    .side-card {
+      border: 1px solid rgba(255, 255, 255, 0.68);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .side-card {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .progress-track {
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e8ecef;
+      border: 1px solid #dce2e6;
+      margin-bottom: 20px;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--amber));
+      transition: width 240ms ease;
+    }
+
+    .question-title {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      line-height: 1.25;
+    }
+
+    .question-text {
+      margin: 0 0 18px;
+      color: #2c3944;
+      font-size: 1.05rem;
+      line-height: 1.55;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .option {
+      width: 100%;
+      min-height: 58px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-solid);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .option:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: rgba(20, 125, 126, 0.55);
+      box-shadow: 0 10px 22px rgba(23, 33, 43, 0.1);
+    }
+
+    .option:focus-visible,
+    .primary:focus-visible,
+    .secondary:focus-visible {
+      outline: 3px solid rgba(15, 118, 110, 0.28);
+      outline-offset: 2px;
+    }
+
+    .option:disabled {
+      cursor: default;
+    }
+
+    .option.correct {
+      border-color: rgba(25, 135, 84, 0.72);
+      background: var(--green-bg);
+    }
+
+    .option.incorrect {
+      border-color: rgba(195, 58, 50, 0.72);
+      background: var(--red-bg);
+    }
+
+    .feedback {
+      display: none;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.72);
+      line-height: 1.5;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .feedback.correct strong {
+      color: var(--green);
+    }
+
+    .feedback.incorrect strong {
+      color: var(--red);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .primary,
+    .secondary {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 0;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 160ms ease, opacity 160ms ease, box-shadow 160ms ease;
+    }
+
+    .primary {
+      color: #ffffff;
+      background: var(--navy);
+      box-shadow: 0 10px 20px rgba(36, 52, 71, 0.22);
+    }
+
+    .secondary {
+      color: var(--navy);
+      background: #eef3f3;
+      border: 1px solid #d7e0e0;
+    }
+
+    .primary:hover:not(:disabled),
+    .secondary:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .primary:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      box-shadow: none;
+    }
+
+    .metric {
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--line);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.22rem;
+    }
+
+    .result {
+      display: none;
+      text-align: center;
+      padding: 28px 20px;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .result-score {
+      margin: 12px auto;
+      width: 148px;
+      height: 148px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      border: 10px solid rgba(20, 125, 126, 0.22);
+      background: #ffffff;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--teal);
+    }
+
+    .result h2 {
+      margin: 0;
+      font-size: 1.7rem;
+    }
+
+    .result p {
+      margin: 8px auto 18px;
+      max-width: 520px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 24px, 1040px);
+        padding: 18px 0;
+      }
+
+      h1 {
+        font-size: 1.62rem;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .side-card {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        justify-content: stretch;
+      }
+
+      .primary,
+      .secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a href="index.html" style="display:inline-block;margin-bottom:16px;color:#5f6c76;text-decoration:none;font-size:14px;">&larr; All quizzes</a>
+    <header class="hero">
+      <div class="badge">Aviation English Quiz</div>
+      <h1>Passive Voice in Aviation Safety Communication</h1>
+      <p class="subtitle">Practice passive constructions used in checklists, incident reports, emergency procedures, and ICAO-style safety reasoning.</p>
+    </header>
+
+    <main class="shell">
+      <section class="card" aria-label="Quiz">
+        <div id="quiz-view">
+          <div class="topline">
+            <span id="counter">Question 1 of 20</span>
+            <span id="score-inline">Score 0</span>
+          </div>
+          <div class="progress-track" aria-label="Quiz progress">
+            <div id="progress" class="progress-fill"></div>
+          </div>
+          <h2 id="question-title" class="question-title"></h2>
+          <p id="question-text" class="question-text"></p>
+          <div id="options" class="options"></div>
+          <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div class="actions">
+            <button id="next-button" class="primary" type="button" disabled>Next question</button>
+          </div>
+        </div>
+
+        <section id="result-view" class="result" aria-label="Quiz result">
+          <h2 id="result-heading">Result</h2>
+          <div id="result-score" class="result-score">0%</div>
+          <p id="result-details"></p>
+          <button id="restart-button" class="secondary" type="button">Restart quiz</button>
+        </section>
+      </section>
+
+      <aside class="side-card" aria-label="Quiz summary">
+        <div class="metric">
+          <span>Total questions</span>
+          <strong id="total-count">20</strong>
+        </div>
+        <div class="metric">
+          <span>Answered</span>
+          <strong id="answered-count">0</strong>
+        </div>
+        <div class="metric">
+          <span>Correct</span>
+          <strong id="correct-count">0</strong>
+        </div>
+      </aside>
+    </main>
+
+    <footer>Offline single-file quiz generated from local JSON sources.</footer>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        "title": "Passive Voice for Safety Focus",
+        "question": "Which sentence best uses the passive voice to focus on the required safety action rather than the person responsible?",
+        "options": [
+          "The pilot must inspect the aircraft before departure.",
+          "The aircraft must be inspected before departure.",
+          "The pilot is responsible for aircraft inspection before departure."
+        ],
+        "correct": 1,
+        "feedback": "The aircraft must be inspected before departure is correct because the passive voice focuses on the safety action and the aircraft, not on who performs the inspection."
+      },
+      {
+        "title": "Emergency Procedure Language",
+        "question": "Which sentence is the most appropriate ICAO-style passive sentence for describing the first priority in an emergency?",
+        "options": [
+          "The aircraft must be kept under control first.",
+          "The pilot must first try to control everything.",
+          "The aircraft must control the emergency first."
+        ],
+        "correct": 0,
+        "feedback": "The aircraft must be kept under control first is correct because it uses passive voice to express a clear safety priority in professional aviation language."
+      },
+      {
+        "title": "Unstable Approach Decision",
+        "question": "A pilot is describing an unstable approach. Which passive sentence gives the best safety recommendation?",
+        "options": [
+          "The pilot should make a go-around if the approach is not good.",
+          "A go-around should be initiated if the approach becomes unstable.",
+          "The approach should initiate a go-around when the pilot feels unsafe."
+        ],
+        "correct": 1,
+        "feedback": "A go-around should be initiated if the approach becomes unstable is correct because it uses passive voice to focus on the required procedure rather than personal judgment."
+      },
+      {
+        "title": "Completed Checklist",
+        "question": "Which sentence correctly uses the present perfect passive to show that an action has been completed and is relevant now?",
+        "options": [
+          "The crew has completed the checklist.",
+          "The checklist has been completed.",
+          "The checklist has completed by the crew."
+        ],
+        "correct": 1,
+        "feedback": "The checklist has been completed is correct because present perfect passive uses has been plus past participle to show a completed action with present relevance."
+      },
+      {
+        "title": "Action Happening Now",
+        "question": "Which sentence correctly describes an aircraft inspection happening at the moment?",
+        "options": [
+          "The aircraft is being inspected by maintenance.",
+          "The aircraft is inspected by maintenance now.",
+          "The aircraft has being inspected by maintenance."
+        ],
+        "correct": 0,
+        "feedback": "The aircraft is being inspected by maintenance is correct because present continuous passive uses is being plus past participle for an action in progress now."
+      },
+      {
+        "title": "Avoiding Blame in Incident Description",
+        "question": "Which sentence sounds the most objective when describing an incident during an ICAO speaking test?",
+        "options": [
+          "The pilot made a serious mistake during the approach.",
+          "A mistake was made during the approach.",
+          "The pilot did something wrong during the approach."
+        ],
+        "correct": 1,
+        "feedback": "A mistake was made during the approach is correct because passive voice makes the description more objective and less focused on blaming a specific person."
+      },
+      {
+        "title": "Runway Safety",
+        "question": "Which passive sentence best describes the necessary action when debris is found on a runway?",
+        "options": [
+          "Airport workers must clean the runway because debris is dangerous.",
+          "The runway must be cleared before aircraft operations continue.",
+          "The runway must clear the debris before aircraft operations continue."
+        ],
+        "correct": 1,
+        "feedback": "The runway must be cleared before aircraft operations continue is correct because it clearly states the required safety action using must be plus past participle."
+      },
+      {
+        "title": "Technical Defect Reporting",
+        "question": "Which sentence correctly uses passive voice to describe that a technical problem has already been communicated?",
+        "options": [
+          "The defect has been reported to maintenance.",
+          "The defect has reported to maintenance.",
+          "Maintenance has been reported the defect."
+        ],
+        "correct": 0,
+        "feedback": "The defect has been reported to maintenance is correct because the structure has been reported shows that the reporting action is complete."
+      },
+      {
+        "title": "Possibility with Passive Voice",
+        "question": "Which sentence correctly expresses that repairing the engine is possible?",
+        "options": [
+          "The engine can repaired after landing.",
+          "The engine can be repaired after landing.",
+          "The engine can repair after landing."
+        ],
+        "correct": 1,
+        "feedback": "The engine can be repaired after landing is correct because passive voice with a modal verb uses modal plus be plus past participle."
+      },
+      {
+        "title": "Passenger Briefing",
+        "question": "Which sentence is the most suitable passive sentence for an emergency landing situation?",
+        "options": [
+          "The crew should tell passengers all emergency information.",
+          "Passengers should be briefed before the emergency landing.",
+          "Passengers should brief before the emergency landing."
+        ],
+        "correct": 1,
+        "feedback": "Passengers should be briefed before the emergency landing is correct because it focuses on the required safety communication and uses should be plus past participle."
+      },
+      {
+        "title": "Passive Voice with Modal Verbs",
+        "question": "Which sentence correctly uses passive voice with a modal verb in an aviation context?",
+        "options": [
+          "The checklist must completed before taxi.",
+          "The checklist must be completed before taxi.",
+          "The checklist must be complete before taxi."
+        ],
+        "correct": 1,
+        "feedback": "The checklist must be completed before taxi is correct because passive voice with a modal verb uses modal + be + past participle."
+      },
+      {
+        "title": "Objective Incident Reporting",
+        "question": "Which sentence is the best passive version for reporting an incident without directly blaming the pilot?",
+        "options": [
+          "The aircraft was landed hard during the approach.",
+          "The pilot landed the aircraft badly during the approach.",
+          "The pilot made a bad landing during the approach."
+        ],
+        "correct": 0,
+        "feedback": "The aircraft was landed hard during the approach is correct because it focuses on what happened to the aircraft rather than directly blaming the pilot."
+      },
+      {
+        "title": "Maintenance Requirement",
+        "question": "After abnormal vibration is detected, which passive sentence gives the clearest safety recommendation?",
+        "options": [
+          "Maintenance should check the engine before the next flight.",
+          "The engine should be checked before the next flight.",
+          "The engine should check before the next flight."
+        ],
+        "correct": 1,
+        "feedback": "The engine should be checked before the next flight is correct because it focuses on the required safety action and uses should be + past participle."
+      },
+      {
+        "title": "Runway Closure",
+        "question": "Which sentence correctly uses passive voice to describe a necessary airport safety action?",
+        "options": [
+          "The runway should be closed until the inspection is complete.",
+          "The runway should close until the inspection is complete.",
+          "The airport should be closed the runway until the inspection is complete."
+        ],
+        "correct": 0,
+        "feedback": "The runway should be closed until the inspection is complete is correct because the runway receives the action, so passive voice is appropriate."
+      },
+      {
+        "title": "Picture Description",
+        "question": "You see a picture of mechanics working around an aircraft engine. Which sentence best describes the situation using passive voice?",
+        "options": [
+          "The mechanics are checking the engine.",
+          "The engine is being checked by maintenance staff.",
+          "The engine is checking the maintenance staff."
+        ],
+        "correct": 1,
+        "feedback": "The engine is being checked by maintenance staff is correct because present continuous passive describes an action happening now and focuses on the engine."
+      },
+      {
+        "title": "Safety Conclusion",
+        "question": "Which sentence best completes this ICAO-style safety conclusion: From a safety perspective, the risk...",
+        "options": [
+          "can reduce by following the checklist.",
+          "can be reduced by following the checklist.",
+          "can be reducing by following the checklist."
+        ],
+        "correct": 1,
+        "feedback": "Can be reduced by following the checklist is correct because passive voice with can uses can be + past participle."
+      },
+      {
+        "title": "Emergency Services",
+        "question": "Which passive sentence correctly shows that emergency services have already received the information?",
+        "options": [
+          "Emergency services have been informed.",
+          "Emergency services have informed.",
+          "Emergency services have being informed."
+        ],
+        "correct": 0,
+        "feedback": "Emergency services have been informed is correct because present perfect passive uses have been + past participle to show a completed action."
+      },
+      {
+        "title": "Cabin Preparation",
+        "question": "Before an emergency landing, which passive sentence is the most appropriate?",
+        "options": [
+          "The cabin must be secured before landing.",
+          "The cabin must secure before landing.",
+          "The cabin must secured before landing."
+        ],
+        "correct": 0,
+        "feedback": "The cabin must be secured before landing is correct because the cabin receives the action, and must be + past participle expresses a required safety procedure."
+      },
+      {
+        "title": "Avoiding Unsafe Action",
+        "question": "Which sentence correctly uses passive voice to express that excessive speed is dangerous and should not happen?",
+        "options": [
+          "Excessive speed must avoid during approach.",
+          "Excessive speed must be avoided during approach.",
+          "Excessive speed must be avoiding during approach."
+        ],
+        "correct": 1,
+        "feedback": "Excessive speed must be avoided during approach is correct because it uses must be + past participle to express a strong safety requirement."
+      },
+      {
+        "title": "Clearance Confirmation",
+        "question": "Which sentence correctly uses passive voice to describe that ATC has already issued permission?",
+        "options": [
+          "The clearance has been given by ATC.",
+          "The clearance has given by ATC.",
+          "The clearance has been gave by ATC."
+        ],
+        "correct": 0,
+        "feedback": "The clearance has been given by ATC is correct because present perfect passive uses has been + past participle, and given is the correct past participle of give."
+      }
+    ];
+
+    const state = {
+      index: 0,
+      score: 0,
+      answered: false
+    };
+
+    const quizView = document.getElementById("quiz-view");
+    const resultView = document.getElementById("result-view");
+    const counter = document.getElementById("counter");
+    const scoreInline = document.getElementById("score-inline");
+    const progress = document.getElementById("progress");
+    const questionTitle = document.getElementById("question-title");
+    const questionText = document.getElementById("question-text");
+    const options = document.getElementById("options");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-button");
+    const totalCount = document.getElementById("total-count");
+    const answeredCount = document.getElementById("answered-count");
+    const correctCount = document.getElementById("correct-count");
+    const resultHeading = document.getElementById("result-heading");
+    const resultScore = document.getElementById("result-score");
+    const resultDetails = document.getElementById("result-details");
+    const restartButton = document.getElementById("restart-button");
+
+    function renderQuestion() {
+      const item = quizData[state.index];
+      state.answered = false;
+
+      counter.textContent = `Question ${state.index + 1} of ${quizData.length}`;
+      scoreInline.textContent = `Score ${state.score}`;
+      progress.style.width = `${(state.index / quizData.length) * 100}%`;
+      questionTitle.textContent = item.title;
+      questionText.textContent = item.question;
+      feedback.className = "feedback";
+      feedback.innerHTML = "";
+      nextButton.disabled = true;
+      nextButton.textContent = state.index === quizData.length - 1 ? "Show result" : "Next question";
+      totalCount.textContent = quizData.length;
+      answeredCount.textContent = state.index;
+      correctCount.textContent = state.score;
+
+      options.innerHTML = "";
+      item.options.forEach((optionText, optionIndex) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "option";
+        button.textContent = optionText;
+        button.setAttribute("aria-label", `Answer option ${optionIndex + 1}`);
+        button.addEventListener("click", () => selectAnswer(optionIndex));
+        options.appendChild(button);
+      });
+    }
+
+    function selectAnswer(selectedIndex) {
+      if (state.answered) return;
+
+      const item = quizData[state.index];
+      const buttons = Array.from(options.querySelectorAll(".option"));
+      const isCorrect = selectedIndex === item.correct;
+
+      state.answered = true;
+      if (isCorrect) state.score += 1;
+
+      buttons.forEach((button, buttonIndex) => {
+        button.disabled = true;
+        if (buttonIndex === item.correct) button.classList.add("correct");
+        if (buttonIndex === selectedIndex && !isCorrect) button.classList.add("incorrect");
+      });
+
+      feedback.className = `feedback show ${isCorrect ? "correct" : "incorrect"}`;
+      feedback.innerHTML = `<strong>${isCorrect ? "Correct" : "Incorrect"}</strong>${item.feedback}`;
+      nextButton.disabled = false;
+      scoreInline.textContent = `Score ${state.score}`;
+      answeredCount.textContent = state.index + 1;
+      correctCount.textContent = state.score;
+      progress.style.width = `${((state.index + 1) / quizData.length) * 100}%`;
+    }
+
+    function showResult() {
+      const percent = Math.round((state.score / quizData.length) * 100);
+      const comment = getResultComment(percent);
+
+      quizView.classList.add("hidden");
+      resultView.classList.add("show");
+      resultHeading.textContent = comment;
+      resultScore.textContent = `${percent}%`;
+      resultDetails.textContent = `You answered ${state.score} of ${quizData.length} questions correctly.`;
+      progress.style.width = "100%";
+    }
+
+    function getResultComment(percent) {
+      if (percent >= 90) return "Excellent";
+      if (percent >= 70) return "Good work";
+      if (percent >= 50) return "Keep practicing";
+      return "Review the material and try again";
+    }
+
+    nextButton.addEventListener("click", () => {
+      if (state.index === quizData.length - 1) {
+        showResult();
+        return;
+      }
+
+      state.index += 1;
+      renderQuestion();
+    });
+
+    restartButton.addEventListener("click", () => {
+      state.index = 0;
+      state.score = 0;
+      quizView.classList.remove("hidden");
+      resultView.classList.remove("show");
+      renderQuestion();
+    });
+
+    renderQuestion();
+  </script>
+</body>
+</html>
