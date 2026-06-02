@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviation Vocabulary Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for select to look better on iOS */
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23131C23%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem top 50%;
+            background-size: 0.65rem auto;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans p-4 md:p-8 min-h-screen">
+    
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden">
+        <!-- Header -->
+        <div class="bg-blue-600 p-6 text-white">
+            <h1 class="text-2xl font-bold tracking-wide">Aviation Vocabulary Quiz</h1>
+            <p class="mt-2 text-blue-100 opacity-90">Match the words or phrases with the correct definitions (A-G).</p>
+        </div>
+
+        <div class="p-6 md:p-8">
+            <!-- Word Bank -->
+            <div class="bg-slate-100 p-5 rounded-lg mb-8 border border-slate-200">
+                <h2 class="text-sm font-bold text-slate-500 uppercase tracking-wider mb-3">Word Bank</h2>
+                <div class="flex flex-wrap gap-2" id="word-bank">
+                    <!-- Badges populated by JS -->
+                </div>
+            </div>
+
+            <!-- Quiz Form -->
+            <div id="quiz-container" class="space-y-4">
+                <!-- Questions injected by JS -->
+            </div>
+
+            <!-- Action Area -->
+            <div class="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="w-full sm:w-auto flex flex-col sm:flex-row gap-3">
+                    <button onclick="checkAnswers()" class="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-8 rounded-lg shadow transition duration-200 ease-in-out focus:ring-4 focus:ring-blue-300 focus:outline-none">
+                        Check Answers
+                    </button>
+                    <button onclick="resetQuiz()" class="w-full sm:w-auto bg-slate-200 hover:bg-slate-300 text-slate-700 font-semibold py-3 px-8 rounded-lg shadow transition duration-200 ease-in-out focus:ring-4 focus:ring-slate-300 focus:outline-none">
+                        Reset
+                    </button>
+                </div>
+                <div id="score-display" class="text-xl font-bold text-slate-700 hidden"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Quiz Data
+        const quizSections = [
+            {
+                sectionId: 1,
+                title: "Part 1: Rejected Takeoffs",
+                terms: [
+                    "aborted takeoff", 
+                    "malfunction", 
+                    "all engine takeoff field length", 
+                    "abort", 
+                    "balanced field length", 
+                    "takeoff distance with engine failure", 
+                    "accelerate/stop distance"
+                ],
+                questions: [
+                    { id: "1A", displayId: "A", text: "an event that occurs when an object does not work properly", answer: "malfunction" },
+                    { id: "1B", displayId: "B", text: "a flight ascension that is stopped before completion", answer: "aborted takeoff" },
+                    { id: "1C", displayId: "C", text: "the act of stopping a procedure", answer: "abort" },
+                    { id: "1D", displayId: "D", text: "the distance needed to reach full speed, then come to a complete stop", answer: "accelerate/stop distance" },
+                    { id: "1E", displayId: "E", text: "the equalization of all-engine takeoff length and the accelerate/stop distance", answer: "balanced field length" },
+                    { id: "1F", displayId: "F", text: "the distance needed to get to takeoff speed from a standstill position", answer: "all engine takeoff field length" },
+                    { id: "1G", displayId: "G", text: "the distance needed to reach the decision speed, experience engine failure, and still reach VR", answer: "takeoff distance with engine failure" }
+                ]
+            },
+            {
+                sectionId: 2,
+                title: "Part 2: Aircraft Stalls",
+                terms: [
+                    "accelerated stall", 
+                    "pitch over", 
+                    "full stall", 
+                    "recovery", 
+                    "stick shaker", 
+                    "approach to a stall"
+                ],
+                questions: [
+                    { id: "2A", displayId: "A", text: "the process of correcting a stall and restoring the aircraft to normal lift", answer: "recovery" },
+                    { id: "2B", displayId: "B", text: "to drop an aircraft's nose suddenly from an upward angle to a downward angle", answer: "pitch over" },
+                    { id: "2C", displayId: "C", text: "a device that causes an aircraft's control yoke to rattle when a stall is about to occur", answer: "stick shaker" },
+                    { id: "2D", displayId: "D", text: "the condition of an aircraft when the point of separation is moving forward on the wings and a stall becomes imminent", answer: "approach to a stall" },
+                    { id: "2E", displayId: "E", text: "a type of stall that occurs when an aircraft's angle of attack is suddenly increased to an excessive degree", answer: "accelerated stall" },
+                    { id: "2F", displayId: "F", text: "a type of stall that occurs when an aircraft's angle of attack reaches too high a level", answer: "full stall" }
+                ]
+            }
+        ];
+
+        let totalQuestions = 0;
+
+        // Initialize UI
+        document.addEventListener("DOMContentLoaded", () => {
+            const wordBankEl = document.getElementById("word-bank");
+            const quizContainer = document.getElementById("quiz-container");
+            
+            // Clear static placeholders if any
+            wordBankEl.innerHTML = '';
+            quizContainer.innerHTML = '';
+
+            quizSections.forEach(section => {
+                totalQuestions += section.questions.length;
+
+                // 1. Render Word Bank sub-sections
+                const headerWrapper = document.createElement("div");
+                headerWrapper.className = "w-full mt-4 mb-2 first:mt-0";
+                headerWrapper.innerHTML = `<h3 class="text-xs font-bold text-blue-500 uppercase tracking-wider">${section.title}</h3>`;
+                wordBankEl.appendChild(headerWrapper);
+
+                section.terms.sort().forEach(term => {
+                    const span = document.createElement("span");
+                    span.className = "bg-white px-3 py-1.5 rounded-md border border-slate-300 text-sm font-medium text-slate-700 shadow-sm mr-2 mb-2 inline-block";
+                    span.innerText = term;
+                    wordBankEl.appendChild(span);
+                });
+
+                // 2. Build options string specific to this section
+                let optionsHTML = '<option value="">-- Select term --</option>';
+                section.terms.forEach(term => {
+                    optionsHTML += `<option value="${term}">${term}</option>`;
+                });
+
+                // 3. Render Questions for this section
+                const sectionQuestionsWrapper = document.createElement("div");
+                sectionQuestionsWrapper.className = "space-y-4 mb-8";
+                
+                section.questions.forEach(q => {
+                    const row = document.createElement("div");
+                    row.id = `row-${q.id}`;
+                    row.className = "flex flex-col md:flex-row md:items-center p-4 border border-slate-200 rounded-lg transition-colors bg-white";
+                    
+                    row.innerHTML = `
+                        <div class="md:w-7/12 lg:w-2/3 mb-3 md:mb-0 pr-4">
+                            <span class="font-bold text-blue-600 mr-2 text-lg">${q.displayId}.</span> 
+                            <span class="text-slate-700">${q.text}</span>
+                        </div>
+                        <div class="md:w-5/12 lg:w-1/3 relative">
+                            <select id="select-${q.id}" class="w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5">
+                                ${optionsHTML}
+                            </select>
+                            <div id="icon-${q.id}" class="absolute right-8 top-2.5 hidden"></div>
+                        </div>
+                    `;
+                    sectionQuestionsWrapper.appendChild(row);
+                });
+
+                quizContainer.appendChild(sectionQuestionsWrapper);
+            });
+        });
+
+        // Grading Logic
+        function checkAnswers() {
+            let score = 0;
+
+            quizSections.forEach(section => {
+                section.questions.forEach(q => {
+                    const selectEl = document.getElementById(`select-${q.id}`);
+                    const rowEl = document.getElementById(`row-${q.id}`);
+                    const iconEl = document.getElementById(`icon-${q.id}`);
+                    
+                    const selectedValue = selectEl.value;
+
+                    // Reset classes
+                    rowEl.className = "flex flex-col md:flex-row md:items-center p-4 border rounded-lg transition-colors";
+                    iconEl.classList.remove("hidden");
+
+                    if (selectedValue === q.answer) {
+                        score++;
+                        rowEl.classList.add("bg-emerald-50", "border-emerald-300");
+                        selectEl.classList.add("border-emerald-500", "bg-emerald-100");
+                        selectEl.classList.remove("border-slate-300", "border-rose-500", "bg-rose-100");
+                        iconEl.innerHTML = '✅';
+                    } else {
+                        rowEl.classList.add("bg-rose-50", "border-rose-300");
+                        selectEl.classList.add("border-rose-500", "bg-rose-100");
+                        selectEl.classList.remove("border-slate-300", "border-emerald-500", "bg-emerald-100");
+                        iconEl.innerHTML = '❌';
+                    }
+                });
+            });
+
+            // Display Score
+            const scoreDisplay = document.getElementById("score-display");
+            scoreDisplay.classList.remove("hidden");
+            
+            if (score === totalQuestions) {
+                scoreDisplay.innerHTML = `🎉 Perfect! ${score} / ${totalQuestions}`;
+                scoreDisplay.classList.add("text-emerald-600");
+                scoreDisplay.classList.remove("text-rose-600", "text-blue-600");
+            } else if (score > 0) {
+                scoreDisplay.innerHTML = `Good try! ${score} / ${totalQuestions}`;
+                scoreDisplay.classList.add("text-blue-600");
+                scoreDisplay.classList.remove("text-emerald-600", "text-rose-600");
+            } else {
+                scoreDisplay.innerHTML = `Keep studying! ${score} / ${totalQuestions}`;
+                scoreDisplay.classList.add("text-rose-600");
+                scoreDisplay.classList.remove("text-emerald-600", "text-blue-600");
+            }
+        }
+
+        function resetQuiz() {
+            quizSections.forEach(section => {
+                section.questions.forEach(q => {
+                    const selectEl = document.getElementById(`select-${q.id}`);
+                    const rowEl = document.getElementById(`row-${q.id}`);
+                    const iconEl = document.getElementById(`icon-${q.id}`);
+                    
+                    // Reset select value
+                    selectEl.value = "";
+
+                    // Reset row styling
+                    rowEl.className = "flex flex-col md:flex-row md:items-center p-4 border border-slate-200 rounded-lg transition-colors bg-white";
+                    
+                    // Reset select styling
+                    selectEl.className = "w-full bg-slate-50 border border-slate-300 text-slate-800 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block p-2.5";
+                    
+                    // Hide icon
+                    iconEl.classList.add("hidden");
+                    iconEl.innerHTML = "";
+                });
+            });
+
+            // Hide and reset score display
+            const scoreDisplay = document.getElementById("score-display");
+            scoreDisplay.classList.add("hidden");
+            scoreDisplay.innerHTML = "";
+        }
+    </script>
+</body>
+</html>

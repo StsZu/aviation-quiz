@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading Comprehension Quiz</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 720px;
+      padding: 32px 36px;
+    }
+    .progress {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 20px;
+      font-family: "SF Pro Text", sans-serif;
+    }
+    .question {
+      font-size: 18px;
+      color: #2f2822;
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+    .option {
+      background: rgba(255,251,244,0.8);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-family: Georgia, serif;
+      color: #2f2822;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s;
+      width: 100%;
+    }
+    .option:hover:not(:disabled) { background: #efe6d8; }
+    .option.correct { background: #c8f0c8; border-color: #4a9a4a; color: #1a5a1a; }
+    .option.wrong   { background: #f0c8c8; border-color: #9a4a4a; color: #5a1a1a; }
+    .option:disabled { cursor: default; }
+    .explanation {
+      background: #e8f5e8;
+      border: 1px solid #90c890;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: #1a4a1a;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      display: none;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .score-label {
+      color: #7a6858;
+      font-size: 14px;
+      font-family: "SF Pro Text", sans-serif;
+    }
+    .btn-row { display: flex; gap: 8px; }
+    .btn {
+      background: rgba(255,251,244,0.55);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-family: "SF Pro Text", sans-serif;
+      color: #4a3e34;
+      cursor: pointer;
+      transition: background 0.12s;
+      min-width: 80px;
+    }
+    .btn:hover:not(:disabled) { background: #efe6d8; }
+    .btn:disabled { opacity: 0.4; cursor: default; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options"  id="options"></div>
+    <div class="explanation" id="explanation"></div>
+    <div class="footer">
+      <span class="score-label" id="score">Score: 0/0</span>
+      <div class="btn-row">
+        <button class="btn" id="btn-retake" onclick="retake()" style="display:none">Retake</button>
+        <button class="btn" id="btn-next"   onclick="nextQ()"  disabled>Next →</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    const questions = [{"correct": 1, "explanation": "The text states that a pilot should consider temperature and altitude, as both factors can greatly affect a takeoff's success.", "options": ["Wind speed and visibility", "Temperature and altitude", "Runway surface and lighting"], "question": "What two location-based factors can greatly affect a takeoff's success?"}, {"correct": 1, "explanation": "According to the text, the minimum runway length also covers the takeoff distance with an engine failure.", "options": ["The landing distance in an emergency", "The takeoff distance with an engine failure", "The accelerate/stop distance in good conditions"], "question": "What does the minimum runway length account for beyond a normal takeoff?"}, {"correct": 1, "explanation": "The text defines the balanced field length as the distance that equalises the accelerate/stop distance and the takeoff distance with an engine failure.", "options": ["The distance needed for an all-engine takeoff on a level runway", "The distance that equalises the accelerate/stop distance and the takeoff distance with an engine failure", "The minimum runway length required for a safe landing"], "question": "What is the balanced field length?"}, {"correct": 1, "explanation": "The text states that once decision speed is passed, a takeoff is mandatory, meaning the pilot must proceed.", "options": ["The pilot must abort the takeoff immediately", "The pilot must complete the takeoff", "The pilot can still choose to reject the takeoff"], "question": "What happens once a pilot passes decision speed?"}, {"correct": 2, "explanation": "The text explicitly describes the balanced field length as 'one of the more important distances' in the takeoff process.", "options": ["The all-engine takeoff length", "The minimum runway length", "The balanced field length"], "question": "Which of the following is described as one of the more important distances in the takeoff process?"}, {"correct": 1, "explanation": "The text states that before decision speed, a takeoff may be aborted if an engine malfunctions or the plane does not reach the necessary speed.", "options": ["Because the aircraft has exceeded the required speed", "Because an engine malfunctions or the plane fails to reach the necessary speed", "Because the runway length is greater than the balanced field length"], "question": "Why might a pilot abort a takeoff before reaching decision speed?"}, {"correct": 1, "explanation": "The text defines decision speed as the speed at which a pilot must decide to abort a takeoff or not, making it a critical decision point.", "options": ["To calculate the minimum runway length needed", "To determine the point at which the pilot must decide whether to abort or proceed", "To measure the distance required for an engine failure scenario"], "question": "What is the main purpose of the decision speed in the takeoff process?"}, {"correct": 1, "explanation": "The text concludes that knowing the right distances and speeds can help a pilot make the difficult choice of whether to abort or proceed, implying this knowledge supports sound decision-making.", "options": ["So they can increase the aircraft's fuel efficiency during the flight", "So they are better equipped to make difficult decisions during the takeoff process", "So they can shorten the runway length required for departure"], "question": "What can be inferred about why pilots need to know both distances and speeds before takeoff?"}, {"correct": 1, "explanation": "The text states that the distance pilots need to address problems before takeoff includes the all-engine takeoff length and the accelerate/stop distance.", "options": ["The balanced field length", "The distance pilots need to address problems before takeoff", "The minimum runway length"], "question": "Which of the following distances includes both the all-engine takeoff length and the accelerate/stop distance?"}, {"correct": 0, "explanation": "The text covers multiple factors pilots must consider before takeoff, including location, distances, and speeds, indicating that thorough preparation involving all these elements is the central theme.", "options": ["Pilots must understand various distances and speeds in order to prepare safely for takeoff", "Engine failure is the most common problem pilots face during takeoff", "Decision speed is the single most important factor in planning a takeoff"], "question": "What is the overall main idea of this text?"}];
+    let current = 0, score = 0, answered = false;
+
+    function showQuestion() {
+      const q = questions[current];
+      const total = questions.length;
+      document.getElementById('progress').textContent =
+        'Question ' + (current + 1) + ' of ' + total;
+      document.getElementById('question').textContent = q.question || '';
+
+      const expl = document.getElementById('explanation');
+      expl.style.display = 'none';
+      expl.textContent = '';
+
+      const opts = document.getElementById('options');
+      opts.innerHTML = '';
+      (q.options || []).forEach(function(text, i) {
+        const btn = document.createElement('button');
+        btn.className = 'option';
+        btn.textContent = text;
+        btn.onclick = function() { selectOption(i); };
+        opts.appendChild(btn);
+      });
+
+      answered = false;
+      const btnNext = document.getElementById('btn-next');
+      btnNext.disabled = true;
+      btnNext.style.display = '';
+      btnNext.textContent = (current === total - 1) ? 'Finish' : 'Next →';
+      document.getElementById('btn-retake').style.display = 'none';
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + current;
+    }
+
+    function selectOption(idx) {
+      if (answered) return;
+      answered = true;
+      const q = questions[current];
+      const correct = (q.correct !== undefined) ? q.correct : 0;
+      const btns = document.querySelectorAll('.option');
+      btns.forEach(function(btn, i) {
+        btn.disabled = true;
+        if (i === correct) btn.classList.add('correct');
+        else if (i === idx) btn.classList.add('wrong');
+      });
+      if (idx === correct) score++;
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + (current + 1);
+      document.getElementById('btn-next').disabled = false;
+      if (q.explanation) {
+        const expl = document.getElementById('explanation');
+        expl.textContent = q.explanation;
+        expl.style.display = 'block';
+      }
+    }
+
+    function nextQ() {
+      if (current < questions.length - 1) {
+        current++;
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      const total = questions.length;
+      const pct = total ? Math.round(score / total * 100) : 0;
+      document.getElementById('progress').textContent = 'Quiz complete!';
+      document.getElementById('question').textContent =
+        'Final score: ' + score + '/' + total + '  (' + pct + '%)';
+      document.getElementById('options').innerHTML = '';
+      document.getElementById('explanation').style.display = 'none';
+      document.getElementById('btn-next').style.display = 'none';
+      document.getElementById('btn-retake').style.display = '';
+      document.getElementById('score').textContent =
+        'Score: ' + score + '/' + total;
+    }
+
+    function retake() {
+      current = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

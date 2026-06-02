@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stall Recognition Quiz</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .card {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 760px;
+      padding: 32px 36px;
+    }
+
+    .title {
+      font-size: 26px;
+      color: #2f2822;
+      margin-bottom: 8px;
+      line-height: 1.25;
+    }
+
+    .subtitle {
+      font-size: 15px;
+      color: #7a6858;
+      margin-bottom: 24px;
+      line-height: 1.5;
+      font-family: "SF Pro Text", Arial, sans-serif;
+    }
+
+    .progress {
+      color: #888;
+      font-size: 13px;
+      margin-bottom: 20px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+    }
+
+    .question {
+      font-size: 18px;
+      color: #2f2822;
+      margin-bottom: 24px;
+      line-height: 1.55;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .option {
+      background: rgba(255,251,244,0.8);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 14px 18px;
+      font-size: 16px;
+      font-family: Georgia, serif;
+      color: #2f2822;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s, border-color 0.12s;
+      width: 100%;
+    }
+
+    .option:hover:not(:disabled) {
+      background: #efe6d8;
+    }
+
+    .option.correct {
+      background: #c8f0c8;
+      border-color: #4a9a4a;
+      color: #1a5a1a;
+    }
+
+    .option.wrong {
+      background: #f0c8c8;
+      border-color: #9a4a4a;
+      color: #5a1a1a;
+    }
+
+    .option:disabled {
+      cursor: default;
+    }
+
+    .explanation {
+      background: #e8f5e8;
+      border: 1px solid #90c890;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 15px;
+      color: #1a4a1a;
+      margin-bottom: 14px;
+      line-height: 1.5;
+      display: none;
+    }
+
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+      gap: 12px;
+    }
+
+    .score-label {
+      color: #7a6858;
+      font-size: 14px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn {
+      background: rgba(255,251,244,0.55);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 8px 20px;
+      font-size: 14px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      color: #4a3e34;
+      cursor: pointer;
+      transition: background 0.12s;
+      min-width: 80px;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: #efe6d8;
+    }
+
+    .btn:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .result-note {
+      font-size: 16px;
+      color: #4a3e34;
+      line-height: 1.5;
+      margin-top: 10px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+    }
+
+    @media (max-width: 600px) {
+      body {
+        padding: 24px 12px;
+      }
+
+      .card {
+        padding: 24px 20px;
+      }
+
+      .title {
+        font-size: 23px;
+      }
+
+      .question {
+        font-size: 17px;
+      }
+
+      .option {
+        font-size: 15px;
+      }
+
+      .footer {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-row {
+        justify-content: flex-end;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1 class="title">Stall Recognition Quiz</h1>
+    <p class="subtitle">
+      Advanced Aviation English practice for ICAO-style comprehension, reasoning, and safety language.
+    </p>
+
+    <div class="progress" id="progress"></div>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="explanation" id="explanation"></div>
+
+    <div class="footer">
+      <span class="score-label" id="score">Score: 0/0</span>
+      <div class="btn-row">
+        <button class="btn" id="btn-retake" onclick="retake()" style="display:none">Retake</button>
+        <button class="btn" id="btn-next" onclick="nextQ()" disabled>Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        question: "Why is recognizing an approach to a stall important for a pilot?",
+        options: [
+          "Because it allows the pilot to recover before the aircraft reaches a full stall",
+          "Because it allows the pilot to continue flying at stall speed for better control",
+          "Because it allows the pilot to increase the angle of attack until lift is destroyed"
+        ],
+        correct: 0,
+        explanation: "Recognizing the approach to a stall gives the pilot time to reduce the angle of attack, increase power if required, and regain safe flight before a full stall develops."
+      },
+      {
+        question: "What is the main cause of a full stall?",
+        options: [
+          "The wing reaches the critical angle of attack and can no longer produce enough lift",
+          "The aircraft reaches a high airspeed and the airflow becomes too smooth over the wing",
+          "The pilot lowers the nose and reduces power during normal cruise flight"
+        ],
+        correct: 0,
+        explanation: "A full stall is mainly connected with the critical angle of attack, not simply with low speed. When the angle becomes too high, airflow separates and lift is seriously reduced."
+      },
+      {
+        question: "What does the point of separation describe in relation to a stall?",
+        options: [
+          "The area where airflow stops moving smoothly over the wing",
+          "The point where the aircraft separates from the runway during take-off",
+          "The moment when the pilot separates communication from navigation tasks"
+        ],
+        correct: 0,
+        explanation: "The point of separation refers to airflow separating from the wing surface. As this separation moves forward, lift decreases and the aircraft gets closer to a stall."
+      },
+      {
+        question: "When is an accelerated stall most likely to occur?",
+        options: [
+          "When the pilot suddenly increases the angle of attack, especially under higher load",
+          "When the aircraft accelerates smoothly in level cruise flight",
+          "When the pilot decreases the angle of attack and allows the aircraft to gain speed"
+        ],
+        correct: 0,
+        explanation: "An accelerated stall can occur at a higher airspeed than a normal stall because the wing is overloaded or the angle of attack is increased suddenly. The key idea is not speed alone, but excessive angle of attack."
+      },
+      {
+        question: "What does buffeting usually indicate during an approach to a stall?",
+        options: [
+          "Disturbed airflow and a warning that the aircraft may be close to stalling",
+          "Improved lift and smoother airflow over the aircraft wings",
+          "A normal sound from the engine that is not connected with aircraft control"
+        ],
+        correct: 0,
+        explanation: "Buffeting is an important physical warning. It usually shows that airflow over the wing is becoming disturbed, so the pilot must react before the situation develops into a full stall."
+      },
+      {
+        question: "What is the most important first action during stall recovery?",
+        options: [
+          "Reduce the angle of attack by allowing the nose to pitch down",
+          "Pull back harder on the elevator to increase lift immediately",
+          "Keep the same attitude and wait for the stall warning to stop"
+        ],
+        correct: 0,
+        explanation: "Stall recovery begins by reducing the angle of attack. This normally means lowering the nose or reducing back pressure so the wing can regain smooth airflow and produce lift again."
+      },
+      {
+        question: "Why should a pilot usually increase power during stall recovery?",
+        options: [
+          "To help the aircraft regain energy and attain a safe airspeed",
+          "To keep the aircraft below stall speed for better stability",
+          "To increase the angle of attack and make the nose rise faster"
+        ],
+        correct: 0,
+        explanation: "Increasing power helps the aircraft recover energy and regain safe airspeed. However, power alone is not enough; the pilot must also reduce the angle of attack."
+      },
+      {
+        question: "Which statement best explains stall speed?",
+        options: [
+          "It is the speed at which the aircraft may stall under specific conditions, but angle of attack is still the key factor",
+          "It is one fixed speed at which every aircraft always stalls in every flight situation",
+          "It is the safest speed for practicing steep turns and rapid pitch changes"
+        ],
+        correct: 0,
+        explanation: "Stall speed is useful, but it can change with weight, configuration, bank angle, and load factor. The deeper concept is that the aircraft stalls when the critical angle of attack is exceeded."
+      },
+      {
+        question: "What is the role of stall warning alarms and stick shakers?",
+        options: [
+          "They warn the pilot that the aircraft may be approaching a stall",
+          "They automatically recover the aircraft without pilot action",
+          "They prevent the aircraft from ever reaching stall speed"
+        ],
+        correct: 0,
+        explanation: "These devices provide warning, not a complete solution. The pilot must still recognize the danger and take correct recovery action to maintain safe flight."
+      },
+      {
+        question: "Why is avoiding a stall safer than recovering from one?",
+        options: [
+          "Because prevention keeps the aircraft within a safer flight condition before control is seriously degraded",
+          "Because recovery is impossible once any stall warning device activates",
+          "Because pilots should never practice stalls during flight training"
+        ],
+        correct: 0,
+        explanation: "Avoiding a stall is safer because the aircraft remains under better control and the pilot does not allow lift to be seriously lost. Training teaches recovery, but real safety depends on early recognition and prevention."
+      }
+    ];
+
+    let current = 0;
+    let score = 0;
+    let answered = false;
+
+    function showQuestion() {
+      const q = questions[current];
+      const total = questions.length;
+
+      document.getElementById("progress").textContent =
+        "Question " + (current + 1) + " of " + total;
+
+      document.getElementById("question").textContent = q.question || "";
+
+      const explanation = document.getElementById("explanation");
+      explanation.style.display = "none";
+      explanation.textContent = "";
+
+      const options = document.getElementById("options");
+      options.innerHTML = "";
+
+      q.options.forEach(function(text, index) {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.textContent = text;
+        button.onclick = function() {
+          selectOption(index);
+        };
+        options.appendChild(button);
+      });
+
+      answered = false;
+
+      const btnNext = document.getElementById("btn-next");
+      btnNext.disabled = true;
+      btnNext.style.display = "";
+      btnNext.textContent = current === total - 1 ? "Finish" : "Next →";
+
+      document.getElementById("btn-retake").style.display = "none";
+      document.getElementById("score").textContent =
+        "Score: " + score + "/" + current;
+    }
+
+    function selectOption(selectedIndex) {
+      if (answered) return;
+
+      answered = true;
+
+      const q = questions[current];
+      const correctIndex = q.correct;
+      const buttons = document.querySelectorAll(".option");
+
+      buttons.forEach(function(button, index) {
+        button.disabled = true;
+
+        if (index === correctIndex) {
+          button.classList.add("correct");
+        } else if (index === selectedIndex) {
+          button.classList.add("wrong");
+        }
+      });
+
+      if (selectedIndex === correctIndex) {
+        score++;
+      }
+
+      document.getElementById("score").textContent =
+        "Score: " + score + "/" + (current + 1);
+
+      const explanation = document.getElementById("explanation");
+      explanation.textContent = q.explanation;
+      explanation.style.display = "block";
+
+      document.getElementById("btn-next").disabled = false;
+    }
+
+    function nextQ() {
+      if (current < questions.length - 1) {
+        current++;
+        showQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      const total = questions.length;
+      const percent = total ? Math.round((score / total) * 100) : 0;
+
+      let message = "";
+
+      if (percent >= 90) {
+        message = "Excellent. You understand both the language and the safety logic.";
+      } else if (percent >= 70) {
+        message = "Good result. Review the questions you missed and focus on the reasoning.";
+      } else {
+        message = "Keep practicing. Stall vocabulary is not decoration; it is safety language.";
+      }
+
+      document.getElementById("progress").textContent = "Quiz complete!";
+      document.getElementById("question").innerHTML =
+        "Final score: " + score + "/" + total + " (" + percent + "%)" +
+        '<div class="result-note">' + message + "</div>";
+
+      document.getElementById("options").innerHTML = "";
+      document.getElementById("explanation").style.display = "none";
+
+      document.getElementById("btn-next").style.display = "none";
+      document.getElementById("btn-retake").style.display = "";
+
+      document.getElementById("score").textContent =
+        "Score: " + score + "/" + total;
+    }
+
+    function retake() {
+      current = 0;
+      score = 0;
+      showQuestion();
+    }
+
+    showQuestion();
+  </script>
+</body>
+</html>

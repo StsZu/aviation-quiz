@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aviation English Practice — Quizzes</title>
+  <title>Aviation English Practice Module</title>
   <style>
     * {
       box-sizing: border-box;
@@ -55,7 +55,7 @@
 
     .quiz-list {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
       margin-bottom: 18px;
     }
@@ -67,7 +67,7 @@
       padding: 24px;
       display: flex;
       flex-direction: column;
-      min-height: 240px;
+      min-height: 260px;
     }
 
     .quiz-card h2 {
@@ -94,7 +94,6 @@
       border: 1px solid #d4c7b3;
       border-radius: 10px;
       color: #4a3e34;
-      cursor: pointer;
       font-family: "SF Pro Text", Arial, sans-serif;
       font-size: 15px;
       font-weight: 600;
@@ -167,43 +166,40 @@
 <body>
   <main class="module">
     <header class="header">
-      <h1 class="title">Aviation English Practice</h1>
+      <h1 class="title">Aviation English Practice Module</h1>
       <p class="subtitle">Rejected Takeoffs &amp; Aircraft Stalls</p>
       <p class="intro">
-        Start with the vocabulary quiz, then move on to the reading comprehension quizzes.
-        This order helps you learn the aviation terms before answering deeper safety questions.
+        Complete the vocabulary quiz first. Then continue with the reading comprehension quizzes. This order will help you understand the aviation terms before answering deeper safety questions.
       </p>
     </header>
 
     <section class="quiz-list" aria-label="Aviation English quizzes">
       <article class="quiz-card">
-        <h2>Full Practice Module</h2>
-        <p>All quizzes in a single interactive module — vocabulary, takeoffs, and stalls.</p>
-        <a href="aviation_quiz_module.html">Open Module</a>
-      </article>
-
-      <article class="quiz-card">
         <h2>1. Aviation Vocabulary Quiz</h2>
-        <p>Match key aviation terms with their definitions before the comprehension tasks.</p>
-        <a href="aviation_vocabulary_quiz.html">Start Quiz</a>
+        <p>Match key aviation terms with their correct definitions before starting the comprehension tasks.</p>
+        <a href="aviation_vocabulary_quiz.html">Start Vocabulary Quiz</a>
       </article>
 
       <article class="quiz-card">
         <h2>2. Rejected Takeoffs Quiz</h2>
-        <p>Reading comprehension on takeoff distances, decision speed, and rejected takeoff logic.</p>
-        <a href="quiz_reject_takeoff.html">Start Quiz</a>
+        <p>Practise comprehension of takeoff distances, decision speed, engine failure, and rejected takeoff logic.</p>
+        <a href="quiz_reject_takeoff.html">Start Rejected Takeoffs Quiz</a>
       </article>
 
       <article class="quiz-card">
         <h2>3. Stall Recognition Quiz</h2>
-        <p>Safety reasoning about stalls, angle of attack, warning signs, and recovery.</p>
-        <a href="quiz_stall.html">Start Quiz</a>
+        <p>Practise deeper safety reasoning about stalls, angle of attack, warning signs, and recovery.</p>
+        <a href="quiz_stall.html">Start Stall Quiz</a>
       </article>
     </section>
 
     <p class="note">
       <strong>Recommended order:</strong>
       Vocabulary &rarr; Rejected Takeoffs &rarr; Aircraft Stalls
+    </p>
+
+    <p class="note">
+      These quizzes are separated on purpose. Short focused quizzes are easier to complete and better for diagnosing whether the problem is vocabulary, reading comprehension, or safety reasoning.
     </p>
   </main>
 </body>
