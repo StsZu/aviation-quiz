@@ -12,13 +12,22 @@
 
 Головна `index.html` — це меню з картками на всі розділи.
 
+## Дві папки (ролі)
+
+- **`Projects/Drafts/Aviation-quiz/`** — це сам сайт: локальна git-копія репозиторію `StsZu/aviation-quiz`. Звідси публікуємо (`git push` → GitHub Pages). Тут лежать `index.html`, `songs.html`, `infographics.html`, усі квізи, `img/`, `audio/`.
+  - `Quiz-1/` усередині — вихідні HTML-чернетки (не входять у репо, в `.gitignore`).
+- **`Projects/ACTIVE/Creator_quiz/`** — генератор квізів (промпти, `INPUT/`, `OUTPUT_quiz/`) для цього й інших сайтів. Тут квіз **створюється**, а потім публікується через папку сайту.
+
+Робочий процес: створити квіз у `Creator_quiz` → отриманий HTML додати на сайт із `Drafts/Aviation-quiz`.
+
 ## Ключові факти
 
-- GitHub-репозиторій: `StsZu/aviation-quiz`, гілка `main`.
+- GitHub-репозиторій: `StsZu/aviation-quiz`, гілка `main`. Локальний клон: `Projects/Drafts/Aviation-quiz/`.
 - Жива адреса (відкривати тут): **https://stszu.github.io/aviation-quiz/**
   - `https://github.com/StsZu/aviation-quiz` — це код, а не сайт.
 - Деплой автоматичний: після `git push` GitHub Pages оновлює сайт за ~20–60 секунд.
-- Вихідні матеріали лежать локально в `Projects/Drafts/Aviation-quiz/Quiz-1/` та в iCloud (`2Books 🦀/ICAO_exam_2026/`).
+- Усі git-команди (`add`/`commit`/`push`) виконуються з `Projects/Drafts/Aviation-quiz/`.
+- Локальний перегляд без деплою: `python3 -m http.server` із папки сайту, відкрити `http://localhost:8000`.
 
 ## Як додати матеріал (найпростіше)
 
