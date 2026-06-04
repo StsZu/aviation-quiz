@@ -26,6 +26,7 @@ Three page types:
 - **`index.html`** — the menu. A `.quiz-list` grid of static `.quiz-card` `<article>`s, one per quiz/section. Adding a quiz means hand-adding a card here.
 - **Quiz pages** (`quiz_*.html`, `aviation_*.html`) — driven by a JS `questions` array of `{ question, options: [...], correct: <index>, explanation }`. Client-side scoring, one question at a time. Every quiz page must include a `← All quizzes` back-link to `index.html`.
 - **Gallery pages** — `infographics.html` and `songs.html` render from a JS data array; the markup is generated in JS, so add content by editing the array, not the DOM.
+- **Cockpit Class pages** — immersive lessons under `aviation_english_cockpit_class/` (own dark Tailwind-CDN theme, Web Speech API for TTS, self-contained). Because they live in a subfolder, their links to root pages need `../` (e.g. `../index.html`, `../songs.html#it-depends-on-safety`); links from root pages to them use `aviation_english_cockpit_class/<file>.html`.
 
 ## Adding content (data-array contracts)
 

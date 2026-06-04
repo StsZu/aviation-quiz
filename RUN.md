@@ -9,8 +9,15 @@
 - **Квізи** — окремі HTML-сторінки (vocabulary, reading comprehension, passive voice тощо).
 - **Infographics** — галерея зображень (`infographics.html`) з прев'ю та переглядом на весь екран.
 - **Songs** — пісні (`songs.html`): картки з обкладинками, клік відкриває плеєр + текст.
+- **Cockpit Class** — імерсивні уроки в підпапці `aviation_english_cockpit_class/` (власний темний дизайн, Web Speech API). Картка на головній веде на сторінку уроку.
 
 Головна `index.html` — це меню з картками на всі розділи.
+
+### Cockpit Class (folder-backed секція)
+
+- Уроки лежать у підпапці `aviation_english_cockpit_class/` — це домівка секції (можна додавати ще уроки).
+- Сторінка уроку самодостатня (Tailwind CDN + Web Speech API), без локальних картинок/аудіо.
+- **Важливо:** сторінка в підпапці, тож її посилання на кореневі сторінки йдуть через `../` (напр. `../index.html`, `../songs.html#it-depends-on-safety`), а картка/посилання з кореня на урок — через `aviation_english_cockpit_class/<файл>.html`.
 
 ## Дві папки (ролі)
 

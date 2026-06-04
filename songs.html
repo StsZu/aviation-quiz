@@ -880,7 +880,10 @@ and safety conclusions.`
         title: "It Depends On Safety",
         artist: "sts_zubar",
         topic: "Decision-making and the preposition \"depends on\" for ICAO speaking — weather, runway, performance, fuel, and safety.",
-        link: { href: "it-depends-on-aviation-english-quiz.html", label: "It Depends On Quiz" },
+        links: [
+          { href: "it-depends-on-aviation-english-quiz.html", label: "It Depends On Quiz" },
+          { href: "aviation_english_cockpit_class/it_depends_on.html", label: "Cockpit Class" }
+        ],
         lyrics: `[Spoken Intro]
 In aviation,
 the answer is not always yes or no.
@@ -1084,8 +1087,9 @@ and safety.`
       sheetCover.alt = `${song.title} cover`;
       sheetTitle.textContent = song.title;
       sheetArtist.textContent = song.artist;
-      sheetTopic.innerHTML = song.link
-        ? `${song.topic} &middot; <a href="${song.link.href}">${song.link.label} &rarr;</a>`
+      const links = song.links || (song.link ? [song.link] : []);
+      sheetTopic.innerHTML = links.length
+        ? `${song.topic} ${links.map(l => `&middot; <a href="${l.href}">${l.label} &rarr;</a>`).join(" ")}`
         : song.topic;
       sheetAudio.src = `audio/${song.file}.mp3`;
       sheetLyrics.innerHTML = renderLyrics(song.lyrics);
