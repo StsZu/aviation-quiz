@@ -968,6 +968,7 @@
       document.getElementById('drillText').innerText = `"${drill.q}"`;
       document.getElementById('drillHint').innerText = `Tip: ${drill.hint}`;
       const feedback = document.getElementById('drillFeedback');
+      feedback.className = "drill-feedback";
       feedback.style.display = 'none';
     }
 
@@ -975,6 +976,7 @@
       const feedback = document.getElementById('drillFeedback');
       feedback.className = "drill-feedback success";
       feedback.innerText = `Model Answer: ${drillQuestions[currentDrillIndex].ans}`;
+      feedback.style.display = 'block';
     }
 
     function nextDrill() {
