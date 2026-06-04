@@ -130,7 +130,7 @@
       text-decoration: none;
     }
     .lightbox-link:hover { background: #efe6d8; border-color: #b8a891; }
-    .lightbox-link[hidden] { display: none; }
+    .lightbox-links { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
     .lightbox-open-full {
       color: #f8f3e9;
       font-family: "SF Pro Text", Arial, sans-serif;
@@ -166,7 +166,7 @@
     <button class="lightbox-close" id="lightbox-close" aria-label="Close">&times;</button>
     <img id="lightbox-img" src="" alt="">
     <div class="lightbox-actions">
-      <a class="lightbox-link" id="lightbox-link" href="#" hidden></a>
+      <div class="lightbox-links" id="lightbox-links"></div>
       <a class="lightbox-open-full" id="lightbox-full" href="#" target="_blank" rel="noopener">Open original PNG in new tab</a>
     </div>
   </div>
@@ -181,14 +181,17 @@
       { file: "safe-safety-safely",       title: "Safe / Safety / Safely" },
       { file: "describing-picture-1",     title: "Describing a Picture (1)" },
       { file: "describing-picture-2",     title: "Describing a Picture (2)" },
-      { file: "it-depends-on",            title: "It Depends On — Decision-Making", link: { href: "songs.html#it-depends-on-safety", label: "&#9654; Listen to the song" } }
+      { file: "it-depends-on",            title: "It Depends On — Decision-Making", links: [
+        { href: "songs.html#it-depends-on-safety", label: "&#9654; Listen to the song" },
+        { href: "it-depends-on-aviation-english-quiz.html", label: "Take the It Depends On quiz" }
+      ] }
     ];
 
     const grid = document.getElementById("grid");
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightbox-img");
     const lightboxFull = document.getElementById("lightbox-full");
-    const lightboxLink = document.getElementById("lightbox-link");
+    const lightboxLinks = document.getElementById("lightbox-links");
 
     images.forEach(img => {
       const thumb = `img/thumb/${img.file}.jpg`;
@@ -204,13 +207,10 @@
       lightboxImg.src = full;
       lightboxImg.alt = img.title;
       lightboxFull.href = full;
-      if (img.link) {
-        lightboxLink.href = img.link.href;
-        lightboxLink.innerHTML = img.link.label;
-        lightboxLink.hidden = false;
-      } else {
-        lightboxLink.hidden = true;
-      }
+      const links = img.links || (img.link ? [img.link] : []);
+      lightboxLinks.innerHTML = links.map(
+        l => `<a class="lightbox-link" href="${l.href}">${l.label}</a>`
+      ).join("");
       lightbox.classList.add("is-open");
       document.body.style.overflow = "hidden";
     }
