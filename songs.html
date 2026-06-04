@@ -1103,6 +1103,14 @@ and safety.`
     document.getElementById("sheet-close").addEventListener("click", closeSong);
     overlay.addEventListener("click", (e) => { if (e.target === overlay) closeSong(); });
     document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeSong(); });
+
+    function openFromHash() {
+      const file = decodeURIComponent(location.hash.slice(1));
+      const i = songs.findIndex(s => s.file === file);
+      if (i >= 0) openSong(i);
+    }
+    window.addEventListener("hashchange", openFromHash);
+    openFromHash();
   </script>
 </body>
 </html>
