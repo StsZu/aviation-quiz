@@ -4,38 +4,97 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aviation English — Songs</title>
+  <script>try { if (localStorage.getItem("theme") === "night") document.documentElement.classList.add("night-ops"); } catch (e) {}</script>
   <style>
+    :root {
+      /* Daylight (site warm parchment theme) */
+      --bg: #e7dfd2;
+      --panel: #f8f3e9;
+      --sheet-bg: #f4ede0;
+      --border: #d4c7b3;
+      --border-hover: #b8a891;
+      --text: #2f2822;
+      --text2: #4a3e34;
+      --muted: #7a6858;
+      --accent: #b07d3a;
+      --btn-bg: #fffbf4;
+      --btn-hover: #efe6d8;
+      --cover-bg: #ffffff;
+      --hr: #e2d6c2;
+      --card-shadow: 0 8px 22px rgba(80, 60, 40, 0.14);
+    }
+
+    .night-ops {
+      /* Night (warm espresso, same brand as index) */
+      --bg: #1c1611;
+      --panel: #261e17;
+      --sheet-bg: #2e251c;
+      --border: #3d3226;
+      --border-hover: #4a3d2e;
+      --text: #efe6d8;
+      --text2: #cdbfad;
+      --muted: #9a8a76;
+      --accent: #d8a657;
+      --btn-bg: #2e251c;
+      --btn-hover: #3d3226;
+      --cover-bg: #1c1611;
+      --hr: #3d3226;
+      --card-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: Georgia, "Palatino Linotype", serif;
-      background: #e7dfd2;
-      color: #2f2822;
+      background: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       padding: 40px 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
     }
 
     .module { width: 100%; max-width: 1040px; margin: 0 auto; }
 
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 18px;
+      z-index: 60;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 30px;
+      padding: 8px 14px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .theme-toggle:hover { background: var(--btn-hover); border-color: var(--border-hover); }
+    .theme-toggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+
     .back {
       display: inline-block;
       margin-bottom: 14px;
-      color: #7a6858;
+      color: var(--muted);
       text-decoration: none;
       font-family: "SF Pro Text", Arial, sans-serif;
       font-size: 14px;
     }
 
     .header {
-      background: #f8f3e9;
-      border: 1px solid #d4c7b3;
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 22px;
       padding: 34px 38px;
       margin-bottom: 18px;
     }
 
     .title { font-size: 32px; line-height: 1.2; margin-bottom: 8px; }
-    .subtitle { font-size: 17px; color: #7a6858; line-height: 1.5; }
+    .subtitle { font-size: 17px; color: var(--muted); line-height: 1.5; }
 
     /* Card grid */
     .grid {
@@ -45,8 +104,8 @@
     }
 
     .card {
-      background: #f8f3e9;
-      border: 1px solid #d4c7b3;
+      background: var(--panel);
+      border: 1px solid var(--border);
       border-radius: 18px;
       overflow: hidden;
       cursor: pointer;
@@ -57,9 +116,9 @@
       transition: border-color 0.12s, transform 0.12s, box-shadow 0.12s;
     }
     .card:hover, .card:focus {
-      border-color: #b8a891;
+      border-color: var(--border-hover);
       transform: translateY(-3px);
-      box-shadow: 0 8px 22px rgba(80, 60, 40, 0.14);
+      box-shadow: var(--card-shadow);
       outline: none;
     }
 
@@ -67,7 +126,7 @@
       position: relative;
       width: 100%;
       aspect-ratio: 1 / 1;
-      background: #fff;
+      background: var(--cover-bg);
     }
     .card-cover img {
       width: 100%;
@@ -97,7 +156,7 @@
       font-family: "SF Pro Text", Arial, sans-serif;
       font-size: 13.5px;
       line-height: 1.45;
-      color: #7a6858;
+      color: var(--muted);
     }
 
     /* Detail overlay */
@@ -116,8 +175,8 @@
     .overlay.is-open { display: flex; }
 
     .sheet {
-      background: #f4ede0;
-      border: 1px solid #d4c7b3;
+      background: var(--sheet-bg);
+      border: 1px solid var(--border);
       border-radius: 22px;
       width: 100%;
       max-width: 760px;
@@ -132,14 +191,14 @@
       width: 38px;
       height: 38px;
       border-radius: 50%;
-      border: 1px solid #d4c7b3;
-      background: #fffbf4;
-      color: #4a3e34;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--text2);
       font-size: 22px;
       line-height: 1;
       cursor: pointer;
     }
-    .sheet-close:hover { background: #efe6d8; }
+    .sheet-close:hover { background: var(--btn-hover); }
 
     .sheet-head {
       display: flex;
@@ -154,24 +213,24 @@
       border-radius: 14px;
       object-fit: cover;
       flex-shrink: 0;
-      border: 1px solid #d4c7b3;
+      border: 1px solid var(--border);
     }
     .sheet-meta h2 { font-size: 24px; line-height: 1.25; margin-bottom: 4px; }
     .sheet-meta .artist {
-      color: #7a6858;
+      color: var(--muted);
       font-family: "SF Pro Text", Arial, sans-serif;
       font-size: 14px;
       margin-bottom: 6px;
     }
-    .sheet-meta .topic { color: #4a3e34; font-size: 15px; line-height: 1.45; }
-    .sheet-meta .topic a { color: #b07d3a; }
+    .sheet-meta .topic { color: var(--text2); font-size: 15px; line-height: 1.45; }
+    .sheet-meta .topic a { color: var(--accent); }
 
     .sheet audio { width: 100%; margin-bottom: 4px; }
 
     .lyrics {
       margin-top: 16px;
       padding-top: 16px;
-      border-top: 1px solid #e2d6c2;
+      border-top: 1px solid var(--hr);
       font-size: 17px;
       line-height: 1.5;
     }
@@ -181,11 +240,11 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.04em;
-      color: #b07d3a;
+      color: var(--accent);
       margin: 18px 0 6px;
     }
     .lyrics .section:first-child { margin-top: 0; }
-    .lyrics .line { color: #2f2822; }
+    .lyrics .line { color: var(--text); }
     .lyrics .blank { height: 8px; }
 
     @media (max-width: 860px) {
@@ -203,6 +262,11 @@
   </style>
 </head>
 <body>
+  <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle day/night theme">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.36-6.36l-.7.7M6.34 17.66l-.7.7m0-12.72l.7.7m11.32 11.32l.7.7M12 8a4 4 0 110 8 4 4 0 010-8z"/></svg>
+    <span id="theme-label">Night</span>
+  </button>
+
   <main class="module">
     <a href="index.html" class="back">&larr; All quizzes</a>
 
@@ -1271,6 +1335,18 @@ The aircraft has completed a safe go-around.
 This decision has increased the safety margin.`
       }
     ];
+
+    // Day/night theme — shares the "theme" key with index.html (choice persists across pages)
+    const themeLabel = document.getElementById("theme-label");
+    function syncThemeLabel() {
+      themeLabel.textContent = document.documentElement.classList.contains("night-ops") ? "Day" : "Night";
+    }
+    syncThemeLabel();
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+      const night = document.documentElement.classList.toggle("night-ops");
+      try { localStorage.setItem("theme", night ? "night" : "day"); } catch (e) {}
+      syncThemeLabel();
+    });
 
     const grid = document.getElementById("grid");
     const overlay = document.getElementById("overlay");
