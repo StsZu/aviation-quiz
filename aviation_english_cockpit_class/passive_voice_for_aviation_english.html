@@ -1,0 +1,1945 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passive Voice for Aviation English - Training Console</title>
+    <style>
+        /* CSS RESET & VARIABLES */
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            /* Day Mode (Professional Aviation Nav-Equipment) */
+            --bg-primary: #f4f6f9;
+            --bg-secondary: #ffffff;
+            --bg-tertiary: #e9eff6;
+            --border-color: #cbd5e1;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --accent: #0284c7; /* Aviation Sky Blue */
+            --accent-hover: #0369a1;
+            --accent-light: #e0f2fe;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --warning: #d97706;
+            --warning-light: #fef3c7;
+            --danger: #dc2626;
+            --danger-light: #fee2e2;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+            --hud-glow: none;
+            --border-radius-sm: 6px;
+            --border-radius-md: 12px;
+            --border-radius-lg: 16px;
+            --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="night"] {
+            /* Night Mode (Aviation Cockpit HUD Atmosphere) */
+            --bg-primary: #080c14;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1e293b;
+            --border-color: #1e293b;
+            --text-primary: #e2e8f0;
+            --text-secondary: #94a3b8;
+            --accent: #10b981; /* HUD Glass Green */
+            --accent-hover: #059669;
+            --accent-light: rgba(16, 185, 129, 0.15);
+            --success: #34d399;
+            --success-light: rgba(52, 211, 153, 0.1);
+            --warning: #fbbf24;
+            --warning-light: rgba(251, 191, 36, 0.1);
+            --danger: #f87171;
+            --danger-light: rgba(248, 113, 113, 0.1);
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+            --hud-glow: 0 0 10px rgba(16, 185, 129, 0.35);
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: var(--transition);
+            overflow-x: hidden;
+        }
+
+        /* LAYOUT CONTAINERS */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem 3rem 1.5rem;
+        }
+
+        /* HEADER & CONTROLS */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 0;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 2.5rem;
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            color: var(--accent);
+            filter: var(--hud-glow);
+        }
+
+        .brand-meta {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            text-transform: uppercase;
+        }
+
+        .brand-subtitle {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .theme-toggle-btn {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            box-shadow: var(--shadow);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .theme-toggle-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+            box-shadow: var(--hud-glow);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 2.5rem;
+            align-items: center;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 3rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background-color: var(--accent);
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1.15;
+            margin-bottom: 1rem;
+            letter-spacing: -0.03em;
+        }
+
+        .hero-text h1 span {
+            color: var(--accent);
+            text-shadow: var(--hud-glow);
+        }
+
+        .hero-text p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.75rem;
+            max-width: 600px;
+        }
+
+        .hero-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+        }
+
+        .outcome-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .outcome-badge svg {
+            width: 16px;
+            height: 16px;
+            color: var(--accent);
+        }
+
+        .flight-instrument {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 2rem;
+            background-color: var(--bg-tertiary);
+            text-align: center;
+        }
+
+        .instrument-icon {
+            width: 64px;
+            height: 64px;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            filter: var(--hud-glow);
+        }
+
+        .instrument-title {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .instrument-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* GRID/LAYOUT PATTERNS */
+        .section-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            letter-spacing: -0.02em;
+        }
+
+        .section-title svg {
+            width: 24px;
+            height: 24px;
+            color: var(--accent);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* CARDS */
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.75rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--card-shadow);
+            border-color: var(--accent);
+        }
+
+        .card-accent {
+            border-top: 4px solid var(--accent);
+        }
+
+        .card-title {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .card-title svg {
+            width: 18px;
+            height: 18px;
+            color: var(--accent);
+        }
+
+        .card p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        /* CONCEPT & FORMULA SECTION */
+        .formula-container {
+            background-color: var(--bg-secondary);
+            border: 2px solid var(--accent);
+            border-radius: var(--border-radius-lg);
+            padding: 2.5rem;
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2.5rem;
+            position: relative;
+        }
+
+        .formula-tag {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent);
+            color: #ffffff;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 1rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: var(--hud-glow);
+        }
+
+        .formula-display {
+            font-family: var(--font-mono);
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin: 1rem 0;
+            word-spacing: -0.1em;
+        }
+
+        .formula-display span {
+            padding: 0.25rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            background-color: var(--bg-tertiary);
+            border: 1px dashed var(--border-color);
+            display: inline-block;
+        }
+
+        .formula-display .math-sign {
+            background: none;
+            border: none;
+            color: var(--accent);
+            padding: 0;
+        }
+
+        .formula-subtext {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* PATTERN ROW LIST */
+        .pattern-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .pattern-row {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.25rem 1.5rem;
+            display: grid;
+            grid-template-columns: 200px 1fr 1fr;
+            align-items: center;
+            gap: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .pattern-row:hover {
+            border-color: var(--accent);
+            background-color: var(--bg-tertiary);
+        }
+
+        .pattern-badge {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #ffffff;
+            background-color: var(--accent);
+            padding: 0.35rem 0.75rem;
+            border-radius: var(--border-radius-sm);
+            text-align: center;
+            box-shadow: var(--hud-glow);
+        }
+
+        .pattern-sentence {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .pattern-example-block {
+            background-color: var(--bg-primary);
+            border-left: 3px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .pattern-example-block strong {
+            color: var(--text-primary);
+        }
+
+        /* TABLES */
+        .table-container {
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 2.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            background-color: var(--bg-secondary);
+        }
+
+        th {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            font-weight: 700;
+            padding: 1rem 1.25rem;
+            border-bottom: 2px solid var(--border-color);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.95rem;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .active-text {
+            color: var(--text-secondary);
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+
+        .passive-text {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .passive-highlight {
+            color: var(--accent);
+            text-decoration: underline;
+        }
+
+        /* TRANSLATION PILLS */
+        .lang-pill {
+            display: inline-block;
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+            color: var(--text-secondary);
+        }
+
+        /* DRILL & SPEAKING CARDS */
+        .drill-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .drill-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.25rem;
+        }
+
+        .drill-tab-btn {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.6rem 1.2rem;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.85rem;
+            white-space: nowrap;
+            transition: var(--transition);
+        }
+
+        .drill-tab-btn.active {
+            background-color: var(--accent);
+            color: #ffffff;
+            border-color: var(--accent);
+            box-shadow: var(--hud-glow);
+        }
+
+        .drill-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+        }
+
+        .drill-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 1rem;
+        }
+
+        .drill-category {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            background-color: var(--accent-light);
+            color: var(--accent);
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .drill-speech-prompt {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        .drill-instruction {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .drill-interactive {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .active-comparison {
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .active-comparison strong {
+            color: var(--danger);
+        }
+
+        .answer-reveal-area {
+            display: none;
+            border-top: 2px dashed var(--border-color);
+            padding-top: 1.25rem;
+            margin-top: 1.25rem;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .model-answer-title {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--success);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .model-answer-text {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+        }
+
+        .model-answer-explanation {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--success);
+            padding-left: 0.75rem;
+        }
+
+        .drill-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: #ffffff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .btn:hover {
+            background-color: var(--accent-hover);
+            box-shadow: var(--hud-glow);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--border-color);
+            color: var(--text-primary);
+            border-color: var(--border-color);
+            box-shadow: none;
+        }
+
+        /* INTERACTIVE PRACTICE BLOCK */
+        .practice-container {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2.5rem;
+        }
+
+        .practice-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .practice-stats {
+            display: flex;
+            gap: 1.5rem;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .stat-item span {
+            color: var(--accent);
+        }
+
+        .practice-question-card {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .question-meta {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .question-text {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 1.25rem;
+        }
+
+        .practice-input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .input-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .practice-input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .practice-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: var(--hud-glow);
+        }
+
+        .practice-options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-btn {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            text-align: left;
+            padding: 0.85rem 1.25rem;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .option-btn:hover {
+            border-color: var(--accent);
+            background-color: var(--bg-tertiary);
+        }
+
+        .option-btn.selected {
+            background-color: var(--accent-light);
+            border-color: var(--accent);
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .feedback-message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 0.95rem;
+            display: none;
+            align-items: flex-start;
+            gap: 0.75rem;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        .feedback-message.success {
+            background-color: var(--success-light);
+            border: 1px solid var(--success);
+            color: var(--text-primary);
+        }
+
+        .feedback-message.danger {
+            background-color: var(--danger-light);
+            border: 1px solid var(--danger);
+            color: var(--text-primary);
+        }
+
+        .feedback-message svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+        }
+
+        .feedback-message.success svg {
+            color: var(--success);
+        }
+
+        .feedback-message.danger svg {
+            color: var(--danger);
+        }
+
+        .practice-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* COMMON MISTAKES COMPONENT */
+        .mistake-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            margin-bottom: 2.5rem;
+        }
+
+        .mistake-card-header {
+            background-color: var(--bg-tertiary);
+            padding: 1.25rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .mistake-card-header svg {
+            width: 22px;
+            height: 22px;
+            color: var(--danger);
+        }
+
+        .mistake-row-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mistake-row-grid:last-child {
+            border-bottom: none;
+        }
+
+        .mistake-col {
+            padding: 1.5rem;
+        }
+
+        .mistake-col.incorrect {
+            border-right: 1px solid var(--border-color);
+            background-color: rgba(220, 38, 38, 0.02);
+        }
+
+        .mistake-col.correct {
+            background-color: rgba(22, 163, 74, 0.02);
+        }
+
+        .mistake-label {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .mistake-label.incorrect {
+            color: var(--danger);
+        }
+
+        .mistake-label.correct {
+            color: var(--success);
+        }
+
+        .mistake-sentence {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .mistake-sentence.incorrect {
+            text-decoration: line-through;
+            color: var(--text-secondary);
+        }
+
+        .mistake-sentence.correct {
+            color: var(--text-primary);
+        }
+
+        .mistake-explanation {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* BUILDER SECTION (FORMULA WORKSHOP) */
+        .builder-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-lg);
+            padding: 2rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 2.5rem;
+        }
+
+        .builder-workspace {
+            background-color: var(--bg-primary);
+            border: 2px dashed var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 2rem;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .builder-sentence-output {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.4;
+            min-height: 3.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 0.35rem;
+        }
+
+        .builder-token-filled {
+            color: var(--accent);
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        .builder-selectors-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .builder-group-title {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .builder-select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .builder-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: var(--hud-glow);
+        }
+
+        .builder-explain-box {
+            background-color: var(--accent-light);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 var(--border-radius-sm) var(--border-radius-sm) 0;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            display: none;
+            animation: fadeIn 0.25s ease-out;
+        }
+
+        /* REVISION CORNER */
+        .revision-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .revision-item {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-md);
+            padding: 1.25rem;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .revision-item:hover {
+            border-color: var(--accent);
+            box-shadow: var(--shadow);
+        }
+
+        .revision-word {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .revision-translation {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* FOOTER */
+        footer {
+            border-top: 1px solid var(--border-color);
+            padding-top: 2rem;
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* RESPONSIVE BREAKPOINTS */
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+                padding: 2.5rem;
+            }
+
+            .flight-instrument {
+                max-width: 400px;
+                margin: 0 auto;
+                width: 100%;
+            }
+
+            .grid-3 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                gap: 1.25rem;
+                align-items: flex-start;
+                padding-bottom: 1.25rem;
+            }
+
+            .theme-toggle-btn {
+                align-self: flex-end;
+            }
+
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+
+            .pattern-row {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+                padding: 1.25rem;
+            }
+
+            .pattern-badge {
+                text-align: left;
+                width: fit-content;
+            }
+
+            .mistake-row-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mistake-col.incorrect {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+
+            .builder-selectors-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .revision-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero {
+                padding: 1.5rem;
+            }
+
+            .hero-text h1 {
+                font-size: 1.85rem;
+            }
+
+            .revision-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- HEADER & THEME SWITCHER -->
+    <header>
+        <div class="brand-container">
+            <svg class="brand-logo" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+            </svg>
+            <div class="brand-meta">
+                <span class="brand-title">Aviation Grammar Lab</span>
+                <span class="brand-subtitle">ICAO Level 4+ Preparation</span>
+            </div>
+        </div>
+        <button class="theme-toggle-btn" id="themeBtn" onclick="toggleTheme()">
+            <svg id="themeIcon" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <!-- Moon icon default (means Day Mode is active, click to shift to Night) -->
+                <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+            </svg>
+            <span id="themeLabel">Night Operations</span>
+        </button>
+    </header>
+
+    <!-- HERO SECTION -->
+    <section class="hero">
+        <div class="hero-text">
+            <h1>Passive Voice for <span>Aviation English</span></h1>
+            <p>Shift focus from <strong>who did the action</strong> to <strong>what happened, what was done, and what must be executed safely</strong>. Master professional, objective radio and exam communication.</p>
+            <div class="hero-badges">
+                <div class="outcome-badge">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Aviation Objectivity
+                </div>
+                <div class="outcome-badge">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    ICAO Picture Description
+                </div>
+                <div class="outcome-badge">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Flawless Safety Conclusions
+                </div>
+            </div>
+        </div>
+        <div class="flight-instrument">
+            <svg class="instrument-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+            <span class="instrument-title">ICAO Level 4 focus</span>
+            <span class="instrument-desc">Sound professional and avoid emotional blame during high-risk reports.</span>
+        </div>
+    </section>
+
+    <!-- CORE CONCEPT -->
+    <section style="margin-bottom: 2.5rem;">
+        <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            Core Philosophy
+        </h2>
+        <div class="grid-2">
+            <div class="card card-accent">
+                <h3 class="card-title" style="color: var(--danger)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Active Voice (Blame Focus)
+                </h3>
+                <p style="margin-bottom: 1rem;">Active voice focuses directly on the <strong>person/actor</strong>. In standard conversation it's common, but in aviation, calling out mistakes directly can sound emotional, direct, or accusatory.</p>
+                <div style="background-color: var(--bg-primary); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); font-family: var(--font-mono); font-size: 0.9rem;">
+                    "The pilot made a mistake during approach."
+                </div>
+            </div>
+            <div class="card card-accent" style="border-top-color: var(--success)">
+                <h3 class="card-title" style="color: var(--success)">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    Passive Voice (Procedure Focus)
+                </h3>
+                <p style="margin-bottom: 1rem;">Passive voice focuses on the <strong>action, risk, or result</strong>. It sounds objective, safe, and professional, ensuring clarity on what must be resolved.</p>
+                <div style="background-color: var(--bg-primary); padding: 0.75rem 1rem; border-radius: var(--border-radius-sm); font-family: var(--font-mono); font-size: 0.9rem; border-left: 3px solid var(--success);">
+                    "A mistake <strong>was made</strong> during the approach."
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FORMULA DISPLAY -->
+    <section>
+        <div class="formula-container">
+            <div class="formula-tag">The Structural Formula</div>
+            <div class="formula-display">
+                <span>Subject</span>
+                <span class="math-sign">+</span>
+                <span>BE (auxiliary verb)</span>
+                <span class="math-sign">+</span>
+                <span>Past Participle (V3)</span>
+            </div>
+            <p class="formula-subtext">The auxiliary verb "be" changes form based on tense or modal presence (is, was, were, be, being, been), while the main verb always remains in its past participle form.</p>
+        </div>
+    </section>
+
+    <!-- SIX CORE PATTERNS -->
+    <section style="margin-bottom: 2.5rem;">
+        <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"></path></svg>
+            Operational Passive Patterns
+        </h2>
+        <div class="pattern-list">
+            <!-- Pattern 1 -->
+            <div class="pattern-row">
+                <span class="pattern-badge">can be done</span>
+                <span class="pattern-sentence">Possibility & Options on the Ground</span>
+                <div class="pattern-example-block">
+                    "The problem <strong>can be solved</strong> on the ground."
+                </div>
+            </div>
+            <!-- Pattern 2 -->
+            <div class="pattern-row">
+                <span class="pattern-badge" style="background-color: var(--danger)">must be done</span>
+                <span class="pattern-sentence">Strict Operational Necessity</span>
+                <div class="pattern-example-block">
+                    "The emergency checklist <strong>must be completed</strong>."
+                </div>
+            </div>
+            <!-- Pattern 3 -->
+            <div class="pattern-row">
+                <span class="pattern-badge" style="background-color: var(--warning)">should be done</span>
+                <span class="pattern-sentence">Best Practice & Safety Guidelines</span>
+                <div class="pattern-example-block">
+                    "The unstable approach <strong>should be stabilized</strong>."
+                </div>
+            </div>
+            <!-- Pattern 4 -->
+            <div class="pattern-row">
+                <span class="pattern-badge" style="background-color: var(--text-secondary)">was / were done</span>
+                <span class="pattern-sentence">Reporting Past Operational Incidents</span>
+                <div class="pattern-example-block">
+                    "Smoke was detected and the flight <strong>was delayed</strong>."
+                </div>
+            </div>
+            <!-- Pattern 5 -->
+            <div class="pattern-row">
+                <span class="pattern-badge" style="background-color: var(--accent)">is being done</span>
+                <span class="pattern-sentence">Current Real-Time Actions (Picture Description)</span>
+                <div class="pattern-example-block">
+                    "The aircraft <strong>is being refueled</strong> by ground staff."
+                </div>
+            </div>
+            <!-- Pattern 6 -->
+            <div class="pattern-row">
+                <span class="pattern-badge" style="background-color: var(--success)">has been done</span>
+                <span class="pattern-sentence">Completed Events with Present Relevance</span>
+                <div class="pattern-example-block">
+                    "The cabin <strong>has been secured</strong> for landing."
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SYSTEM COMPARISONS & PHRASE BOOK -->
+    <section style="margin-bottom: 2.5rem;">
+        <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+            Active vs. Passive Comparison
+        </h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Active Input (Direct/Accusatory)</th>
+                        <th>Passive Output (Aviation Standard)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="active-text">The pilot checks the aircraft.</td>
+                        <td class="passive-text">The aircraft <span class="passive-highlight">is checked</span>. <span class="lang-pill">зараз перевіряється</span></td>
+                    </tr>
+                    <tr>
+                        <td class="active-text">The crew completed the checklist.</td>
+                        <td class="passive-text">The checklist <span class="passive-highlight">was completed</span>. <span class="lang-pill">був виконаний</span></td>
+                    </tr>
+                    <tr>
+                        <td class="active-text">They can repair the aircraft.</td>
+                        <td class="passive-text">The aircraft <span class="passive-highlight">can be repaired</span>. <span class="lang-pill">можна відремонтувати</span></td>
+                    </tr>
+                    <tr>
+                        <td class="active-text">The mechanic must inspect the engine.</td>
+                        <td class="passive-text">The engine <span class="passive-highlight">must be inspected</span>. <span class="lang-pill">треба оглянути</span></td>
+                    </tr>
+                    <tr>
+                        <td class="active-text">ATC gave the clearance.</td>
+                        <td class="passive-text">The clearance <span class="passive-highlight">was given</span>. <span class="lang-pill">було надано</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- DRILL & SPEAKING PROMPTS -->
+    <section class="drill-section">
+        <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            ICAO Speaking Drills
+        </h2>
+        
+        <div class="drill-tabs">
+            <button class="drill-tab-btn active" onclick="switchDrill(0)">Emergency Mode</button>
+            <button class="drill-tab-btn" onclick="switchDrill(1)">Unstable Approach</button>
+            <button class="drill-tab-btn" onclick="switchDrill(2)">Technical Issue</button>
+            <button class="drill-tab-btn" onclick="switchDrill(3)">Runway Obstruction</button>
+            <button class="drill-tab-btn" onclick="switchDrill(4)">Passenger Safety</button>
+        </div>
+
+        <div class="drill-card" id="drillCard">
+            <!-- Content will be updated dynamically via JS -->
+            <div class="drill-header">
+                <span class="drill-category" id="drillCategory">Emergency Mode</span>
+                <span style="font-family: var(--font-mono); font-size: 0.85rem; font-weight: bold; color: var(--text-secondary);">PROMPT 1 / 5</span>
+            </div>
+            <div class="drill-speech-prompt" id="drillQuestion">What should be done if an emergency arises?</div>
+            <p class="drill-instruction">Speak your answer aloud using the passive voice, then reveal the model reply to cross-check.</p>
+            
+            <div class="drill-interactive">
+                <div class="active-comparison">
+                    Avoid simple Active framing: <strong id="drillAvoid">"The pilot must do the checklist and control the plane."</strong>
+                </div>
+                
+                <div class="answer-reveal-area" id="drillAnswerArea">
+                    <span class="model-answer-title">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M10.97 4.97a.75.75 0 0 1 1.07 1.05l-3.99 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425a.267.267 0 0 1 .02-.022z"/></svg>
+                        Model ICAO Response (Level 5 Structure)
+                    </span>
+                    <div class="model-answer-text" id="drillModel">"In any emergency, the aircraft must be kept under control first. After that, the checklist should be followed and ATC should be informed if time permits."</div>
+                    <div class="model-answer-explanation" id="drillExplanation">Using "must be kept", "should be followed", and "should be informed" guarantees structured clarity and maximum score points in grammar evaluation.</div>
+                </div>
+            </div>
+
+            <div class="drill-actions">
+                <button class="btn" id="revealBtn" onclick="revealDrillAnswer()">Reveal Model Answer</button>
+                <button class="btn btn-secondary" onclick="resetDrillAnswer()">Hide</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE PRACTICE SECTION -->
+    <section class="practice-container">
+        <div class="practice-nav">
+            <h2 class="section-title" style="margin-bottom: 0;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
+                Interactive Console Exam
+            </h2>
+            <div class="practice-stats">
+                <div class="stat-item">Question: <span id="currentQNum">1</span>/5</div>
+                <div class="stat-item">Score: <span id="currentScore">0</span>/5</div>
+            </div>
+        </div>
+
+        <div class="practice-question-card">
+            <div class="question-meta" id="qTypeMeta">Transformation Task</div>
+            <div class="question-text" id="qText">Active Sentence: "The pilot must check the weather." <br><span style="font-weight: normal; font-size: 0.95rem; color: var(--text-secondary);">Convert this to a passive structure.</span></div>
+            
+            <!-- Type 1: Text Input Container -->
+            <div class="practice-input-container" id="textInputContainer">
+                <label class="input-label" for="userAnswer">Your Radio Transmission / Answer:</label>
+                <input type="text" id="userAnswer" class="practice-input" placeholder="Type your passive response here..." onkeydown="handleKeyPress(event)">
+            </div>
+
+            <!-- Type 2: Multiple Choice Container -->
+            <div class="practice-options-grid" id="optionsContainer" style="display: none;">
+                <!-- Filled dynamically via JS -->
+            </div>
+
+            <!-- Feedback Message -->
+            <div class="feedback-message" id="feedbackArea">
+                <!-- Icon and message dynamically rendered -->
+            </div>
+        </div>
+
+        <div class="practice-actions">
+            <button class="btn btn-secondary" id="prevBtn" onclick="navigateQuestion(-1)" style="visibility: hidden;">Previous</button>
+            <button class="btn" id="submitBtn" onclick="checkCurrentAnswer()">Submit Answer</button>
+        </div>
+    </section>
+
+    <!-- COMMON MISTAKES COMPARISON -->
+    <section style="margin-bottom: 2.5rem;">
+        <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+            Critical Airspace Mistakes to Avoid
+        </h2>
+        <div class="mistake-card">
+            <div class="mistake-card-header">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"></path></svg>
+                Grammatical Navigation Warnings
+            </div>
+            
+            <div class="mistake-row-grid">
+                <div class="mistake-col incorrect">
+                    <span class="mistake-label incorrect">Incorrect Form (Missing "be")</span>
+                    <div class="mistake-sentence incorrect">The aircraft must checked before flight.</div>
+                    <p class="mistake-explanation">Omitted the helping verb 'be'. Modals like 'must', 'should', and 'can' cannot couple directly with V3 participles in passive.</p>
+                </div>
+                <div class="mistake-col correct">
+                    <span class="mistake-label correct">Correct Passive</span>
+                    <div class="mistake-sentence correct">The aircraft <strong>must be checked</strong> before flight.</div>
+                    <p class="mistake-explanation">Flawless construction. Clear, correct, and professional.</p>
+                </div>
+            </div>
+
+            <div class="mistake-row-grid">
+                <div class="mistake-col incorrect">
+                    <span class="mistake-label incorrect">Incorrect Form (Missing "V3 Participle")</span>
+                    <div class="mistake-sentence incorrect">The passengers were evacuate immediately.</div>
+                    <p class="mistake-explanation">Omitted past participle 'evacuated' using root infinitive verb instead. Always use V3.</p>
+                </div>
+                <div class="mistake-col correct">
+                    <span class="mistake-label correct">Correct Passive</span>
+                    <div class="mistake-sentence correct">The passengers <strong>were evacuated</strong> immediately.</div>
+                    <p class="mistake-explanation">Maintains logical temporal reporting accuracy in investigations.</p>
+                </div>
+            </div>
+
+            <div class="mistake-row-grid">
+                <div class="mistake-col incorrect">
+                    <span class="mistake-label incorrect">Correct Grammar / Unsafe Concept</span>
+                    <div class="mistake-sentence incorrect">The aircraft was informed by ATC.</div>
+                    <p class="mistake-explanation">Grammatically correct but contextually awkward. ATC communicates with human pilots/crew, not physical planes. Aviation sense must survive the grammar landing.</p>
+                </div>
+                <div class="mistake-col correct">
+                    <span class="mistake-label correct">Preferred Operational Form</span>
+                    <div class="mistake-sentence correct">The crew <strong>was informed</strong> by ATC.</div>
+                    <p class="mistake-explanation">Accurate and logical. Focuses on the personnel processing safety critical directions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- WORKSHOP: SAFETY CONCLUSION BUILDER -->
+    <section style="margin-bottom: 2.5rem;">
+        <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+            ICAO "Safety Conclusion" Builder
+        </h2>
+        
+        <div class="builder-card">
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary);">Combine elements below to generate safety declarations for your exam answers. Practice reading the assembled statement aloud.</p>
+            
+            <div class="builder-workspace">
+                <div class="builder-sentence-output" id="builderOutput">
+                    From a safety perspective, <span class="builder-token-filled" id="tokenObj">the aircraft</span> <span class="builder-token-filled" id="tokenModal">must be</span> <span class="builder-token-filled" id="tokenAction">inspected</span> because <span class="builder-token-filled" id="tokenReason">hidden damage may affect flight safety.</span>
+                </div>
+            </div>
+
+            <div class="builder-selectors-grid">
+                <div>
+                    <label class="builder-group-title">1. Operational Object</label>
+                    <select class="builder-select" id="selectObj" onchange="updateBuilderSentence()">
+                        <option value="the aircraft">the aircraft</option>
+                        <option value="the checklist">the checklist</option>
+                        <option value="the approach">the approach</option>
+                        <option value="the runway">the runway</option>
+                        <option value="passengers">passengers</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="builder-group-title">2. Necessity / Action Modal</label>
+                    <select class="builder-select" id="selectModal" onchange="updateBuilderSentence()">
+                        <option value="must be">must be (strict priority)</option>
+                        <option value="should be">should be (best practice)</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="builder-group-title">3. Past Participle V3</label>
+                    <select class="builder-select" id="selectAction" onchange="updateBuilderSentence()">
+                        <option value="inspected">inspected</option>
+                        <option value="followed">followed</option>
+                        <option value="stabilized">stabilized</option>
+                        <option value="cleared">cleared</option>
+                        <option value="briefed">briefed</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="builder-explain-box" id="builderExplanationBox">
+                <!-- Explanatory feedback based on the generated selection -->
+            </div>
+        </div>
+    </section>
+
+    <!-- REVISION CORNER -->
+    <section style="margin-bottom: 2.5rem;">
+        <h2 class="section-title">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
+            Pre-flight Vocabulary Checklist
+        </h2>
+        <div class="revision-grid">
+            <div class="revision-item">
+                <div class="revision-word">Checked</div>
+                <div class="revision-translation">перевірено</div>
+            </div>
+            <div class="revision-item">
+                <div class="revision-word">Inspected</div>
+                <div class="revision-translation">оглянуто</div>
+            </div>
+            <div class="revision-item">
+                <div class="revision-word">Avoided</div>
+                <svg width="12" height="12" style="color: var(--danger);" fill="currentColor" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M7.002 11a1 1 0 1 1 2 0 1 1 0 0 1-2 0zM7.1 4.995a.905.905 0 1 1 1.8 0l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 4.995z"/></svg>
+                <div class="revision-translation">уникати</div>
+            </div>
+            <div class="revision-item">
+                <div class="revision-word">Prevented</div>
+                <div class="revision-translation">запобігти</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 Aviation English Lab - Passive Voice Micro-Course. Optimized for offline practice and self-study.</p>
+    </footer>
+
+</div>
+
+<script>
+    // PREVENT ENTER FORM SUBMISSION TRAPS
+    function handleKeyPress(e) {
+        if (e.key === 'Enter') {
+            checkCurrentAnswer();
+        }
+    }
+
+    // THEME CONFIGURATION
+    function toggleTheme() {
+        const html = document.documentElement;
+        const currentTheme = html.getAttribute('data-theme');
+        const themeBtn = document.getElementById('themeBtn');
+        const themeIcon = document.getElementById('themeIcon');
+        const themeLabel = document.getElementById('themeLabel');
+
+        if (currentTheme === 'day') {
+            html.setAttribute('data-theme', 'night');
+            themeLabel.textContent = "Daylight Ops";
+            // Set Sun icon
+            themeIcon.innerHTML = `<path d="M8 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0 1a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2a.5.5 0 0 1 .5-.5zM0 8a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2A.5.5 0 0 1 0 8zm13 0a.5.5 0 0 1 .5-.5h2a.5.5 0 0 1 0 1h-2a.5.5 0 0 1-.5-.5zM2.05 2.05a.5.5 0 0 1 .707 0l1.414 1.414a.5.5 0 0 1-.707.707L2.05 2.757a.5.5 0 0 1 0-.707zm10.486 10.486a.5.5 0 0 1 .707 0l1.414 1.414a.5.5 0 0 1-.707.707l-1.414-1.414a.5.5 0 0 1 0-.707zM1.636 13.636a.5.5 0 0 1 0-.707l1.414-1.414a.5.5 0 0 1 .707.707l-1.414 1.414a.5.5 0 0 1-.707 0zM12.9 3.1a.5.5 0 0 1 0-.707l1.414-1.414a.5.5 0 0 1 .707.707L13.6 3.1a.5.5 0 0 1-.707 0z"/>`;
+        } else {
+            html.setAttribute('data-theme', 'day');
+            themeLabel.textContent = "Night Operations";
+            // Set Moon icon
+            themeIcon.innerHTML = `<path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>`;
+        }
+    }
+
+    // SPEAKING DRILL DATA
+    const drills = [
+        {
+            category: "Emergency Mode",
+            question: "What should be done if an emergency arises?",
+            avoid: `"The pilot must do the checklist and control the plane."`,
+            model: `"In any emergency, the aircraft must be kept under control first. After that, the checklist should be followed and ATC should be informed if time permits."`,
+            explanation: "Using passive phrases like 'must be kept' and 'should be followed' shows systematic knowledge of prioritized SOPs (Standard Operating Procedures) without panic."
+        },
+        {
+            category: "Unstable Approach",
+            question: "What should happen if the approach becomes unstable?",
+            avoid: `"The pilot should go around immediately."`,
+            model: `"If the approach becomes unstable, a go-around should be initiated. The aircraft must be kept under control, and ATC should be informed."`,
+            explanation: "In aviation safety evaluations, initiating a go-around ('a go-around should be initiated') is treated as an automated procedure rather than a human piloting failure."
+        },
+        {
+            category: "Technical Issue",
+            question: "What should be done if abnormal engine vibrations are detected?",
+            avoid: `"The mechanic should check the engine before we fly again."`,
+            model: `"If abnormal vibration is detected, the engine should be checked by maintenance before the next flight."`,
+            explanation: "Focusing on the status of the engine ('the engine should be checked by maintenance') maintains operational focus and emphasizes professional maintenance verification."
+        },
+        {
+            category: "Runway Obstruction",
+            question: "What should be done if debris is found on the runway?",
+            avoid: `"Airport workers must clean the runway."`,
+            model: `"If debris is found on the runway, the runway must be cleared and operations should be stopped until it is safe."`,
+            explanation: "Instead of focusing on ground crews, focus immediately on runway safety status ('the runway must be cleared') which is primary to avoid catastrophic engine intake ingestion."
+        },
+        {
+            category: "Passenger Safety",
+            question: "What should be done before executing an emergency landing?",
+            avoid: `"The crew must tell passengers what to do."`,
+            model: `"Before an emergency landing, passengers must be briefed and the cabin must be secured."`,
+            explanation: "Using dual passive structures ('passengers must be briefed' and 'cabin must be secured') emphasizes the safety condition of the fuselage prior to impact."
+        }
+    ];
+
+    let activeDrillIndex = 0;
+
+    function switchDrill(index) {
+        activeDrillIndex = index;
+        
+        // Update active class on tabs
+        const tabBtns = document.querySelectorAll('.drill-tab-btn');
+        tabBtns.forEach((btn, i) => {
+            if (i === index) btn.classList.add('active');
+            else btn.classList.remove('active');
+        });
+
+        // Set content
+        const d = drills[index];
+        document.getElementById('drillCategory').textContent = d.category;
+        document.getElementById('drillQuestion').textContent = d.question;
+        document.getElementById('drillAvoid').textContent = d.avoid;
+        document.getElementById('drillModel').textContent = d.model;
+        document.getElementById('drillExplanation').textContent = d.explanation;
+
+        // Hide answer area
+        document.getElementById('drillAnswerArea').style.display = 'none';
+        document.getElementById('revealBtn').style.display = 'inline-flex';
+    }
+
+    function revealDrillAnswer() {
+        document.getElementById('drillAnswerArea').style.display = 'block';
+        document.getElementById('revealBtn').style.display = 'none';
+    }
+
+    function resetDrillAnswer() {
+        document.getElementById('drillAnswerArea').style.display = 'none';
+        document.getElementById('revealBtn').style.display = 'inline-flex';
+    }
+
+    // INTERACTIVE EXAM CONSOLE
+    const quizData = [
+        {
+            type: "text",
+            meta: "Task 1: Active to Passive Transformation",
+            question: "Active: \"The crew should complete the checklist.\"",
+            correctAnswers: [
+                "the checklist should be completed",
+                "the checklist should be completed.",
+                "checklist should be completed",
+                "checklist should be completed."
+            ],
+            hint: "Subject (The checklist) + should be + V3 of complete."
+        },
+        {
+            type: "choice",
+            meta: "Task 2: Select the correct safety instruction",
+            question: "Choose the correct passive structure to maintain safety standards:",
+            options: [
+                "The runway must checked before takeoff.",
+                "The runway must be cleared before takeoff.",
+                "The crew must clearing the runway before takeoff."
+            ],
+            correctIndex: 1,
+            hint: "Option A misses the auxiliary verb 'be'. Option C uses active gerund."
+        },
+        {
+            type: "text",
+            meta: "Task 3: Active to Passive Transformation",
+            question: "Active: \"ATC gave the clearance.\"",
+            correctAnswers: [
+                "the clearance was given",
+                "the clearance was given.",
+                "clearance was given",
+                "clearance was given."
+            ],
+            hint: "Focus on the past tense of 'be' + V3 of give (given)."
+        },
+        {
+            type: "choice",
+            meta: "Task 4: Select the correct picture description phrase",
+            question: "In an ICAO exam picture showing real-time aircraft maintenance, which is the best description?",
+            options: [
+                "The mechanic has checked the engine.",
+                "The engine is being checked.",
+                "The engine checks by ground technicians."
+            ],
+            correctIndex: 1,
+            hint: "For actions happening right now, use 'is being checked' (Continuous Passive)."
+        },
+        {
+            type: "text",
+            meta: "Task 5: Complete the passive warning",
+            question: "Finish the sentence: \"If the runway is contaminated, takeoff should be...\"",
+            correctAnswers: [
+                "delayed",
+                "delayed.",
+                "postponed",
+                "postponed."
+            ],
+            hint: "What action must happen to takeoff during contamination? It must be..."
+        }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let userSelections = new Array(quizData.length).fill(null);
+    let answersChecked = new Array(quizData.length).fill(false);
+
+    function loadQuestion() {
+        const q = quizData[currentQuestionIndex];
+        document.getElementById('currentQNum').textContent = currentQuestionIndex + 1;
+        document.getElementById('qTypeMeta').textContent = q.meta;
+        document.getElementById('qText').innerHTML = q.question;
+
+        const textContainer = document.getElementById('textInputContainer');
+        const choiceContainer = document.getElementById('optionsContainer');
+        const feedback = document.getElementById('feedbackArea');
+
+        // Reset feedback
+        feedback.style.display = 'none';
+
+        if (q.type === 'text') {
+            textContainer.style.display = 'flex';
+            choiceContainer.style.display = 'none';
+            const input = document.getElementById('userAnswer');
+            input.value = userSelections[currentQuestionIndex] || "";
+            input.disabled = answersChecked[currentQuestionIndex];
+        } else {
+            textContainer.style.display = 'none';
+            choiceContainer.style.display = 'flex';
+            choiceContainer.innerHTML = "";
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = `option-btn ${userSelections[currentQuestionIndex] === idx ? 'selected' : ''}`;
+                btn.textContent = opt;
+                btn.onclick = () => selectOption(idx);
+                if (answersChecked[currentQuestionIndex]) {
+                    btn.disabled = true;
+                }
+                choiceContainer.appendChild(btn);
+            });
+        }
+
+        // Handle navigation buttons visibility
+        document.getElementById('prevBtn').style.visibility = currentQuestionIndex > 0 ? 'visible' : 'hidden';
+        
+        // Adjust button text
+        const submitBtn = document.getElementById('submitBtn');
+        if (answersChecked[currentQuestionIndex]) {
+            submitBtn.textContent = currentQuestionIndex === quizData.length - 1 ? "Finish and Restart" : "Next Question";
+        } else {
+            submitBtn.textContent = "Submit Answer";
+        }
+
+        // Show feedback if already answered
+        if (answersChecked[currentQuestionIndex]) {
+            showExistingFeedback();
+        }
+    }
+
+    function selectOption(index) {
+        if (answersChecked[currentQuestionIndex]) return;
+        userSelections[currentQuestionIndex] = index;
+        const options = document.querySelectorAll('.option-btn');
+        options.forEach((btn, idx) => {
+            if (idx === index) btn.classList.add('selected');
+            else btn.classList.remove('selected');
+        });
+    }
+
+    function checkCurrentAnswer() {
+        const q = quizData[currentQuestionIndex];
+        const submitBtn = document.getElementById('submitBtn');
+
+        // If already checked, click acts as pagination
+        if (answersChecked[currentQuestionIndex]) {
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                loadQuestion();
+            } else {
+                // Restart quiz
+                currentQuestionIndex = 0;
+                score = 0;
+                userSelections.fill(null);
+                answersChecked.fill(false);
+                document.getElementById('currentScore').textContent = "0";
+                loadQuestion();
+            }
+            return;
+        }
+
+        let isCorrect = false;
+        let userInput = "";
+
+        if (q.type === 'text') {
+            userInput = document.getElementById('userAnswer').value.trim();
+            if (!userInput) {
+                showFeedback(false, "Please type an answer before submitting.");
+                return;
+            }
+            userSelections[currentQuestionIndex] = userInput;
+            
+            // Normalize inputs to match comparison
+            const normalizedUser = userInput.toLowerCase().replace(/\s+/g, ' ');
+            isCorrect = q.correctAnswers.some(ans => ans.toLowerCase() === normalizedUser);
+        } else {
+            const selectedIdx = userSelections[currentQuestionIndex];
+            if (selectedIdx === null) {
+                showFeedback(false, "Please select an option before submitting.");
+                return;
+            }
+            isCorrect = selectedIdx === q.correctIndex;
+        }
+
+        answersChecked[currentQuestionIndex] = true;
+
+        if (isCorrect) {
+            score++;
+            document.getElementById('currentScore').textContent = score;
+            showFeedback(true, "Correct transmission! Level 4+ standard achieved.");
+        } else {
+            const correctAnswerDisplay = q.type === 'text' ? `"${q.correctAnswers[0]}"` : `"${q.options[q.correctIndex]}"`;
+            showFeedback(false, `Check failure. Correct structure: ${correctAnswerDisplay}. Hint: ${q.hint}`);
+        }
+
+        // Change button state
+        submitBtn.textContent = currentQuestionIndex === quizData.length - 1 ? "Finish and Restart" : "Next Question";
+        
+        // Disable inputs
+        if (q.type === 'text') {
+            document.getElementById('userAnswer').disabled = true;
+        } else {
+            const options = document.querySelectorAll('.option-btn');
+            options.forEach(btn => btn.disabled = true);
+        }
+    }
+
+    function showFeedback(isSuccess, msg) {
+        const feedback = document.getElementById('feedbackArea');
+        feedback.className = `feedback-message ${isSuccess ? 'success' : 'danger'}`;
+        
+        const iconSvg = isSuccess 
+            ? `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`
+            : `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>`;
+
+        feedback.innerHTML = `${iconSvg}<div>${msg}</div>`;
+        feedback.style.display = 'flex';
+    }
+
+    function showExistingFeedback() {
+        const q = quizData[currentQuestionIndex];
+        let isCorrect = false;
+
+        if (q.type === 'text') {
+            const userInput = userSelections[currentQuestionIndex] || "";
+            const normalizedUser = userInput.toLowerCase().replace(/\s+/g, ' ');
+            isCorrect = q.correctAnswers.some(ans => ans.toLowerCase() === normalizedUser);
+        } else {
+            isCorrect = userSelections[currentQuestionIndex] === q.correctIndex;
+        }
+
+        if (isCorrect) {
+            showFeedback(true, "Correct transmission! Level 4+ standard achieved.");
+        } else {
+            const correctAnswerDisplay = q.type === 'text' ? `"${q.correctAnswers[0]}"` : `"${q.options[q.correctIndex]}"`;
+            showFeedback(false, `Check failure. Correct structure: ${correctAnswerDisplay}. Hint: ${q.hint}`);
+        }
+    }
+
+    function navigateQuestion(direction) {
+        const nextIndex = currentQuestionIndex + direction;
+        if (nextIndex >= 0 && nextIndex < quizData.length) {
+            currentQuestionIndex = nextIndex;
+            loadQuestion();
+        }
+    }
+
+
+    // SAFETY SENTENCE BUILDER LOGIC
+    const builderData = {
+        reasons: {
+            "inspected": "hidden damage may affect flight safety.",
+            "followed": "it helps the crew avoid fatal slips under heavy workload pressure.",
+            "stabilized": "unstable alignment increases the probability of a runway excursion.",
+            "cleared": "debris can damage engines or trigger emergency rejected takeoffs.",
+            "briefed": "clear emergency guidelines significantly reduce passengers panic."
+        },
+        explanations: {
+            "the aircraft": "Perfect! Structural assessments are priority items in mechanical diagnostics.",
+            "the checklist": "Highly recommended! Procedures must be strictly followed regardless of timeline constraints.",
+            "the approach": "Excellent! Unstabilized parameters demand an automatic Go-Around safety action.",
+            "the runway": "Critical obstacle clearing ensures high-speed tires avoid foreign object damage.",
+            "passengers": "Ensures the passenger group responds optimally to emergency evacuation checklists."
+        }
+    };
+
+    function updateBuilderSentence() {
+        const obj = document.getElementById('selectObj').value;
+        const modal = document.getElementById('selectModal').value;
+        const action = document.getElementById('selectAction').value;
+
+        // Auto-resolve dynamic reason to match standard logical aviation safety
+        const reason = builderData.reasons[action];
+
+        // Update display text tokens
+        document.getElementById('tokenObj').textContent = obj;
+        document.getElementById('tokenModal').textContent = modal;
+        document.getElementById('tokenAction').textContent = action;
+        document.getElementById('tokenReason').textContent = reason;
+
+        // Show visual explanation block
+        const expBox = document.getElementById('builderExplanationBox');
+        expBox.innerHTML = `<strong>Aviation Safety Note:</strong> ${builderData.explanations[obj]} <em>Using "${modal} ${action}" matches clear, high-scoring ICAO standards.</em>`;
+        expBox.style.display = 'block';
+    }
+
+
+    // INIT PAGE ACTIONS
+    window.onload = function() {
+        loadQuestion();
+        updateBuilderSentence();
+    };
+</script>
+
+</body>
+</html>
