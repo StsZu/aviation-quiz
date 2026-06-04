@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,32 +41,61 @@
         
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        html.dark body {
             background-color: #080C14;
             color: #E2E8F0;
         }
 
-        /* Glassmorphism utility */
+        /* Glassmorphism utility adaptive for daylight and night mode */
         .cockpit-card {
-            background: rgba(21, 29, 48, 0.7);
+            background: rgba(255, 255, 255, 0.9);
             backdrop-filter: blur(8px);
-            border: 1px solid rgba(31, 46, 77, 0.8);
+            border: 1px solid rgba(226, 232, 240, 0.9);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
+        html.dark .cockpit-card {
+            background: rgba(21, 29, 48, 0.7);
+            border: 1px solid rgba(31, 46, 77, 0.8);
+        }
+
         .cockpit-card:hover {
+            border-color: rgba(14, 165, 233, 0.4);
+            box-shadow: 0 0 15px rgba(14, 165, 233, 0.08);
+        }
+
+        html.dark .cockpit-card:hover {
             border-color: rgba(0, 240, 255, 0.4);
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
         }
 
-        /* CRT Scanline glow effect */
+        /* CRT Scanline glow effects */
         .glow-cyan {
-            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+            text-shadow: 0 0 6px rgba(14, 165, 233, 0.2);
         }
         .glow-amber {
-            text-shadow: 0 0 8px rgba(255, 184, 0, 0.6);
+            text-shadow: 0 0 6px rgba(217, 119, 6, 0.2);
         }
         .glow-green {
+            text-shadow: 0 0 6px rgba(22, 163, 74, 0.2);
+        }
+
+        html.dark .glow-cyan {
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.6);
+            color: #00F0FF;
+        }
+        html.dark .glow-amber {
+            text-shadow: 0 0 8px rgba(255, 184, 0, 0.6);
+            color: #FFB800;
+        }
+        html.dark .glow-green {
             text-shadow: 0 0 8px rgba(0, 230, 118, 0.6);
+            color: #00E676;
         }
 
         /* Custom Audio Wave Animation */
@@ -88,58 +117,72 @@
             height: 8px;
         }
         ::-webkit-scrollbar-track {
+            background: #F1F5F9;
+        }
+        html.dark ::-webkit-scrollbar-track {
             background: #080C14;
         }
         ::-webkit-scrollbar-thumb {
-            background: #1F2E4D;
+            background: #CBD5E1;
             border-radius: 4px;
         }
+        html.dark ::-webkit-scrollbar-thumb {
+            background: #1F2E4D;
+        }
         ::-webkit-scrollbar-thumb:hover {
+            background: #0ea5e9;
+        }
+        html.dark ::-webkit-scrollbar-thumb:hover {
             background: #00F0FF;
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500/30 selection:text-cyan-300">
+<body class="min-h-screen flex flex-col justify-between selection:bg-sky-500/20 selection:text-sky-700 dark:selection:bg-cyan-500/30 dark:selection:text-cyan-300">
 
-    <!-- Top Cockpit HUD Navigation -->
-    <header class="sticky top-0 z-50 bg-[#0B0F19]/90 border-b border-cockpit-border/80 backdrop-blur-md px-4 py-3">
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-[#0B0F19]/90 border-b border-slate-200 dark:border-cockpit-border/80 backdrop-blur-md px-4 py-3">
         <div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <!-- Brand & Compass Header -->
             <div class="flex items-center gap-3">
-                <div class="relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-dashed border-cockpit-cyan/40 animate-[spin_40s_linear_infinite]">
-                    <div class="absolute w-2 h-2 rounded-full bg-cockpit-cyan"></div>
+                <div class="relative flex items-center justify-center w-10 h-10 rounded-full border-2 border-dashed border-sky-500/40 dark:border-cockpit-cyan/40 animate-[spin_40s_linear_infinite]">
+                    <div class="absolute w-2 h-2 rounded-full bg-sky-500 dark:bg-cockpit-cyan"></div>
                 </div>
                 <div>
                     <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold tracking-widest text-cockpit-cyan font-mono uppercase bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-500/30">EFB GRAMMAR MODE</span>
-                        <span id="system-status" class="w-2 h-2 rounded-full bg-cockpit-green animate-pulse"></span>
+                        <span class="text-xs font-bold tracking-widest text-sky-600 dark:text-cockpit-cyan font-mono uppercase bg-sky-50 dark:bg-cyan-950/60 px-2 py-0.5 rounded border border-sky-500/20 dark:border-cyan-500/30">EFB GRAMMAR MODE</span>
+                        <span id="system-status" class="w-2 h-2 rounded-full bg-emerald-500 dark:bg-cockpit-green animate-pulse"></span>
                     </div>
-                    <h1 class="text-lg font-extrabold tracking-tight text-white flex items-center gap-2">
-                        Present Perfect in Aviation <span class="text-xs text-slate-400 font-normal">ICAO Level 4–5</span>
+                    <h1 class="text-lg font-extrabold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+                        Present Perfect in Aviation <span class="text-xs text-slate-500 dark:text-slate-400 font-normal">ICAO Level 4–5</span>
                     </h1>
                 </div>
             </div>
 
             <!-- EFB Navigation Indicators -->
-            <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
-                <div class="text-right hidden md:block font-mono text-xs text-slate-400">
-                    <div>GPS LOCKED: <span class="text-cockpit-cyan">LAT 49° 59' N</span></div>
-                    <div>RADIO FREQ: <span class="text-cockpit-amber">118.10 MHz</span></div>
+            <div class="flex items-center gap-2 sm:gap-4 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 justify-end">
+                <!-- Theme Mode Toggler Button -->
+                <button onclick="toggleTheme()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-cockpit-border bg-slate-100 dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-cockpit-cyan font-mono text-xs transition-all shrink-0">
+                    <span id="theme-icon">☀️</span>
+                    <span id="theme-text">DAY OPS</span>
+                </button>
+
+                <div class="text-right hidden md:block font-mono text-xs text-slate-500 dark:text-slate-400">
+                    <div>GPS LOCKED: <span class="text-sky-600 dark:text-cockpit-cyan">LAT 49° 59' N</span></div>
+                    <div>RADIO FREQ: <span class="text-amber-600 dark:text-cockpit-amber">118.10 MHz</span></div>
                 </div>
-                <div class="h-8 w-[1px] bg-cockpit-border hidden md:block"></div>
+                <div class="h-8 w-[1px] bg-slate-200 dark:bg-cockpit-border hidden md:block"></div>
                 
                 <!-- Overall Progress Gauge -->
-                <div class="flex items-center gap-3 bg-slate-900/60 border border-cockpit-border px-3 py-1.5 rounded-lg">
+                <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-900/60 border border-slate-200 dark:border-cockpit-border px-3 py-1.5 rounded-lg shrink-0">
                     <div class="relative w-8 h-8">
                         <svg class="w-full h-full transform -rotate-90">
-                            <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2.5" class="text-slate-800" fill="transparent"/>
-                            <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="3" class="text-cockpit-cyan transition-all duration-500" stroke-dasharray="81.68" stroke-dashoffset="81.68" id="progress-circle" fill="transparent"/>
+                            <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="2.5" class="text-slate-300 dark:text-slate-800" fill="transparent"/>
+                            <circle cx="16" cy="16" r="13" stroke="currentColor" stroke-width="3" class="text-sky-600 dark:text-cockpit-cyan transition-all duration-500" stroke-dasharray="81.68" stroke-dashoffset="81.68" id="progress-circle" fill="transparent"/>
                         </svg>
-                        <span class="absolute inset-0 flex items-center justify-center font-mono text-[10px] font-bold text-cockpit-cyan" id="progress-percent">0%</span>
+                        <span class="absolute inset-0 flex items-center justify-center font-mono text-[10px] font-bold text-sky-600 dark:text-cockpit-cyan" id="progress-percent">0%</span>
                     </div>
                     <div class="text-xs font-mono">
-                        <div class="text-slate-400">FLIGHT PATH</div>
-                        <div class="text-white font-bold" id="progress-text">0 / 4 STAGES</div>
+                        <div class="text-slate-500 dark:text-slate-400">FLIGHT PATH</div>
+                        <div class="text-slate-800 dark:text-white font-bold" id="progress-text">0 / 4 STAGES</div>
                     </div>
                 </div>
             </div>
@@ -150,53 +193,52 @@
         
         <!-- Sidebar Navigation Dashboard (3 Cols on Desktop) -->
         <aside class="lg:col-span-3 space-y-4">
-            <a href="../index.html" class="inline-flex items-center gap-2 text-sm text-slate-400 hover:text-cockpit-cyan transition-all">&larr; All quizzes</a>
             <div class="cockpit-card rounded-xl p-4 sticky top-24">
-                <h3 class="text-xs font-bold tracking-widest text-slate-400 font-mono uppercase mb-3 flex items-center justify-between">
+                <h3 class="text-xs font-bold tracking-widest text-slate-500 dark:text-slate-400 font-mono uppercase mb-3 flex items-center justify-between">
                     <span>Flight Checklist</span>
-                    <span class="text-cockpit-cyan" id="checklist-counter">0% COMPLETED</span>
+                    <span class="text-sky-600 dark:text-cockpit-cyan" id="checklist-counter">0% COMPLETED</span>
                 </h3>
                 
                 <nav class="space-y-1">
-                    <a href="#core-idea" onclick="setActiveStep(1)" class="group flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 bg-slate-950/40 border border-transparent hover:border-cockpit-cyan/20 hover:bg-slate-900/50">
+                    <a href="#core-idea" onclick="setActiveStep(1)" class="group flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 bg-slate-100 dark:bg-slate-950/40 border border-transparent hover:border-sky-500/20 dark:hover:border-cockpit-cyan/20 hover:bg-slate-200/50 dark:hover:bg-slate-900/50">
                         <div class="flex items-center gap-2.5">
-                            <span class="w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-400 group-hover:border-cockpit-cyan group-hover:text-cockpit-cyan shrink-0" id="step-badge-1">1</span>
-                            <span class="text-sm font-medium text-slate-300 group-hover:text-white">Core Concept</span>
+                            <span class="w-5 h-5 rounded-full border border-slate-400 dark:border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400 group-hover:border-sky-500 dark:group-hover:border-cockpit-cyan group-hover:text-sky-600 dark:group-hover:text-cockpit-cyan shrink-0" id="step-badge-1">1</span>
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">Core Concept</span>
                         </div>
-                        <span class="w-2 h-2 rounded-full bg-slate-700" id="step-check-1"></span>
+                        <span class="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-700" id="step-check-1"></span>
                     </a>
 
-                    <a href="#aviation-radar" onclick="setActiveStep(2)" class="group flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 bg-slate-950/40 border border-transparent hover:border-cockpit-cyan/20 hover:bg-slate-900/50">
+                    <a href="#aviation-radar" onclick="setActiveStep(2)" class="group flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 bg-slate-100 dark:bg-slate-950/40 border border-transparent hover:border-sky-500/20 dark:hover:border-cockpit-cyan/20 hover:bg-slate-200/50 dark:hover:bg-slate-900/50">
                         <div class="flex items-center gap-2.5">
-                            <span class="w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-400 group-hover:border-cockpit-cyan group-hover:text-cockpit-cyan shrink-0" id="step-badge-2">2</span>
-                            <span class="text-sm font-medium text-slate-300 group-hover:text-white">Situations Radar</span>
+                            <span class="w-5 h-5 rounded-full border border-slate-400 dark:border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400 group-hover:border-sky-500 dark:group-hover:border-cockpit-cyan group-hover:text-sky-600 dark:group-hover:text-cockpit-cyan shrink-0" id="step-badge-2">2</span>
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">Situations Radar</span>
                         </div>
-                        <span class="w-2 h-2 rounded-full bg-slate-700" id="step-check-2"></span>
+                        <span class="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-700" id="step-check-2"></span>
                     </a>
 
-                    <a href="#atc-comms" onclick="setActiveStep(3)" class="group flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 bg-slate-950/40 border border-transparent hover:border-cockpit-cyan/20 hover:bg-slate-900/50">
+                    <a href="#atc-comms" onclick="setActiveStep(3)" class="group flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 bg-slate-100 dark:bg-slate-950/40 border border-transparent hover:border-sky-500/20 dark:hover:border-cockpit-cyan/20 hover:bg-slate-200/50 dark:hover:bg-slate-900/50">
                         <div class="flex items-center gap-2.5">
-                            <span class="w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-400 group-hover:border-cockpit-cyan group-hover:text-cockpit-cyan shrink-0" id="step-badge-3">3</span>
-                            <span class="text-sm font-medium text-slate-300 group-hover:text-white">ATC Comms Radio</span>
+                            <span class="w-5 h-5 rounded-full border border-slate-400 dark:border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400 group-hover:border-sky-500 dark:group-hover:border-cockpit-cyan group-hover:text-sky-600 dark:group-hover:text-cockpit-cyan shrink-0" id="step-badge-3">3</span>
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">ATC Comms Radio</span>
                         </div>
-                        <span class="w-2 h-2 rounded-full bg-slate-700" id="step-check-3"></span>
+                        <span class="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-700" id="step-check-3"></span>
                     </a>
 
-                    <a href="#flight-console" onclick="setActiveStep(4)" class="group flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 bg-slate-950/40 border border-transparent hover:border-cockpit-cyan/20 hover:bg-slate-900/50">
+                    <a href="#flight-console" onclick="setActiveStep(4)" class="group flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 bg-slate-100 dark:bg-slate-950/40 border border-transparent hover:border-sky-500/20 dark:hover:border-cockpit-cyan/20 hover:bg-slate-200/50 dark:hover:bg-slate-900/50">
                         <div class="flex items-center gap-2.5">
-                            <span class="w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-400 group-hover:border-cockpit-cyan group-hover:text-cockpit-cyan shrink-0" id="step-badge-4">4</span>
-                            <span class="text-sm font-medium text-slate-300 group-hover:text-white">Simulator Console</span>
+                            <span class="w-5 h-5 rounded-full border border-slate-400 dark:border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400 group-hover:border-sky-500 dark:group-hover:border-cockpit-cyan group-hover:text-sky-600 dark:group-hover:text-cockpit-cyan shrink-0" id="step-badge-4">4</span>
+                            <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-white">Simulator Console</span>
                         </div>
-                        <span class="w-2 h-2 rounded-full bg-slate-700" id="step-check-4"></span>
+                        <span class="w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-700" id="step-check-4"></span>
                     </a>
                 </nav>
 
-                <div class="mt-6 p-3 bg-cockpit-panel/80 rounded-lg border border-cockpit-border/60 text-xs space-y-2">
-                    <div class="text-cockpit-amber font-mono font-bold flex items-center gap-1.5">
+                <div class="mt-6 p-3 bg-slate-50 dark:bg-cockpit-panel/80 rounded-lg border border-slate-200 dark:border-cockpit-border/60 text-xs space-y-2">
+                    <div class="text-amber-600 dark:text-cockpit-amber font-mono font-bold flex items-center gap-1.5">
                         <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         CO-PILOT ADVISORY
                     </div>
-                    <p class="text-slate-400 leading-relaxed">
+                    <p class="text-slate-600 dark:text-slate-400 leading-relaxed">
                         Practice speaking clearly aloud. Turn on your audio to listen to simulated ATC clearance feedback with actual speech syntax!
                     </p>
                 </div>
@@ -209,57 +251,57 @@
             <!-- SECTION 1: Core Concept -->
             <section id="core-idea" class="scroll-mt-24 space-y-6">
                 <div class="cockpit-card rounded-2xl p-6 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-3 opacity-10 pointer-events-none">
-                        <svg class="w-36 h-36 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                    <div class="absolute top-0 right-0 p-3 opacity-5 dark:opacity-10 pointer-events-none">
+                        <svg class="w-36 h-36 text-slate-900 dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
                     </div>
                     
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
-                            <span class="px-2 py-1 bg-cyan-950 text-cockpit-cyan border border-cyan-500/30 rounded font-mono text-xs">STAGE 01</span>
-                            <h2 class="text-xl font-bold text-white">The Core Timeline Idea</h2>
+                            <span class="px-2 py-1 bg-sky-50 dark:bg-cyan-950 text-sky-600 dark:text-cockpit-cyan border border-sky-500/20 dark:border-cyan-500/30 rounded font-mono text-xs">STAGE 01</span>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">The Core Timeline Idea</h2>
                         </div>
-                        <button onclick="toggleCompleted(1)" id="check-btn-1" class="px-3 py-1 border border-slate-600 rounded-lg hover:border-cockpit-cyan hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-400">
-                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="btn-dot-1"></span>
+                        <button onclick="toggleCompleted(1)" id="check-btn-1" class="px-3 py-1 border border-slate-300 dark:border-slate-600 rounded-lg hover:border-sky-500 dark:hover:border-cockpit-cyan hover:text-sky-600 dark:hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-500 dark:text-slate-400 bg-white dark:bg-transparent">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" id="btn-dot-1"></span>
                             <span>MARK READY</span>
                         </button>
                     </div>
 
-                    <p class="text-slate-300 leading-relaxed max-w-3xl">
-                        Aviation communication depends on immediate clarity. We use the <strong class="text-white glow-cyan">Present Perfect</strong> when we report a completed past action that directly creates the present reality. It answers the question: <span class="italic text-cockpit-cyan">What is the situation right now?</span>
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed max-w-3xl">
+                        Aviation communication depends on immediate clarity. We use the <strong class="text-slate-900 dark:text-white glow-cyan">Present Perfect</strong> when we report a completed past action that directly creates the present reality. It answers the question: <span class="italic text-sky-600 dark:text-cockpit-cyan">What is the situation right now?</span>
                     </p>
 
                     <!-- Core Timeline Graphic -->
-                    <div class="my-8 p-6 bg-slate-950/60 rounded-xl border border-cockpit-border flex flex-col md:flex-row items-center justify-between gap-6 relative">
+                    <div class="my-8 p-6 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-cockpit-border flex flex-col md:flex-row items-center justify-between gap-6 relative">
                         <div class="flex-1 space-y-2 text-center md:text-left">
                             <div class="text-xs font-mono uppercase text-slate-500 tracking-wider">The Equation</div>
-                            <div class="text-2xl font-mono font-bold text-white tracking-wide">
-                                PAST ACTION <span class="text-cockpit-cyan">+</span> PRESENT RESULT
+                            <div class="text-2xl font-mono font-bold text-slate-900 dark:text-white tracking-wide">
+                                PAST ACTION <span class="text-sky-600 dark:text-cockpit-cyan">+</span> PRESENT RESULT
                             </div>
-                            <p class="text-sm text-slate-400">If the result is no longer important or the time is past/locked, use Past Simple instead.</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">If the result is no longer important or the time is past/locked, use Past Simple instead.</p>
                         </div>
-                        <div class="h-[1px] w-full md:w-[1px] md:h-12 bg-cockpit-border"></div>
+                        <div class="h-[1px] w-full md:w-[1px] md:h-12 bg-slate-200 dark:bg-cockpit-border"></div>
                         <div class="flex-1 space-y-2 text-center md:text-right">
-                            <div class="text-xs font-mono uppercase text-cockpit-amber tracking-wider">Aviation Blueprint</div>
-                            <div class="text-xl font-mono font-extrabold text-cockpit-cyan tracking-normal">
+                            <div class="text-xs font-mono uppercase text-amber-600 dark:text-cockpit-amber tracking-wider">Aviation Blueprint</div>
+                            <div class="text-xl font-mono font-extrabold text-sky-600 dark:text-cockpit-cyan tracking-normal">
                                 HAVE / HAS + PAST PARTICIPLE
                             </div>
-                            <p class="text-sm text-slate-400">I have checked • The crew has reported</p>
+                            <p class="text-sm text-slate-600 dark:text-slate-400">I have checked • The crew has reported</p>
                         </div>
                     </div>
 
                     <!-- Comparison Interactive Cards -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                        <div class="p-4 bg-slate-900/40 rounded-xl border border-cockpit-border/60 hover:bg-slate-900/60 transition-all">
-                            <div class="text-xs font-mono font-bold text-cockpit-cyan mb-1">“I have checked the weather”</div>
-                            <p class="text-xs text-slate-400 leading-relaxed">Meaning: The weather check is complete now and I know the current parameters.</p>
+                        <div class="p-4 bg-slate-100/60 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-cockpit-border/60 hover:bg-slate-200/50 dark:hover:bg-slate-900/60 transition-all">
+                            <div class="text-xs font-mono font-bold text-sky-600 dark:text-cockpit-cyan mb-1">“I have checked the weather”</div>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Meaning: The weather check is complete now and I know the current parameters.</p>
                         </div>
-                        <div class="p-4 bg-slate-900/40 rounded-xl border border-cockpit-border/60 hover:bg-slate-900/60 transition-all">
-                            <div class="text-xs font-mono font-bold text-cockpit-cyan mb-1">“The crew has reported a problem”</div>
-                            <p class="text-xs text-slate-400 leading-relaxed">Meaning: Air Traffic Control knows about the problem now. It is currently active.</p>
+                        <div class="p-4 bg-slate-100/60 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-cockpit-border/60 hover:bg-slate-200/50 dark:hover:bg-slate-900/60 transition-all">
+                            <div class="text-xs font-mono font-bold text-sky-600 dark:text-cockpit-cyan mb-1">“The crew has reported a problem”</div>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Meaning: Air Traffic Control knows about the problem now. It is currently active.</p>
                         </div>
-                        <div class="p-4 bg-slate-900/40 rounded-xl border border-cockpit-border/60 hover:bg-slate-900/60 transition-all">
-                            <div class="text-xs font-mono font-bold text-cockpit-cyan mb-1">“We have lost communication”</div>
-                            <p class="text-xs text-slate-400 leading-relaxed">Meaning: The system is disconnected right now. We cannot hear the tower.</p>
+                        <div class="p-4 bg-slate-100/60 dark:bg-slate-900/40 rounded-xl border border-slate-200 dark:border-cockpit-border/60 hover:bg-slate-200/50 dark:hover:bg-slate-900/60 transition-all">
+                            <div class="text-xs font-mono font-bold text-sky-600 dark:text-cockpit-cyan mb-1">“We have lost communication”</div>
+                            <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Meaning: The system is disconnected right now. We cannot hear the tower.</p>
                         </div>
                     </div>
                 </div>
@@ -270,43 +312,43 @@
                 <div class="cockpit-card rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-6">
                         <div class="flex items-center gap-2">
-                            <span class="px-2 py-1 bg-cyan-950 text-cockpit-cyan border border-cyan-500/30 rounded font-mono text-xs">STAGE 02</span>
-                            <h2 class="text-xl font-bold text-white">Situations Radar Screen</h2>
+                            <span class="px-2 py-1 bg-sky-50 dark:bg-cyan-950 text-sky-600 dark:text-cockpit-cyan border border-sky-500/20 dark:border-cyan-500/30 rounded font-mono text-xs">STAGE 02</span>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Situations Radar Screen</h2>
                         </div>
-                        <button onclick="toggleCompleted(2)" id="check-btn-2" class="px-3 py-1 border border-slate-600 rounded-lg hover:border-cockpit-cyan hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-400">
-                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="btn-dot-2"></span>
+                        <button onclick="toggleCompleted(2)" id="check-btn-2" class="px-3 py-1 border border-slate-300 dark:border-slate-600 rounded-lg hover:border-sky-500 dark:hover:border-cockpit-cyan hover:text-sky-600 dark:hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-500 dark:text-slate-400 bg-white dark:bg-transparent">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" id="btn-dot-2"></span>
                             <span>MARK READY</span>
                         </button>
                     </div>
 
-                    <p class="text-slate-300 leading-relaxed mb-6">
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
                         There are 5 critical operational phases where you absolutely must deploy the Present Perfect format. Toggle below to inspect these situations:
                     </p>
 
                     <!-- Radar Situation Tabs -->
                     <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 mb-6">
-                        <button onclick="switchRadarTab(0)" id="radar-tab-0" class="px-2.5 py-3 rounded-lg border border-cockpit-cyan bg-slate-900 text-cockpit-cyan text-xs font-bold font-mono transition-all text-center">
+                        <button onclick="switchRadarTab(0)" id="radar-tab-0" class="px-2.5 py-3 rounded-lg border border-sky-500 bg-sky-50 dark:bg-slate-900 text-sky-600 dark:text-cockpit-cyan text-xs font-bold font-mono transition-all text-center">
                             CHECKLIST
                         </button>
-                        <button onclick="switchRadarTab(1)" id="radar-tab-1" class="px-2.5 py-3 rounded-lg border border-cockpit-border/60 hover:border-slate-500 text-slate-400 text-xs font-bold font-mono transition-all text-center">
+                        <button onclick="switchRadarTab(1)" id="radar-tab-1" class="px-2.5 py-3 rounded-lg border border-slate-200 dark:border-cockpit-border/60 hover:border-slate-400 dark:hover:border-slate-500 text-slate-500 dark:text-slate-400 text-xs font-bold font-mono transition-all text-center">
                             PROBLEM
                         </button>
-                        <button onclick="switchRadarTab(2)" id="radar-tab-2" class="px-2.5 py-3 rounded-lg border border-cockpit-border/60 hover:border-slate-500 text-slate-400 text-xs font-bold font-mono transition-all text-center">
+                        <button onclick="switchRadarTab(2)" id="radar-tab-2" class="px-2.5 py-3 rounded-lg border border-slate-200 dark:border-cockpit-border/60 hover:border-slate-400 dark:hover:border-slate-500 text-slate-500 dark:text-slate-400 text-xs font-bold font-mono transition-all text-center">
                             RUNWAY
                         </button>
-                        <button onclick="switchRadarTab(3)" id="radar-tab-3" class="px-2.5 py-3 rounded-lg border border-cockpit-border/60 hover:border-slate-500 text-slate-400 text-xs font-bold font-mono transition-all text-center">
+                        <button onclick="switchRadarTab(3)" id="radar-tab-3" class="px-2.5 py-3 rounded-lg border border-slate-200 dark:border-cockpit-border/60 hover:border-slate-400 dark:hover:border-slate-500 text-slate-500 dark:text-slate-400 text-xs font-bold font-mono transition-all text-center">
                             SIMULATOR
                         </button>
-                        <button onclick="switchRadarTab(4)" id="radar-tab-4" class="px-2.5 py-3 rounded-lg border border-cockpit-border/60 hover:border-slate-500 text-slate-400 text-xs font-bold font-mono transition-all text-center">
+                        <button onclick="switchRadarTab(4)" id="radar-tab-4" class="px-2.5 py-3 rounded-lg border border-slate-200 dark:border-cockpit-border/60 hover:border-slate-400 dark:hover:border-slate-500 text-slate-500 dark:text-slate-400 text-xs font-bold font-mono transition-all text-center">
                             DELAY
                         </button>
                     </div>
 
                     <!-- Radar Info Display Panel (Simulates a Cockpit Scope) -->
-                    <div class="relative bg-slate-950 border border-cockpit-border rounded-xl p-6 min-h-[220px] flex flex-col justify-between overflow-hidden">
+                    <div class="relative bg-white dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded-xl p-6 min-h-[220px] flex flex-col justify-between overflow-hidden shadow-sm">
                         <!-- Compass Background Graphic -->
                         <div class="absolute inset-y-0 right-10 flex items-center justify-center opacity-5 pointer-events-none">
-                            <svg class="w-80 h-80 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.5"></circle><line x1="12" y1="2" x2="12" y2="22" stroke-width="1"></line><line x1="2" y1="12" x2="22" y2="12" stroke-width="1"></line></svg>
+                            <svg class="w-80 h-80 text-slate-900 dark:text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" stroke-width="1.5"></circle><line x1="12" y1="2" x2="12" y2="22" stroke-width="1"></line><line x1="2" y1="12" x2="22" y2="12" stroke-width="1"></line></svg>
                         </div>
                         
                         <div id="radar-content" class="space-y-4">
@@ -314,9 +356,9 @@
                         </div>
 
                         <!-- Speech simulation block inside display panel -->
-                        <div class="mt-6 pt-4 border-t border-cockpit-border/60 flex items-center justify-between flex-wrap gap-4">
-                            <span class="text-xs font-mono text-slate-500">ATC VOICE SIMULATION ACTIVE:</span>
-                            <button onclick="speakSelectedRadar()" class="flex items-center gap-2 px-4 py-2 bg-cockpit-cyan text-slate-950 font-bold font-mono text-xs rounded-lg hover:bg-cyan-400 hover:shadow-lg hover:shadow-cyan-500/20 active:scale-95 transition-all">
+                        <div class="mt-6 pt-4 border-t border-slate-100 dark:border-cockpit-border/60 flex items-center justify-between flex-wrap gap-4">
+                            <span class="text-xs font-mono text-slate-500 dark:text-slate-400">ATC VOICE SIMULATION ACTIVE:</span>
+                            <button onclick="speakSelectedRadar()" class="flex items-center gap-2 px-4 py-2 bg-sky-600 dark:bg-cockpit-cyan text-white dark:text-slate-950 font-bold font-mono text-xs rounded-lg hover:bg-sky-500 dark:hover:bg-cyan-400 hover:shadow-lg hover:shadow-sky-500/10 dark:hover:shadow-cyan-500/20 active:scale-95 transition-all">
                                 <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9v-4h2v4zm0-6H9V9h2v1.51zm4 6.51H13V13h2v1.51zm0-3.51H13V9h2v1.51z"></path><path d="M8 9H6v6h2V9zm5-4H11v14h2V5zm5 4h-2v6h2V9z"></path></svg>
                                 TRANSMIT PHRASE (AUDIO)
                             </button>
@@ -324,26 +366,26 @@
                     </div>
 
                     <!-- Visual Accent Timeline Slider Comparison: Perfect vs Past -->
-                    <div class="mt-8 pt-8 border-t border-cockpit-border/60">
-                        <h3 class="text-sm font-bold font-mono text-slate-300 uppercase tracking-wider mb-4">Tactical Rule Check: Present Perfect vs Past Simple</h3>
+                    <div class="mt-8 pt-8 border-t border-slate-200 dark:border-cockpit-border/60">
+                        <h3 class="text-sm font-bold font-mono text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-4">Tactical Rule Check: Present Perfect vs Past Simple</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="bg-slate-900/40 p-4 rounded-xl border border-cockpit-border/40">
+                            <div class="bg-slate-100/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-cockpit-border/40">
                                 <div class="flex items-center gap-2 mb-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-cockpit-cyan"></span>
-                                    <span class="text-xs font-mono font-bold text-white uppercase">Present Perfect</span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-sky-500 dark:bg-cockpit-cyan"></span>
+                                    <span class="text-xs font-mono font-bold text-slate-800 dark:text-white uppercase">Present Perfect</span>
                                 </div>
-                                <p class="text-xs text-slate-400 mb-3 leading-relaxed">Result is important and impacts current operations *right now*.</p>
-                                <div class="font-mono text-xs text-cockpit-cyan font-bold bg-cyan-950/40 p-2.5 rounded border border-cyan-500/10">
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mb-3 leading-relaxed">Result is important and impacts current operations *right now*.</p>
+                                <div class="font-mono text-xs text-sky-700 dark:text-cockpit-cyan font-bold bg-sky-50 dark:bg-cyan-950/40 p-2.5 rounded border border-sky-500/10 dark:border-cyan-500/10">
                                     "The weather has changed."
                                 </div>
                             </div>
-                            <div class="bg-slate-900/40 p-4 rounded-xl border border-cockpit-border/40">
+                            <div class="bg-slate-100/60 dark:bg-slate-900/40 p-4 rounded-xl border border-slate-200 dark:border-cockpit-border/40">
                                 <div class="flex items-center gap-2 mb-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-cockpit-amber"></span>
-                                    <span class="text-xs font-mono font-bold text-white uppercase">Past Simple</span>
+                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500 dark:bg-cockpit-amber"></span>
+                                    <span class="text-xs font-mono font-bold text-slate-800 dark:text-white uppercase">Past Simple</span>
                                 </div>
-                                <p class="text-xs text-slate-400 mb-3 leading-relaxed">Action was fully complete at a specific time in the past.</p>
-                                <div class="font-mono text-xs text-cockpit-amber font-bold bg-amber-950/30 p-2.5 rounded border border-amber-500/10">
+                                <p class="text-xs text-slate-600 dark:text-slate-400 mb-3 leading-relaxed">Action was fully complete at a specific time in the past.</p>
+                                <div class="font-mono text-xs text-amber-700 dark:text-cockpit-amber font-bold bg-amber-50 dark:bg-amber-950/30 p-2.5 rounded border border-amber-500/10 dark:border-amber-500/10">
                                     "The weather changed at 1430 Zulu."
                                 </div>
                             </div>
@@ -357,16 +399,16 @@
                 <div class="cockpit-card rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
-                            <span class="px-2 py-1 bg-cyan-950 text-cockpit-cyan border border-cyan-500/30 rounded font-mono text-xs">STAGE 03</span>
-                            <h2 class="text-xl font-bold text-white">Must-Use Aviation Comms Radio</h2>
+                            <span class="px-2 py-1 bg-sky-50 dark:bg-cyan-950 text-sky-600 dark:text-cockpit-cyan border border-sky-500/20 dark:border-cyan-500/30 rounded font-mono text-xs">STAGE 03</span>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Must-Use Aviation Comms Radio</h2>
                         </div>
-                        <button onclick="toggleCompleted(3)" id="check-btn-3" class="px-3 py-1 border border-slate-600 rounded-lg hover:border-cockpit-cyan hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-400">
-                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="btn-dot-3"></span>
+                        <button onclick="toggleCompleted(3)" id="check-btn-3" class="px-3 py-1 border border-slate-300 dark:border-slate-600 rounded-lg hover:border-sky-500 dark:hover:border-cockpit-cyan hover:text-sky-600 dark:hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-500 dark:text-slate-400 bg-white dark:bg-transparent">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" id="btn-dot-3"></span>
                             <span>MARK READY</span>
                         </button>
                     </div>
 
-                    <p class="text-slate-300 leading-relaxed mb-6">
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
                         Train your voice for immediate response. Click each transmission to trigger standard simulated air traffic control vocalization, then speak it back out loud.
                     </p>
 
@@ -376,15 +418,15 @@
                     </div>
 
                     <!-- Visual wave feedback overlay element -->
-                    <div id="audio-visualizer" class="hidden fixed bottom-6 right-6 z-50 bg-[#0B0F19] border border-cockpit-cyan px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
+                    <div id="audio-visualizer" class="hidden fixed bottom-6 right-6 z-50 bg-white dark:bg-[#0B0F19] border border-sky-500 dark:border-cockpit-cyan px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3">
                         <div class="flex items-end gap-0.5 h-6">
-                            <div class="wave-bar w-1 bg-cockpit-cyan rounded-full"></div>
-                            <div class="wave-bar w-1 bg-cockpit-cyan rounded-full"></div>
-                            <div class="wave-bar w-1 bg-cockpit-cyan rounded-full"></div>
-                            <div class="wave-bar w-1 bg-cockpit-cyan rounded-full"></div>
-                            <div class="wave-bar w-1 bg-cockpit-cyan rounded-full"></div>
+                            <div class="wave-bar w-1 bg-sky-500 dark:bg-cockpit-cyan rounded-full"></div>
+                            <div class="wave-bar w-1 bg-sky-500 dark:bg-cockpit-cyan rounded-full"></div>
+                            <div class="wave-bar w-1 bg-sky-500 dark:bg-cockpit-cyan rounded-full"></div>
+                            <div class="wave-bar w-1 bg-sky-500 dark:bg-cockpit-cyan rounded-full"></div>
+                            <div class="wave-bar w-1 bg-sky-500 dark:bg-cockpit-cyan rounded-full"></div>
                         </div>
-                        <span class="text-xs font-mono text-cockpit-cyan animate-pulse">TRANSMITTING AUDIO...</span>
+                        <span class="text-xs font-mono text-sky-600 dark:text-cockpit-cyan animate-pulse">TRANSMITTING AUDIO...</span>
                     </div>
                 </div>
             </section>
@@ -394,16 +436,16 @@
                 <div class="cockpit-card rounded-2xl p-6">
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center gap-2">
-                            <span class="px-2 py-1 bg-cyan-950 text-cockpit-cyan border border-cyan-500/30 rounded font-mono text-xs">STAGE 04</span>
-                            <h2 class="text-xl font-bold text-white">Simulator Grammar console</h2>
+                            <span class="px-2 py-1 bg-sky-50 dark:bg-cyan-950 text-sky-600 dark:text-cockpit-cyan border border-sky-500/20 dark:border-cyan-500/30 rounded font-mono text-xs">STAGE 04</span>
+                            <h2 class="text-xl font-bold text-slate-900 dark:text-white">Simulator Grammar Console</h2>
                         </div>
-                        <button onclick="toggleCompleted(4)" id="check-btn-4" class="px-3 py-1 border border-slate-600 rounded-lg hover:border-cockpit-cyan hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-400">
-                            <span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="btn-dot-4"></span>
+                        <button onclick="toggleCompleted(4)" id="check-btn-4" class="px-3 py-1 border border-slate-300 dark:border-slate-600 rounded-lg hover:border-sky-500 dark:hover:border-cockpit-cyan hover:text-sky-600 dark:hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-500 dark:text-slate-400 bg-white dark:bg-transparent">
+                            <span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" id="btn-dot-4"></span>
                             <span>MARK READY</span>
                         </button>
                     </div>
 
-                    <p class="text-slate-300 leading-relaxed mb-6">
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
                         Convert these present-tense actions into active Present Perfect operational status updates. Enter the correct string, or use the check engine diagnostic tool to reveal answers.
                     </p>
 
@@ -413,17 +455,17 @@
                     </div>
 
                     <!-- Score Dashboard -->
-                    <div class="mt-8 p-4 bg-slate-950 border border-cockpit-border rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div class="mt-8 p-4 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div class="flex items-center gap-3">
-                            <span class="w-2.5 h-2.5 rounded-full bg-cockpit-cyan animate-ping"></span>
-                            <span class="text-xs font-mono text-slate-400">PRACTICE RUN DIAGNOSTIC</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-sky-500 dark:bg-cockpit-cyan animate-ping"></span>
+                            <span class="text-xs font-mono text-slate-500 dark:text-slate-400">PRACTICE RUN DIAGNOSTIC</span>
                         </div>
                         <div class="flex items-center gap-4">
                             <div class="text-right font-mono text-xs">
-                                <span class="text-slate-400">Accuracy Score:</span>
-                                <span class="text-white font-bold ml-1" id="quiz-score">0 / 10</span>
+                                <span class="text-slate-500 dark:text-slate-400">Accuracy Score:</span>
+                                <span class="text-slate-900 dark:text-white font-bold ml-1" id="quiz-score">0 / 10</span>
                             </div>
-                            <button onclick="resetConsoleQuiz()" class="px-4 py-2 border border-cockpit-border rounded-lg bg-slate-900 hover:border-cockpit-cyan hover:text-cockpit-cyan font-mono text-xs transition-all">
+                            <button onclick="resetConsoleQuiz()" class="px-4 py-2 border border-slate-200 dark:border-cockpit-border rounded-lg bg-white dark:bg-slate-900 hover:border-sky-500 dark:hover:border-cockpit-cyan hover:text-sky-600 dark:hover:text-cockpit-cyan font-mono text-xs transition-all text-slate-700 dark:text-slate-300">
                                 RE-RUN SIMULATOR
                             </button>
                         </div>
@@ -435,10 +477,10 @@
             <section id="sentence-completions" class="scroll-mt-24 space-y-6">
                 <div class="cockpit-card rounded-2xl p-6">
                     <div class="flex items-center gap-2 mb-4">
-                        <span class="px-2 py-1 bg-cyan-950 text-cockpit-cyan border border-cyan-500/30 rounded font-mono text-xs">PHASE 05</span>
-                        <h2 class="text-xl font-bold text-white">Transmission Phrase Completion</h2>
+                        <span class="px-2 py-1 bg-sky-50 dark:bg-cyan-950 text-sky-600 dark:text-cockpit-cyan border border-sky-500/20 dark:border-cyan-500/30 rounded font-mono text-xs">PHASE 05</span>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Transmission Phrase Completion</h2>
                     </div>
-                    <p class="text-slate-300 leading-relaxed mb-6">
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
                         Interactive flight computer interface: Practice saying these completed communications out loud. Click the reveal diagnostic light to compare your situational awareness with standard suggestions.
                     </p>
 
@@ -452,81 +494,81 @@
             <section id="transmission-practice" class="scroll-mt-24 space-y-6">
                 <div class="cockpit-card rounded-2xl p-6">
                     <div class="flex items-center gap-2 mb-4">
-                        <span class="px-2 py-1 bg-cyan-950 text-cockpit-cyan border border-cyan-500/30 rounded font-mono text-xs font-bold">STAGE 06</span>
-                        <h2 class="text-xl font-bold text-white">Radio Comms Transmission Logs</h2>
+                        <span class="px-2 py-1 bg-sky-50 dark:bg-cyan-950 text-sky-600 dark:text-cockpit-cyan border border-sky-500/20 dark:border-cyan-500/30 rounded font-mono text-xs font-bold">STAGE 06</span>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Radio Comms Transmission Logs</h2>
                     </div>
-                    <p class="text-slate-300 leading-relaxed mb-6">
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
                         Complete simulated radio dialog scenarios below. Click the static-shield speaker indicator on each pilot response to check speech delivery speed.
                     </p>
 
                     <div class="space-y-6">
                         <!-- Situation 1 -->
-                        <div class="p-5 rounded-xl border border-cockpit-border bg-slate-950/40 space-y-3 relative">
-                            <span class="absolute top-4 right-4 text-[10px] font-mono text-cockpit-amber bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded">SITUATION 1: ENGINE FAULT</span>
+                        <div class="p-5 rounded-xl border border-slate-200 dark:border-cockpit-border bg-slate-50 dark:bg-slate-950/40 space-y-3 relative">
+                            <span class="absolute top-4 right-4 text-[10px] font-mono text-amber-700 dark:text-cockpit-amber bg-amber-50 dark:bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded">SITUATION 1: ENGINE FAULT</span>
                             <div class="space-y-2">
-                                <div class="text-xs font-mono text-slate-500">ATC TOWER INTERACTION:</div>
-                                <div class="text-sm italic text-slate-400">"Tower, Bristell One Two Three..."</div>
+                                <div class="text-xs font-mono text-slate-500 dark:text-slate-400">ATC TOWER INTERACTION:</div>
+                                <div class="text-sm italic text-slate-600 dark:text-slate-400">"Tower, Bristell One Two Three..."</div>
                             </div>
-                            <div class="p-3 bg-slate-900/60 rounded-lg border border-cockpit-cyan/20 flex justify-between items-center gap-4">
+                            <div class="p-3 bg-white dark:bg-slate-900/60 rounded-lg border border-sky-500/20 flex justify-between items-center gap-4 shadow-sm">
                                 <div class="space-y-1">
-                                    <div class="text-xs font-mono font-bold text-cockpit-cyan">PILOT RADIO CLEARANCE:</div>
-                                    <p class="text-sm font-bold text-white">"Tower, Bristell One Two Three, we have detected an engine vibration. Request return to the airfield."</p>
+                                    <div class="text-xs font-mono font-bold text-sky-600 dark:text-cockpit-cyan">PILOT RADIO CLEARANCE:</div>
+                                    <p class="text-sm font-bold text-slate-800 dark:text-white">"Tower, Bristell One Two Three, we have detected an engine vibration. Request return to the airfield."</p>
                                 </div>
-                                <button onclick="speak('Tower, Bristell One Two Three, we have detected an engine vibration. Request return to the airfield.')" class="p-2.5 bg-cyan-950 border border-cyan-500/30 hover:bg-cockpit-cyan hover:text-slate-950 transition-all text-cockpit-cyan rounded-lg">
+                                <button onclick="speak('Tower, Bristell One Two Three, we have detected an engine vibration. Request return to the airfield.')" class="p-2.5 bg-sky-50 dark:bg-cyan-950 border border-sky-500/20 dark:border-cyan-500/30 hover:bg-sky-600 dark:hover:bg-cockpit-cyan hover:text-white dark:hover:text-slate-950 transition-all text-sky-600 dark:text-cockpit-cyan rounded-lg">
                                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Situation 2 -->
-                        <div class="p-5 rounded-xl border border-cockpit-border bg-slate-950/40 space-y-3 relative">
-                            <span class="absolute top-4 right-4 text-[10px] font-mono text-cockpit-amber bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded">SITUATION 2: METEOROLOGICAL FORCE</span>
+                        <div class="p-5 rounded-xl border border-slate-200 dark:border-cockpit-border bg-slate-50 dark:bg-slate-950/40 space-y-3 relative">
+                            <span class="absolute top-4 right-4 text-[10px] font-mono text-amber-700 dark:text-cockpit-amber bg-amber-50 dark:bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded">SITUATION 2: METEOROLOGICAL FORCE</span>
                             <div class="space-y-2">
-                                <div class="text-xs font-mono text-slate-500">APPROACH RADAR INTERACTION:</div>
-                                <div class="text-sm italic text-slate-400">"Approach, Bristell One Two Three..."</div>
+                                <div class="text-xs font-mono text-slate-500 dark:text-slate-400">APPROACH RADAR INTERACTION:</div>
+                                <div class="text-sm italic text-slate-600 dark:text-slate-400">"Approach, Bristell One Two Three..."</div>
                             </div>
-                            <div class="p-3 bg-slate-900/60 rounded-lg border border-cockpit-cyan/20 flex justify-between items-center gap-4">
+                            <div class="p-3 bg-white dark:bg-slate-900/60 rounded-lg border border-sky-500/20 flex justify-between items-center gap-4 shadow-sm">
                                 <div class="space-y-1">
-                                    <div class="text-xs font-mono font-bold text-cockpit-cyan">PILOT RADIO CLEARANCE:</div>
-                                    <p class="text-sm font-bold text-white">"Approach, Bristell One Two Three, visibility has decreased. Request updated weather information."</p>
+                                    <div class="text-xs font-mono font-bold text-sky-600 dark:text-cockpit-cyan">PILOT RADIO CLEARANCE:</div>
+                                    <p class="text-sm font-bold text-slate-800 dark:text-white">"Approach, Bristell One Two Three, visibility has decreased. Request updated weather information."</p>
                                 </div>
-                                <button onclick="speak('Approach, Bristell One Two Three, visibility has decreased. Request updated weather information.')" class="p-2.5 bg-cyan-950 border border-cyan-500/30 hover:bg-cockpit-cyan hover:text-slate-950 transition-all text-cockpit-cyan rounded-lg">
+                                <button onclick="speak('Approach, Bristell One Two Three, visibility has decreased. Request updated weather information.')" class="p-2.5 bg-sky-50 dark:bg-cyan-950 border border-sky-500/20 dark:border-cyan-500/30 hover:bg-sky-600 dark:hover:bg-cockpit-cyan hover:text-white dark:hover:text-slate-950 transition-all text-sky-600 dark:text-cockpit-cyan rounded-lg">
                                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Situation 3 -->
-                        <div class="p-5 rounded-xl border border-cockpit-border bg-slate-950/40 space-y-3 relative">
-                            <span class="absolute top-4 right-4 text-[10px] font-mono text-cockpit-amber bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded">SITUATION 3: CHECKLIST COMPLETE</span>
+                        <div class="p-5 rounded-xl border border-slate-200 dark:border-cockpit-border bg-slate-50 dark:bg-slate-950/40 space-y-3 relative">
+                            <span class="absolute top-4 right-4 text-[10px] font-mono text-amber-700 dark:text-cockpit-amber bg-amber-50 dark:bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded">SITUATION 3: CHECKLIST COMPLETE</span>
                             <div class="space-y-2">
-                                <div class="text-xs font-mono text-slate-500">TOWER INTERACTION:</div>
-                                <div class="text-sm italic text-slate-400">"Tower, Bristell One Two Three..."</div>
+                                <div class="text-xs font-mono text-slate-500 dark:text-slate-400">TOWER INTERACTION:</div>
+                                <div class="text-sm italic text-slate-600 dark:text-slate-400">"Tower, Bristell One Two Three..."</div>
                             </div>
-                            <div class="p-3 bg-slate-900/60 rounded-lg border border-cockpit-cyan/20 flex justify-between items-center gap-4">
+                            <div class="p-3 bg-white dark:bg-slate-900/60 rounded-lg border border-sky-500/20 flex justify-between items-center gap-4 shadow-sm">
                                 <div class="space-y-1">
-                                    <div class="text-xs font-mono font-bold text-cockpit-cyan">PILOT RADIO CLEARANCE:</div>
-                                    <p class="text-sm font-bold text-white">"Tower, Bristell One Two Three, we have completed the checklist and are ready for departure."</p>
+                                    <div class="text-xs font-mono font-bold text-sky-600 dark:text-cockpit-cyan">PILOT RADIO CLEARANCE:</div>
+                                    <p class="text-sm font-bold text-slate-800 dark:text-white">"Tower, Bristell One Two Three, we have completed the checklist and are ready for departure."</p>
                                 </div>
-                                <button onclick="speak('Tower, Bristell One Two Three, we have completed the checklist and are ready for departure.')" class="p-2.5 bg-cyan-950 border border-cyan-500/30 hover:bg-cockpit-cyan hover:text-slate-950 transition-all text-cockpit-cyan rounded-lg">
+                                <button onclick="speak('Tower, Bristell One Two Three, we have completed the checklist and are ready for departure.')" class="p-2.5 bg-sky-50 dark:bg-cyan-950 border border-sky-500/20 dark:border-cyan-500/30 hover:bg-sky-600 dark:hover:bg-cockpit-cyan hover:text-white dark:hover:text-slate-950 transition-all text-sky-600 dark:text-cockpit-cyan rounded-lg">
                                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Situation 4 -->
-                        <div class="p-5 rounded-xl border border-cockpit-border bg-slate-950/40 space-y-3 relative">
-                            <span class="absolute top-4 right-4 text-[10px] font-mono text-cockpit-amber bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded">SITUATION 4: SURFACE CRITICAL</span>
+                        <div class="p-5 rounded-xl border border-slate-200 dark:border-cockpit-border bg-slate-50 dark:bg-slate-950/40 space-y-3 relative">
+                            <span class="absolute top-4 right-4 text-[10px] font-mono text-amber-700 dark:text-cockpit-amber bg-amber-50 dark:bg-amber-950/40 border border-amber-500/20 px-2 py-0.5 rounded">SITUATION 4: SURFACE CRITICAL</span>
                             <div class="space-y-2">
-                                <div class="text-xs font-mono text-slate-500">TOWER INTERACTION:</div>
-                                <div class="text-sm italic text-slate-400">"Tower, braking action..."</div>
+                                <div class="text-xs font-mono text-slate-500 dark:text-slate-400">TOWER INTERACTION:</div>
+                                <div class="text-sm italic text-slate-600 dark:text-slate-400">"Tower, braking action..."</div>
                             </div>
-                            <div class="p-3 bg-slate-900/60 rounded-lg border border-cockpit-cyan/20 flex justify-between items-center gap-4">
+                            <div class="p-3 bg-white dark:bg-slate-900/60 rounded-lg border border-sky-500/20 flex justify-between items-center gap-4 shadow-sm">
                                 <div class="space-y-1">
-                                    <div class="text-xs font-mono font-bold text-cockpit-cyan">PILOT RADIO CLEARANCE:</div>
-                                    <p class="text-sm font-bold text-white">"Tower, braking action has become poor. Request holding position."</p>
+                                    <div class="text-xs font-mono font-bold text-sky-600 dark:text-cockpit-cyan">PILOT RADIO CLEARANCE:</div>
+                                    <p class="text-sm font-bold text-slate-800 dark:text-white">"Tower, braking action has become poor. Request holding position."</p>
                                 </div>
-                                <button onclick="speak('Tower, braking action has become poor. Request holding position.')" class="p-2.5 bg-cyan-950 border border-cyan-500/30 hover:bg-cockpit-cyan hover:text-slate-950 transition-all text-cockpit-cyan rounded-lg">
+                                <button onclick="speak('Tower, braking action has become poor. Request holding position.')" class="p-2.5 bg-sky-50 dark:bg-cyan-950 border border-sky-500/20 dark:border-cyan-500/30 hover:bg-sky-600 dark:hover:bg-cockpit-cyan hover:text-white dark:hover:text-slate-950 transition-all text-sky-600 dark:text-cockpit-cyan rounded-lg">
                                     <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                                 </button>
                             </div>
@@ -541,22 +583,22 @@
                     <!-- Dialogue Hub (7 columns) -->
                     <div class="cockpit-card rounded-2xl p-6 lg:col-span-7 space-y-6">
                         <div class="flex items-center justify-between">
-                            <h3 class="text-lg font-bold text-white flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-cockpit-cyan"></span>
+                            <h3 class="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-sky-500 dark:bg-cockpit-cyan"></span>
                                 Mini Flight-Deck Briefing
                             </h3>
-                            <span class="text-xs font-mono text-slate-500">PILOT/INSTRUCTOR SIM</span>
+                            <span class="text-xs font-mono text-slate-500 dark:text-slate-400">PILOT/INSTRUCTOR SIM</span>
                         </div>
 
                         <!-- Dialogue selector tabs -->
-                        <div class="flex gap-2 border-b border-cockpit-border pb-3">
-                            <button id="dial-tab-0" onclick="switchDialogue(0)" class="px-3 py-1.5 font-mono text-xs rounded-lg border border-cockpit-cyan bg-cyan-950/50 text-cockpit-cyan transition-all">
+                        <div class="flex gap-2 border-b border-slate-200 dark:border-cockpit-border pb-3">
+                            <button id="dial-tab-0" onclick="switchDialogue(0)" class="px-3 py-1.5 font-mono text-xs rounded-lg border border-sky-500 bg-sky-50 dark:bg-cyan-950/50 text-sky-600 dark:text-cockpit-cyan transition-all">
                                 DIALOGUE 1
                             </button>
-                            <button id="dial-tab-1" onclick="switchDialogue(1)" class="px-3 py-1.5 font-mono text-xs rounded-lg border border-transparent text-slate-400 hover:text-white transition-all">
+                            <button id="dial-tab-1" onclick="switchDialogue(1)" class="px-3 py-1.5 font-mono text-xs rounded-lg border border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all">
                                 DIALOGUE 2
                             </button>
-                            <button id="dial-tab-2" onclick="switchDialogue(2)" class="px-3 py-1.5 font-mono text-xs rounded-lg border border-transparent text-slate-400 hover:text-white transition-all">
+                            <button id="dial-tab-2" onclick="switchDialogue(2)" class="px-3 py-1.5 font-mono text-xs rounded-lg border border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all">
                                 DIALOGUE 3
                             </button>
                         </div>
@@ -571,20 +613,20 @@
                     <div class="cockpit-card rounded-2xl p-6 lg:col-span-5 flex flex-col justify-between">
                         <div>
                             <div class="flex items-center justify-between mb-4">
-                                <h3 class="text-sm font-bold font-mono text-cockpit-amber uppercase tracking-wider">60-Second Speaking Task</h3>
-                                <svg class="w-5 h-5 text-cockpit-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                <h3 class="text-sm font-bold font-mono text-amber-600 dark:text-cockpit-amber uppercase tracking-wider">60-Second Speaking Task</h3>
+                                <svg class="w-5 h-5 text-amber-500 dark:text-cockpit-amber" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
                             
-                            <div class="p-3 bg-amber-950/20 border border-cockpit-amber/30 rounded-xl mb-4 space-y-2">
-                                <div class="text-xs font-mono font-bold text-cockpit-amber">THEME BRIEF:</div>
-                                <p class="text-xs text-slate-300 leading-relaxed">
+                            <div class="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-500/20 dark:border-cockpit-amber/30 rounded-xl mb-4 space-y-2">
+                                <div class="text-xs font-mono font-bold text-amber-700 dark:text-cockpit-amber">THEME BRIEF:</div>
+                                <p class="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                                     "Describe a situation when weather has changed before landing."
                                 </p>
                             </div>
 
                             <div class="space-y-2 mb-6">
-                                <div class="text-[10px] font-mono text-slate-500 uppercase">Clearance Structure Points:</div>
-                                <ul class="text-xs text-slate-400 space-y-1 list-decimal list-inside">
+                                <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400 uppercase">Clearance Structure Points:</div>
+                                <ul class="text-xs text-slate-600 dark:text-slate-400 space-y-1 list-decimal list-inside">
                                     <li>Say what has happened</li>
                                     <li>Explain the risk metrics</li>
                                     <li>Declare corrective pilot actions</li>
@@ -594,28 +636,28 @@
                         </div>
 
                         <!-- Interactive Countdown Widget -->
-                        <div class="bg-slate-950 rounded-xl border border-cockpit-border p-4 space-y-4">
+                        <div class="bg-slate-100 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-cockpit-border p-4 space-y-4">
                             <div class="flex items-center justify-between">
-                                <div class="font-mono text-xs text-slate-500">DECK CHRONOMETER</div>
-                                <div id="timer-display" class="font-mono text-3xl font-extrabold text-white glow-cyan">01:00</div>
+                                <div class="font-mono text-xs text-slate-500 dark:text-slate-400">DECK CHRONOMETER</div>
+                                <div id="timer-display" class="font-mono text-3xl font-extrabold text-slate-800 dark:text-white glow-cyan">01:00</div>
                             </div>
                             
                             <!-- Progress Bar -->
-                            <div class="w-full h-1.5 bg-slate-900 rounded-full overflow-hidden">
-                                <div id="timer-progress" class="h-full bg-cockpit-cyan transition-all duration-1000" style="width: 100%;"></div>
+                            <div class="w-full h-1.5 bg-slate-200 dark:bg-slate-900 rounded-full overflow-hidden">
+                                <div id="timer-progress" class="h-full bg-sky-500 dark:bg-cockpit-cyan transition-all duration-1000" style="width: 100%;"></div>
                             </div>
 
                             <div class="flex gap-2">
-                                <button id="timer-btn" onclick="toggleSpeakingTimer()" class="flex-1 py-2 rounded-lg bg-cockpit-cyan text-slate-950 font-bold font-mono text-xs hover:bg-cyan-400 transition-all text-center">
+                                <button id="timer-btn" onclick="toggleSpeakingTimer()" class="flex-1 py-2 rounded-lg bg-sky-600 dark:bg-cockpit-cyan text-white dark:text-slate-950 font-bold font-mono text-xs hover:bg-sky-500 dark:hover:bg-cyan-400 transition-all text-center">
                                     START CLEARANCE TIME
                                 </button>
-                                <button onclick="resetSpeakingTimer()" class="px-3 py-2 rounded-lg border border-cockpit-border bg-slate-900 hover:border-cockpit-cyan hover:text-cockpit-cyan text-xs font-mono transition-all">
+                                <button onclick="resetSpeakingTimer()" class="px-3 py-2 rounded-lg border border-slate-200 dark:border-cockpit-border bg-white dark:bg-slate-900 hover:border-sky-500 dark:hover:border-cockpit-cyan text-slate-700 dark:text-slate-300 hover:text-sky-600 dark:hover:text-cockpit-cyan text-xs font-mono transition-all">
                                     RESET
                                 </button>
                             </div>
                         </div>
 
-                        <button onclick="revealModelAnswer()" class="mt-4 w-full text-center py-2 border border-dashed border-cockpit-border hover:border-cockpit-cyan text-xs text-slate-400 hover:text-cockpit-cyan font-mono transition-all rounded-lg">
+                        <button onclick="revealModelAnswer()" class="mt-4 w-full text-center py-2 border border-dashed border-slate-300 dark:border-cockpit-border hover:border-sky-500 dark:hover:border-cockpit-cyan text-xs text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cockpit-cyan font-mono transition-all rounded-lg bg-slate-50 dark:bg-transparent">
                             REVEAL MODEL ANSWER KEY
                         </button>
                     </div>
@@ -626,10 +668,10 @@
             <section id="mistakes-checklist" class="scroll-mt-24 space-y-6">
                 <div class="cockpit-card rounded-2xl p-6">
                     <div class="flex items-center gap-2 mb-4">
-                        <span class="px-2 py-1 bg-cyan-950 text-cockpit-cyan border border-cyan-500/30 rounded font-mono text-xs font-bold">SAFETY INHIBITS</span>
-                        <h2 class="text-xl font-bold text-white">Critical Speaking Errors</h2>
+                        <span class="px-2 py-1 bg-sky-50 dark:bg-cyan-950 text-sky-600 dark:text-cockpit-cyan border border-sky-500/20 dark:border-cyan-500/30 rounded font-mono text-xs font-bold">SAFETY INHIBITS</span>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Critical Speaking Errors</h2>
                     </div>
-                    <p class="text-slate-300 leading-relaxed mb-6">
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
                         Verify transmission guidelines to avoid common ICAO score mistakes. Review incorrect vs. corrected speaking paths below.
                     </p>
 
@@ -643,41 +685,41 @@
             <section id="quick-drills" class="scroll-mt-24 space-y-6">
                 <div class="cockpit-card rounded-2xl p-6 relative">
                     <div class="flex items-center gap-2 mb-4">
-                        <span class="px-2 py-1 bg-cyan-950 text-cockpit-cyan border border-cyan-500/30 rounded font-mono text-xs font-bold">FINAL REVISION</span>
-                        <h2 class="text-xl font-bold text-white">Fast-Speaking Runway Drills</h2>
+                        <span class="px-2 py-1 bg-sky-50 dark:bg-cyan-950 text-sky-600 dark:text-cockpit-cyan border border-sky-500/20 dark:border-cyan-500/30 rounded font-mono text-xs font-bold">FINAL REVISION</span>
+                        <h2 class="text-xl font-bold text-slate-900 dark:text-white">Fast-Speaking Runway Drills</h2>
                     </div>
-                    <p class="text-slate-300 leading-relaxed mb-6">
+                    <p class="text-slate-700 dark:text-slate-300 leading-relaxed mb-6">
                         Answer these rapid questions in single Present Perfect clearance responses, then repeat the final critical phrases block to lock in fluency.
                     </p>
 
                     <!-- Fast questions Grid -->
                     <div class="space-y-4 mb-8">
-                        <div class="text-xs font-mono text-slate-500 uppercase">Fast Speaking Prompts:</div>
+                        <div class="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase">Fast Speaking Prompts:</div>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3" id="fast-questions-container">
                             <!-- Injected dynamically -->
                         </div>
                     </div>
 
                     <!-- Final Repeat Card Block -->
-                    <div class="bg-slate-950 rounded-xl border border-cockpit-border p-5 relative overflow-hidden">
+                    <div class="bg-white dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-cockpit-border p-5 relative overflow-hidden shadow-sm">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-xs font-mono font-bold text-cockpit-cyan flex items-center gap-1.5">
-                                <span class="w-1.5 h-1.5 rounded-full bg-cockpit-cyan animate-pulse"></span>
+                            <span class="text-xs font-mono font-bold text-sky-600 dark:text-cockpit-cyan flex items-center gap-1.5">
+                                <span class="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-cockpit-cyan animate-pulse"></span>
                                 COMPREHENSIVE REPEAT-AFTER-ME TRANSMISSIONS
                             </span>
-                            <button onclick="speakRepeatBlock()" class="text-xs font-mono bg-cyan-950 border border-cyan-500/30 text-cockpit-cyan hover:bg-cockpit-cyan hover:text-slate-950 py-1 px-2.5 rounded-lg transition-all flex items-center gap-1">
+                            <button onclick="speakRepeatBlock()" class="text-xs font-mono bg-sky-50 dark:bg-cyan-950 border border-sky-500/20 dark:border-cyan-500/30 text-sky-600 dark:text-cockpit-cyan hover:bg-sky-600 dark:hover:bg-cockpit-cyan hover:text-white dark:hover:text-slate-950 py-1 px-2.5 rounded-lg transition-all flex items-center gap-1">
                                 SPEAK ALL BLOCK PHRASES
                             </button>
                         </div>
 
-                        <div class="space-y-2.5 font-mono text-xs md:text-sm text-slate-300">
-                            <p class="py-1 px-2.5 border-l-2 border-cockpit-cyan bg-slate-900/30">1. The weather has changed.</p>
-                            <p class="py-1 px-2.5 border-l-2 border-cockpit-cyan bg-slate-900/30">2. Visibility has decreased.</p>
-                            <p class="py-1 px-2.5 border-l-2 border-cockpit-cyan bg-slate-900/30">3. The runway has become wet.</p>
-                            <p class="py-1 px-2.5 border-l-2 border-cockpit-cyan bg-slate-900/30">4. The crew has received updated information from ATC.</p>
-                            <p class="py-1 px-2.5 border-l-2 border-cockpit-cyan bg-slate-900/30">5. The pilot has assessed the situation.</p>
-                            <p class="py-1 px-2.5 border-l-2 border-cockpit-cyan bg-slate-900/30">6. The aircraft has completed a safe go-around.</p>
-                            <p class="py-1 px-2.5 border-l-2 border-cockpit-cyan bg-slate-900/30">7. This decision has increased the safety margin.</p>
+                        <div class="space-y-2.5 font-mono text-xs md:text-sm text-slate-700 dark:text-slate-300">
+                            <p class="py-1 px-2.5 border-l-2 border-sky-500 dark:border-cockpit-cyan bg-slate-50 dark:bg-slate-900/30">1. The weather has changed.</p>
+                            <p class="py-1 px-2.5 border-l-2 border-sky-500 dark:border-cockpit-cyan bg-slate-50 dark:bg-slate-900/30">2. Visibility has decreased.</p>
+                            <p class="py-1 px-2.5 border-l-2 border-sky-500 dark:border-cockpit-cyan bg-slate-50 dark:bg-slate-900/30">3. The runway has become wet.</p>
+                            <p class="py-1 px-2.5 border-l-2 border-sky-500 dark:border-cockpit-cyan bg-slate-50 dark:bg-slate-900/30">4. The crew has received updated information from ATC.</p>
+                            <p class="py-1 px-2.5 border-l-2 border-sky-500 dark:border-cockpit-cyan bg-slate-50 dark:bg-slate-900/30">5. The pilot has assessed the situation.</p>
+                            <p class="py-1 px-2.5 border-l-2 border-sky-500 dark:border-cockpit-cyan bg-slate-50 dark:bg-slate-900/30">6. The aircraft has completed a safe go-around.</p>
+                            <p class="py-1 px-2.5 border-l-2 border-sky-500 dark:border-cockpit-cyan bg-slate-50 dark:bg-slate-900/30">7. This decision has increased the safety margin.</p>
                         </div>
                     </div>
                 </div>
@@ -686,35 +728,22 @@
         </div>
     </main>
 
-    <!-- RELATED MATERIALS ON THIS TOPIC -->
-    <footer class="max-w-7xl mx-auto px-4 pb-12 w-full">
-        <div class="cockpit-card rounded-xl p-6">
-            <p class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-4">More on the present perfect</p>
-            <div class="flex flex-wrap gap-3">
-                <a href="../present-perfect-aviation-crosswords.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-950/40 border border-cockpit-border text-slate-200 hover:border-cockpit-cyan hover:text-white text-sm font-medium transition-all">Crossword: Present Perfect</a>
-                <a href="../songs.html#present-result-now" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-950/40 border border-cockpit-border text-slate-200 hover:border-cockpit-cyan hover:text-white text-sm font-medium transition-all">&#9654; Song: Present Result Now</a>
-                <a href="../songs.html#we-have-detected-a-problem" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-950/40 border border-cockpit-border text-slate-200 hover:border-cockpit-cyan hover:text-white text-sm font-medium transition-all">&#9654; Song: We Have Detected a Problem</a>
-                <a href="../infographics.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-slate-950/40 border border-cockpit-border text-slate-200 hover:border-cockpit-cyan hover:text-white text-sm font-medium transition-all">Infographic: Present Perfect in Aviation</a>
-            </div>
-        </div>
-    </footer>
-
     <!-- Modal overlay for 60s Speaking Task Model Answer -->
-    <div id="answer-modal" class="hidden fixed inset-0 z-50 bg-[#080C14]/80 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-cockpit-panel border border-cockpit-border rounded-2xl w-full max-w-xl p-6 shadow-2xl relative">
-            <button onclick="hideModelAnswer()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-mono text-lg">&times;</button>
+    <div id="answer-modal" class="hidden fixed inset-0 z-50 bg-slate-900/80 dark:bg-[#080C14]/80 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white dark:bg-cockpit-panel border border-slate-200 dark:border-cockpit-border rounded-2xl w-full max-w-xl p-6 shadow-2xl relative">
+            <button onclick="hideModelAnswer()" class="absolute top-4 right-4 text-slate-400 dark:text-slate-500 hover:text-slate-900 dark:hover:text-white font-mono text-lg">&times;</button>
             <div class="flex items-center gap-2 mb-4">
-                <span class="w-2.5 h-2.5 rounded-full bg-cockpit-cyan"></span>
-                <h4 class="text-base font-bold text-white font-mono">MODEL SPEECH PATTERN</h4>
+                <span class="w-2.5 h-2.5 rounded-full bg-sky-500 dark:bg-cockpit-cyan"></span>
+                <h4 class="text-base font-bold text-slate-900 dark:text-white font-mono">MODEL SPEECH PATTERN</h4>
             </div>
-            <p class="text-sm text-slate-300 leading-relaxed bg-slate-950 p-4 rounded-xl border border-cockpit-border mb-4">
+            <p class="text-sm text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-950 p-4 rounded-xl border border-slate-200 dark:border-cockpit-border mb-4">
                 "The weather has changed before landing. Visibility has decreased, and the runway has become wet. This situation can be dangerous because the aircraft may need a longer landing distance, and the approach may become unstable.<br><br>The pilot should check updated weather information, monitor speed and descent rate, and be ready to go around if the approach is not stable. The crew should also listen carefully to ATC instructions and confirm runway conditions.<br><br>In my opinion, if the safety margin has become too small, the safest decision is to go around or divert. Safety is more important than completing the landing on the first attempt."
             </p>
             <div class="flex gap-2">
-                <button onclick="speakModelSpeech()" class="flex-1 py-2.5 bg-cockpit-cyan text-slate-950 font-bold font-mono text-xs hover:bg-cyan-400 transition-all rounded-lg">
+                <button onclick="speakModelSpeech()" class="flex-1 py-2.5 bg-sky-600 dark:bg-cockpit-cyan text-white dark:text-slate-950 font-bold font-mono text-xs hover:bg-sky-500 dark:hover:bg-cyan-400 transition-all rounded-lg">
                     PLAY TRANSCRIPTION AUDIO
                 </button>
-                <button onclick="hideModelAnswer()" class="px-4 py-2.5 border border-cockpit-border hover:border-white text-xs font-mono transition-all rounded-lg">
+                <button onclick="hideModelAnswer()" class="px-4 py-2.5 border border-slate-200 dark:border-cockpit-border text-slate-700 dark:text-slate-300 hover:border-slate-900 dark:hover:border-white text-xs font-mono transition-all rounded-lg">
                     CLOSE BRIEF
                 </button>
             </div>
@@ -722,10 +751,10 @@
     </div>
 
     <!-- Cockpit Footer Panel -->
-    <footer class="bg-[#0B0F19] border-t border-cockpit-border/80 px-4 py-6 mt-12 text-slate-400 text-xs text-center font-mono">
+    <footer class="bg-white dark:bg-[#0B0F19] border-t border-slate-200 dark:border-cockpit-border/80 px-4 py-6 mt-12 text-slate-500 dark:text-slate-400 text-xs text-center font-mono transition-all">
         <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
             <div>
-                <span class="text-cockpit-cyan">AVIATION ENGLISH FLUENCY SUITE</span> • ICAO 4-5 READY
+                <span class="text-sky-600 dark:text-cockpit-cyan">AVIATION ENGLISH FLUENCY SUITE</span> • ICAO 4-5 READY
             </div>
             <div class="flex gap-4">
                 <span>FLIGHT RECORDER: ACTIVE</span>
@@ -857,10 +886,44 @@
         let timerSecondsRemaining = 60;
         let selectedVoice = null;
 
-        // Initialize Speak System and Voices safely
+        // Day/Night Theme controller
+        function toggleTheme() {
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                icon.innerText = "☀️";
+                text.innerText = "DAY OPS";
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                icon.innerText = "🌙";
+                text.innerText = "NIGHT OPS";
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function initSavedTheme() {
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            const html = document.documentElement;
+            const icon = document.getElementById('theme-icon');
+            const text = document.getElementById('theme-text');
+            
+            if (savedTheme === 'dark') {
+                html.classList.add('dark');
+                icon.innerText = "🌙";
+                text.innerText = "NIGHT OPS";
+            } else {
+                html.classList.remove('dark');
+                icon.innerText = "☀️";
+                text.innerText = "DAY OPS";
+            }
+        }
+
         function initVoices() {
             if ('speechSynthesis' in window) {
-                // Pre-fetch English voice if available
                 const fetchVoices = () => {
                     const voices = window.speechSynthesis.getVoices();
                     selectedVoice = voices.find(v => v.lang.startsWith('en-') && (v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Female')));
@@ -880,7 +943,6 @@
             if ('speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 
-                // Show cockpit visualizer wave
                 const visualizer = document.getElementById('audio-visualizer');
                 if (visualizer) visualizer.classList.remove('hidden');
 
@@ -888,8 +950,8 @@
                 if (selectedVoice) {
                     utterance.voice = selectedVoice;
                 }
-                utterance.rate = 0.85; // deliberate, clear ATC pronunciation speed
-                utterance.pitch = 0.95; // realistic voice profile
+                utterance.rate = 0.85; 
+                utterance.pitch = 0.95; 
                 
                 utterance.onend = () => {
                     if (visualizer) visualizer.classList.add('hidden');
@@ -910,30 +972,28 @@
             const tabContainer = document.getElementById('radar-content');
             const data = radarSituations[idx];
 
-            // Render content
             tabContainer.innerHTML = `
                 <div class="space-y-3">
                     <div class="flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-cockpit-cyan animate-pulse"></span>
-                        <h4 class="text-xs font-mono font-bold text-slate-400 uppercase tracking-widest">SITUATIONAL FOCUS</h4>
+                        <span class="w-2 h-2 rounded-full bg-sky-600 dark:bg-cockpit-cyan animate-pulse"></span>
+                        <h4 class="text-xs font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">SITUATIONAL FOCUS</h4>
                     </div>
-                    <div class="text-xl font-bold text-white tracking-tight">${data.title}</div>
-                    <div class="font-mono text-xs text-cockpit-amber font-medium">METRIC PATTERN: ${data.formula}</div>
-                    <p class="text-sm text-slate-300 max-w-2xl leading-relaxed">${data.hint}</p>
-                    <div class="mt-4 p-3 bg-slate-900 border border-cyan-500/10 rounded-lg">
-                        <div class="text-[10px] font-mono text-cockpit-cyan uppercase mb-1">Standard Transmission Entry:</div>
-                        <div class="font-mono text-sm text-white font-bold">"${data.phrase}"</div>
+                    <div class="text-xl font-bold text-slate-900 dark:text-white tracking-tight">${data.title}</div>
+                    <div class="font-mono text-xs text-amber-600 dark:text-cockpit-amber font-medium">METRIC PATTERN: ${data.formula}</div>
+                    <p class="text-sm text-slate-700 dark:text-slate-300 max-w-2xl leading-relaxed">${data.hint}</p>
+                    <div class="mt-4 p-3 bg-slate-50 dark:bg-slate-900 border border-sky-500/10 rounded-lg">
+                        <div class="text-[10px] font-mono text-sky-600 dark:text-cockpit-cyan uppercase mb-1">Standard Transmission Entry:</div>
+                        <div class="font-mono text-sm text-slate-900 dark:text-white font-bold">"${data.phrase}"</div>
                     </div>
                 </div>
             `;
 
-            // Active State Visuals on button
             for (let i = 0; i < 5; i++) {
                 const btn = document.getElementById(`radar-tab-${i}`);
                 if (i === idx) {
-                    btn.className = "px-2.5 py-3 rounded-lg border border-cockpit-cyan bg-cyan-950/40 text-cockpit-cyan text-xs font-bold font-mono transition-all text-center";
+                    btn.className = "px-2.5 py-3 rounded-lg border border-sky-500 bg-sky-50 dark:bg-cyan-950/40 text-sky-600 dark:text-cockpit-cyan text-xs font-bold font-mono transition-all text-center";
                 } else {
-                    btn.className = "px-2.5 py-3 rounded-lg border border-cockpit-border/60 hover:border-slate-500 text-slate-400 text-xs font-bold font-mono transition-all text-center";
+                    btn.className = "px-2.5 py-3 rounded-lg border border-slate-200 dark:border-cockpit-border/60 hover:border-slate-400 dark:hover:border-slate-500 text-slate-500 dark:text-slate-400 text-xs font-bold font-mono transition-all text-center bg-white dark:bg-transparent";
                 }
             }
         }
@@ -949,13 +1009,13 @@
             
             mustUsePhrases.forEach((phrase, idx) => {
                 const card = document.createElement('div');
-                card.className = "p-3 bg-slate-900/40 border border-cockpit-border/60 rounded-xl flex items-center justify-between gap-4 hover:border-cockpit-cyan/30 hover:bg-slate-900/60 transition-all group";
+                card.className = "p-3 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-cockpit-border/60 rounded-xl flex items-center justify-between gap-4 hover:border-sky-500/30 dark:hover:border-cockpit-cyan/30 hover:bg-slate-50 dark:hover:bg-slate-900/60 transition-all group shadow-sm";
                 card.innerHTML = `
                     <div class="space-y-1">
-                        <div class="text-[10px] font-mono text-slate-500">ATC TX CH 0${idx + 1}</div>
-                        <p class="text-xs font-bold text-white leading-relaxed group-hover:text-cockpit-cyan transition-colors">"${phrase}"</p>
+                        <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400">ATC TX CH 0${idx + 1}</div>
+                        <p class="text-xs font-bold text-slate-800 dark:text-white leading-relaxed group-hover:text-sky-600 dark:group-hover:text-cockpit-cyan transition-colors">"${phrase}"</p>
                     </div>
-                    <button onclick="speak('${phrase.replace(/'/g, "\\'")}')" class="p-2 bg-slate-950 border border-cockpit-border rounded-lg text-slate-400 hover:text-cockpit-cyan hover:border-cockpit-cyan hover:bg-cyan-950/20 active:scale-90 transition-all shrink-0">
+                    <button onclick="speak('${phrase.replace(/'/g, "\\'")}')" class="p-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded-lg text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cockpit-cyan hover:border-sky-500 dark:hover:border-cockpit-cyan hover:bg-sky-50 dark:hover:bg-cyan-950/20 active:scale-90 transition-all shrink-0">
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                     </button>
                 `;
@@ -970,21 +1030,21 @@
 
             consoleQuizQuestions.forEach((q, idx) => {
                 const card = document.createElement('div');
-                card.className = "p-4 bg-slate-900/30 border border-cockpit-border rounded-xl space-y-3";
+                card.className = "p-4 bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-cockpit-border rounded-xl space-y-3 shadow-sm";
                 card.innerHTML = `
                     <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                         <div class="flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full bg-slate-600" id="quiz-status-dot-${idx}"></span>
-                            <span class="text-xs font-mono text-slate-400 uppercase">Input Scenario 0${idx + 1}:</span>
-                            <span class="text-xs font-bold text-white font-mono">"${q.source}"</span>
+                            <span class="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-600" id="quiz-status-dot-${idx}"></span>
+                            <span class="text-xs font-mono text-slate-500 dark:text-slate-400 uppercase">Input Scenario 0${idx + 1}:</span>
+                            <span class="text-xs font-bold text-slate-800 dark:text-white font-mono">"${q.source}"</span>
                         </div>
                         <div class="flex items-center gap-2">
-                            <button onclick="revealQuizAnswer(${idx})" class="text-[10px] font-mono text-slate-500 hover:text-cockpit-cyan transition-all">REVEAL KEY</button>
+                            <button onclick="revealQuizAnswer(${idx})" class="text-[10px] font-mono text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cockpit-cyan transition-all">REVEAL KEY</button>
                         </div>
                     </div>
                     
                     <div class="relative">
-                        <input type="text" id="quiz-input-${idx}" oninput="validateQuiz(${idx})" placeholder="Translate to Present Perfect..." class="w-full bg-slate-950 border border-cockpit-border rounded-lg py-2 pl-3 pr-20 text-xs font-mono text-white focus:outline-none focus:border-cockpit-cyan transition-all">
+                        <input type="text" id="quiz-input-${idx}" oninput="validateQuiz(${idx})" placeholder="Translate to Present Perfect..." class="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded-lg py-2 pl-3 pr-20 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 dark:focus:border-cockpit-cyan transition-all">
                         <span id="quiz-badge-${idx}" class="absolute right-2 top-1.5 px-2 py-0.5 rounded text-[9px] font-mono font-bold hidden"></span>
                     </div>
                 `;
@@ -1004,18 +1064,18 @@
 
             if (val === target) {
                 badge.innerText = "PASSED";
-                badge.className = "absolute right-2 top-1.5 px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-emerald-950/80 border border-emerald-500/40 text-cockpit-green";
-                dot.className = "w-2.5 h-2.5 rounded-full bg-cockpit-green shadow-[0_0_8px_rgba(0,230,118,0.6)]";
-                input.className = "w-full bg-slate-950 border border-cockpit-green/50 rounded-lg py-2 pl-3 pr-20 text-xs font-mono text-white focus:outline-none focus:border-cockpit-green transition-all";
+                badge.className = "absolute right-2 top-1.5 px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-emerald-50 dark:bg-emerald-950/80 border border-emerald-500/40 text-emerald-600 dark:text-cockpit-green";
+                dot.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-cockpit-green shadow-[0_0_8px_rgba(0,230,118,0.6)]";
+                input.className = "w-full bg-slate-50 dark:bg-slate-950 border border-emerald-500/50 rounded-lg py-2 pl-3 pr-20 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 transition-all";
             } else if (val.length > 3) {
                 badge.innerText = "CHECKING";
-                badge.className = "absolute right-2 top-1.5 px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-950/60 border border-amber-500/30 text-cockpit-amber";
-                dot.className = "w-2.5 h-2.5 rounded-full bg-cockpit-amber animate-pulse";
-                input.className = "w-full bg-slate-950 border border-cockpit-border rounded-lg py-2 pl-3 pr-20 text-xs font-mono text-white focus:outline-none focus:border-cockpit-cyan transition-all";
+                badge.className = "absolute right-2 top-1.5 px-2 py-0.5 rounded text-[9px] font-mono font-bold bg-amber-50 dark:bg-amber-950/60 border border-amber-500/30 text-amber-600 dark:text-cockpit-amber";
+                dot.className = "w-2.5 h-2.5 rounded-full bg-amber-500 dark:bg-cockpit-amber animate-pulse";
+                input.className = "w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded-lg py-2 pl-3 pr-20 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 dark:focus:border-cockpit-cyan transition-all";
             } else {
                 badge.classList.add('hidden');
-                dot.className = "w-2.5 h-2.5 rounded-full bg-slate-600";
-                input.className = "w-full bg-slate-950 border border-cockpit-border rounded-lg py-2 pl-3 pr-20 text-xs font-mono text-white focus:outline-none focus:border-cockpit-cyan transition-all";
+                dot.className = "w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-600";
+                input.className = "w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded-lg py-2 pl-3 pr-20 text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-sky-500 dark:focus:border-cockpit-cyan transition-all";
             }
             updateTotalQuizScore();
         }
@@ -1053,24 +1113,24 @@
             
             completionPhrases.forEach((c, idx) => {
                 const card = document.createElement('div');
-                card.className = "p-4 bg-slate-900/30 border border-cockpit-border rounded-xl space-y-3";
+                card.className = "p-4 bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-cockpit-border rounded-xl space-y-3 shadow-sm";
                 card.innerHTML = `
-                    <div class="flex items-center justify-between border-b border-cockpit-border/40 pb-2">
-                        <span class="text-[10px] font-mono text-slate-500">TRANSMIT BLOCK 0${idx + 1}</span>
-                        <span class="w-1.5 h-1.5 rounded-full bg-cockpit-cyan"></span>
+                    <div class="flex items-center justify-between border-b border-slate-100 dark:border-cockpit-border/40 pb-2">
+                        <span class="text-[10px] font-mono text-slate-500 dark:text-slate-400">TRANSMIT BLOCK 0${idx + 1}</span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-cockpit-cyan"></span>
                     </div>
-                    <div class="text-xs text-slate-300">
-                        <span class="font-mono text-white font-bold glow-cyan">${c.start}</span> ...
+                    <div class="text-xs text-slate-700 dark:text-slate-300">
+                        <span class="font-mono text-slate-900 dark:text-white font-bold glow-cyan">${c.start}</span> ...
                     </div>
-                    <div class="hidden pt-2 text-[11px] text-slate-400 italic bg-slate-950 p-2.5 rounded border border-cockpit-border" id="comp-answer-${idx}">
-                        <span class="text-cockpit-amber font-mono text-[9px] block not-italic uppercase tracking-wide">Suggested completion:</span>
+                    <div class="hidden pt-2 text-[11px] text-slate-600 dark:text-slate-400 italic bg-slate-50 dark:bg-slate-950 p-2.5 rounded border border-slate-200 dark:border-cockpit-border" id="comp-answer-${idx}">
+                        <span class="text-amber-700 dark:text-cockpit-amber font-mono text-[9px] block not-italic uppercase tracking-wide">Suggested completion:</span>
                         "${c.start} ${c.example}"
                     </div>
                     <div class="flex items-center justify-between pt-1 gap-2">
-                        <button onclick="toggleCompletionKey(${idx})" id="comp-btn-${idx}" class="text-[10px] font-mono px-3 py-1 bg-slate-900 border border-cockpit-border rounded text-slate-300 hover:text-white transition-all">
+                        <button onclick="toggleCompletionKey(${idx})" id="comp-btn-${idx}" class="text-[10px] font-mono px-3 py-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-cockpit-border rounded text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all">
                             DIAGNOSE KEY
                         </button>
-                        <button onclick="speak('${c.start.replace(/'/g, "\\'")} ${c.example.replace(/'/g, "\\'")}')" class="p-1.5 bg-cyan-950 border border-cyan-500/20 text-cockpit-cyan rounded-lg hover:bg-cockpit-cyan hover:text-slate-950 transition-colors">
+                        <button onclick="speak('${c.start.replace(/'/g, "\\'")} ${c.example.replace(/'/g, "\\'")}')" class="p-1.5 bg-sky-50 dark:bg-cyan-950 border border-sky-500/20 dark:border-cyan-500/20 text-sky-600 dark:text-cockpit-cyan rounded-lg hover:bg-sky-600 dark:hover:bg-cockpit-cyan hover:text-white dark:hover:text-slate-950 transition-colors">
                             <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                         </button>
                     </div>
@@ -1085,11 +1145,11 @@
             if (block.classList.contains('hidden')) {
                 block.classList.remove('hidden');
                 btn.innerText = "HIDE DIAGNOSTIC";
-                btn.className = "text-[10px] font-mono px-3 py-1 bg-cyan-950 border border-cyan-500/30 rounded text-cockpit-cyan transition-all";
+                btn.className = "text-[10px] font-mono px-3 py-1 bg-sky-50 dark:bg-cyan-950 border border-sky-500/30 dark:border-cyan-500/30 rounded text-sky-600 dark:text-cockpit-cyan transition-all";
             } else {
                 block.classList.add('hidden');
                 btn.innerText = "DIAGNOSE KEY";
-                btn.className = "text-[10px] font-mono px-3 py-1 bg-slate-900 border border-cockpit-border rounded text-slate-300 hover:text-white transition-all";
+                btn.className = "text-[10px] font-mono px-3 py-1 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-cockpit-border rounded text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-all";
             }
         }
 
@@ -1102,20 +1162,20 @@
             chatBox.innerHTML = `
                 <!-- Instructor Line -->
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-amber-950/60 border border-cockpit-amber/40 flex items-center justify-center font-mono text-xs font-bold text-cockpit-amber shrink-0">FI</div>
-                    <div class="bg-slate-950 border border-cockpit-border p-3 rounded-r-xl rounded-bl-xl text-xs space-y-1 max-w-[85%]">
-                        <div class="text-[9px] font-mono text-slate-500 uppercase">FLIGHT INSTRUCTOR:</div>
-                        <p class="text-slate-300">"${data.instructor}"</p>
+                    <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-500/20 dark:border-cockpit-amber/40 flex items-center justify-center font-mono text-xs font-bold text-amber-600 dark:text-cockpit-amber shrink-0">FI</div>
+                    <div class="bg-white dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border p-3 rounded-r-xl rounded-bl-xl text-xs space-y-1 max-w-[85%] shadow-sm">
+                        <div class="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">FLIGHT INSTRUCTOR:</div>
+                        <p class="text-slate-700 dark:text-slate-300">"${data.instructor}"</p>
                     </div>
                 </div>
 
                 <!-- Student Response -->
                 <div class="flex items-start gap-3 flex-row-reverse">
-                    <div class="w-8 h-8 rounded-lg bg-cyan-950/60 border border-cockpit-cyan/40 flex items-center justify-center font-mono text-xs font-bold text-cockpit-cyan shrink-0">PIC</div>
-                    <div class="bg-slate-900 border border-cockpit-border p-3 rounded-l-xl rounded-br-xl text-xs space-y-1 text-right max-w-[85%] relative group">
-                        <div class="text-[9px] font-mono text-slate-500 uppercase">STUDENT (PILOT IN COMMAND):</div>
-                        <p class="text-white font-bold">"${data.student}"</p>
-                        <button onclick="speak('${data.student.replace(/'/g, "\\'")}')" class="absolute -left-10 top-2 p-1.5 bg-slate-950 border border-cockpit-border rounded-lg text-slate-400 hover:text-cockpit-cyan hover:border-cockpit-cyan transition-all opacity-0 group-hover:opacity-100">
+                    <div class="w-8 h-8 rounded-lg bg-sky-50 dark:bg-cyan-950/60 border border-sky-500/20 dark:border-cockpit-cyan/40 flex items-center justify-center font-mono text-xs font-bold text-sky-600 dark:text-cockpit-cyan shrink-0">PIC</div>
+                    <div class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-cockpit-border p-3 rounded-l-xl rounded-br-xl text-xs space-y-1 text-right max-w-[85%] relative group shadow-sm">
+                        <div class="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">STUDENT (PILOT IN COMMAND):</div>
+                        <p class="text-slate-900 dark:text-white font-bold">"${data.student}"</p>
+                        <button onclick="speak('${data.student.replace(/'/g, "\\'")}')" class="absolute -left-10 top-2 p-1.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded-lg text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cockpit-cyan hover:border-sky-500 dark:hover:border-cockpit-cyan transition-all opacity-0 group-hover:opacity-100 shadow-sm">
                             <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                         </button>
                     </div>
@@ -1123,38 +1183,36 @@
 
                 <!-- Follow Up -->
                 <div class="flex items-start gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-amber-950/60 border border-cockpit-amber/40 flex items-center justify-center font-mono text-xs font-bold text-cockpit-amber shrink-0">FI</div>
-                    <div class="bg-slate-950 border border-cockpit-border p-3 rounded-r-xl rounded-bl-xl text-xs space-y-1 max-w-[85%]">
-                        <div class="text-[9px] font-mono text-slate-500 uppercase">FLIGHT INSTRUCTOR:</div>
-                        <p class="text-slate-300">"${data.instructorFollow}"</p>
+                    <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-amber-950/60 border border-amber-500/20 dark:border-cockpit-amber/40 flex items-center justify-center font-mono text-xs font-bold text-amber-600 dark:text-cockpit-amber shrink-0">FI</div>
+                    <div class="bg-white dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border p-3 rounded-r-xl rounded-bl-xl text-xs space-y-1 max-w-[85%] shadow-sm">
+                        <div class="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">FLIGHT INSTRUCTOR:</div>
+                        <p class="text-slate-700 dark:text-slate-300">"${data.instructorFollow}"</p>
                     </div>
                 </div>
 
                 <!-- Student Follow Up Response -->
                 <div class="flex items-start gap-3 flex-row-reverse">
-                    <div class="w-8 h-8 rounded-lg bg-cyan-950/60 border border-cockpit-cyan/40 flex items-center justify-center font-mono text-xs font-bold text-cockpit-cyan shrink-0">PIC</div>
-                    <div class="bg-slate-900 border border-cockpit-border p-3 rounded-l-xl rounded-br-xl text-xs space-y-1 text-right max-w-[85%] relative group">
-                        <div class="text-[9px] font-mono text-slate-500 uppercase">STUDENT (PILOT IN COMMAND):</div>
-                        <p class="text-white font-bold">"${data.studentFollow}"</p>
-                        <button onclick="speak('${data.studentFollow.replace(/'/g, "\\'")}')" class="absolute -left-10 top-2 p-1.5 bg-slate-950 border border-cockpit-border rounded-lg text-slate-400 hover:text-cockpit-cyan hover:border-cockpit-cyan transition-all opacity-0 group-hover:opacity-100">
+                    <div class="w-8 h-8 rounded-lg bg-sky-50 dark:bg-cyan-950/60 border border-sky-500/20 dark:border-cockpit-cyan/40 flex items-center justify-center font-mono text-xs font-bold text-sky-600 dark:text-cockpit-cyan shrink-0">PIC</div>
+                    <div class="bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-cockpit-border p-3 rounded-l-xl rounded-br-xl text-xs space-y-1 text-right max-w-[85%] relative group shadow-sm">
+                        <div class="text-[9px] font-mono text-slate-500 dark:text-slate-400 uppercase">STUDENT (PILOT IN COMMAND):</div>
+                        <p class="text-slate-900 dark:text-white font-bold">"${data.studentFollow}"</p>
+                        <button onclick="speak('${data.studentFollow.replace(/'/g, "\\'")}')" class="absolute -left-10 top-2 p-1.5 bg-white dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded-lg text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cockpit-cyan hover:border-sky-500 dark:hover:border-cockpit-cyan transition-all opacity-0 group-hover:opacity-100 shadow-sm">
                             <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                         </button>
                     </div>
                 </div>
             `;
 
-            // Active Class Toggles
             for (let i = 0; i < 3; i++) {
                 const btn = document.getElementById(`dial-tab-${i}`);
                 if (i === idx) {
-                    btn.className = "px-3 py-1.5 font-mono text-xs rounded-lg border border-cockpit-cyan bg-cyan-950/50 text-cockpit-cyan transition-all";
+                    btn.className = "px-3 py-1.5 font-mono text-xs rounded-lg border border-sky-500 bg-sky-50 dark:bg-cyan-950/50 text-sky-600 dark:text-cockpit-cyan transition-all";
                 } else {
-                    btn.className = "px-3 py-1.5 font-mono text-xs rounded-lg border border-transparent text-slate-400 hover:text-white transition-all";
+                    btn.className = "px-3 py-1.5 font-mono text-xs rounded-lg border border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white transition-all";
                 }
             }
         }
 
-        // Speaking Timer Core Logic
         function toggleSpeakingTimer() {
             const btn = document.getElementById('timer-btn');
             if (timerInstance) {
@@ -1162,11 +1220,11 @@
                 clearInterval(timerInstance);
                 timerInstance = null;
                 btn.innerText = "RESUME CLEARANCE TIME";
-                btn.className = "flex-1 py-2 rounded-lg bg-cockpit-cyan text-slate-950 font-bold font-mono text-xs hover:bg-cyan-400 transition-all text-center";
+                btn.className = "flex-1 py-2 rounded-lg bg-sky-600 dark:bg-cockpit-cyan text-white dark:text-slate-950 font-bold font-mono text-xs hover:bg-sky-500 dark:hover:bg-cyan-400 transition-all text-center";
             } else {
                 // Start it
                 btn.innerText = "PAUSE CHRONO";
-                btn.className = "flex-1 py-2 rounded-lg bg-cockpit-red text-white font-bold font-mono text-xs hover:bg-red-500 transition-all text-center";
+                btn.className = "flex-1 py-2 rounded-lg bg-red-600 dark:bg-cockpit-red text-white font-bold font-mono text-xs hover:bg-red-500 transition-all text-center";
                 
                 timerInstance = setInterval(() => {
                     timerSecondsRemaining--;
@@ -1176,7 +1234,7 @@
                         clearInterval(timerInstance);
                         timerInstance = null;
                         btn.innerText = "TIME EXPIRED";
-                        btn.className = "flex-1 py-2 rounded-lg bg-slate-800 text-slate-500 font-bold font-mono text-xs pointer-events-none text-center";
+                        btn.className = "flex-1 py-2 rounded-lg bg-slate-200 dark:bg-slate-800 text-slate-400 dark:text-slate-500 font-bold font-mono text-xs pointer-events-none text-center";
                         speak("Chronomoter complete. Review landing checklist updates.");
                     }
                 }, 1000);
@@ -1192,7 +1250,7 @@
             updateTimerUI();
             const btn = document.getElementById('timer-btn');
             btn.innerText = "START CLEARANCE TIME";
-            btn.className = "flex-1 py-2 rounded-lg bg-cockpit-cyan text-slate-950 font-bold font-mono text-xs hover:bg-cyan-400 transition-all text-center";
+            btn.className = "flex-1 py-2 rounded-lg bg-sky-600 dark:bg-cockpit-cyan text-white dark:text-slate-950 font-bold font-mono text-xs hover:bg-sky-500 dark:hover:bg-cyan-400 transition-all text-center";
         }
 
         function updateTimerUI() {
@@ -1207,14 +1265,14 @@
             progress.style.width = `${percentage}%`;
 
             if (timerSecondsRemaining <= 10) {
-                display.className = "font-mono text-3xl font-extrabold text-cockpit-red glow-red animate-pulse";
-                progress.className = "h-full bg-cockpit-red transition-all duration-1000";
+                display.className = "font-mono text-3xl font-extrabold text-red-600 dark:text-cockpit-red glow-red animate-pulse";
+                progress.className = "h-full bg-red-600 dark:bg-cockpit-red transition-all duration-1000";
             } else if (timerSecondsRemaining <= 30) {
-                display.className = "font-mono text-3xl font-extrabold text-cockpit-amber glow-amber";
-                progress.className = "h-full bg-cockpit-amber transition-all duration-1000";
+                display.className = "font-mono text-3xl font-extrabold text-amber-600 dark:text-cockpit-amber glow-amber";
+                progress.className = "h-full bg-amber-500 dark:bg-cockpit-amber transition-all duration-1000";
             } else {
-                display.className = "font-mono text-3xl font-extrabold text-white glow-cyan";
-                progress.className = "h-full bg-cockpit-cyan transition-all duration-1000";
+                display.className = "font-mono text-3xl font-extrabold text-slate-800 dark:text-white glow-cyan";
+                progress.className = "h-full bg-sky-500 dark:bg-cockpit-cyan transition-all duration-1000";
             }
         }
 
@@ -1238,20 +1296,20 @@
 
             commonMistakes.forEach((m, idx) => {
                 const card = document.createElement('div');
-                card.className = "p-4 bg-slate-900/30 border border-cockpit-border rounded-xl space-y-3 relative overflow-hidden";
+                card.className = "p-4 bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-cockpit-border rounded-xl space-y-3 relative overflow-hidden shadow-sm";
                 card.innerHTML = `
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div class="space-y-1.5 p-3 rounded-lg bg-red-950/20 border border-cockpit-red/30">
-                            <span class="text-[9px] font-mono font-bold text-cockpit-red uppercase tracking-wider block">INCORRECT TRANSMISSION:</span>
-                            <p class="text-xs font-mono font-bold text-slate-300">"${m.wrong}"</p>
+                        <div class="space-y-1.5 p-3 rounded-lg bg-red-50 dark:bg-red-950/20 border border-red-500/20 dark:border-cockpit-red/30">
+                            <span class="text-[9px] font-mono font-bold text-red-600 dark:text-cockpit-red uppercase tracking-wider block">INCORRECT TRANSMISSION:</span>
+                            <p class="text-xs font-mono font-bold text-slate-700 dark:text-slate-300">"${m.wrong}"</p>
                         </div>
-                        <div class="space-y-1.5 p-3 rounded-lg bg-emerald-950/20 border border-cockpit-green/30">
-                            <span class="text-[9px] font-mono font-bold text-cockpit-green uppercase tracking-wider block">CORRECTED PILOT PATH:</span>
-                            <p class="text-xs font-mono font-bold text-white">"${m.correct}"</p>
+                        <div class="space-y-1.5 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-500/20 dark:border-cockpit-green/30">
+                            <span class="text-[9px] font-mono font-bold text-emerald-600 dark:text-cockpit-green uppercase tracking-wider block">CORRECTED PILOT PATH:</span>
+                            <p class="text-xs font-mono font-bold text-slate-900 dark:text-white">"${m.correct}"</p>
                         </div>
                     </div>
-                    <div class="text-[11px] text-slate-400 bg-slate-950 p-2.5 rounded border border-cockpit-border/60">
-                        <span class="text-[9px] font-mono text-cockpit-amber uppercase block font-semibold">Diagnostic Metric:</span>
+                    <div class="text-[11px] text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-950 p-2.5 rounded border border-slate-100 dark:border-cockpit-border/60">
+                        <span class="text-[9px] font-mono text-amber-700 dark:text-cockpit-amber uppercase block font-semibold">Diagnostic Metric:</span>
                         ${m.reason}
                     </div>
                 `;
@@ -1266,13 +1324,13 @@
 
             fastDrillQuestions.forEach((q, idx) => {
                 const card = document.createElement('div');
-                card.className = "p-3 bg-slate-900/30 border border-cockpit-border rounded-xl flex items-center justify-between gap-4";
+                card.className = "p-3 bg-white dark:bg-slate-900/30 border border-slate-200 dark:border-cockpit-border rounded-xl flex items-center justify-between gap-4 shadow-sm";
                 card.innerHTML = `
                     <div class="space-y-1">
-                        <div class="text-[10px] font-mono text-slate-500">RAPID QUERY CH 0${idx + 1}</div>
-                        <p class="text-xs font-bold text-slate-300">"${q}"</p>
+                        <div class="text-[10px] font-mono text-slate-500 dark:text-slate-400">RAPID QUERY CH 0${idx + 1}</div>
+                        <p class="text-xs font-bold text-slate-700 dark:text-slate-300">"${q}"</p>
                     </div>
-                    <button onclick="speak('${q.replace(/'/g, "\\'")}')" class="p-1.5 bg-slate-950 border border-cockpit-border rounded text-slate-400 hover:text-cockpit-cyan hover:border-cockpit-cyan transition-all">
+                    <button onclick="speak('${q.replace(/'/g, "\\'")}')" class="p-1.5 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-cockpit-border rounded text-slate-500 dark:text-slate-400 hover:text-sky-600 dark:hover:text-cockpit-cyan hover:border-sky-500 dark:hover:border-cockpit-cyan transition-all">
                         <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z"/></svg>
                     </button>
                 `;
@@ -1289,26 +1347,25 @@
             const idx = stageNum - 1;
             checklistProgress[idx] = !checklistProgress[idx];
             
-            // Render updates
             const dot = document.getElementById(`btn-dot-${stageNum}`);
             const btn = document.getElementById(`check-btn-${stageNum}`);
             const badge = document.getElementById(`step-badge-${stageNum}`);
             const check = document.getElementById(`step-check-${stageNum}`);
 
             if (checklistProgress[idx]) {
-                dot.className = "w-1.5 h-1.5 rounded-full bg-cockpit-green";
-                btn.className = "px-3 py-1 border border-cockpit-green bg-emerald-950/20 text-cockpit-green rounded-lg text-xs font-mono transition-all flex items-center gap-1.5";
-                btn.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-cockpit-green" id="btn-dot-${stageNum}"></span><span>READY PASSED</span>`;
+                dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-cockpit-green";
+                btn.className = "px-3 py-1 border border-emerald-500 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-cockpit-green rounded-lg text-xs font-mono transition-all flex items-center gap-1.5";
+                btn.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500 dark:bg-cockpit-green" id="btn-dot-${stageNum}"></span><span>READY PASSED</span>`;
                 
-                badge.className = "w-5 h-5 rounded-full bg-cockpit-green border border-cockpit-green flex items-center justify-center font-mono text-[10px] font-bold text-slate-950 shrink-0";
-                check.className = "w-2.5 h-2.5 rounded-full bg-cockpit-green shadow-[0_0_8px_rgba(0,230,118,0.6)]";
+                badge.className = "w-5 h-5 rounded-full bg-emerald-500 dark:bg-cockpit-green border border-emerald-500 dark:border-cockpit-green flex items-center justify-center font-mono text-[10px] font-bold text-slate-950 dark:text-slate-950 shrink-0";
+                check.className = "w-2.5 h-2.5 rounded-full bg-emerald-500 dark:bg-cockpit-green shadow-[0_0_8px_rgba(0,230,118,0.6)]";
             } else {
-                dot.className = "w-1.5 h-1.5 rounded-full bg-slate-500";
-                btn.className = "px-3 py-1 border border-slate-600 rounded-lg hover:border-cockpit-cyan hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-400";
-                btn.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-500" id="btn-dot-${stageNum}"></span><span>MARK READY</span>`;
+                dot.className = "w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500";
+                btn.className = "px-3 py-1 border border-slate-300 dark:border-slate-600 rounded-lg hover:border-sky-500 dark:hover:border-cockpit-cyan hover:text-sky-600 dark:hover:text-cockpit-cyan text-xs font-mono transition-all flex items-center gap-1.5 text-slate-500 dark:text-slate-400 bg-white dark:bg-transparent";
+                btn.innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-slate-400 dark:bg-slate-500" id="btn-dot-${stageNum}"></span><span>MARK READY</span>`;
                 
-                badge.className = "w-5 h-5 rounded-full border border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-400 group-hover:border-cockpit-cyan group-hover:text-cockpit-cyan shrink-0";
-                check.className = "w-2 h-2 rounded-full bg-slate-700";
+                badge.className = "w-5 h-5 rounded-full border border-slate-400 dark:border-slate-600 flex items-center justify-center font-mono text-[10px] font-bold text-slate-500 dark:text-slate-400 group-hover:border-sky-500 dark:group-hover:border-cockpit-cyan group-hover:text-sky-600 dark:group-hover:text-cockpit-cyan shrink-0";
+                check.className = "w-2 h-2 rounded-full bg-slate-400 dark:bg-slate-700";
             }
 
             calculateOverallProgress();
@@ -1318,8 +1375,6 @@
             const completedCount = checklistProgress.filter(Boolean).length;
             const percentage = Math.round((completedCount / 4) * 100);
             
-            // Progress circle attributes
-            // Circumference of r=13 is 2 * pi * 13 = 81.68
             const circle = document.getElementById('progress-circle');
             const offset = 81.68 - (81.68 * percentage) / 100;
             circle.style.strokeDashoffset = offset;
@@ -1330,11 +1385,12 @@
         }
 
         function setActiveStep(num) {
-            // Update UI styles if desired, but default anchors handle scrolling beautifully
+            // Smooth anchors are natively supported by modern browsers
         }
 
         // Document Bootstrapper
         window.onload = function() {
+            initSavedTheme();
             initVoices();
             switchRadarTab(0);
             initMustUsePhrases();

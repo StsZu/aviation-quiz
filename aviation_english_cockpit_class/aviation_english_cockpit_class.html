@@ -12,16 +12,16 @@
                 extend: {
                     colors: {
                         aviation: {
-                            950: '#070a13',
-                            900: '#0c1222',
-                            800: '#141e36',
-                            700: '#1e2d4f',
-                            600: '#2d4373',
-                            500: '#3c5a9a',
-                            amber: '#f59e0b',
-                            green: '#10b981',
-                            blue: '#3b82f6',
-                            red: '#ef4444'
+                            950: '#f8fafc', /* Light background sky-slate */
+                            900: '#ffffff', /* Pure white for card surfaces */
+                            800: '#e2e8f0', /* Clean borders and accents */
+                            700: '#cbd5e1', /* Darker borders */
+                            600: '#475569', /* Muted text */
+                            500: '#0f172a', /* High contrast primary text */
+                            amber: '#b45309', /* Deep amber for readability on light */
+                            green: '#047857', /* Forest green for success states */
+                            blue: '#1d4ed8',  /* Strong corporate blue */
+                            red: '#b91c1c'    /* Warning alert red */
                         }
                     },
                     fontFamily: {
@@ -35,22 +35,23 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
         
-        /* Glassmorphism utility */
+        /* Light frosty glassmorphism utility */
         .glass-panel {
-            background: rgba(20, 30, 54, 0.7);
+            background: rgba(255, 255, 255, 0.85);
             backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.03);
         }
         
         .glow-amber {
-            box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+            box-shadow: 0 0 20px rgba(180, 83, 9, 0.15);
         }
         
         .glow-green {
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+            box-shadow: 0 0 20px rgba(4, 120, 87, 0.15);
         }
 
-        /* Radar scan effect */
+        /* Radar scan effect tailored for light background */
         @keyframes scan {
             0% { transform: translateY(-100%); }
             100% { transform: translateY(100%); }
@@ -60,7 +61,7 @@
             position: absolute;
             width: 100%;
             height: 4px;
-            background: linear-gradient(to bottom, rgba(16, 185, 129, 0) 0%, rgba(16, 185, 129, 0.4) 50%, rgba(16, 185, 129, 0) 100%);
+            background: linear-gradient(to bottom, rgba(4, 120, 87, 0) 0%, rgba(4, 120, 87, 0.25) 50%, rgba(4, 120, 87, 0) 100%);
             animation: scan 4s linear infinite;
         }
 
@@ -77,89 +78,90 @@
         .wave-bar:nth-child(4) { animation-delay: 0.45s; }
     </style>
 </head>
-<body class="bg-aviation-950 text-slate-100 min-h-screen font-sans antialiased overflow-x-hidden selection:bg-aviation-amber selection:text-aviation-950">
+<body class="bg-aviation-950 text-slate-800 min-h-screen font-sans antialiased overflow-x-hidden selection:bg-aviation-amber selection:text-white">
 
+    <!-- -->
     <!-- TOP NAVIGATION & SIM STATUS BAR -->
-    <header class="sticky top-0 z-50 glass-panel border-b border-slate-800">
+    <header class="sticky top-0 z-50 glass-panel border-b border-slate-200">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center space-x-3">
                 <!-- Brand logo with dynamic radar icon -->
-                <div class="relative w-10 h-10 rounded-lg bg-aviation-900 border border-aviation-amber/30 flex items-center justify-center overflow-hidden">
+                <div class="relative w-10 h-10 rounded-lg bg-slate-100 border border-aviation-amber/30 flex items-center justify-center overflow-hidden">
                     <span class="text-aviation-amber font-mono font-bold text-sm tracking-tighter">ATC</span>
-                    <div class="absolute inset-0 border border-aviation-amber/10 rounded-full scale-75 animate-ping"></div>
+                    <div class="absolute inset-0 border border-aviation-amber/25 rounded-full scale-75 animate-ping"></div>
                 </div>
                 <div>
-                    <span class="text-xs text-slate-400 block font-mono tracking-widest uppercase">ICAO English Level 4+</span>
-                    <h1 class="font-bold text-slate-100 tracking-tight text-sm sm:text-base">Decision-Making Engine</h1>
+                    <span class="text-xs text-slate-500 block font-mono tracking-widest uppercase">ICAO English Level 4+</span>
+                    <h1 class="font-bold text-slate-900 tracking-tight text-sm sm:text-base">Decision-Making Engine</h1>
                 </div>
             </div>
             
             <!-- Simulator System Readouts -->
             <div class="hidden md:flex items-center space-x-6 font-mono text-xs">
-                <div class="flex items-center space-x-2 bg-aviation-900 px-3 py-1.5 rounded-md border border-slate-800">
+                <div class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200">
                     <span class="w-2 h-2 rounded-full bg-aviation-green animate-pulse"></span>
-                    <span class="text-slate-400">AUDIO SYSTEM:</span>
-                    <span class="text-aviation-green" id="audio-status">READY</span>
+                    <span class="text-slate-500">AUDIO SYSTEM:</span>
+                    <span class="text-aviation-green font-semibold" id="audio-status">READY</span>
                 </div>
-                <div class="flex items-center space-x-2 bg-aviation-900 px-3 py-1.5 rounded-md border border-slate-800">
-                    <span class="text-slate-400">LICENSE RATING:</span>
-                    <span class="text-aviation-amber" id="license-badge">STUDENT PILOT</span>
+                <div class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200">
+                    <span class="text-slate-500">LICENSE RATING:</span>
+                    <span class="text-aviation-amber font-semibold" id="license-badge">STUDENT PILOT</span>
                 </div>
-                <div class="flex items-center space-x-2 bg-aviation-900 px-3 py-1.5 rounded-md border border-slate-800">
-                    <span class="text-slate-400">SIM SCORE:</span>
-                    <span class="text-aviation-blue" id="score-counter">0 / 8 XP</span>
+                <div class="flex items-center space-x-2 bg-slate-100 px-3 py-1.5 rounded-md border border-slate-200">
+                    <span class="text-slate-500">SIM SCORE:</span>
+                    <span class="text-aviation-blue font-semibold" id="score-counter">0 / 8 XP</span>
                 </div>
             </div>
         </div>
     </header>
 
+    <!-- -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
         
         <!-- SIDEBAR NAVIGATION PANEL (Quick flight coordinates) -->
         <nav class="lg:col-span-3 space-y-2">
-            <a href="../index.html" class="flex items-center space-x-2 px-3 py-2 mb-3 rounded-lg text-sm text-slate-400 hover:text-aviation-amber transition-all">&larr; All quizzes</a>
-            <p class="text-xs font-mono text-slate-500 uppercase tracking-widest px-3 mb-2">Flight Coordinates</p>
-            <a href="#hero" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-aviation-800 border-l-4 border-aviation-amber text-slate-100" id="nav-hero" onclick="setActiveNav('hero')">
+            <p class="text-xs font-mono text-slate-400 uppercase tracking-widest px-3 mb-2">Flight Coordinates</p>
+            <a href="#hero" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-white border-l-4 border-aviation-amber text-slate-900 shadow-sm" id="nav-hero" onclick="setActiveNav('hero')">
                 <svg class="w-5 h-5 text-aviation-amber" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>
                 <span>01. Pre-Flight Briefing</span>
             </a>
-            <a href="#formula" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="nav-formula" onclick="setActiveNav('formula')">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+            <a href="#formula" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900" id="nav-formula" onclick="setActiveNav('formula')">
+                <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
                 <span>02. Key Patterns</span>
             </a>
-            <a href="#operations" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="nav-operations" onclick="setActiveNav('operations')">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
+            <a href="#operations" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900" id="nav-operations" onclick="setActiveNav('operations')">
+                <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" /></svg>
                 <span>03. Flight Operations</span>
             </a>
-            <a href="#drills" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="nav-drills" onclick="setActiveNav('drills')">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+            <a href="#drills" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900" id="nav-drills" onclick="setActiveNav('drills')">
+                <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
                 <span>04. ATC Speaking Drill</span>
             </a>
-            <a href="#simulator" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="nav-simulator" onclick="setActiveNav('simulator')">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
+            <a href="#simulator" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900" id="nav-simulator" onclick="setActiveNav('simulator')">
+                <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>
                 <span>05. Checkride Simulator</span>
             </a>
-            <a href="#mistakes" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100" id="nav-mistakes" onclick="setActiveNav('mistakes')">
-                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
+            <a href="#mistakes" class="flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900" id="nav-mistakes" onclick="setActiveNav('mistakes')">
+                <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
                 <span>06. Warning Checklist</span>
             </a>
 
             <!-- TTS Voice Panel Settings Embedded in Navigation Area -->
-            <div class="glass-panel rounded-xl p-4 mt-8 border border-slate-800 glow-amber/5">
-                <div class="flex items-center justify-between mb-3 border-b border-slate-800 pb-2">
-                    <span class="text-xs font-mono text-slate-400 tracking-wider">AUDIO VOICE SYSTEM</span>
+            <div class="glass-panel rounded-xl p-4 mt-8 border border-slate-200 glow-amber/5">
+                <div class="flex items-center justify-between mb-3 border-b border-slate-200 pb-2">
+                    <span class="text-xs font-mono text-slate-500 tracking-wider">AUDIO VOICE SYSTEM</span>
                     <span class="inline-block w-2.5 h-2.5 rounded-full bg-aviation-amber animate-pulse"></span>
                 </div>
                 <div class="space-y-3 text-xs">
                     <div>
                         <label class="text-slate-500 font-mono block mb-1">VOICE SPEED (KORE SIM):</label>
-                        <select id="voice-speed" class="w-full bg-aviation-900 text-slate-200 border border-slate-800 rounded px-2 py-1.5 focus:border-aviation-amber outline-none font-mono">
+                        <select id="voice-speed" class="w-full bg-slate-100 text-slate-800 border border-slate-200 rounded px-2 py-1.5 focus:border-aviation-amber outline-none font-mono">
                             <option value="0.8">0.8x - Student Speed</option>
                             <option value="1.0" selected>1.0x - Standard Comm</option>
                             <option value="1.2">1.2x - ATC Rapid Comm</option>
                         </select>
                     </div>
-                    <div id="audio-wave-container" class="hidden flex items-end justify-center space-x-1 py-1 h-8 bg-aviation-950 rounded">
+                    <div id="audio-wave-container" class="hidden flex items-end justify-center space-x-1 py-1 h-8 bg-slate-100 rounded">
                         <div class="wave-bar w-1.5 bg-aviation-amber rounded-full"></div>
                         <div class="wave-bar w-1.5 bg-aviation-amber rounded-full"></div>
                         <div class="wave-bar w-1.5 bg-aviation-amber rounded-full"></div>
@@ -175,89 +177,89 @@
             <!-- SECTION 1: HERO & CORE BRIEFING -->
             <section id="hero" class="scroll-mt-24 space-y-6">
                 <!-- Flight Header -->
-                <div class="relative rounded-2xl glass-panel p-6 sm:p-10 border border-slate-800 overflow-hidden shadow-2xl">
+                <div class="relative rounded-2xl glass-panel p-6 sm:p-10 border border-slate-200 overflow-hidden shadow-sm">
                     <!-- Tech overlay radar background line -->
                     <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-aviation-amber to-transparent"></div>
-                    <div class="absolute top-0 right-0 w-96 h-96 bg-aviation-amber/5 rounded-full filter blur-3xl pointer-events-none"></div>
+                    <div class="absolute top-0 right-0 w-96 h-96 bg-sky-100/30 rounded-full filter blur-3xl pointer-events-none"></div>
                     
                     <div class="relative space-y-4">
                         <span class="inline-block bg-aviation-amber/10 border border-aviation-amber/30 text-aviation-amber text-xs font-mono uppercase px-3 py-1 rounded-full tracking-wider font-semibold">
                             ICAO Level 4 Prep • Decision-Making
                         </span>
-                        <h2 class="text-3xl sm:text-5xl font-black text-white tracking-tight leading-none">
+                        <h2 class="text-3xl sm:text-5xl font-black text-slate-950 tracking-tight leading-none">
                             Using <span class="text-aviation-amber">"It Depends On"</span> in Aviation English
                         </h2>
-                        <p class="text-slate-300 text-lg max-w-3xl font-light">
+                        <p class="text-slate-600 text-lg max-w-3xl font-light">
                             In aviation, safety margin is never black and white. Learn to construct flexible, professional, and compliant scenarios using the ultimate decision-making formula.
                         </p>
                     </div>
 
                     <!-- Learning outcomes grid -->
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-slate-800/60 font-mono text-xs">
-                        <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-800">
-                            <span class="text-aviation-amber block mb-1">🔑 OUTCOME 1</span>
-                            <span class="text-slate-300">Master flexible conditional speaking for complex operational contexts.</span>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-8 pt-8 border-t border-slate-200 font-mono text-xs">
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="text-aviation-amber font-bold block mb-1">🔑 OUTCOME 1</span>
+                            <span class="text-slate-600">Master flexible conditional speaking for complex operational contexts.</span>
                         </div>
-                        <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-800">
-                            <span class="text-aviation-amber block mb-1">🎯 OUTCOME 2</span>
-                            <span class="text-slate-300">Inject 3-factor flight configurations into your ICAO exam answers.</span>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="text-aviation-amber font-bold block mb-1">🎯 OUTCOME 2</span>
+                            <span class="text-slate-600">Inject 3-factor flight configurations into your ICAO exam answers.</span>
                         </div>
-                        <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-800">
-                            <span class="text-aviation-amber block mb-1">⚠️ OUTCOME 3</span>
-                            <span class="text-slate-300">Eradicate common landing zone preposition mistakes permanently.</span>
+                        <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                            <span class="text-aviation-amber font-bold block mb-1">⚠️ OUTCOME 3</span>
+                            <span class="text-slate-600">Eradicate common landing zone preposition mistakes permanently.</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- CORE CONCEPT BOARD -->
-                <div class="glass-panel rounded-xl p-6 border border-slate-800">
+                <div class="glass-panel rounded-xl p-6 border border-slate-200">
                     <div class="flex items-center justify-between mb-4">
-                        <h3 class="text-lg font-semibold text-slate-200 flex items-center space-x-2">
+                        <h3 class="text-lg font-semibold text-slate-800 flex items-center space-x-2">
                             <span class="w-1.5 h-6 bg-aviation-amber inline-block rounded-full"></span>
                             <span>Core Operational Definition</span>
                         </h3>
-                        <span class="text-xs font-mono text-slate-500">ATC-DOC-01</span>
+                        <span class="text-xs font-mono text-slate-400">ATC-DOC-01</span>
                     </div>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="space-y-4">
-                            <div class="p-4 bg-slate-900 rounded-lg border border-slate-800 text-slate-300 relative">
-                                <span class="text-2xl absolute right-3 bottom-3 text-slate-700 font-mono">“</span>
-                                <strong class="text-white">“It depends on”</strong> means: <br>
-                                <span class="text-slate-400">The operational answer changes dynamically based on critical situational parameters.</span>
+                            <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 text-slate-700 relative">
+                                <span class="text-2xl absolute right-3 bottom-3 text-slate-300 font-mono">“</span>
+                                <strong class="text-slate-900">“It depends on”</strong> means: <br>
+                                <span class="text-slate-600">The operational answer changes dynamically based on critical situational parameters.</span>
                             </div>
-                            <p class="text-sm text-slate-400">
+                            <p class="text-sm text-slate-500">
                                 As a pilot, giving a strict "yes" or "no" is often a safety hazard. Proving to the examiner that you calculate multiple factors showcases maturity and strong situational assessment.
                             </p>
                         </div>
                         
                         <!-- Core Structure Interactive Trainer -->
-                        <div class="p-4 bg-aviation-900 rounded-lg border border-slate-800 flex flex-col justify-between">
+                        <div class="p-4 bg-slate-50 rounded-lg border border-slate-200 flex flex-col justify-between">
                             <div>
-                                <span class="text-xs font-mono text-aviation-amber block mb-1">BASIC SYNTAX RULE:</span>
-                                <div class="p-3 bg-slate-950 rounded border border-slate-800 font-mono text-sm text-center">
-                                    <span class="text-aviation-amber">It depends on</span> <span class="text-white">+</span> <span class="text-aviation-blue">noun / noun phrase.</span>
+                                <span class="text-xs font-mono text-aviation-amber block mb-1 font-semibold">BASIC SYNTAX RULE:</span>
+                                <div class="p-3 bg-white rounded border border-slate-200 font-mono text-sm text-center shadow-sm">
+                                    <span class="text-aviation-amber font-bold">It depends on</span> <span class="text-slate-400">+</span> <span class="text-aviation-blue font-bold">noun / noun phrase.</span>
                                 </div>
                             </div>
                             
-                            <div class="mt-4 pt-4 border-t border-slate-800">
-                                <span class="text-xs font-mono text-slate-400 block mb-2">TRY LISTENING PRACTICE:</span>
+                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                <span class="text-xs font-mono text-slate-500 block mb-2 font-semibold">TRY LISTENING PRACTICE:</span>
                                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
-                                    <button onclick="speakText('It depends on the weather.')" class="bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-slate-100 p-2 rounded text-left border border-slate-800 flex items-center justify-between transition-all">
+                                    <button onclick="speakText('It depends on the weather.')" class="bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 p-2 rounded text-left border border-slate-200 flex items-center justify-between transition-all shadow-sm">
                                         <span>☁️ Weather</span>
-                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
                                     </button>
-                                    <button onclick="speakText('It depends on the runway condition.')" class="bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-slate-100 p-2 rounded text-left border border-slate-800 flex items-center justify-between transition-all">
+                                    <button onclick="speakText('It depends on the runway condition.')" class="bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 p-2 rounded text-left border border-slate-200 flex items-center justify-between transition-all shadow-sm">
                                         <span>🛣️ Runway Cond.</span>
-                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
                                     </button>
-                                    <button onclick="speakText('It depends on the aircraft weight.')" class="bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-slate-100 p-2 rounded text-left border border-slate-800 flex items-center justify-between transition-all">
+                                    <button onclick="speakText('It depends on the aircraft weight.')" class="bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 p-2 rounded text-left border border-slate-200 flex items-center justify-between transition-all shadow-sm">
                                         <span>✈️ Aircraft Weight</span>
-                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
                                     </button>
-                                    <button onclick="speakText('It depends on air traffic control instructions.')" class="bg-slate-950 hover:bg-slate-900 text-slate-300 hover:text-slate-100 p-2 rounded text-left border border-slate-800 flex items-center justify-between transition-all">
+                                    <button onclick="speakText('It depends on air traffic control instructions.')" class="bg-white hover:bg-slate-100 text-slate-700 hover:text-slate-900 p-2 rounded text-left border border-slate-200 flex items-center justify-between transition-all shadow-sm">
                                         <span>📡 ATC Clearance</span>
-                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
+                                        <svg class="w-3.5 h-3.5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" /></svg>
                                     </button>
                                 </div>
                             </div>
@@ -266,166 +268,168 @@
                 </div>
             </section>
 
+            <!-- -->
             <!-- SECTION 2: PATTERNS & FORMULAS -->
             <section id="formula" class="scroll-mt-24 space-y-6">
                 <div class="flex items-center space-x-3 mb-2">
-                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono">02</span>
-                    <h3 class="text-2xl font-bold">Standard Key Formulations</h3>
+                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono font-bold">02</span>
+                    <h3 class="text-2xl font-bold text-slate-900">Standard Key Formulations</h3>
                 </div>
                 
-                <p class="text-slate-400 text-sm">
+                <p class="text-slate-600 text-sm">
                     In structured exams like the ICAO Speaking Test, categorization highlights clear thinking. Structure your dependency patterns based on these five major criteria:
                 </p>
 
                 <!-- Pattern interactive mapping cards -->
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4">
-                    <div class="bg-aviation-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
-                        <span class="text-[10px] font-mono text-slate-500 uppercase">Aero-Meteorology</span>
-                        <h4 class="text-slate-100 font-bold mt-2 text-sm">Condition Factor</h4>
-                        <div class="mt-4 p-2 bg-slate-950 rounded text-[11px] font-mono text-aviation-amber">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all shadow-sm">
+                        <span class="text-[10px] font-mono text-slate-400 uppercase font-semibold">Aero-Meteorology</span>
+                        <h4 class="text-slate-800 font-bold mt-2 text-sm">Condition Factor</h4>
+                        <div class="mt-4 p-2 bg-slate-50 rounded text-[11px] font-mono text-aviation-amber font-semibold border border-slate-200">
                             It depends on the weather conditions.
                         </div>
-                        <button onclick="speakText('It depends on the weather conditions.')" class="mt-4 text-[10px] text-slate-400 hover:text-white flex items-center justify-between font-mono">
+                        <button onclick="speakText('It depends on the weather conditions.')" class="mt-4 text-[10px] text-slate-500 hover:text-slate-900 flex items-center justify-between font-mono">
                             <span>PLAY SPEECH</span> 🔊
                         </button>
                     </div>
                     
-                    <div class="bg-aviation-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
-                        <span class="text-[10px] font-mono text-slate-500 uppercase">Aircraft Limit</span>
-                        <h4 class="text-slate-100 font-bold mt-2 text-sm">Aircraft Factor</h4>
-                        <div class="mt-4 p-2 bg-slate-950 rounded text-[11px] font-mono text-aviation-amber">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all shadow-sm">
+                        <span class="text-[10px] font-mono text-slate-400 uppercase font-semibold">Aircraft Limit</span>
+                        <h4 class="text-slate-800 font-bold mt-2 text-sm">Aircraft Factor</h4>
+                        <div class="mt-4 p-2 bg-slate-50 rounded text-[11px] font-mono text-aviation-amber font-semibold border border-slate-200">
                             It depends on the aircraft weight.
                         </div>
-                        <button onclick="speakText('It depends on the aircraft weight.')" class="mt-4 text-[10px] text-slate-400 hover:text-white flex items-center justify-between font-mono">
+                        <button onclick="speakText('It depends on the aircraft weight.')" class="mt-4 text-[10px] text-slate-500 hover:text-slate-900 flex items-center justify-between font-mono">
                             <span>PLAY SPEECH</span> 🔊
                         </button>
                     </div>
 
-                    <div class="bg-aviation-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
-                        <span class="text-[10px] font-mono text-slate-500 uppercase">Runway Data</span>
-                        <h4 class="text-slate-100 font-bold mt-2 text-sm">Runway Factor</h4>
-                        <div class="mt-4 p-2 bg-slate-950 rounded text-[11px] font-mono text-aviation-amber">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all shadow-sm">
+                        <span class="text-[10px] font-mono text-slate-400 uppercase font-semibold">Runway Data</span>
+                        <h4 class="text-slate-800 font-bold mt-2 text-sm">Runway Factor</h4>
+                        <div class="mt-4 p-2 bg-slate-50 rounded text-[11px] font-mono text-aviation-amber font-semibold border border-slate-200">
                             It depends on the runway length.
                         </div>
-                        <button onclick="speakText('It depends on the runway length.')" class="mt-4 text-[10px] text-slate-400 hover:text-white flex items-center justify-between font-mono">
+                        <button onclick="speakText('It depends on the runway length.')" class="mt-4 text-[10px] text-slate-500 hover:text-slate-900 flex items-center justify-between font-mono">
                             <span>PLAY SPEECH</span> 🔊
                         </button>
                     </div>
 
-                    <div class="bg-aviation-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
-                        <span class="text-[10px] font-mono text-slate-500 uppercase">ATC Authority</span>
-                        <h4 class="text-slate-100 font-bold mt-2 text-sm">Clearance Factor</h4>
-                        <div class="mt-4 p-2 bg-slate-950 rounded text-[11px] font-mono text-aviation-amber">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all shadow-sm">
+                        <span class="text-[10px] font-mono text-slate-400 uppercase font-semibold">ATC Authority</span>
+                        <h4 class="text-slate-800 font-bold mt-2 text-sm">Clearance Factor</h4>
+                        <div class="mt-4 p-2 bg-slate-50 rounded text-[11px] font-mono text-aviation-amber font-semibold border border-slate-200">
                             It depends on ATC clearance.
                         </div>
-                        <button onclick="speakText('It depends on air traffic control clearance.')" class="mt-4 text-[10px] text-slate-400 hover:text-white flex items-center justify-between font-mono">
+                        <button onclick="speakText('It depends on air traffic control clearance.')" class="mt-4 text-[10px] text-slate-500 hover:text-slate-900 flex items-center justify-between font-mono">
                             <span>PLAY SPEECH</span> 🔊
                         </button>
                     </div>
 
-                    <div class="bg-aviation-900 border border-slate-800 rounded-xl p-4 flex flex-col justify-between hover:border-slate-700 transition-all">
-                        <span class="text-[10px] font-mono text-slate-500 uppercase">Safe Operations</span>
-                        <h4 class="text-slate-100 font-bold mt-2 text-sm">Safety Factor</h4>
-                        <div class="mt-4 p-2 bg-slate-950 rounded text-[11px] font-mono text-aviation-amber">
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 flex flex-col justify-between hover:border-slate-300 hover:shadow-md transition-all shadow-sm">
+                        <span class="text-[10px] font-mono text-slate-400 uppercase font-semibold">Safe Operations</span>
+                        <h4 class="text-slate-800 font-bold mt-2 text-sm">Safety Factor</h4>
+                        <div class="mt-4 p-2 bg-slate-50 rounded text-[11px] font-mono text-aviation-amber font-semibold border border-slate-200">
                             It depends on the safety margin.
                         </div>
-                        <button onclick="speakText('It depends on the safety margin.')" class="mt-4 text-[10px] text-slate-400 hover:text-white flex items-center justify-between font-mono">
+                        <button onclick="speakText('It depends on the safety margin.')" class="mt-4 text-[10px] text-slate-500 hover:text-slate-900 flex items-center justify-between font-mono">
                             <span>PLAY SPEECH</span> 🔊
                         </button>
                     </div>
                 </div>
 
                 <!-- DYNAMIC CORE FORMULA TOOL -->
-                <div class="glass-panel rounded-xl p-6 border border-slate-800 relative overflow-hidden">
-                    <div class="absolute top-0 right-0 p-2 bg-slate-800 font-mono text-[9px] text-slate-500 rounded-bl border-l border-b border-slate-700">FORMULA TEMPLATE</div>
+                <div class="glass-panel rounded-xl p-6 border border-slate-200 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 p-2 bg-slate-100 font-mono text-[9px] text-slate-500 rounded-bl border-l border-b border-slate-200 font-bold">FORMULA TEMPLATE</div>
                     
-                    <h4 class="text-lg font-bold text-slate-200 mb-3">Strong ICAO Sentence Blueprint</h4>
-                    <p class="text-xs text-slate-400 mb-4">
+                    <h4 class="text-lg font-bold text-slate-800 mb-3">Strong ICAO Sentence Blueprint</h4>
+                    <p class="text-xs text-slate-500 mb-4">
                         By deploying the following three-step structural flow, you demonstrate complete linguistic control under situational stress:
                     </p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
-                        <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-lg">
-                            <span class="text-aviation-amber block mb-2">STEP 1: DEFINE CONDITIONS</span>
-                            <code class="text-slate-300">"It depends on <span class="text-white">[factor 1]</span>, <span class="text-white">[factor 2]</span>, and <span class="text-white">[factor 3]</span>."</code>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                            <span class="text-aviation-amber font-bold block mb-2">STEP 1: DEFINE CONDITIONS</span>
+                            <code class="text-slate-700">"It depends on <span class="text-slate-900 font-bold">[factor 1]</span>, <span class="text-slate-900 font-bold">[factor 2]</span>, and <span class="text-slate-900 font-bold">[factor 3]</span>."</code>
                         </div>
-                        <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-lg">
-                            <span class="text-aviation-amber block mb-2">STEP 2: DEFINE DECISION</span>
-                            <code class="text-slate-300">"If <span class="text-white">[condition]</span>, the pilot should <span class="text-white">[action]</span>."</code>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                            <span class="text-aviation-amber font-bold block mb-2">STEP 2: DEFINE DECISION</span>
+                            <code class="text-slate-700">"If <span class="text-slate-900 font-bold">[condition]</span>, the pilot should <span class="text-slate-900 font-bold">[action]</span>."</code>
                         </div>
-                        <div class="p-3 bg-slate-950/70 border border-slate-800 rounded-lg">
-                            <span class="text-aviation-amber block mb-2">STEP 3: PRIORITIZE SAFETY</span>
-                            <code class="text-slate-300">"The main priority is to maintain safety."</code>
+                        <div class="p-3 bg-slate-50 border border-slate-200 rounded-lg">
+                            <span class="text-aviation-amber font-bold block mb-2">STEP 3: PRIORITIZE SAFETY</span>
+                            <code class="text-slate-700">"The main priority is to maintain safety."</code>
                         </div>
                     </div>
 
                     <!-- Interactive template preview -->
-                    <div class="mt-6 p-4 bg-aviation-900 rounded-lg border border-slate-800">
+                    <div class="mt-6 p-4 bg-slate-100 rounded-lg border border-slate-200">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-mono text-slate-400">ACTIVE FORMULA SAMPLE:</span>
-                            <button onclick="speakText('It depends on the weather, runway condition, and aircraft performance. If the approach is unstable, the pilot should go around. The main priority is to maintain safety.')" class="text-xs text-aviation-amber hover:underline flex items-center space-x-1">
+                            <span class="text-xs font-mono text-slate-500 font-semibold">ACTIVE FORMULA SAMPLE:</span>
+                            <button onclick="speakText('It depends on the weather, runway condition, and aircraft performance. If the approach is unstable, the pilot should go around. The main priority is to maintain safety.')" class="text-xs text-aviation-amber font-bold hover:underline flex items-center space-x-1">
                                 <span>Listen Complete Formula</span> 🔊
                             </button>
                         </div>
-                        <p class="text-slate-200 text-sm font-light italic bg-slate-950 p-3 rounded border border-slate-900">
-                            "It depends on <strong class="text-white">the weather, runway condition,</strong> and <strong class="text-white">aircraft performance</strong>. If <strong class="text-white">the approach is unstable</strong>, the pilot should <strong class="text-white">go around</strong>. The main priority is to maintain safety."
+                        <p class="text-slate-800 text-sm font-light italic bg-white p-3 rounded border border-slate-200 shadow-sm">
+                            "It depends on <strong class="text-slate-900 font-bold">the weather, runway condition,</strong> and <strong class="text-slate-900 font-bold">aircraft performance</strong>. If <strong class="text-white bg-aviation-amber/90 px-1 rounded">the approach is unstable</strong>, the pilot should <strong class="text-slate-900 font-bold">go around</strong>. The main priority is to maintain safety."
                         </p>
                     </div>
                 </div>
             </section>
 
+            <!-- -->
             <!-- SECTION 3: PRACTICAL FLIGHT OPERATIONS -->
             <section id="operations" class="scroll-mt-24 space-y-6">
                 <div class="flex items-center space-x-3 mb-2">
-                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono">03</span>
-                    <h3 class="text-2xl font-bold">Flight Operations Applications</h3>
+                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono font-bold">03</span>
+                    <h3 class="text-2xl font-bold text-slate-900">Flight Operations Applications</h3>
                 </div>
                 
-                <p class="text-slate-400 text-sm">
+                <p class="text-slate-600 text-sm">
                     Let's explore five primary phases of flight operations where conditional answers are mandatory. Click through each phase below:
                 </p>
 
                 <!-- Operations Dashboard Panel -->
-                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 bg-aviation-900/30 p-2 rounded-xl border border-slate-800/80">
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-6 bg-slate-100 p-2 rounded-xl border border-slate-200">
                     
                     <!-- Left Operation Selectors -->
                     <div class="md:col-span-4 flex flex-col space-y-1">
-                        <button onclick="switchOperation('take-off')" id="btn-take-off" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all bg-aviation-800 text-aviation-amber border-l-2 border-aviation-amber">
+                        <button onclick="switchOperation('take-off')" id="btn-take-off" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all bg-white text-aviation-amber border-l-2 border-aviation-amber shadow-sm">
                             🛫 Take-off Performance
                         </button>
-                        <button onclick="switchOperation('landing')" id="btn-landing" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100">
+                        <button onclick="switchOperation('landing')" id="btn-landing" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900">
                             🛬 Landing Distance
                         </button>
-                        <button onclick="switchOperation('go-around')" id="btn-go-around" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100">
+                        <button onclick="switchOperation('go-around')" id="btn-go-around" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900">
                             🔄 Go-Around Decisions
                         </button>
-                        <button onclick="switchOperation('diversion')" id="btn-diversion" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100">
+                        <button onclick="switchOperation('diversion')" id="btn-diversion" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900">
                             🔀 Alternate Diversion
                         </button>
-                        <button onclick="switchOperation('emergency')" id="btn-emergency" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100">
+                        <button onclick="switchOperation('emergency')" id="btn-emergency" class="text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900">
                             🚨 Emergency Protocol
                         </button>
                     </div>
 
                     <!-- Right Display Screen -->
-                    <div class="md:col-span-8 p-6 bg-aviation-900/80 rounded-lg border border-slate-800 flex flex-col justify-between relative overflow-hidden min-h-[280px]">
+                    <div class="md:col-span-8 p-6 bg-white rounded-lg border border-slate-200 flex flex-col justify-between relative overflow-hidden min-h-[280px] shadow-sm">
                         <!-- Simulated Radar backdrop -->
                         <div class="absolute inset-0 radar-sweep opacity-5 pointer-events-none"></div>
                         
                         <div id="operation-content" class="space-y-4 relative z-10">
-                            <span id="op-tag" class="text-[10px] font-mono bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded">TAKEOFF DECK</span>
-                            <h4 id="op-title" class="text-xl font-bold text-white mt-2">Take-off Runway Performance</h4>
-                            <p id="op-desc" class="text-sm text-slate-300">
-                                The overall required take-off runway performance is never fixed.
+                            <span id="op-tag" class="text-[10px] font-mono bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-bold">TAKEOFF DECK</span>
+                            <h4 id="op-title" class="text-xl font-bold text-slate-900 mt-2">Take-off Runway Performance</h4>
+                            <p id="op-desc" class="text-sm text-slate-600">
+                                The required take-off runway performance is never fixed.
                             </p>
-                            <div class="p-3 bg-slate-950 rounded border border-slate-900 font-mono text-sm text-aviation-amber">
+                            <div class="p-3 bg-slate-50 rounded border border-slate-200 font-mono text-sm text-aviation-amber font-semibold">
                                 "The take-off distance depends on aircraft weight, wind, runway condition, temperature, and altitude."
                             </div>
                         </div>
 
-                        <div class="mt-6 pt-4 border-t border-slate-800/80 flex justify-between items-center relative z-10">
-                            <span class="text-xs text-slate-500 font-mono">ATC SIM SPEED: ACTIVE</span>
-                            <button id="op-audio-btn" onclick="speakOpText()" class="bg-aviation-amber hover:bg-amber-500 text-aviation-950 font-semibold px-4 py-1.5 rounded text-xs flex items-center space-x-2 transition-all">
+                        <div class="mt-6 pt-4 border-t border-slate-100 flex justify-between items-center relative z-10">
+                            <span class="text-xs text-slate-400 font-mono">ATC SIM SPEED: ACTIVE</span>
+                            <button id="op-audio-btn" onclick="speakOpText()" class="bg-aviation-amber hover:bg-amber-700 text-white font-semibold px-4 py-1.5 rounded text-xs flex items-center space-x-2 transition-all shadow-sm">
                                 <span>Broadcast Sentence</span> 🔊
                             </button>
                         </div>
@@ -433,96 +437,97 @@
                 </div>
             </section>
 
+            <!-- -->
             <!-- SECTION 4: INTERACTIVE ATC SPEAKING DRILL TERMINAL -->
             <section id="drills" class="scroll-mt-24 space-y-6">
                 <div class="flex items-center space-x-3 mb-2">
-                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono">04</span>
-                    <h3 class="text-2xl font-bold">Interactive ATC speaking Terminal</h3>
+                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono font-bold">04</span>
+                    <h3 class="text-2xl font-bold text-slate-900">Interactive ATC Speaking Terminal</h3>
                 </div>
                 
-                <p class="text-slate-400 text-sm">
+                <p class="text-slate-600 text-sm">
                     Select a question from an ICAO exam evaluator. Read the ATC prompt aloud, formulate your own verbal answer, then check the Captain's approved structure.
                 </p>
 
                 <!-- Drill Workstation -->
-                <div class="glass-panel rounded-xl p-6 border border-slate-800">
+                <div class="glass-panel rounded-xl p-6 border border-slate-200">
                     <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
                         <!-- Questions index list -->
-                        <div class="md:col-span-5 space-y-2 max-h-[380px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-800">
-                            <span class="text-[10px] font-mono text-slate-500 uppercase tracking-widest block mb-1">EVALUATOR BANK</span>
+                        <div class="md:col-span-5 space-y-2 max-h-[380px] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-slate-200">
+                            <span class="text-[10px] font-mono text-slate-400 uppercase tracking-widest block mb-1 font-bold">EVALUATOR BANK</span>
                             
-                            <button onclick="selectDrill(1)" id="drill-tab-1" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all bg-aviation-800 text-slate-200 border border-slate-700/60 block">
-                                <span class="text-[9px] font-mono text-aviation-amber block">QUESTION 01</span>
+                            <button onclick="selectDrill(1)" id="drill-tab-1" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all bg-slate-100 text-slate-800 border border-slate-300 block shadow-sm">
+                                <span class="text-[9px] font-mono text-aviation-amber block font-bold">QUESTION 01</span>
                                 Can a pilot continue the approach in bad weather?
                             </button>
-                            <button onclick="selectDrill(2)" id="drill-tab-2" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-900 text-slate-400 block border border-transparent">
-                                <span class="text-[9px] font-mono text-slate-500 block">QUESTION 02</span>
+                            <button onclick="selectDrill(2)" id="drill-tab-2" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-50 text-slate-600 block border border-transparent">
+                                <span class="text-[9px] font-mono text-slate-400 block font-bold">QUESTION 02</span>
                                 Is a short runway always dangerous?
                             </button>
-                            <button onclick="selectDrill(3)" id="drill-tab-3" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-900 text-slate-400 block border border-transparent">
-                                <span class="text-[9px] font-mono text-slate-500 block">QUESTION 03</span>
+                            <button onclick="selectDrill(3)" id="drill-tab-3" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-50 text-slate-600 block border border-transparent">
+                                <span class="text-[9px] font-mono text-slate-400 block font-bold">QUESTION 03</span>
                                 Should a pilot divert during flight?
                             </button>
-                            <button onclick="selectDrill(4)" id="drill-tab-4" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-900 text-slate-400 block border border-transparent">
-                                <span class="text-[9px] font-mono text-slate-500 block">QUESTION 04</span>
+                            <button onclick="selectDrill(4)" id="drill-tab-4" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-50 text-slate-600 block border border-transparent">
+                                <span class="text-[9px] font-mono text-slate-400 block font-bold">QUESTION 04</span>
                                 Can a pilot land on a wet runway?
                             </button>
-                            <button onclick="selectDrill(5)" id="drill-tab-5" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-900 text-slate-400 block border border-transparent">
-                                <span class="text-[9px] font-mono text-slate-500 block">QUESTION 05</span>
+                            <button onclick="selectDrill(5)" id="drill-tab-5" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-50 text-slate-600 block border border-transparent">
+                                <span class="text-[9px] font-mono text-slate-400 block font-bold">QUESTION 05</span>
                                 Should a pilot continue an unstable approach?
                             </button>
-                            <button onclick="selectDrill(6)" id="drill-tab-6" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-900 text-slate-400 block border border-transparent">
-                                <span class="text-[9px] font-mono text-slate-500 block">QUESTION 06</span>
+                            <button onclick="selectDrill(6)" id="drill-tab-6" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-50 text-slate-600 block border border-transparent">
+                                <span class="text-[9px] font-mono text-slate-400 block font-bold">QUESTION 06</span>
                                 Can a light aircraft fly in strong wind?
                             </button>
-                            <button onclick="selectDrill(7)" id="drill-tab-7" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-900 text-slate-400 block border border-transparent">
-                                <span class="text-[9px] font-mono text-slate-500 block">QUESTION 07</span>
+                            <button onclick="selectDrill(7)" id="drill-tab-7" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-50 text-slate-600 block border border-transparent">
+                                <span class="text-[9px] font-mono text-slate-400 block font-bold">QUESTION 07</span>
                                 Is it safe to take off with heavy weight?
                             </button>
-                            <button onclick="selectDrill(8)" id="drill-tab-8" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-900 text-slate-400 block border border-transparent">
-                                <span class="text-[9px] font-mono text-slate-500 block">QUESTION 08</span>
+                            <button onclick="selectDrill(8)" id="drill-tab-8" class="w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-50 text-slate-600 block border border-transparent">
+                                <span class="text-[9px] font-mono text-slate-400 block font-bold">QUESTION 08</span>
                                 Should the pilot return to the departure airport after a technical problem?
                             </button>
                         </div>
 
                         <!-- Active comm console -->
-                        <div class="md:col-span-7 bg-slate-950 p-5 rounded-xl border border-slate-800 flex flex-col justify-between">
+                        <div class="md:col-span-7 bg-slate-50 p-5 rounded-xl border border-slate-200 flex flex-col justify-between shadow-inner">
                             <div class="space-y-4">
-                                <div class="flex justify-between items-center border-b border-slate-900 pb-2">
-                                    <span class="text-[10px] font-mono text-slate-400">INCOMING ATC CHANNEL</span>
-                                    <button id="btn-listen-prompt" class="text-[10px] text-aviation-amber hover:underline flex items-center space-x-1">
+                                <div class="flex justify-between items-center border-b border-slate-200 pb-2">
+                                    <span class="text-[10px] font-mono text-slate-500 font-bold">INCOMING ATC CHANNEL</span>
+                                    <button id="btn-listen-prompt" class="text-[10px] text-aviation-amber font-bold hover:underline flex items-center space-x-1">
                                         <span>Listen Prompt</span> 🔊
                                     </button>
                                 </div>
-                                <p id="drill-prompt-text" class="text-slate-100 font-bold text-base">
+                                <p id="drill-prompt-text" class="text-slate-900 font-bold text-base">
                                     "Can a pilot continue the approach in bad weather?"
                                 </p>
                                 
-                                <div class="border-t border-slate-900 pt-4 space-y-2">
+                                <div class="border-t border-slate-200 pt-4 space-y-2">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-[10px] font-mono text-slate-400">STUDENT SIMPLE ANSWER Blueprint</span>
-                                        <button id="btn-listen-simple" class="text-[9px] text-slate-500 hover:text-slate-300">Listen Simple 🔊</button>
+                                        <span class="text-[10px] font-mono text-slate-500 font-semibold">STUDENT SIMPLE ANSWER Blueprint</span>
+                                        <button id="btn-listen-simple" class="text-[9px] text-slate-500 hover:text-slate-800">Listen Simple 🔊</button>
                                     </div>
-                                    <p id="drill-simple-answer" class="text-xs text-slate-400 italic bg-aviation-950 p-3 rounded border border-slate-900/60">
+                                    <p id="drill-simple-answer" class="text-xs text-slate-600 italic bg-white p-3 rounded border border-slate-200 shadow-sm">
                                         "It depends on the visibility, wind, runway condition, and aircraft position. If the approach is unstable, the pilot should go around."
                                     </p>
                                 </div>
 
-                                <div class="border-t border-slate-900 pt-4 space-y-2">
+                                <div class="border-t border-slate-200 pt-4 space-y-2">
                                     <div class="flex justify-between items-center">
-                                        <span class="text-[10px] font-mono text-aviation-amber">CAPTAIN'S STRONGER ANSWER Blueprint</span>
-                                        <button id="btn-listen-strong" class="text-[9px] text-aviation-amber hover:underline">Listen Captain 🔊</button>
+                                        <span class="text-[10px] font-mono text-aviation-amber font-bold">CAPTAIN'S STRONGER ANSWER Blueprint</span>
+                                        <button id="btn-listen-strong" class="text-[9px] text-aviation-amber font-bold hover:underline">Listen Captain 🔊</button>
                                     </div>
-                                    <p id="drill-strong-answer" class="text-xs text-slate-200 bg-aviation-900/40 p-3 rounded border border-slate-800">
+                                    <p id="drill-strong-answer" class="text-xs text-slate-800 bg-white p-3 rounded border border-aviation-amber/30 shadow-sm">
                                         "It depends on the actual weather, visibility, wind, runway condition, and whether the aircraft is stabilized on approach. If the aircraft is too high, too fast, or not properly aligned with the runway, the safest decision is to go around."
                                     </p>
                                 </div>
                             </div>
 
-                            <div class="mt-6 pt-4 border-t border-slate-900 flex justify-between items-center">
-                                <span class="text-[10px] text-slate-500 font-mono">PRACTICE SPEECH ALOUD NOW</span>
+                            <div class="mt-6 pt-4 border-t border-slate-200 flex justify-between items-center">
+                                <span class="text-[10px] text-slate-400 font-mono">PRACTICE SPEECH ALOUD NOW</span>
                                 <div class="flex space-x-2">
-                                    <button onclick="triggerPraiseSynth()" class="bg-aviation-green/10 hover:bg-aviation-green/20 text-aviation-green px-3 py-1 rounded text-[11px] font-mono transition-all">
+                                    <button onclick="triggerPraiseSynth()" class="bg-aviation-green/10 hover:bg-aviation-green/20 text-aviation-green px-3 py-1 rounded text-[11px] font-mono transition-all font-semibold border border-aviation-green/30 shadow-sm">
                                         Check Pitch Clear 🎙️
                                     </button>
                                 </div>
@@ -532,25 +537,26 @@
                 </div>
             </section>
 
+            <!-- -->
             <!-- SECTION 5: PILOT CHECKRIDE SIMULATOR (QUIZ) -->
             <section id="simulator" class="scroll-mt-24 space-y-6">
                 <div class="flex items-center space-x-3 mb-2">
-                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono">05</span>
-                    <h3 class="text-2xl font-bold">Flight Checkride Simulator</h3>
+                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono font-bold">05</span>
+                    <h3 class="text-2xl font-bold text-slate-900">Flight Checkride Simulator</h3>
                 </div>
                 
-                <p class="text-slate-400 text-sm">
+                <p class="text-slate-600 text-sm">
                     Complete this 8-question exam to secure your Aviation English proficiency license. No cheating allowed! Instant telemetry scoring is active.
                 </p>
 
                 <!-- Checkride cockpit interface -->
-                <div class="glass-panel rounded-2xl p-6 border border-slate-800 relative overflow-hidden">
+                <div class="glass-panel rounded-2xl p-6 border border-slate-200 relative overflow-hidden">
                     <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-aviation-blue to-transparent"></div>
                     
                     <!-- Progress meter -->
                     <div class="flex justify-between items-center mb-6">
-                        <span class="text-xs font-mono text-slate-400" id="quiz-question-counter">QUESTION 1 OF 8</span>
-                        <div class="w-48 bg-aviation-900 h-2 rounded-full overflow-hidden border border-slate-800">
+                        <span class="text-xs font-mono text-slate-500 font-bold" id="quiz-question-counter">QUESTION 1 OF 8</span>
+                        <div class="w-48 bg-slate-100 h-2 rounded-full overflow-hidden border border-slate-200">
                             <div id="quiz-progress" class="bg-aviation-blue h-full transition-all duration-300" style="width: 12.5%"></div>
                         </div>
                     </div>
@@ -561,84 +567,86 @@
                     </div>
 
                     <!-- Next navigation buttons -->
-                    <div class="flex justify-between items-center mt-8 pt-4 border-t border-slate-800">
-                        <button id="btn-quiz-prev" onclick="changeQuizQuestion(-1)" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-slate-400 hover:text-white rounded text-xs transition-all opacity-50 cursor-not-allowed" disabled>
+                    <div class="flex justify-between items-center mt-8 pt-4 border-t border-slate-200">
+                        <button id="btn-quiz-prev" onclick="changeQuizQuestion(-1)" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 rounded text-xs transition-all opacity-50 cursor-not-allowed" disabled>
                             ◀ Previous Sector
                         </button>
-                        <button id="btn-quiz-next" onclick="submitQuizAnswer()" class="px-5 py-2 bg-aviation-blue hover:bg-blue-600 text-white rounded text-xs transition-all font-semibold">
+                        <button id="btn-quiz-next" onclick="submitQuizAnswer()" class="px-5 py-2 bg-aviation-blue hover:bg-blue-700 text-white rounded text-xs transition-all font-semibold shadow-sm">
                             Submit & Next Sector ▶
                         </button>
                     </div>
                 </div>
             </section>
 
+            <!-- -->
             <!-- SECTION 6: WARNING CHECKLIST (COMMON MISTAKES) -->
             <section id="mistakes" class="scroll-mt-24 space-y-6">
                 <div class="flex items-center space-x-3 mb-2">
-                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono">06</span>
-                    <h3 class="text-2xl font-bold">Warning Checklist (Common Errors)</h3>
+                    <span class="text-xs bg-aviation-amber/10 text-aviation-amber px-2.5 py-1 rounded font-mono font-bold">06</span>
+                    <h3 class="text-2xl font-bold text-slate-900">Warning Checklist (Common Errors)</h3>
                 </div>
                 
-                <p class="text-slate-400 text-sm">
+                <p class="text-slate-600 text-sm">
                     Avoid critical translation crash landings. Review these structural comparisons from actual pilot examinations:
                 </p>
 
-                <div class="glass-panel rounded-xl overflow-hidden border border-slate-800">
+                <div class="glass-panel rounded-xl overflow-hidden border border-slate-200 shadow-sm">
                     <table class="w-full text-left text-xs sm:text-sm border-collapse">
                         <thead>
-                            <tr class="bg-slate-900/80 border-b border-slate-800 text-slate-300 font-mono text-[11px]">
+                            <tr class="bg-slate-100 border-b border-slate-200 text-slate-600 font-mono text-[11px] font-bold">
                                 <th class="p-4">CRITICAL ERROR</th>
                                 <th class="p-4">CORRECT FLIGHT VERSION</th>
                                 <th class="p-4">TECHNICAL REASON</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-800/60">
-                            <tr class="hover:bg-slate-900/30 transition-all">
+                        <tbody class="divide-y divide-slate-200">
+                            <tr class="hover:bg-slate-50/50 transition-all bg-white">
                                 <td class="p-4 text-aviation-red font-semibold font-mono">"It depends from weather."</td>
                                 <td class="p-4 text-aviation-green font-semibold font-mono">"It depends on the weather."</td>
-                                <td class="p-4 text-slate-400">Preposition violation. Always pair <strong class="text-slate-200">depend</strong> with <strong class="text-slate-200">on</strong>.</td>
+                                <td class="p-4 text-slate-600">Preposition violation. Always pair <strong class="text-slate-800">depend</strong> with <strong class="text-slate-800">on</strong>.</td>
                             </tr>
-                            <tr class="hover:bg-slate-900/30 transition-all">
+                            <tr class="hover:bg-slate-50/50 transition-all bg-white">
                                 <td class="p-4 text-aviation-red font-semibold font-mono">"It depends of situation."</td>
                                 <td class="p-4 text-aviation-green font-semibold font-mono">"It depends on the situation."</td>
-                                <td class="p-4 text-slate-400">Unacceptable direct translation. Use "on".</td>
+                                <td class="p-4 text-slate-600">Unacceptable direct translation. Use "on".</td>
                             </tr>
-                            <tr class="hover:bg-slate-900/30 transition-all">
+                            <tr class="hover:bg-slate-50/50 transition-all bg-white">
                                 <td class="p-4 text-aviation-red font-semibold font-mono">"Depends on weather."</td>
                                 <td class="p-4 text-aviation-green font-semibold font-mono">"It depends on the weather."</td>
-                                <td class="p-4 text-slate-400">Grammar fragment. Examiners require full semantic clauses in assessments.</td>
+                                <td class="p-4 text-slate-600">Grammar fragment. Examiners require full semantic clauses in assessments.</td>
                             </tr>
-                            <tr class="hover:bg-slate-900/30 transition-all">
+                            <tr class="hover:bg-slate-50/50 transition-all bg-white">
                                 <td class="p-4 text-aviation-red font-semibold font-mono">"It depends on how is weather."</td>
                                 <td class="p-4 text-aviation-green font-semibold font-mono">"It depends on what the weather is like."</td>
-                                <td class="p-4 text-slate-400">Incorrect word order within nested interrogative clauses.</td>
+                                <td class="p-4 text-slate-600">Incorrect word order within nested interrogative clauses.</td>
                             </tr>
-                            <tr class="hover:bg-slate-900/30 transition-all">
+                            <tr class="hover:bg-slate-50/50 transition-all bg-white">
                                 <td class="p-4 text-aviation-red font-semibold font-mono">"It depends on pilot."</td>
                                 <td class="p-4 text-aviation-green font-semibold font-mono">"It depends on the pilot’s experience."</td>
-                                <td class="p-4 text-slate-400">Too vague. Precise terminology defines high-score outputs.</td>
+                                <td class="p-4 text-slate-600">Too vague. Precise terminology defines high-score outputs.</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
             </section>
 
+            <!-- -->
             <!-- SECTION 7: FINAL COCKPIT DEBRIEF & FULL PERFORMANCE SCRIPT -->
-            <section class="glass-panel rounded-2xl p-6 sm:p-10 border border-slate-800 relative overflow-hidden">
+            <section class="glass-panel rounded-2xl p-6 sm:p-10 border border-slate-200 relative overflow-hidden shadow-sm">
                 <div class="absolute inset-0 bg-gradient-to-t from-aviation-amber/5 via-transparent to-transparent pointer-events-none"></div>
                 
-                <h3 class="text-xl sm:text-2xl font-bold mb-4 flex items-center space-x-2">
+                <h3 class="text-xl sm:text-2xl font-bold mb-4 flex items-center space-x-2 text-slate-900">
                     <span>📇 Pilot Debriefing Telemetry</span>
                 </h3>
                 
-                <p class="text-sm text-slate-300 mb-6">
+                <p class="text-sm text-slate-600 mb-6">
                     Use this final comprehensive speaking script for continuous repetition training. Listen to the entire flight briefing compiled sequentially to perfect your pacing, pausing, and flow:
                 </p>
 
-                <div class="bg-slate-950 p-6 rounded-xl border border-slate-900 space-y-4 font-mono text-xs sm:text-sm text-slate-300">
-                    <div class="flex justify-between items-center border-b border-slate-900 pb-3 mb-4">
-                        <span class="text-aviation-amber text-[10px] tracking-widest">FULL FLIGHT BRIEFING SPEECH ENGINE</span>
-                        <button onclick="speakFullScript()" class="bg-aviation-amber hover:bg-amber-500 text-aviation-950 font-bold px-4 py-2 rounded flex items-center space-x-2 transition-all">
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 space-y-4 font-mono text-xs sm:text-sm text-slate-700 shadow-inner">
+                    <div class="flex justify-between items-center border-b border-slate-200 pb-3 mb-4">
+                        <span class="text-aviation-amber font-bold text-[10px] tracking-widest">FULL FLIGHT BRIEFING SPEECH ENGINE</span>
+                        <button onclick="speakFullScript()" class="bg-aviation-amber hover:bg-amber-700 text-white font-bold px-4 py-2 rounded flex items-center space-x-2 transition-all shadow-sm">
                             <span>Activate Complete Sequence</span> 🔊
                         </button>
                     </div>
@@ -651,7 +659,7 @@
                     </p>
                 </div>
 
-                <div class="mt-8 pt-6 border-t border-slate-800 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500">
+                <div class="mt-8 pt-6 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-400 font-mono font-bold">
                     <span>Aviation English Training Module v2.5.0</span>
                     <span class="mt-2 sm:mt-0">Compiled for Self-Immersive Pilot Readiness</span>
                 </div>
@@ -660,27 +668,16 @@
         </main>
     </div>
 
-    <!-- RELATED MATERIALS ON THIS TOPIC -->
-    <footer class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        <div class="glass-panel rounded-xl p-6 border border-slate-800">
-            <p class="text-xs font-mono text-slate-500 uppercase tracking-widest mb-4">More on &ldquo;It Depends On&rdquo;</p>
-            <div class="flex flex-wrap gap-3">
-                <a href="../it-depends-on-aviation-english-quiz.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-aviation-900 border border-slate-800 text-slate-200 hover:border-aviation-amber hover:text-white text-sm font-medium transition-all">Quiz: It Depends On</a>
-                <a href="../songs.html#it-depends-on-safety" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-aviation-900 border border-slate-800 text-slate-200 hover:border-aviation-amber hover:text-white text-sm font-medium transition-all">&#9654; Song: It Depends On Safety</a>
-                <a href="../infographics.html" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-aviation-900 border border-slate-800 text-slate-200 hover:border-aviation-amber hover:text-white text-sm font-medium transition-all">Infographic: It Depends On</a>
-            </div>
-        </div>
-    </footer>
-
     <!-- SPEECH NOTIFICATION ELEMENT -->
-    <div id="speech-bubble" class="fixed bottom-6 right-6 glass-panel px-4 py-3 rounded-lg border border-aviation-amber text-xs text-slate-200 shadow-2xl flex items-center space-x-3 transition-all duration-300 translate-y-24 opacity-0 z-50">
+    <div id="speech-bubble" class="fixed bottom-6 right-6 glass-panel px-4 py-3 rounded-lg border border-aviation-amber text-xs text-slate-800 shadow-lg flex items-center space-x-3 transition-all duration-300 translate-y-24 opacity-0 z-50">
         <span class="w-2.5 h-2.5 rounded-full bg-aviation-amber animate-pulse"></span>
-        <span id="speech-bubble-text">Engine speaking...</span>
+        <span id="speech-bubble-text" class="font-semibold">Engine speaking...</span>
     </div>
 
     <!-- CONFETTI CANVAS FOR CAPTAIN UPGRADE -->
     <canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-50 hidden"></canvas>
 
+    <!-- -->
     <script>
         // WEB AUDIO SYSTEM FOR COOL COCKPIT SOUND EFFECTS
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -728,10 +725,10 @@
             navs.forEach(navId => {
                 const navEl = document.getElementById(`nav-${navId}`);
                 if (navId === id) {
-                    navEl.className = "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-aviation-800 border-l-4 border-aviation-amber text-slate-100";
+                    navEl.className = "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all bg-white border-l-4 border-aviation-amber text-slate-900 shadow-sm";
                     navEl.querySelector('svg').classList.add('text-aviation-amber');
                 } else {
-                    navEl.className = "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100";
+                    navEl.className = "flex items-center space-x-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900";
                     navEl.querySelector('svg').classList.remove('text-aviation-amber');
                 }
             });
@@ -845,9 +842,9 @@
             keys.forEach(k => {
                 const btn = document.getElementById(`btn-${k}`);
                 if (k === opKey) {
-                    btn.className = "text-left px-4 py-3 rounded-lg text-sm font-medium transition-all bg-aviation-800 text-aviation-amber border-l-2 border-aviation-amber";
+                    btn.className = "text-left px-4 py-3 rounded-lg text-sm font-medium transition-all bg-white text-aviation-amber border-l-2 border-aviation-amber shadow-sm";
                 } else {
-                    btn.className = "text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-400 hover:bg-slate-900 hover:text-slate-100";
+                    btn.className = "text-left px-4 py-3 rounded-lg text-sm font-medium transition-all text-slate-600 hover:bg-white hover:text-slate-900";
                 }
             });
 
@@ -920,11 +917,11 @@
             for (let i = 1; i <= 8; i++) {
                 const tab = document.getElementById(`drill-tab-${i}`);
                 if (i === drillId) {
-                    tab.className = "w-full text-left p-3 rounded-lg text-xs font-medium transition-all bg-aviation-800 text-slate-200 border border-slate-700/60 block";
-                    tab.querySelector('span').className = "text-[9px] font-mono text-aviation-amber block";
+                    tab.className = "w-full text-left p-3 rounded-lg text-xs font-medium transition-all bg-slate-100 text-slate-800 border border-slate-300 block shadow-sm";
+                    tab.querySelector('span').className = "text-[9px] font-mono text-aviation-amber block font-bold";
                 } else {
-                    tab.className = "w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-900 text-slate-400 block border border-transparent";
-                    tab.querySelector('span').className = "text-[9px] font-mono text-slate-500 block";
+                    tab.className = "w-full text-left p-3 rounded-lg text-xs font-medium transition-all hover:bg-slate-50 text-slate-600 block border border-transparent";
+                    tab.querySelector('span').className = "text-[9px] font-mono text-slate-400 block font-bold";
                 }
             }
 
@@ -946,7 +943,7 @@
         const quizQuestions = [
             {
                 type: 'text',
-                question: 'Complete the sentence with the correct preposition: <br><strong class="text-white font-mono">It depends ____ the runway condition.</strong>',
+                question: 'Complete the sentence with the correct preposition: <br><strong class="text-slate-900 font-mono">It depends ____ the runway condition.</strong>',
                 correct: 'on',
                 hint: 'Never use "of" or "from" after depends!'
             },
@@ -975,7 +972,7 @@
             },
             {
                 type: 'choice',
-                question: 'State True or False: <strong class="text-slate-200">"It depends on"</strong> should only be used when everything in flight operations is completely safe and static.',
+                question: 'State True or False: <strong class="text-slate-800">"It depends on"</strong> should only be used when everything in flight operations is completely safe and static.',
                 options: [
                     { key: 'T', text: 'True' },
                     { key: 'F', text: 'False' }
@@ -985,7 +982,7 @@
             },
             {
                 type: 'text',
-                question: 'Correct and rewrite this fragment syntax: <br><strong class="text-white font-mono">"Depends on fuel and weather."</strong>',
+                question: 'Correct and rewrite this fragment syntax: <br><strong class="text-slate-900 font-mono">"Depends on fuel and weather."</strong>',
                 correct: 'It depends on fuel and weather.',
                 correctAlt: 'It depends on fuel quantity and weather conditions.',
                 hint: 'Add the structural dummy pronoun "It" to construct a complete flight status clause.'
@@ -1031,8 +1028,8 @@
             
             let html = `
                 <div class="space-y-4">
-                    <span class="inline-block bg-slate-900 border border-slate-800 text-slate-400 text-[10px] font-mono px-2 py-0.5 rounded">QUESTION CATEGORY: CRITICAL EVALUATION</span>
-                    <h4 class="text-base sm:text-lg font-bold text-slate-100">${q.question}</h4>
+                    <span class="inline-block bg-slate-100 border border-slate-200 text-slate-500 text-[10px] font-mono px-2 py-0.5 rounded font-semibold">QUESTION CATEGORY: CRITICAL EVALUATION</span>
+                    <h4 class="text-base sm:text-lg font-bold text-slate-800">${q.question}</h4>
             `;
 
             if (q.type === 'text') {
@@ -1040,7 +1037,7 @@
                 const placeholder = q.typePlaceholder || 'Type answer here (case-insensitive)...';
                 html += `
                     <div class="space-y-2">
-                        <input type="text" id="quiz-input-text" value="${prevAns}" placeholder="${placeholder}" class="w-full bg-slate-950 text-slate-200 border border-slate-800 focus:border-aviation-blue rounded px-3 py-2.5 outline-none font-mono text-sm">
+                        <input type="text" id="quiz-input-text" value="${prevAns}" placeholder="${placeholder}" class="w-full bg-white text-slate-800 border border-slate-300 focus:border-aviation-blue rounded px-3 py-2.5 outline-none font-mono text-sm shadow-sm">
                     </div>
                 `;
             } else if (q.type === 'choice') {
@@ -1049,9 +1046,9 @@
                 q.options.forEach(opt => {
                     const isSelected = prevAns === opt.key;
                     html += `
-                        <button onclick="selectQuizChoice('${opt.key}')" class="w-full text-left p-3 rounded-lg border text-sm transition-all flex items-center justify-between ${isSelected ? 'border-aviation-blue bg-aviation-blue/15 text-slate-100' : 'border-slate-800 hover:border-slate-700 hover:bg-slate-900 text-slate-300'}">
+                        <button onclick="selectQuizChoice('${opt.key}')" class="w-full text-left p-3 rounded-lg border text-sm transition-all flex items-center justify-between shadow-sm ${isSelected ? 'border-aviation-blue bg-aviation-blue/5 text-slate-800 font-bold' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}">
                             <span><strong class="font-mono text-aviation-amber mr-2">${opt.key}.</strong> ${opt.text}</span>
-                            <span class="w-4 h-4 rounded-full border border-slate-700 flex items-center justify-center ${isSelected ? 'bg-aviation-blue border-transparent' : ''}">
+                            <span class="w-4 h-4 rounded-full border border-slate-300 flex items-center justify-center ${isSelected ? 'bg-aviation-blue border-transparent text-white' : ''}">
                                 ${isSelected ? '✓' : ''}
                             </span>
                         </button>
@@ -1064,9 +1061,9 @@
                 q.options.forEach(opt => {
                     const isChecked = prevAns.includes(opt.key);
                     html += `
-                        <button onclick="toggleQuizCheckbox('${opt.key}')" class="w-full text-left p-3 rounded-lg border text-sm transition-all flex items-center justify-between ${isChecked ? 'border-aviation-blue bg-aviation-blue/15 text-slate-100' : 'border-slate-800 hover:border-slate-700 hover:bg-slate-900 text-slate-300'}">
+                        <button onclick="toggleQuizCheckbox('${opt.key}')" class="w-full text-left p-3 rounded-lg border text-sm transition-all flex items-center justify-between shadow-sm ${isChecked ? 'border-aviation-blue bg-aviation-blue/5 text-slate-800 font-bold' : 'border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700'}">
                             <span>📂 ${opt.text}</span>
-                            <span class="w-4 h-4 rounded border border-slate-700 flex items-center justify-center ${isChecked ? 'bg-aviation-blue border-transparent' : ''}">
+                            <span class="w-4 h-4 rounded border border-slate-300 flex items-center justify-center ${isChecked ? 'bg-aviation-blue border-transparent text-white' : ''}">
                                 ${isChecked ? '✓' : ''}
                             </span>
                         </button>
@@ -1079,11 +1076,11 @@
             if (quizAnswersState[activeQuizIdx + '_checked']) {
                 const isCorrect = quizAnswersState[activeQuizIdx + '_correct'];
                 html += `
-                    <div class="mt-4 p-3 rounded-lg border flex items-start space-x-3 text-xs ${isCorrect ? 'bg-aviation-green/10 border-aviation-green text-slate-200' : 'bg-aviation-red/10 border-aviation-red text-slate-200'}">
+                    <div class="mt-4 p-3 rounded-lg border flex items-start space-x-3 text-xs shadow-sm ${isCorrect ? 'bg-aviation-green/5 border-aviation-green/30 text-slate-800' : 'bg-aviation-red/5 border-aviation-red/30 text-slate-800'}">
                         <span class="text-base">${isCorrect ? '✅' : '❌'}</span>
                         <div>
-                            <p class="font-bold">${isCorrect ? 'Flight Telemetry Verified: Perfect Match!' : 'Flight Telemetry Warning: Correction Needed!'}</p>
-                            <p class="mt-1 text-slate-400"><strong>Debrief Assist:</strong> ${q.hint}</p>
+                            <p class="font-bold text-slate-900">${isCorrect ? 'Flight Telemetry Verified: Perfect Match!' : 'Flight Telemetry Warning: Correction Needed!'}</p>
+                            <p class="mt-1 text-slate-600"><strong>Debrief Assist:</strong> ${q.hint}</p>
                         </div>
                     </div>
                 `;
@@ -1207,10 +1204,10 @@
             const badge = document.getElementById('license-badge');
             if (score <= 3) {
                 badge.textContent = "STUDENT PILOT";
-                badge.className = "text-aviation-amber";
+                badge.className = "text-aviation-amber font-bold";
             } else if (score <= 6) {
                 badge.textContent = "FIRST OFFICER";
-                badge.className = "text-aviation-blue";
+                badge.className = "text-aviation-blue font-bold";
             } else {
                 badge.textContent = "CAPTAIN (ICAO LEVEL 5)";
                 badge.className = "text-aviation-green font-bold glow-green";
@@ -1231,16 +1228,16 @@
             div.innerHTML = `
                 <div class="text-center py-6 space-y-4">
                     <span class="text-4xl inline-block animate-bounce">${score >= 7 ? '🏆' : '🛫'}</span>
-                    <h4 class="text-xl font-bold text-white">Flight Checkride Mission Terminated</h4>
-                    <p class="text-sm text-slate-300 max-w-md mx-auto">
-                        Your final evaluated telemetry indicates a completion accuracy of <strong class="text-aviation-amber">${Math.round((score/quizQuestions.length)*100)}%</strong>.
+                    <h4 class="text-xl font-bold text-slate-800">Flight Checkride Mission Terminated</h4>
+                    <p class="text-sm text-slate-600 max-w-md mx-auto">
+                        Your final evaluated telemetry indicates a completion accuracy of <strong class="text-aviation-amber font-bold">${Math.round((score/quizQuestions.length)*100)}%</strong>.
                     </p>
-                    <div class="p-3 bg-slate-950 max-w-xs mx-auto rounded border border-slate-900 font-mono text-xs space-y-2">
-                        <div class="flex justify-between"><span>TOTAL EVALS CHECKED:</span> <span>${quizQuestions.length}</span></div>
-                        <div class="flex justify-between text-aviation-green"><span>APPROVED ACTIONS:</span> <span>${score}</span></div>
-                        <div class="flex justify-between text-aviation-red"><span>CRITICAL ERRORS:</span> <span>${quizQuestions.length - score}</span></div>
+                    <div class="p-3 bg-slate-100 max-w-xs mx-auto rounded border border-slate-200 font-mono text-xs space-y-2 shadow-inner">
+                        <div class="flex justify-between text-slate-600"><span>TOTAL EVALS CHECKED:</span> <span>${quizQuestions.length}</span></div>
+                        <div class="flex justify-between text-aviation-green font-bold"><span>APPROVED ACTIONS:</span> <span>${score}</span></div>
+                        <div class="flex justify-between text-aviation-red font-bold"><span>CRITICAL ERRORS:</span> <span>${quizQuestions.length - score}</span></div>
                     </div>
-                    <button onclick="resetExamSim()" class="bg-aviation-blue hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded text-xs transition-all">
+                    <button onclick="resetExamSim()" class="bg-aviation-blue hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded text-xs transition-all shadow-sm">
                         Initiate Simulator Reboot 🔄
                     </button>
                 </div>
