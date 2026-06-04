@@ -2,6 +2,13 @@
 
 Як публікувати матеріали на сайті **https://stszu.github.io/aviation-quiz/**.
 
+**Workflow:**
+
+1. Project "ICAO Material Builder" — create a material — create a quiz — create an infographic
+2. prompt for quiz — ACTIVE/Creator_quiz - 01_prompt_json_from_text.md
+3. Run: codex CLI in ~/Projects/ACTIVE/Creator_quiz 
+4. Run: claude CLI in ~/Projects/Drafts/Aviation-quiz
+
 ## Що це
 
 Статичний сайт на GitHub Pages для підготовки до ICAO exam. Містить:
