@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flight Academy Trainer — Pilot Guide LSA (listen &amp; read)</title>
+<style>
+  :root {
+    --bg-main: #f1f5f9;
+    --bg-panel: #ffffff;
+    --bg-panel-2: #f8fafc;
+    --border: #cbd5e1;
+    --text: #0f172a;
+    --text-2: #334155;
+    --muted: #64748b;
+    --accent: #0f4c81;
+    --accent-2: #0284c7;
+    --active-bg: rgba(2, 132, 199, 0.12);
+    --active-border: #0284c7;
+    --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  body.night {
+    --bg-main: #06090e;
+    --bg-panel: #0d121c;
+    --bg-panel-2: #131a29;
+    --border: #1e293b;
+    --text: #f8fafc;
+    --text-2: #cbd5e1;
+    --muted: #64748b;
+    --accent: #10b981;
+    --accent-2: #10b981;
+    --active-bg: rgba(16, 185, 129, 0.14);
+    --active-border: #10b981;
+    --shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    padding: 24px 16px 64px;
+    transition: background-color .3s ease, color .3s ease;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .back-link { color: var(--accent-2); text-decoration: none; font-weight: 600; font-size: 14px; }
+  .back-link:hover { text-decoration: underline; }
+  .theme-switch {
+    background: var(--bg-panel); color: var(--text-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+  }
+  .theme-switch:hover { background: var(--bg-panel-2); }
+
+  .hero { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); }
+  .kicker { color: var(--accent-2); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(22px, 4vw, 30px); margin: 6px 0 8px; }
+  .hero p { color: var(--muted); max-width: 70ch; font-size: 15px; }
+
+  /* Chapter rail */
+  .rail { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+  .chap-btn {
+    flex: 0 0 auto; background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; cursor: pointer; font: inherit; color: var(--text-2);
+    display: flex; gap: 8px; align-items: center; transition: all .15s ease; white-space: nowrap;
+  }
+  .chap-btn:hover { background: var(--bg-panel-2); }
+  .chap-btn.active { border-color: var(--active-border); background: var(--active-bg); color: var(--text); font-weight: 600; }
+  .chap-btn .num {
+    width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+
+  /* Player */
+  .player { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); position: sticky; top: 12px; z-index: 5; }
+  .player-title { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
+  .controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .play-btn {
+    width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--accent); color: #fff; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-btn svg { width: 22px; height: 22px; }
+  .timeline { flex: 1 1 240px; display: flex; align-items: center; gap: 10px; min-width: 200px; }
+  .time { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); flex: 0 0 auto; }
+  .scrub { flex: 1; height: 8px; background: var(--border); border-radius: 99px; cursor: pointer; position: relative; }
+  .scrub-fill { height: 100%; background: var(--accent-2); border-radius: 99px; width: 0; }
+  .speeds { display: flex; gap: 4px; flex: 0 0 auto; }
+  .speed-btn { background: var(--bg-panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; font: inherit; font-size: 12px; cursor: pointer; color: var(--text-2); }
+  .speed-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .sync-note { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  /* Transcript */
+  .transcript { display: flex; flex-direction: column; gap: 12px; }
+  .seg {
+    background: var(--bg-panel); border: 1px solid var(--border); border-left: 4px solid transparent;
+    border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all .15s ease;
+  }
+  .seg:hover { background: var(--bg-panel-2); }
+  .seg.active { border-left-color: var(--active-border); background: var(--active-bg); }
+  .seg-q { font-size: 13px; font-weight: 700; color: var(--accent-2); margin-bottom: 6px; }
+  .seg-a { color: var(--text-2); font-size: 15.5px; }
+  .seg.active .seg-a { color: var(--text); }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back-link" href="../index.html">&larr; All quizzes</a>
+    <button class="theme-switch" id="themeBtn"><span id="themeLabel">Night mode</span></button>
+  </header>
+
+  <section class="hero">
+    <p class="kicker">Flight Academy Trainer</p>
+    <h1>Pilot Guide LSA — listen &amp; read</h1>
+    <p>Play a chapter and follow along: the active answer is highlighted as the audio plays, and the transcript scrolls with it. Tap any answer to jump the audio to that point. Use the speed controls to slow down for shadowing practice.</p>
+  </section>
+
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+
+  <section class="player">
+    <div class="player-title" id="nowPlaying">Chapter 1 — Aircraft Description</div>
+    <div class="controls">
+      <button class="play-btn" id="playBtn" aria-label="Play / pause">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="timeline">
+        <span class="time" id="curTime">00:00</span>
+        <div class="scrub" id="scrub"><div class="scrub-fill" id="scrubFill"></div></div>
+        <span class="time" id="durTime">00:00</span>
+      </div>
+      <div class="speeds">
+        <button class="speed-btn" data-rate="0.75">0.75x</button>
+        <button class="speed-btn active" data-rate="1">1x</button>
+        <button class="speed-btn" data-rate="1.25">1.25x</button>
+        <button class="speed-btn" data-rate="1.5">1.5x</button>
+      </div>
+    </div>
+    <p class="sync-note">Sync is approximate (estimated from text length). Exact sentence-level timing comes with the forced-alignment step.</p>
+    <audio id="audio" preload="none"></audio>
+  </section>
+
+  <div class="transcript" id="transcript"></div>
+
+  <footer><a href="../index.html">&larr; All quizzes</a></footer>
+</div>
+
+<script>
+const DIR = 'Pilot_Guide_LSA/';
+const CHAPTERS = [
+  { num: 1, title: "Aircraft Description", mp3: "01-aircraft-description.mp3", segments: [
+    { q: "What type of aircraft is the Bristell LSA?", a: "The Bristell LSA is a modern light-sport aircraft designed as a single-engine, low-wing monoplane. It features a lightweight aluminum structure and aerodynamic design, which makes it highly efficient for general aviation operations. From a safety perspective, its light category means it responds quickly to control inputs but requires careful handling in turbulent air." },
+    { q: "What is the aircraft mainly used for?", a: "This aircraft is primarily operated for recreational flying, cross-country flights, and basic flight training. For example, flight schools use it because it is cost-effective and helps student pilots build essential handling skills. In terms of safety, its predictable flight characteristics make it an excellent platform for initial pilot development." },
+    { q: "What kind of landing gear does it have?", a: "The Bristell LSA is equipped with a fixed tricycle landing gear configuration that includes a steerable nose wheel. This setup provides excellent directional control and stability during ground operations, taxiing, and crosswind landings. From a safety standpoint, a fixed gear design reduces pilot workload and eliminates the risk of a gear-up landing emergency." },
+    { q: "How are the seats positioned in the cockpit?", a: "The cockpit features two seats positioned side by side, which provides a comfortable and spacious environment for the crew. This layout is ideal for flight training because it allows the instructor to monitor the student's actions and instruments directly. For flight safety, side-by-side seating enhances crew resource management and improves situational awareness inside the cabin." },
+    { q: "What controls does the pilot use?", a: "The pilot controls the aircraft using a centrally mounted control stick and standard rudder pedals. The stick manages pitch and roll via the elevator and ailerons, while the pedals control yaw. From a safety perspective, these dual mechanical controls provide direct aerodynamic feedback, allowing the pilot to maintain precise manual control at all times." },
+    { q: "What engine and propeller does the aircraft have?", a: "The powerplant consists of a reliable Rotax engine paired with a three-blade variable-pitch propeller. This combination offers an optimal balance of fuel efficiency, low noise levels, and high cruise performance. To ensure safety, the pilot must carefully monitor engine parameters like oil temperature and pressure to prevent any sudden mechanical failures in flight." },
+    { q: "Why is the aircraft not suitable for aerobatic flying?", a: "The Bristell LSA is not suitable for aerobatics because its airframe is not designed or certified to withstand high G-load maneuvers. Attempting aerobatic flights could cause severe structural deformation or catastrophic mid-air structural failure. Therefore, strictly avoiding prohibited maneuvers is vital to maintaining airworthiness and protecting human lives." },
+    { q: "What does “approved limitations” mean?", a: "Approved limitations refer to the official operational boundaries set by the manufacturer within which the aircraft can be flown safely. These limits include maximum weights, speed redlines, and environmental factors like wind or icing. For flight safety, staying within these approved limitations guarantees that the aircraft performs exactly as expected without overstressing the airframe." }
+  ]},
+  { num: 2, title: "Operating Limitations and Safety", mp3: "02-operating-limitations-and-safety.mp3", segments: [
+    { q: "Why are operating limitations important?", a: "Operating limitations are essential because they keep the aircraft within its tested and safe operating envelope. If a pilot exceeds these boundaries, the aircraft may experience aerodynamic stalls or structural damage. For example, flying beyond weight limits drastically reduces climb performance. Ultimately, respecting limitations is the foundation of accident prevention and flight safety." },
+    { q: "What is maximum take-off weight?", a: "Maximum take-off weight, or MTOW, is the absolute maximum total weight allowed for the aircraft at the moment it begins its take-off run. This value includes the empty weight of the plane, passengers, baggage, and fuel. Operating below MTOW ensures the aircraft can accelerate and climb efficiently. For safety reasons, exceeding this weight is strictly prohibited as it compromises the entire flight profile." },
+    { q: "What can happen if the aircraft is overloaded?", a: "If the aircraft is overloaded, its overall aerodynamic and engine performance will drop significantly. The plane will require a much longer runway to lift off, climb poorly, and face a higher stall speed. For instance, an overloaded LSA might fail to clear obstacles at the end of a short runway. To maintain flight safety, a pilot must always perform precise weight calculations before engine start." },
+    { q: "Why must the pilot respect the never exceed speed?", a: "A pilot must strictly respect the never exceed speed (VNE) because exceeding it can cause severe structural damage or aerodynamic flutter. Flutter can cause the control surfaces or wings to break apart within seconds. For example, during a steep dive, speed can build up rapidly toward the redline. Maintaining a safe margin below VNE is critical to preventing catastrophic structural failure." },
+    { q: "What can happen if a pilot makes abrupt control movements at high speed?", a: "Making abrupt control movements at high speeds can severely overstress the aircraft structure. When flying above maneuvering speed (VA), full or sudden deflections of the control sticks can generate loads that exceed the design limits of the wings or tail. For safety, smooth and progressive inputs are required, especially in turbulent air or during high-speed cruise." },
+    { q: "Are aerobatics permitted on this aircraft?", a: "No, aerobatic maneuvers are strictly prohibited on the Bristell LSA. The aircraft is certified only for normal operations and cross-country flights, meaning its structure cannot handle extreme pitch or roll angles. Conducting unapproved maneuvers poses an immediate threat to the airframe's integrity. For safety, pilots must adhere to the limitations manual and fly only permitted profiles." },
+    { q: "Why are intentional spins prohibited?", a: "Intentional spins are prohibited because the aircraft is not certified or aerodynamically configured for spin recovery. If entered intentionally, the aircraft might become unstable, making it extremely difficult or impossible for the pilot to recover control. From a safety point of view, avoiding flight attitudes that lead to uncoordinated stalls is necessary to prevent loss-of-control accidents." },
+    { q: "What should a pilot do if icing conditions are possible?", a: "If icing conditions are expected or encountered, the pilot must avoid them completely or exit the area immediately by changing altitude or turning back. Light aircraft like the Bristell LSA lack de-icing equipment, so ice accumulation will quickly destroy wing lift and increase weight. Acting early when icing is suspected is an absolute priority to maintain aerodynamic control and flight safety." },
+    { q: "What is the difference between permitted and prohibited operations?", a: "Permitted operations are maneuvers and flight conditions authorized by the manufacturer, whereas prohibited operations are unauthorized and unsafe. For example, daytime VFR cross-country flights are permitted, but flying into known icing is prohibited. Understanding this clear boundary is vital for flight crews to avoid unnecessary risks and ensure standard safe operations." },
+    { q: "Why should the pilot check limitations before every flight?", a: "A pilot must check limitations before every flight because environmental conditions, passenger weight, and runway lengths change every day. A flight profile that was safe yesterday might be dangerous today due to higher temperatures or a heavier payload. Reviewing the limitations manual during pre-flight planning is a fundamental step to ensuring the aircraft operates within a safe envelope." }
+  ]},
+  { num: 3, title: "Normal Flight Procedures", mp3: "03-normal-flight-procedures.mp3", segments: [
+    { q: "What is the purpose of normal procedures?", a: "The purpose of normal procedures is to establish a standardized, safe, and consistent method for operating the aircraft. Following normal procedures ensures that no critical steps are forgotten during any phase of flight. For example, using a checklist before take-off confirms that the aircraft configuration is correct. Ultimately, disciplined adherence to normal procedures minimizes human error and maximizes flight safety." },
+    { q: "What should a pilot check during pre-flight inspection?", a: "During a pre-flight inspection, the pilot must thoroughly check the structural integrity and vital fluids of the aircraft. This includes inspecting fuel, oil, and coolant levels, as well as the condition of the controls, tires, brakes, propeller, and pitot tube. For example, checking the fuel sumps ensures there is no water contamination. A meticulous walk-around is the first line of defense against mechanical emergencies in the air." },
+    { q: "Why is fuel quantity important before flight?", a: "Fuel quantity is critical because the aircraft must have enough usable fuel to safely reach its destination, plus a regulatory safety reserve. Running out of fuel causes complete engine starvation, resulting in a forced landing. For instance, unexpected headwinds can increase fuel burn during a cross-country flight. Verifying precise fuel levels before departure ensures the flight can be completed without the risk of fuel exhaustion." },
+    { q: "What should the pilot check before take-off?", a: "Before entering the runway, the pilot must verify that the aircraft is fully configured for departure. This means checking the altimeter setting, trim position, flight controls, canopy lock, safety harnesses, fuel selector, flaps, and instruments. For example, an unlatched canopy can open in flight and cause severe distraction. Completing the pre-take-off checklist guarantees that the aircraft is safe and ready to become airborne." },
+    { q: "What should the pilot monitor during take-off?", a: "During the take-off roll, the pilot must continuously monitor engine power, airspeed acceleration, and primary gauges. The pilot needs to ensure the engine achieves full RPM and that the airspeed indicator is alive and rising. If any parameter is abnormal, such as sluggish acceleration, the take-off must be aborted immediately. Continuous monitoring during this high-risk phase ensures a safe liftoff or a timely rejected take-off." },
+    { q: "What is important during climb?", a: "During the climb phase, it is vital to maintain the correct target climb airspeed (VY or VX) while monitoring engine temperatures. Since the aircraft is operating at high power and lower speeds, engine cooling is reduced. For example, a pilot may need to lower the nose slightly to increase airflow and lower high oil temperatures. Managing speed and engine gauges during climb prevents engine overheating and maintains a safe margin above stall." },
+    { q: "What does the pilot do during cruise?", a: "During the cruise phase, the pilot transitions the aircraft to a stable flight profile by setting cruise power, trimming the aircraft, and monitoring fuel consumption. The pilot must also track their position, monitor weather conditions, and maintain radio contact with ATC. For safety reasons, continuous situational awareness during cruise ensures that the flight remains on course and any changes can be handled calmly." },
+    { q: "What should the pilot check before landing?", a: "Before entering the airport traffic pattern, the pilot must perform a pre-landing checklist. This includes confirming the approach speed, setting the propeller control, turning on fuel pumps, setting landing flaps, and adjusting trim. For instance, extending flaps lowers the touchdown speed and stabilizes the approach. Proper cockpit configuration before landing reduces pilot workload and ensures a stabilized, safe touchdown." },
+    { q: "What is a go-around?", a: "A go-around is a standard safety maneuver where a pilot rejects a landing and transitions back into a climb to try the approach again. It involves applying full engine power, retracting flaps incrementally, and establishing a positive rate of climb. For example, if wind shear destabilizes the aircraft on short final, a go-around is executed. Initiating a go-around is a normal safety procedure, not a failure." },
+    { q: "When should a pilot decide to go around?", a: "A pilot should decide to go around anytime the approach becomes unstable, if there is traffic on the runway, or if sudden gusts compromise control. Trying to force a bad approach into a landing often leads to hard touchdowns or runway excursions. For example, if the aircraft bounces severely on the runway, a go-around should be performed immediately. Prioritizing a go-around over an unsafe landing is a sign of good pilot decision-making." }
+  ]},
+  { num: 4, title: "Emergency Procedures", mp3: "04-emergency-procedures.mp3", segments: [
+    { q: "What is the first priority in any emergency?", a: "The absolute first priority in any emergency is to maintain control of the aircraft. The primary risk of a distraction or panic during a technical issue is a loss of control or an aerodynamic stall. The pilot must strictly follow the classic rule: Aviate, Navigate, Communicate. Only after the plane is stable and flying at a safe airspeed should the pilot talk to ATC. Keeping the aircraft flying safely remains the ultimate priority." },
+    { q: "What should the pilot do after engine failure during take-off?", a: "The situation is an engine failure immediately after take-off, which carries a critical risk due to low altitude and airspeed. The pilot must immediately lower the nose to maintain safe gliding speed and prevent an aerodynamic stall. If altitude is insufficient to return, the pilot must land straight ahead, avoiding sharp turns. If time permits, declare a Mayday to ATC. The ultimate goal is to land under control with minimum risk." },
+    { q: "Why is it dangerous to turn back to the runway at low altitude?", a: "This situation is an engine failure on initial climb, and the primary risk is known as the 'impossible turn.' Turning back at low altitude requires a steep bank angle, which dramatically increases the stall speed and causes a rapid loss of altitude. Instead of returning safely, the aircraft may spin and crash. The pilot must maintain control and land ahead, as securing a controlled touchdown is much safer than risking an aerodynamic stall." },
+    { q: "How should the pilot choose an emergency landing area?", a: "When facing a forced landing, the pilot must quickly select an emergency landing area to minimize the risk of a severe impact. The main risks are colliding with power lines, trees, or flipping over on rough terrain. The pilot should prioritize large, flat open fields, aiming to land into the wind to minimize ground speed. Broadcast the chosen intentions to ATC if possible. Choosing the clearest available area maximizes occupant survival." },
+    { q: "What is the difference between emergency landing and precautionary landing?", a: "An emergency landing is caused by an immediate, critical threat like an engine failure, while a precautionary landing is an intentional decision made before a situation turns into an emergency. The risk of delaying a precautionary landing—such as during deteriorating weather or low fuel—is that options disappear. The pilot should execute a precautionary landing while the aircraft is still fully controllable. Making a timely, proactive landing is always the safest choice." },
+    { q: "What should the pilot do in case of fire in flight?", a: "An in-flight fire is a life-threatening emergency because smoke can quickly incapacitate the crew and damage controls. The pilot must immediately reduce the source of the fire by turning off the fuel selector or shutting down electrical systems, then establish a steep descent to land as soon as possible. Simultaneously, declare an emergency to ATC to request rescue services. Landing quickly is crucial to saving the aircraft and passengers." },
+    { q: "What should the pilot do if smoke appears in the cockpit?", a: "The presence of smoke in the cockpit indicates an electrical or engine fire, creating an immediate risk of toxic inhalation and loss of visibility. The pilot should turn off the master switch to isolate electrical components, open fresh air vents, and use an emergency oxygen mask or smoke goggles if available. Inform ATC of an immediate emergency and descend for an emergency landing. Swift action prevents cabin incapacitation." },
+    { q: "What should the pilot do if the autopilot malfunctions?", a: "An autopilot malfunction is an abnormal situation that can cause uncommanded aircraft attitudes or deviations from assigned altitudes. The risk is that the automation could force the aircraft into an overstressed state or an unexpected dive. The pilot must immediately disconnect the autopilot using the disconnect button or pull the circuit breaker, and fly the aircraft manually. Inform ATC of the system loss, as pilot manual control is the only way to ensure flight path safety." },
+    { q: "What should the pilot do in icing conditions?", a: "Encountering unexpected icing is a critical hazard because it changes the wing profile, destroys lift, and increases drag. The risk is a severe aerodynamic stall at a higher airspeed than normal. The pilot must exit the icing layer immediately by turning 180 degrees back or changing altitude to find warmer air. Notify ATC of the icing encounter and request vectors out of the area. Prompt avoidance is necessary to prevent a loss of control." },
+    { q: "When should the pilot communicate with ATC during an emergency?", a: "A pilot should communicate with ATC only after the aircraft is under complete manual control and immediate safety is secured. The risk of communicating too early is that talking distracts the pilot from flying the plane during a critical moment. Pilots must adhere to the Aviate, Navigate, Communicate order of priorities. Once stable, declare 'Mayday' or 'Pan-Pan' to receive priority handling. Safe aircraft management must always come before radio work." }
+  ]},
+  { num: 5, title: "Performance, Weather, and Runway Conditions", mp3: "05-performance-weather-and-runway-conditions.mp3", segments: [
+    { q: "What does aircraft performance mean?", a: "Aircraft performance refers to the operational capabilities of the plane, specifically how well it can take off, climb, cruise, and land under specific environmental conditions. Performance changes constantly based on air density, weight, and wind. For example, a heavy aircraft climbs more slowly than a light one. Knowing your performance capabilities ensures that the flight plan is realistic and safe." },
+    { q: "What factors affect take-off distance?", a: "Several critical factors affect take-off distance, including aircraft weight, outside air temperature, runway slope and surface, wind velocity, and pressure altitude. High weight and high temperatures increase the ground roll required to lift off. For instance, taking off from a grass runway adds rolling resistance and extends the distance. Calculating these factors before engine start prevents runway overrun accidents." },
+    { q: "Why does high temperature reduce performance?", a: "High temperatures reduce performance because hot air expands and becomes less dense, creating a higher density altitude. Thinner air reduces engine power output, decreases propeller efficiency, and generates less lift on the wings. For example, on a hot summer day, an aircraft needs a significantly longer runway to take off. Pilots must calculate density altitude to ensure the aircraft can clear obstacles safely." },
+    { q: "Why does high airport elevation reduce climb performance?", a: "High airport elevation reduces climb performance because the atmospheric pressure is lower, meaning the ambient air is thinner. In thin air, naturally aspirated engines produce less horsepower, and the wings require higher true airspeeds to generate lift. For instance, a plane departing an airport at 5,000 feet climbs at a much lower rate than at sea level. Checking performance charts prevents high-altitude performance surprises." },
+    { q: "How does aircraft weight affect take-off?", a: "Aircraft weight has a direct effect on take-off because a heavier plane requires more aerodynamic lift to leave the ground. To produce this lift, the aircraft must achieve a higher takeoff speed, which requires a longer acceleration roll on the runway. For example, adding a passenger and baggage increases the required runway distance. Staying well below the maximum take-off weight ensures an adequate safety margin." },
+    { q: "Why does a grass runway increase take-off distance?", a: "A grass runway increases take-off distance because the grass, soil, or mud creates high rolling resistance against the aircraft tires. This resistance slows down acceleration, meaning the aircraft takes much longer to reach its rotation speed. For example, long or wet grass can double the required ground roll compared to smooth asphalt. A pilot must apply a safety correction factor when operating from unpaved surfaces." },
+    { q: "How does headwind help during take-off?", a: "A headwind helps during take-off because it provides the aircraft with an immediate initial indicated airspeed before it even begins to move. This reduces the ground speed required to achieve lift-off, resulting in a much shorter ground roll. For instance, a 10-knot headwind significantly reduces the runway distance needed. Utilizing the runway with the best headwind component is a fundamental safety practice." },
+    { q: "Why is tailwind dangerous during take-off or landing?", a: "A tailwind is dangerous because it increases the aircraft's ground speed during take-off and landing. During landing, a tailwind causes a higher touchdown speed and requires a much longer braking distance to stop. For example, landing with a strong tailwind can easily cause a runway excursion. To ensure safety, pilots should avoid tailwind operations unless the runway length provides a massive safety margin." },
+    { q: "What problems can crosswind create?", a: "A crosswind creates aerodynamic stability challenges because it pushes the aircraft sideways off the runway centerline during take-off and landing. The pilot must use specific correction techniques, like the wing-low method, to maintain alignment. For example, a strong crosswind gust can cause a wingtip strike or loss of directional control on touchdown. If the crosswind exceeds the aircraft's demonstrated limits, the safest decision is to divert." },
+    { q: "Why should a pilot check performance before every flight?", a: "A pilot must check performance data before every flight to guarantee that the aircraft can safely take off, climb over obstacles, and land within the available runway lengths. Environmental conditions change constantly, and guessing can lead to critical errors. For instance, a short runway might be safe in cold weather but dangerous in high temperatures. Accurate performance planning is a non-negotiable requirement for flight safety." }
+  ]},
+  { num: 6, title: "Weight and Balance", mp3: "06-weight-and-balance.mp3", segments: [
+    { q: "What is weight and balance?", a: "Weight and balance is the mathematical calculation of the aircraft's total weight and its center of gravity (CG) location before flight. This ensures the plane is within safe structural and aerodynamic design limits. For example, an incorrect weight distribution changes how the flight controls feel. Performing this calculation before flight ensures that the aircraft remains stable and controllable throughout the journey." },
+    { q: "Why must the pilot check aircraft weight before flight?", a: "The pilot must check the total weight to ensure the aircraft does not exceed its maximum structural limits, such as the maximum take-off weight. An overweight aircraft suffers from degraded structural safety margins and poor climb capability. For instance, it may fail to climb out of ground effect safely. Verifying the total payload is a critical pre-flight step to guarantee aircraft performance." },
+    { q: "What is maximum take-off weight?", a: "Maximum take-off weight (MTOW) is the absolute highest weight certified by the manufacturer for the start of the take-off roll. This limit is based on structural strength and climb performance requirements. For example, operating at MTOW requires a longer runway but is perfectly safe if properly planned. Keeping the aircraft at or below MTOW ensures that all safety margins remain intact." },
+    { q: "What items must be included in loading calculation?", a: "The loading calculation must include the aircraft's basic empty weight, the weight of the pilot and passengers, all fuel onboard, and any baggage stored in the compartments. Skipping any of these weights will result in an inaccurate center of gravity calculation. For example, heavy baggage placed far back can push the plane out of balance. Complete and accurate logging of all payload items is required for flight safety." },
+    { q: "What can happen if the aircraft is overloaded?", a: "An overloaded aircraft faces a high risk of structural deformation and severely degraded flight characteristics. It will need an extended runway to take off, experience a dangerously high stall speed, and climb very slowly. For instance, it might be unable to maintain altitude if an engine issue occurs. To ensure safety, a pilot must remove fuel or baggage if the total weight exceeds limits." },
+    { q: "What is center of gravity?", a: "The center of gravity, or CG, is the imaginary point along the aircraft airframe where the total weight is perfectly balanced. The CG must remain within specific forward and aft limits for the flight controls to work effectively. For example, if the CG moves outside the approved range, the aircraft can become unstable. Keeping the CG within limits ensures stable handling and predictable aerodynamics." },
+    { q: "Why can a forward CG be dangerous?", a: "A forward center of gravity is dangerous because it makes the aircraft nose-heavy, increasing the aerodynamic load on the tail. This condition requires more back-pressure on the stick, making it difficult to raise the nose during take-off or landing flare. For example, a severe forward CG can lead to a nose-wheel first touchdown and propeller strike. Proper balance distribution prevents control authority issues during landing." },
+    { q: "Why can an aft CG be dangerous?", a: "An aft center of gravity is extremely dangerous because it reduces the aircraft's longitudinal stability, making it tail-heavy. In this condition, the aircraft can easily enter an uncommanded pitch-up attitude, and recovering from an aerodynamic stall or spin can become impossible. For instance, a tail-heavy plane might pitch up dangerously during take-off. Maintaining a safe CG margin prevents loss-of-control accidents." },
+    { q: "Why must baggage be secured?", a: "Baggage must be securely strapped down because any loose items can shift during acceleration, turbulence, or steep turns. If heavy bags shift rearward, they can instantly move the center of gravity outside safe limits, causing severe control instability. For example, loose cargo can block or damage control cables. Securing all baggage before engine start removes the risk of unexpected balance shifts." },
+    { q: "What would you say to a passenger who wants to take too much baggage?", a: "I would professionally explain to the passenger that baggage capacity is strictly limited by aircraft structural weight, balance envelopes, and aviation safety laws. I would show them that an extra bag could compromise our takeoff performance and endanger our lives. For safety reasons, I would refuse to carry excess baggage that puts the aircraft over its maximum limit, as safety is always the first priority." }
+  ]},
+  { num: 7, title: "Aircraft Systems and Equipment", mp3: "07-aircraft-systems-and-equipment.mp3", segments: [
+    { q: "What are the main aircraft systems?", a: "The main systems of the Bristell LSA include the flight control system, the fuel system, the electrical system, the pitot-static system, the brakes, the digital avionics, and emergency gear like the ELT. Each system is designed to perform a distinct function to keep the aircraft operational. For example, the electrical system powers our cockpit screens. A complete understanding of these systems allows the pilot to diagnose and respond to any faults early." },
+    { q: "What does the control system do?", a: "The flight control system connects the pilot's inputs in the cockpit to the aerodynamic surfaces on the wings and tail. This allows the pilot to manage the aircraft's pitch, roll, and yaw attitudes smoothly. For example, moving the control stick translates into immediate aircraft movement. Regular pre-flight checks of the control cables ensure that the system operates freely and without any restrictions." },
+    { q: "What is the function of the elevator?", a: "The elevator is a primary control surface located on the horizontal stabilizer that controls the aircraft's pitch axis. When the pilot pulls back on the control stick, the elevator moves up, forcing the tail down and causing the aircraft nose to pitch upward. For safety, the elevator must remain free of ice and damage to guarantee that the pilot always maintains pitch control." },
+    { q: "What is the function of the ailerons?", a: "The ailerons are primary control surfaces positioned on the outer trailing edges of the wings that control the aircraft's roll axis. Deflecting the control stick left or right moves the ailerons differentially, causing the aircraft to bank into a turn. For example, precise aileron control is necessary to counter crosswinds during landing. Verifying full aileron deflection during the pre-flight check ensures proper roll authority." },
+    { q: "What is the function of the rudder?", a: "The rudder is a vertical control surface located on the tail assembly that manages the aircraft's yaw axis. Controlled by the pilot's feet via the rudder pedals, it aligns the aircraft nose during turns and maintains tracking on the runway. For example, rudder input is essential to keep the aircraft coordinated during steep turns. Proper use of the rudder prevents uncoordinated flight and aerodynamic stalls." },
+    { q: "Why are flaps important during take-off and landing?", a: "Flaps are secondary control surfaces that alter the wing shape to increase both lift and aerodynamic drag. During take-off, a small flap setting shortens the ground roll, while during landing, full flaps allow for a steeper approach and a lower touchdown speed. For instance, using landing flaps allows the pilot to stop safely on a short runway. Correct flap management maximizes structural safety margins during low-speed flight." },
+    { q: "What does the fuel system do?", a: "The fuel system stores aviation fuel safely within the wing tanks and delivers a clean, pressurized supply to the engine. It includes tank selectors, fuel lines, filters, and both mechanical and electrical fuel pumps. For example, switching tanks ensures balanced fuel consumption. Monitoring fuel pressure and quantities continuously ensures that the powerplant runs smoothly without starvation hazards." },
+    { q: "Why is the electrical system important?", a: "The electrical system is critical because it generates, stores, and distributes electrical power to the aircraft's avionics, instruments, fuel pumps, and lights. It consists of an engine alternator, a battery, master switches, and protective circuit breakers. For instance, if the alternator fails, the battery provides a limited back-up supply. Monitoring the voltmeter ensures that the pilot has sufficient power to run essential flight gear." },
+    { q: "What instruments use the pitot-static system?", a: "The pitot-static system provides air pressure data to primary flight instruments, specifically the airspeed indicator and the altimeter. The pitot tube captures dynamic ram air pressure, while the static ports measure ambient atmospheric pressure. For safety, the pilot must ensure that the pitot cover is removed before flight so that these instruments display accurate information." },
+    { q: "What can happen if the pitot tube is blocked?", a: "If the pitot tube becomes blocked by ice or insects, the airspeed indicator will display incorrect and dangerous information. It may show a constant zero or behave like an altimeter, rising during a climb and falling during a descent. This can easily lead to an accidental aerodynamic stall if the pilot relies on false readings. Switching on the pitot heat or cross-checking with GPS ground speed helps ensure safety." },
+    { q: "What is the function of the transponder?", a: "The transponder is an airborne radio transmitter that replies to radar signals from air traffic control. It transmits the aircraft's discrete squawk code, position, and precise altitude information directly to the controller's radar screen. For example, setting squawk 7700 alerts ATC to an emergency. An active transponder improves situational awareness and maintains safe aircraft separation." },
+    { q: "What is the function of the ELT?", a: "The Emergency Locator Transmitter, or ELT, is a safety device designed to activate automatically during a hard impact or crash. Once triggered, it broadcasts distress signals on emergency frequencies (121.5 MHz and 406 MHz) to assist search and rescue teams in locating the aircraft site. Ensuring the ELT is armed before flight provides a vital safety net in the event of an accident." },
+    { q: "Why should a pilot be ready to fly manually if the autopilot fails?", a: "A pilot must always maintain manual flying skills because automation can fail unexpectedly due to electrical or software glitches. If the autopilot disconnects in poor weather, a pilot who relies too much on automation might experience spatial disorientation or lose control. For example, sudden uncommanded inputs require immediate pilot intervention. Regular manual flying practice ensures that the pilot remains the ultimate authority over the flight path." }
+  ]}
+];
+
+const audio = document.getElementById('audio');
+const railEl = document.getElementById('rail');
+const transcriptEl = document.getElementById('transcript');
+const nowPlaying = document.getElementById('nowPlaying');
+const playBtn = document.getElementById('playBtn');
+const playIcon = document.getElementById('playIcon');
+const curTime = document.getElementById('curTime');
+const durTime = document.getElementById('durTime');
+const scrub = document.getElementById('scrub');
+const scrubFill = document.getElementById('scrubFill');
+
+const PLAY = 'M8 5v14l11-7z';
+const PAUSE = 'M6 5h4v14H6zM14 5h4v14h-4z';
+
+let current = -1;
+let segEls = [];
+let timings = [];
+let activeIdx = -1;
+
+function fmt(s) {
+  if (!isFinite(s)) return '00:00';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+function buildRail() {
+  railEl.innerHTML = CHAPTERS.map((c, i) =>
+    `<button class="chap-btn" data-i="${i}"><span class="num">${c.num}</span>${c.title}</button>`
+  ).join('');
+  railEl.querySelectorAll('.chap-btn').forEach(btn =>
+    btn.addEventListener('click', () => loadChapter(+btn.dataset.i, true)));
+}
+
+function loadChapter(i, autoplay) {
+  if (i === current) { if (autoplay) togglePlay(); return; }
+  current = i;
+  const ch = CHAPTERS[i];
+  audio.src = DIR + ch.mp3;
+  audio.load();
+  nowPlaying.textContent = `Chapter ${ch.num} — ${ch.title}`;
+  timings = [];
+  activeIdx = -1;
+  scrubFill.style.width = '0';
+  curTime.textContent = '00:00';
+  durTime.textContent = '00:00';
+
+  transcriptEl.innerHTML = ch.segments.map((s, idx) =>
+    `<div class="seg" data-idx="${idx}"><div class="seg-q">${s.q}</div><p class="seg-a">${s.a}</p></div>`
+  ).join('');
+  segEls = [...transcriptEl.querySelectorAll('.seg')];
+  segEls.forEach((el, idx) => el.addEventListener('click', () => seekToSeg(idx)));
+
+  railEl.querySelectorAll('.chap-btn').forEach((b, bi) => b.classList.toggle('active', bi === i));
+  if (autoplay) audio.play();
+}
+
+function computeTimings() {
+  const ch = CHAPTERS[current];
+  const dur = audio.duration;
+  if (!dur || !isFinite(dur)) { timings = []; return; }
+  const lens = ch.segments.map(s => s.a.length);
+  const total = lens.reduce((a, b) => a + b, 0);
+  let acc = 0;
+  timings = lens.map(l => {
+    const start = (acc / total) * dur;
+    acc += l;
+    return { start, end: (acc / total) * dur };
+  });
+}
+
+function setActive(idx) {
+  if (idx === activeIdx) return;
+  activeIdx = idx;
+  segEls.forEach((el, i) => el.classList.toggle('active', i === idx));
+  if (idx >= 0 && segEls[idx]) segEls[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function seekToSeg(idx) {
+  if (!timings.length) computeTimings();
+  if (timings[idx]) {
+    audio.currentTime = timings[idx].start + 0.05;
+    audio.play();
+  }
+}
+
+function togglePlay() {
+  if (current === -1) { loadChapter(0, true); return; }
+  if (audio.paused) audio.play(); else audio.pause();
+}
+
+playBtn.addEventListener('click', togglePlay);
+audio.addEventListener('play', () => playIcon.setAttribute('d', PAUSE));
+audio.addEventListener('pause', () => playIcon.setAttribute('d', PLAY));
+audio.addEventListener('loadedmetadata', () => { computeTimings(); durTime.textContent = fmt(audio.duration); });
+audio.addEventListener('timeupdate', () => {
+  curTime.textContent = fmt(audio.currentTime);
+  const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+  scrubFill.style.width = pct + '%';
+  if (!timings.length) computeTimings();
+  if (!timings.length) return;
+  const t = audio.currentTime;
+  let idx = timings.findIndex(s => t >= s.start && t < s.end);
+  if (idx === -1 && timings.length && t >= timings[timings.length - 1].end - 0.25) idx = timings.length - 1;
+  setActive(idx);
+});
+
+scrub.addEventListener('click', (e) => {
+  if (!audio.duration) return;
+  const rect = scrub.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+});
+
+document.querySelectorAll('.speed-btn').forEach(btn =>
+  btn.addEventListener('click', () => {
+    audio.playbackRate = parseFloat(btn.dataset.rate);
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  })
+);
+
+// Theme
+const themeBtn = document.getElementById('themeBtn');
+const themeLabel = document.getElementById('themeLabel');
+function applyTheme(night) {
+  document.body.classList.toggle('night', night);
+  themeLabel.textContent = night ? 'Day mode' : 'Night mode';
+}
+applyTheme(localStorage.getItem('fa-theme') === 'night');
+themeBtn.addEventListener('click', () => {
+  const night = !document.body.classList.contains('night');
+  applyTheme(night);
+  localStorage.setItem('fa-theme', night ? 'night' : 'day');
+});
+
+buildRail();
+loadChapter(0, false);
+</script>
+</body>
+</html>

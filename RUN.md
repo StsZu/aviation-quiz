@@ -18,6 +18,7 @@
 - **Songs** — пісні (`songs.html`): картки з обкладинками, клік відкриває плеєр + текст.
 - **Cockpit Class** — імерсивні уроки в підпапці `aviation_english_cockpit_class/` (власний темний дизайн, Web Speech API). Картка на головній веде на сторінку уроку.
 - **Crosswords** — інтерактивні кросворди + тренажери набору тексту. **Усі кросворди лежать у підпапці `Crosswords/`** (напр. `Crosswords/1_crossword.html`). Картка на головній веде на сторінку кросворду.
+- **Flight Academy Trainer** — «слухай + читай синхронно»: програвач MP3 + транскрипт, у якому активна відповідь підсвічується в такт аудіо (автоскрол, клік-на-відповідь → перемотка). Підпапка `Flight_academy_trainer/`; перший курс — Pilot Guide LSA (7 розділів, MP3 у `Pilot_Guide_LSA/`).
 
 Головна `index.html` — це меню-дашборд: картки всіх розділів (рендеряться з масиву `MODULES`), пошук + фільтри за категоріями, чекбокси прогресу (зберігаються в браузері), міні-дрил ATC і перемикач день/ніч.
 
@@ -40,6 +41,13 @@
 - `1_crossword.html` — Communication Problems (радіотелефонія)
 - `rejected-takeoffs.html` — Rejected Takeoffs (V1 / abort decision)
 - `stall.html` — Stall Recognition and Recovery
+
+### Flight Academy Trainer (folder-backed секція)
+
+- Сторінка `Flight_academy_trainer/flight_academy_trainer.html`, аудіо в `Flight_academy_trainer/Pilot_Guide_LSA/*.mp3` (імена lowercase-hyphen).
+- Контент = масив `CHAPTERS` у JS: `{ num, title, mp3, segments: [{ q, a }] }`. Додати розділ — дописати об'єкт у масив + покласти MP3.
+- Синхронізація зараз **приблизна** (рахується з довжини тексту відповіді). Точні таймкоди по реченнях — наступний крок через forced alignment (`aeneas` → `chapters.json`).
+- Підпапка, тож back-link `← All quizzes` → `../index.html`, картка в `index.html` → `Flight_academy_trainer/flight_academy_trainer.html`.
 
 ## Дві папки (ролі)
 
