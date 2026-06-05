@@ -33,6 +33,14 @@
 - Сторінка кросворду самодостатня (власний день/ніч-дизайн, без локальних ресурсів).
 - **Важливо:** сторінка в підпапці, тож back-link `← All quizzes` веде на `../index.html`, а картка в `index.html` (і посилання з `songs.html`/`infographics.html`) — через `Crosswords/<файл>.html`.
 
+Поточні кросворди (5):
+
+- `present-perfect-1.html` — Present Perfect Crossword: Set 1
+- `present-perfect-2.html` — Present Perfect Crossword: Set 2
+- `1_crossword.html` — Communication Problems (радіотелефонія)
+- `rejected-takeoffs.html` — Rejected Takeoffs (V1 / abort decision)
+- `stall.html` — Stall Recognition and Recovery
+
 ## Дві папки (ролі)
 
 - **`Projects/Drafts/Aviation-quiz/`** — це сам сайт: локальна git-копія репозиторію `StsZu/aviation-quiz`. Звідси публікуємо (`git push` → GitHub Pages). Тут лежать `index.html`, `songs.html`, `infographics.html`, усі квізи, `img/`, `audio/`.
