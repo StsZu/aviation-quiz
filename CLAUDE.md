@@ -23,10 +23,11 @@ Exception: `aviation_vocabulary_quiz.html` uses a Tailwind CDN; all other quizze
 
 Three page types:
 
-- **`index.html`** — the menu. A `.quiz-list` grid of static `.quiz-card` `<article>`s, one per quiz/section. Adding a quiz means hand-adding a card here.
+- **`index.html`** — the menu. Cards render from a single `MODULES` array in JS (one `{ cat, tag, title, desc, href, cta }` object per quiz/section). Adding a quiz means appending one object to that array — not hand-editing the DOM.
 - **Quiz pages** (`quiz_*.html`, `aviation_*.html`) — driven by a JS `questions` array of `{ question, options: [...], correct: <index>, explanation }`. Client-side scoring, one question at a time. Every quiz page must include a `← All quizzes` back-link to `index.html`.
 - **Gallery pages** — `infographics.html` and `songs.html` render from a JS data array; the markup is generated in JS, so add content by editing the array, not the DOM.
 - **Cockpit Class pages** — immersive lessons under `aviation_english_cockpit_class/` (own dark Tailwind-CDN theme, Web Speech API for TTS, self-contained). Because they live in a subfolder, their links to root pages need `../` (e.g. `../index.html`, `../songs.html#it-depends-on-safety`); links from root pages to them use `aviation_english_cockpit_class/<file>.html`.
+- **Crossword pages** — interactive crosswords + typing trainers, self-contained with their own day/night theme. **All crosswords live in `Crosswords/`** (e.g. `Crosswords/1_crossword.html`). Because they live in a subfolder, their `← All quizzes` back-link points to `../index.html`; cards in `index.html` (and links from `songs.html`/`infographics.html`) reference them as `Crosswords/<file>.html`.
 
 ## Adding content (data-array contracts)
 
@@ -35,5 +36,7 @@ Three page types:
 **Song** → push to the `songs` array in `songs.html`: `{ file, title, artist, topic, link: { href, label }, lyrics }`. MP3 goes to `audio/<file>.mp3`; cover art to `img/<file>.jpg`. Suno MP3 exports are self-contained — extract the embedded lyrics and cover from the file rather than sourcing them separately (Suno pages can't be iframed). `link` optionally points to the related quiz.
 
 **Quiz** → copy the HTML in, add its `← All quizzes` back-link, then add a `.quiz-card` to `index.html`.
+
+**Crossword** → drop the HTML into `Crosswords/`, set its `← All quizzes` back-link to `../index.html`, then add a `MODULES` entry in `index.html` with `href: "Crosswords/<file>.html"`.
 
 After any addition: `git push` from this folder, then verify the live URL renders the new card and the page opens.

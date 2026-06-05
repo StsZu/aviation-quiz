@@ -1,0 +1,3876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Present Perfect aviation: set 2</title>
+<style>
+:root {
+  /* Day Ops Theme */
+  --page-bg: #eceff1;
+  --panel-bg: #ffffff;
+  --border-color: #b0bec5;
+  --text-primary: #1a237e;
+  --text-secondary: #455a64;
+  --accent-color: #0288d1;
+  --accent-glow: rgba(2, 136, 209, 0.2);
+  --grid-block: #cfd8dc;
+  --cell-active: #fff9c4;
+  --cell-correct: #c8e6c9;
+  --cell-wrong: #ffcdd2;
+  --cell-solved: #bbdefb;
+  --btn-bg: #0d47a1;
+  --btn-hover: #1565c0;
+  --btn-text: #ffffff;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --hud-glow: none;
+
+  /* Typing Trainer Specific */
+  --typing-ghost: rgba(69, 90, 100, 0.35);
+  --typing-active-border: #0288d1;
+  --typing-next-border: #f57c00;
+  --typing-next-bg: rgba(245, 124, 0, 0.08);
+}
+
+[data-theme="night"] {
+  /* Night Ops Cockpit Theme */
+  --page-bg: #0a0e14;
+  --panel-bg: #111823;
+  --border-color: #243447;
+  --text-primary: #00e676; /* Aviation HUD Green */
+  --text-secondary: #8a9fc4;
+  --accent-color: #ff9100; /* Caution Amber */
+  --accent-glow: rgba(255, 145, 0, 0.2);
+  --grid-block: #06090e;
+  --cell-active: rgba(255, 145, 0, 0.25);
+  --cell-correct: rgba(0, 230, 118, 0.2);
+  --cell-wrong: rgba(255, 23, 68, 0.3);
+  --cell-solved: rgba(41, 121, 255, 0.2);
+  --btn-bg: #1c2a39;
+  --btn-hover: #2d3f55;
+  --btn-text: #00e676;
+  --shadow: 0 0 20px rgba(0, 230, 118, 0.1);
+  --hud-glow: 0 0 8px rgba(0, 230, 118, 0.5);
+
+  /* Typing Trainer Specific */
+  --typing-ghost: rgba(0, 230, 118, 0.25);
+  --typing-active-border: #00e676;
+  --typing-next-border: #ff9100;
+  --typing-next-bg: rgba(255, 145, 0, 0.12);
+}
+
+* { box-sizing: border-box; transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+  background: var(--page-bg);
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Header & Navigation Style */
+.top-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 16px 24px;
+}
+
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-icon {
+  width: 32px;
+  height: 32px;
+  fill: var(--text-primary);
+  filter: var(--hud-glow);
+}
+
+h1 {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-shadow: var(--hud-glow);
+}
+
+/* Theme Switcher Toggle */
+.theme-switch-btn {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border: 1px solid var(--border-color);
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow);
+}
+.theme-switch-btn:hover {
+  background: var(--btn-hover);
+}
+
+.page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 24px 40px 24px;
+}
+
+/* Glassmorphism Dashboard Panel */
+.dashboard {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 30px;
+}
+
+/* Interactive Mode Selector (Tabs) */
+.mode-selector {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.mode-tab {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid transparent;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-tab:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+[data-theme="night"] .mode-tab:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.mode-tab.active {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border-color: var(--border-color);
+  box-shadow: var(--shadow);
+}
+
+/* HUD Info Panel & Progress */
+.hud-meta-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  background: rgba(0,0,0,0.03);
+  padding: 16px 24px;
+  border-radius: 12px;
+  border: 1px dashed var(--border-color);
+  margin-bottom: 24px;
+}
+[data-theme="night"] .hud-meta-panel {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.meta-info {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.progress-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-grow: 1;
+  max-width: 400px;
+}
+
+.progress-bar-bg {
+  flex-grow: 1;
+  height: 10px;
+  background: var(--grid-block);
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--text-primary);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+  box-shadow: var(--hud-glow);
+}
+
+.progress-text {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  min-width: 45px;
+}
+
+/* Typing Trainer HUD and Filters */
+.trainer-cockpit {
+  display: none;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+[data-theme="night"] .trainer-cockpit {
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.trainer-stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.trainer-stat-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.trainer-stat-val {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-shadow: var(--hud-glow);
+  font-family: monospace;
+}
+
+.trainer-stat-lbl {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.trainer-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 16px;
+}
+
+.trainer-filters {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.trainer-filter-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border-color);
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.trainer-filter-btn.active {
+  background: var(--text-primary);
+  color: #fff;
+  border-color: var(--text-primary);
+}
+
+.trainer-hint-message {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  animation: pulse 1.8s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; color: var(--accent-color); }
+}
+
+/* Controls Toolbar */
+.control-toolbar {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.action-btn {
+  appearance: none;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 12px 24px;
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+.action-btn:hover {
+  background: var(--btn-hover);
+  transform: translateY(-1px);
+}
+.action-btn:active {
+  transform: translateY(1px);
+}
+
+.status-toast {
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-weight: 600;
+  background: rgba(0, 0, 0, 0.03);
+  border-left: 4px solid var(--accent-color);
+  display: none;
+  font-size: 0.95rem;
+}
+[data-theme="night"] .status-toast {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Split Grid & Clues Layout */
+.grid-layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 1fr) minmax(280px, 380px);
+  gap: 32px;
+  align-items: start;
+}
+
+/* Crossword Matrix Design */
+.matrix-container {
+  overflow-x: auto;
+  padding: 10px;
+  background: rgba(0,0,0,0.01);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  display: flex;
+  justify-content: center;
+}
+
+table.crossword {
+  border-collapse: collapse;
+  background: transparent;
+}
+
+.crossword td {
+  position: relative;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-color);
+  background: var(--cell-bg);
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.crossword td.block {
+  background: var(--grid-block);
+  border-color: var(--border-color);
+}
+
+.cell-number {
+  position: absolute;
+  top: 2px;
+  left: 3px;
+  font-size: 8px;
+  line-height: 1;
+  font-weight: bold;
+  color: var(--text-secondary);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.input-field {
+  width: 100%;
+  height: 100%;
+  border: none;
+  background: transparent;
+  padding: 8px 1px 1px;
+  text-align: center;
+  outline: none;
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  caret-color: var(--accent-color);
+  z-index: 1;
+}
+
+.input-field.active-word {
+  background: var(--cell-active);
+}
+
+.input-field:focus {
+  box-shadow: inset 0 0 0 2px var(--accent-color);
+  background: rgba(2, 136, 209, 0.1);
+}
+
+.input-field.correct { background: var(--cell-correct) !important; }
+.input-field.wrong { background: var(--cell-wrong) !important; }
+.input-field.solved { background: var(--cell-solved) !important; }
+
+/* Typing Trainer Cell Modifiers */
+.input-field.typing-ghost {
+  color: var(--typing-ghost) !important;
+  font-weight: 600;
+}
+
+.input-field.typing-correct {
+  background: var(--cell-correct) !important;
+  color: #2e7d32 !important;
+}
+[data-theme="night"] .input-field.typing-correct {
+  color: #00e676 !important;
+  background: rgba(0, 230, 118, 0.25) !important;
+  text-shadow: 0 0 8px rgba(0, 230, 118, 0.6);
+}
+
+.input-field.typing-active {
+  box-shadow: inset 0 0 0 2.5px var(--typing-active-border) !important;
+  background: rgba(2, 136, 209, 0.1) !important;
+}
+
+.input-field.typing-next {
+  box-shadow: inset 0 0 0 2px var(--typing-next-border) !important;
+  background: var(--typing-next-bg) !important;
+}
+
+.input-field.typing-wrong {
+  animation: cell-shake 0.12s ease-in-out;
+  background: var(--cell-wrong) !important;
+  color: #c62828 !important;
+}
+
+@keyframes cell-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+td.mark-correct::after {
+  content: "✓";
+  position: absolute;
+  bottom: 1px;
+  right: 2px;
+  font-size: 8px;
+  font-weight: bold;
+  color: #2e7d32;
+  pointer-events: none;
+  z-index: 2;
+}
+td.mark-wrong::after {
+  content: "✗";
+  position: absolute;
+  bottom: 1px;
+  right: 2px;
+  font-size: 8px;
+  font-weight: bold;
+  color: #c62828;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Modern Clues Panel (NO DOTS, CLEAN DESIGN) */
+.clues-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.clues-container-box {
+  background: rgba(0,0,0,0.01);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  padding: 20px;
+}
+[data-theme="night"] .clues-container-box {
+  background: rgba(0,0,0,0.15);
+}
+
+.clues-header {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin: 0 0 14px 0;
+  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 6px;
+  text-shadow: var(--hud-glow);
+}
+
+/* Removing standard list styles & dots */
+.clues-list {
+  list-style: none; /* NO DOTS */
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.clues-list li {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.02);
+  border: 1px solid transparent;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 0.9rem;
+}
+[data-theme="night"] .clues-list li {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.clues-list li:hover {
+  background: rgba(2, 136, 209, 0.08);
+  border-color: var(--accent-color);
+}
+
+.clues-list li.active-clue {
+  background: var(--cell-active);
+  border-color: var(--accent-color);
+  box-shadow: var(--glow-shadow);
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+/* Typing Trainer list highlights */
+.clues-list li.typing-active-clue {
+  box-shadow: 0 0 0 2px var(--typing-active-border);
+  background: rgba(2, 136, 209, 0.05);
+  font-weight: bold;
+}
+[data-theme="night"] .clues-list li.typing-active-clue {
+  background: rgba(0, 230, 118, 0.05);
+}
+
+.clues-list li.typing-next-clue {
+  box-shadow: 0 0 0 1.5px var(--typing-next-border);
+  background: var(--typing-next-bg);
+}
+
+.clue-badge {
+  background: var(--badge-bg);
+  color: var(--badge-text);
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 0.75rem;
+  min-width: 28px;
+  text-align: center;
+  flex-shrink: 0;
+}
+.active-clue .clue-badge {
+  background: var(--accent-color);
+  color: #fff;
+}
+.typing-active-clue .clue-badge {
+  background: var(--typing-active-border);
+  color: #000;
+}
+.typing-next-clue .clue-badge {
+  background: var(--typing-next-border);
+  color: #fff;
+}
+
+.word-length {
+  color: var(--text-secondary);
+  font-weight: 500;
+  opacity: 0.8;
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+.answer-key-section {
+  display: none;
+}
+
+/* Hidden input capture for speedtyping */
+.hidden-capture-input {
+  position: fixed;
+  opacity: 0;
+  pointer-events: none;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+}
+
+@media (max-width: 900px) {
+  .grid-layout { grid-template-columns: 1fr; }
+}
+
+@media print {
+  body { background: #fff; color: #000; }
+  .top-nav, .control-toolbar, .hud-meta-panel, .mode-selector, .trainer-cockpit { display: none !important; }
+  .dashboard { border: none; box-shadow: none; padding: 0; }
+  .grid-layout { grid-template-columns: 1fr; }
+  .crossword td.block { background: #cccccc !important; }
+}
+
+/* next-letter cursor (added by build_html.py) */
+@keyframes cursorGlow { 0%, 100% { opacity: 0.35; } 50% { opacity: 1; } }
+td.cursor-cell::after {
+  content: ""; position: absolute; left: 18%; right: 18%; bottom: 3px; height: 2px;
+  border-radius: 2px; background: var(--accent-color); pointer-events: none; z-index: 3;
+  animation: cursorGlow 1.1s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) { td.cursor-cell::after { animation: none; opacity: 1; } }
+</style>
+</head>
+<body data-theme="day">
+
+<header class="top-nav">
+  <div class="brand-title">
+    <svg class="brand-icon" viewBox="0 0 24 24"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/></svg>
+    <h1>Present Perfect aviation</h1>
+  </div>
+  <button type="button" class="theme-switch-btn" id="theme-switch">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+    <span>Night Mode</span>
+  </button>
+</header>
+
+<div class="page-container">
+  <main class="dashboard">
+    <nav style="margin-bottom: 14px;"><a href="../index.html" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">&larr; All quizzes</a></nav>
+    <h1 style="font-size: 1.4rem; margin-bottom: 6px;">SET 2</h1>
+    <p style="margin: 0 0 20px 0; font-size: 0.95rem;">Practise the vocabulary by solving the crossword or training your typing speed.</p>
+
+    <nav class="mode-selector" aria-label="Modes">
+      <button class="mode-tab active" id="btn-mode-classic" data-mode="crossword"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h7v7H3zM14 3h7v7h-7zM14 14h7v7h-7zM3 14h7v7H3z"/></svg> Crossword (Classic)</button>
+      <button class="mode-tab" id="btn-mode-single" data-mode="type-single"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg> Trainer: Single word</button>
+      <button class="mode-tab" id="btn-mode-all" data-mode="type-all"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg> Trainer: All words (Type All)</button>
+    </nav>
+
+    <section class="trainer-cockpit" id="trainer-cockpit" aria-label="Trainer panel">
+      <div class="trainer-stats-row">
+        <div class="trainer-stat-card"><div class="trainer-stat-val" id="trainer-wpm">0</div><div class="trainer-stat-lbl">WPM</div></div>
+        <div class="trainer-stat-card"><div class="trainer-stat-val" id="trainer-accuracy">100%</div><div class="trainer-stat-lbl">Accuracy</div></div>
+        <div class="trainer-stat-card"><div class="trainer-stat-val" id="trainer-mistakes">0</div><div class="trainer-stat-lbl">Mistakes</div></div>
+        <div class="trainer-stat-card"><div class="trainer-stat-val" id="trainer-progress">0/10</div><div class="trainer-stat-lbl">Progress</div></div>
+      </div>
+      <div class="trainer-controls">
+        <div class="trainer-hint-message" id="trainer-hint-message">Click a word to start practising.</div>
+        <div class="trainer-filters" id="trainer-filters-box">
+          <span style="font-size: 0.8rem; font-weight: bold; text-transform: uppercase;">Typing order:</span>
+          <button class="trainer-filter-btn active" data-filter="all">Full route</button>
+          <button class="trainer-filter-btn" data-filter="across">Horizontal only</button>
+          <button class="trainer-filter-btn" data-filter="down">Vertical only</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="hud-meta-panel" id="main-hud-meta">
+      <div class="meta-info" id="meta-info-text">
+        GRID: 12&times;15 &middot; WORDS: 10 &middot; INTERSECTIONS: 10
+      </div>
+      <div class="progress-container">
+        <span class="progress-text" id="progress-text">0%</span>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" id="progress-bar-fill"></div>
+        </div>
+        <span class="progress-text">FILLED</span>
+      </div>
+    </div>
+
+    <div class="control-toolbar" id="crossword-toolbar">
+      <button type="button" class="action-btn" id="check-button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Check</button>
+      <button type="button" class="action-btn" id="hint-button" style="border-color: rgba(2, 136, 209, 0.4);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 1 1 7.072 0l-.548.547A3.374 3.374 0 0 0 14 18.469V19a2 2 0 1 1-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg> Hint</button>
+      <button type="button" class="action-btn" id="show-button"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg> Show answers</button>
+      <button type="button" class="action-btn" id="clear-button" style="border-color: rgba(255,0,0,0.2);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg> Clear</button>
+    </div>
+
+    <div id="status-toast" class="status-toast" role="status"></div>
+
+    <div class="grid-layout">
+      <section class="matrix-container">
+        <table class="crossword" id="crossword-table" aria-label="Crossword Grid"><tr><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="0" data-col="6"><span class="cell-number">1</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 1, column 7" data-row="0" data-col="6"></td><td class="cell" data-row="0" data-col="7"><span class="cell-number">2</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 1, column 8" data-row="0" data-col="7"></td><td class="cell" data-row="0" data-col="8"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 1, column 9" data-row="0" data-col="8"></td><td class="cell" data-row="0" data-col="9"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 1, column 10" data-row="0" data-col="9"></td><td class="cell" data-row="0" data-col="10"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 1, column 11" data-row="0" data-col="10"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="1" data-col="7"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 2, column 8" data-row="1" data-col="7"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="2" data-col="2"><span class="cell-number">3</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 3, column 3" data-row="2" data-col="2"></td><td class="cell" data-row="2" data-col="3"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 3, column 4" data-row="2" data-col="3"></td><td class="cell" data-row="2" data-col="4"><span class="cell-number">4</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 3, column 5" data-row="2" data-col="4"></td><td class="cell" data-row="2" data-col="5"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 3, column 6" data-row="2" data-col="5"></td><td class="cell" data-row="2" data-col="6"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 3, column 7" data-row="2" data-col="6"></td><td class="cell" data-row="2" data-col="7"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 3, column 8" data-row="2" data-col="7"></td><td class="cell" data-row="2" data-col="8"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 3, column 9" data-row="2" data-col="8"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="3" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 4, column 5" data-row="3" data-col="4"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="3" data-col="7"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 4, column 8" data-row="3" data-col="7"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="4" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 5, column 5" data-row="4" data-col="4"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="4" data-col="7"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 5, column 8" data-row="4" data-col="7"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="4" data-col="10"><span class="cell-number">5</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 5, column 11" data-row="4" data-col="10"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="5" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 6, column 5" data-row="5" data-col="4"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="5" data-col="7"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 6, column 8" data-row="5" data-col="7"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="5" data-col="10"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 6, column 11" data-row="5" data-col="10"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="cell" data-row="6" data-col="1"><span class="cell-number">6</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 7, column 2" data-row="6" data-col="1"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="6" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 7, column 5" data-row="6" data-col="4"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="6" data-col="10"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 7, column 11" data-row="6" data-col="10"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="cell" data-row="7" data-col="0"><span class="cell-number">7</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 1" data-row="7" data-col="0"></td><td class="cell" data-row="7" data-col="1"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 2" data-row="7" data-col="1"></td><td class="cell" data-row="7" data-col="2"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 3" data-row="7" data-col="2"></td><td class="cell" data-row="7" data-col="3"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 4" data-row="7" data-col="3"></td><td class="cell" data-row="7" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 5" data-row="7" data-col="4"></td><td class="cell" data-row="7" data-col="5"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 6" data-row="7" data-col="5"></td><td class="cell" data-row="7" data-col="6"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 7" data-row="7" data-col="6"></td><td class="cell" data-row="7" data-col="7"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 8" data-row="7" data-col="7"></td><td class="cell" data-row="7" data-col="8"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 9" data-row="7" data-col="8"></td><td class="cell" data-row="7" data-col="9"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 10" data-row="7" data-col="9"></td><td class="cell" data-row="7" data-col="10"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 11" data-row="7" data-col="10"></td><td class="cell" data-row="7" data-col="11"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 8, column 12" data-row="7" data-col="11"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="cell" data-row="8" data-col="1"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 9, column 2" data-row="8" data-col="1"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="8" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 9, column 5" data-row="8" data-col="4"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="8" data-col="10"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 9, column 11" data-row="8" data-col="10"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="cell" data-row="9" data-col="1"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 10, column 2" data-row="9" data-col="1"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="9" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 10, column 5" data-row="9" data-col="4"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="cell" data-row="10" data-col="1"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 11, column 2" data-row="10" data-col="1"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="10" data-col="3"><span class="cell-number">8</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 11, column 4" data-row="10" data-col="3"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="cell" data-row="11" data-col="0"><span class="cell-number">9</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 12, column 1" data-row="11" data-col="0"></td><td class="cell" data-row="11" data-col="1"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 12, column 2" data-row="11" data-col="1"></td><td class="cell" data-row="11" data-col="2"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 12, column 3" data-row="11" data-col="2"></td><td class="cell" data-row="11" data-col="3"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 12, column 4" data-row="11" data-col="3"></td><td class="cell" data-row="11" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 12, column 5" data-row="11" data-col="4"></td><td class="cell" data-row="11" data-col="5"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 12, column 6" data-row="11" data-col="5"></td><td class="cell" data-row="11" data-col="6"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 12, column 7" data-row="11" data-col="6"></td><td class="cell" data-row="11" data-col="7"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 12, column 8" data-row="11" data-col="7"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="cell" data-row="12" data-col="1"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 13, column 2" data-row="12" data-col="1"></td><td class="block" aria-hidden="true"></td><td class="cell" data-row="12" data-col="3"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 13, column 4" data-row="12" data-col="3"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="cell" data-row="13" data-col="0"><span class="cell-number">10</span><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 14, column 1" data-row="13" data-col="0"></td><td class="cell" data-row="13" data-col="1"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 14, column 2" data-row="13" data-col="1"></td><td class="cell" data-row="13" data-col="2"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 14, column 3" data-row="13" data-col="2"></td><td class="cell" data-row="13" data-col="3"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 14, column 4" data-row="13" data-col="3"></td><td class="cell" data-row="13" data-col="4"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 14, column 5" data-row="13" data-col="4"></td><td class="cell" data-row="13" data-col="5"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 14, column 6" data-row="13" data-col="5"></td><td class="cell" data-row="13" data-col="6"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 14, column 7" data-row="13" data-col="6"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr><tr><td class="block" aria-hidden="true"></td><td class="cell" data-row="14" data-col="1"><input class="input-field" type="text" inputmode="text" maxlength="1" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Row 15, column 2" data-row="14" data-col="1"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td><td class="block" aria-hidden="true"></td></tr></table>
+      </section>
+      <aside class="clues-panel">
+        <div class="clues-container-box">
+          <h2 class="clues-header" id="clues-across-header">Across</h2>
+          <ul class="clues-list" id="clues-across"><li data-number="1" data-direction="across"><span class="clue-badge">1</span><div>Experience: I have ___ in strong crosswind conditions before.</div><span class="word-length">(5)</span></li><li data-number="3" data-direction="across"><span class="clue-badge">3</span><div>___ action has become poor, so landing may be delayed.</div><span class="word-length">(7)</span></li><li data-number="7" data-direction="across"><span class="clue-badge">7</span><div>The runway has become ___ and may affect take-off or landing performance.</div><span class="word-length">(12)</span></li><li data-number="9" data-direction="across"><span class="clue-badge">9</span><div>The pilot has ___ a bird strike.</div><span class="word-length">(8)</span></li><li data-number="10" data-direction="across"><span class="clue-badge">10</span><div>We have received updated ___ before approach.</div><span class="word-length">(7)</span></li></ul>
+        </div>
+        <div class="clues-container-box">
+          <h2 class="clues-header" id="clues-down-header">Down</h2>
+          <ul class="clues-list" id="clues-down"><li data-number="2" data-direction="down"><span class="clue-badge">2</span><div>The aircraft has ___ safely.</div><span class="word-length">(6)</span></li><li data-number="4" data-direction="down"><span class="clue-badge">4</span><div>The ___ has become unstable, so we should go around.</div><span class="word-length">(8)</span></li><li data-number="5" data-direction="down"><span class="clue-badge">5</span><div>ATC has ___ us new safety information.</div><span class="word-length">(5)</span></li><li data-number="6" data-direction="down"><span class="clue-badge">6</span><div>We have ___ the before-takeoff checklist.</div><span class="word-length">(9)</span></li><li data-number="8" data-direction="down"><span class="clue-badge">8</span><div>The aircraft has ___ hydraulic pressure.</div><span class="word-length">(4)</span></li></ul>
+        </div>
+      </aside>
+    </div>
+
+    <section class="answer-key-section" aria-label="Answer Key">
+      <h2>Answer Key</h2>
+      <div>
+        <h3>Across</h3>
+        <ul><li><strong>1.</strong> FLOWN &mdash; Experience: I have ___ in strong crosswind conditions before.</li><li><strong>3.</strong> BRAKING &mdash; ___ action has become poor, so landing may be delayed.</li><li><strong>7.</strong> CONTAMINATED &mdash; The runway has become ___ and may affect take-off or landing performance.</li><li><strong>9.</strong> REPORTED &mdash; The pilot has ___ a bird strike.</li><li><strong>10.</strong> WEATHER &mdash; We have received updated ___ before approach.</li></ul>
+        <h3>Down</h3>
+        <ul><li><strong>2.</strong> LANDED &mdash; The aircraft has ___ safely.</li><li><strong>4.</strong> APPROACH &mdash; The ___ has become unstable, so we should go around.</li><li><strong>5.</strong> GIVEN &mdash; ATC has ___ us new safety information.</li><li><strong>6.</strong> COMPLETED &mdash; We have ___ the before-takeoff checklist.</li><li><strong>8.</strong> LOST &mdash; The aircraft has ___ hydraulic pressure.</li></ul>
+      </div>
+    </section>
+  </main>
+</div>
+
+<input class="hidden-capture-input" id="typing-capture" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" inputmode="text">
+
+<script type="application/json" id="crossword-data">{
+  "version": "1.0",
+  "agent": "grid-agent",
+  "title": "Present Perfect aviation: set 2",
+  "language": "English",
+  "seed": "imported-layout",
+  "generation_settings": {
+    "attempts": 1,
+    "grid_size_initial": 15,
+    "grid_size_final": {
+      "width": 12,
+      "height": 15
+    },
+    "allow_unicode": true,
+    "allow_multi_word_answers": false,
+    "allow_hyphenated_answers": false,
+    "crop_to_bounding_box": true
+  },
+  "layout": {
+    "id": "layout-1",
+    "width": 12,
+    "height": 15,
+    "grid": [
+      [
+        {
+          "row": 0,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 0,
+          "col": 1,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 0,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 0,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 0,
+          "col": 4,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 0,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 0,
+          "col": 6,
+          "solution": "F",
+          "is_blocked": false,
+          "number": 1,
+          "entry_ids": [
+            "cw_001"
+          ]
+        },
+        {
+          "row": 0,
+          "col": 7,
+          "solution": "L",
+          "is_blocked": false,
+          "number": 2,
+          "entry_ids": [
+            "cw_001",
+            "cw_006"
+          ]
+        },
+        {
+          "row": 0,
+          "col": 8,
+          "solution": "O",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_001"
+          ]
+        },
+        {
+          "row": 0,
+          "col": 9,
+          "solution": "W",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_001"
+          ]
+        },
+        {
+          "row": 0,
+          "col": 10,
+          "solution": "N",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_001"
+          ]
+        },
+        {
+          "row": 0,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 1,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 1,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 4,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 7,
+          "solution": "A",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_006"
+          ]
+        },
+        {
+          "row": 1,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 1,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 2,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 2,
+          "col": 1,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 2,
+          "col": 2,
+          "solution": "B",
+          "is_blocked": false,
+          "number": 3,
+          "entry_ids": [
+            "cw_002"
+          ]
+        },
+        {
+          "row": 2,
+          "col": 3,
+          "solution": "R",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_002"
+          ]
+        },
+        {
+          "row": 2,
+          "col": 4,
+          "solution": "A",
+          "is_blocked": false,
+          "number": 4,
+          "entry_ids": [
+            "cw_002",
+            "cw_007"
+          ]
+        },
+        {
+          "row": 2,
+          "col": 5,
+          "solution": "K",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_002"
+          ]
+        },
+        {
+          "row": 2,
+          "col": 6,
+          "solution": "I",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_002"
+          ]
+        },
+        {
+          "row": 2,
+          "col": 7,
+          "solution": "N",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_002",
+            "cw_006"
+          ]
+        },
+        {
+          "row": 2,
+          "col": 8,
+          "solution": "G",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_002"
+          ]
+        },
+        {
+          "row": 2,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 2,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 2,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 3,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 1,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 4,
+          "solution": "P",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_007"
+          ]
+        },
+        {
+          "row": 3,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 7,
+          "solution": "D",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_006"
+          ]
+        },
+        {
+          "row": 3,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 3,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 4,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 4,
+          "col": 1,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 4,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 4,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 4,
+          "col": 4,
+          "solution": "P",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_007"
+          ]
+        },
+        {
+          "row": 4,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 4,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 4,
+          "col": 7,
+          "solution": "E",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_006"
+          ]
+        },
+        {
+          "row": 4,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 4,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 4,
+          "col": 10,
+          "solution": "G",
+          "is_blocked": false,
+          "number": 5,
+          "entry_ids": [
+            "cw_008"
+          ]
+        },
+        {
+          "row": 4,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 5,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 5,
+          "col": 1,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 5,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 5,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 5,
+          "col": 4,
+          "solution": "R",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_007"
+          ]
+        },
+        {
+          "row": 5,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 5,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 5,
+          "col": 7,
+          "solution": "D",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_006"
+          ]
+        },
+        {
+          "row": 5,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 5,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 5,
+          "col": 10,
+          "solution": "I",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_008"
+          ]
+        },
+        {
+          "row": 5,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 6,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 6,
+          "col": 1,
+          "solution": "C",
+          "is_blocked": false,
+          "number": 6,
+          "entry_ids": [
+            "cw_009"
+          ]
+        },
+        {
+          "row": 6,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 6,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 6,
+          "col": 4,
+          "solution": "O",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_007"
+          ]
+        },
+        {
+          "row": 6,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 6,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 6,
+          "col": 7,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 6,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 6,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 6,
+          "col": 10,
+          "solution": "V",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_008"
+          ]
+        },
+        {
+          "row": 6,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 7,
+          "col": 0,
+          "solution": "C",
+          "is_blocked": false,
+          "number": 7,
+          "entry_ids": [
+            "cw_003"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 1,
+          "solution": "O",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003",
+            "cw_009"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 2,
+          "solution": "N",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 3,
+          "solution": "T",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 4,
+          "solution": "A",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003",
+            "cw_007"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 5,
+          "solution": "M",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 6,
+          "solution": "I",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 7,
+          "solution": "N",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 8,
+          "solution": "A",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 9,
+          "solution": "T",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 10,
+          "solution": "E",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003",
+            "cw_008"
+          ]
+        },
+        {
+          "row": 7,
+          "col": 11,
+          "solution": "D",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_003"
+          ]
+        }
+      ],
+      [
+        {
+          "row": 8,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 8,
+          "col": 1,
+          "solution": "M",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_009"
+          ]
+        },
+        {
+          "row": 8,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 8,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 8,
+          "col": 4,
+          "solution": "C",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_007"
+          ]
+        },
+        {
+          "row": 8,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 8,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 8,
+          "col": 7,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 8,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 8,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 8,
+          "col": 10,
+          "solution": "N",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_008"
+          ]
+        },
+        {
+          "row": 8,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 9,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 1,
+          "solution": "P",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_009"
+          ]
+        },
+        {
+          "row": 9,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 4,
+          "solution": "H",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_007"
+          ]
+        },
+        {
+          "row": 9,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 7,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 9,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 10,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 1,
+          "solution": "L",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_009"
+          ]
+        },
+        {
+          "row": 10,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 3,
+          "solution": "L",
+          "is_blocked": false,
+          "number": 8,
+          "entry_ids": [
+            "cw_010"
+          ]
+        },
+        {
+          "row": 10,
+          "col": 4,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 7,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 10,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 11,
+          "col": 0,
+          "solution": "R",
+          "is_blocked": false,
+          "number": 9,
+          "entry_ids": [
+            "cw_004"
+          ]
+        },
+        {
+          "row": 11,
+          "col": 1,
+          "solution": "E",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_004",
+            "cw_009"
+          ]
+        },
+        {
+          "row": 11,
+          "col": 2,
+          "solution": "P",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_004"
+          ]
+        },
+        {
+          "row": 11,
+          "col": 3,
+          "solution": "O",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_004",
+            "cw_010"
+          ]
+        },
+        {
+          "row": 11,
+          "col": 4,
+          "solution": "R",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_004"
+          ]
+        },
+        {
+          "row": 11,
+          "col": 5,
+          "solution": "T",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_004"
+          ]
+        },
+        {
+          "row": 11,
+          "col": 6,
+          "solution": "E",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_004"
+          ]
+        },
+        {
+          "row": 11,
+          "col": 7,
+          "solution": "D",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_004"
+          ]
+        },
+        {
+          "row": 11,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 11,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 11,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 11,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 12,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 1,
+          "solution": "T",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_009"
+          ]
+        },
+        {
+          "row": 12,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 3,
+          "solution": "S",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_010"
+          ]
+        },
+        {
+          "row": 12,
+          "col": 4,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 7,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 12,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 13,
+          "col": 0,
+          "solution": "W",
+          "is_blocked": false,
+          "number": 10,
+          "entry_ids": [
+            "cw_005"
+          ]
+        },
+        {
+          "row": 13,
+          "col": 1,
+          "solution": "E",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_005",
+            "cw_009"
+          ]
+        },
+        {
+          "row": 13,
+          "col": 2,
+          "solution": "A",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_005"
+          ]
+        },
+        {
+          "row": 13,
+          "col": 3,
+          "solution": "T",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_005",
+            "cw_010"
+          ]
+        },
+        {
+          "row": 13,
+          "col": 4,
+          "solution": "H",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_005"
+          ]
+        },
+        {
+          "row": 13,
+          "col": 5,
+          "solution": "E",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_005"
+          ]
+        },
+        {
+          "row": 13,
+          "col": 6,
+          "solution": "R",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_005"
+          ]
+        },
+        {
+          "row": 13,
+          "col": 7,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 13,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 13,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 13,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 13,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ],
+      [
+        {
+          "row": 14,
+          "col": 0,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 1,
+          "solution": "D",
+          "is_blocked": false,
+          "number": null,
+          "entry_ids": [
+            "cw_009"
+          ]
+        },
+        {
+          "row": 14,
+          "col": 2,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 3,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 4,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 5,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 6,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 7,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 8,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 9,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 10,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        },
+        {
+          "row": 14,
+          "col": 11,
+          "solution": "",
+          "is_blocked": true,
+          "number": null,
+          "entry_ids": []
+        }
+      ]
+    ],
+    "placed_entries": [
+      {
+        "id": "cw_001",
+        "answer": "FLOWN",
+        "display_answer": "FLOWN",
+        "grid_answer": "FLOWN",
+        "clue": "Experience: I have ___ in strong crosswind conditions before.",
+        "number": 1,
+        "direction": "across",
+        "row": 0,
+        "col": 6,
+        "length": 5,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_006",
+            "row": 0,
+            "col": 7,
+            "letter": "L"
+          }
+        ]
+      },
+      {
+        "id": "cw_002",
+        "answer": "BRAKING",
+        "display_answer": "BRAKING",
+        "grid_answer": "BRAKING",
+        "clue": "___ action has become poor, so landing may be delayed.",
+        "number": 3,
+        "direction": "across",
+        "row": 2,
+        "col": 2,
+        "length": 7,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_007",
+            "row": 2,
+            "col": 4,
+            "letter": "A"
+          },
+          {
+            "with_entry_id": "cw_006",
+            "row": 2,
+            "col": 7,
+            "letter": "N"
+          }
+        ]
+      },
+      {
+        "id": "cw_003",
+        "answer": "CONTAMINATED",
+        "display_answer": "CONTAMINATED",
+        "grid_answer": "CONTAMINATED",
+        "clue": "The runway has become ___ and may affect take-off or landing performance.",
+        "number": 7,
+        "direction": "across",
+        "row": 7,
+        "col": 0,
+        "length": 12,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_009",
+            "row": 7,
+            "col": 1,
+            "letter": "O"
+          },
+          {
+            "with_entry_id": "cw_007",
+            "row": 7,
+            "col": 4,
+            "letter": "A"
+          },
+          {
+            "with_entry_id": "cw_008",
+            "row": 7,
+            "col": 10,
+            "letter": "E"
+          }
+        ]
+      },
+      {
+        "id": "cw_004",
+        "answer": "REPORTED",
+        "display_answer": "REPORTED",
+        "grid_answer": "REPORTED",
+        "clue": "The pilot has ___ a bird strike.",
+        "number": 9,
+        "direction": "across",
+        "row": 11,
+        "col": 0,
+        "length": 8,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_009",
+            "row": 11,
+            "col": 1,
+            "letter": "E"
+          },
+          {
+            "with_entry_id": "cw_010",
+            "row": 11,
+            "col": 3,
+            "letter": "O"
+          }
+        ]
+      },
+      {
+        "id": "cw_005",
+        "answer": "WEATHER",
+        "display_answer": "WEATHER",
+        "grid_answer": "WEATHER",
+        "clue": "We have received updated ___ before approach.",
+        "number": 10,
+        "direction": "across",
+        "row": 13,
+        "col": 0,
+        "length": 7,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_009",
+            "row": 13,
+            "col": 1,
+            "letter": "E"
+          },
+          {
+            "with_entry_id": "cw_010",
+            "row": 13,
+            "col": 3,
+            "letter": "T"
+          }
+        ]
+      },
+      {
+        "id": "cw_006",
+        "answer": "LANDED",
+        "display_answer": "LANDED",
+        "grid_answer": "LANDED",
+        "clue": "The aircraft has ___ safely.",
+        "number": 2,
+        "direction": "down",
+        "row": 0,
+        "col": 7,
+        "length": 6,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_001",
+            "row": 0,
+            "col": 7,
+            "letter": "L"
+          },
+          {
+            "with_entry_id": "cw_002",
+            "row": 2,
+            "col": 7,
+            "letter": "N"
+          }
+        ]
+      },
+      {
+        "id": "cw_007",
+        "answer": "APPROACH",
+        "display_answer": "APPROACH",
+        "grid_answer": "APPROACH",
+        "clue": "The ___ has become unstable, so we should go around.",
+        "number": 4,
+        "direction": "down",
+        "row": 2,
+        "col": 4,
+        "length": 8,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_002",
+            "row": 2,
+            "col": 4,
+            "letter": "A"
+          },
+          {
+            "with_entry_id": "cw_003",
+            "row": 7,
+            "col": 4,
+            "letter": "A"
+          }
+        ]
+      },
+      {
+        "id": "cw_008",
+        "answer": "GIVEN",
+        "display_answer": "GIVEN",
+        "grid_answer": "GIVEN",
+        "clue": "ATC has ___ us new safety information.",
+        "number": 5,
+        "direction": "down",
+        "row": 4,
+        "col": 10,
+        "length": 5,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_003",
+            "row": 7,
+            "col": 10,
+            "letter": "E"
+          }
+        ]
+      },
+      {
+        "id": "cw_009",
+        "answer": "COMPLETED",
+        "display_answer": "COMPLETED",
+        "grid_answer": "COMPLETED",
+        "clue": "We have ___ the before-takeoff checklist.",
+        "number": 6,
+        "direction": "down",
+        "row": 6,
+        "col": 1,
+        "length": 9,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_003",
+            "row": 7,
+            "col": 1,
+            "letter": "O"
+          },
+          {
+            "with_entry_id": "cw_004",
+            "row": 11,
+            "col": 1,
+            "letter": "E"
+          },
+          {
+            "with_entry_id": "cw_005",
+            "row": 13,
+            "col": 1,
+            "letter": "E"
+          }
+        ]
+      },
+      {
+        "id": "cw_010",
+        "answer": "LOST",
+        "display_answer": "LOST",
+        "grid_answer": "LOST",
+        "clue": "The aircraft has ___ hydraulic pressure.",
+        "number": 8,
+        "direction": "down",
+        "row": 10,
+        "col": 3,
+        "length": 4,
+        "category": "Present Perfect",
+        "difficulty": "medium",
+        "intersections": [
+          {
+            "with_entry_id": "cw_004",
+            "row": 11,
+            "col": 3,
+            "letter": "O"
+          },
+          {
+            "with_entry_id": "cw_005",
+            "row": 13,
+            "col": 3,
+            "letter": "T"
+          }
+        ]
+      }
+    ],
+    "unplaced_entries": []
+  },
+  "clues": {
+    "across": [
+      {
+        "number": 1,
+        "entry_id": "cw_001",
+        "clue": "Experience: I have ___ in strong crosswind conditions before.",
+        "answer": "FLOWN",
+        "row": 0,
+        "col": 6
+      },
+      {
+        "number": 3,
+        "entry_id": "cw_002",
+        "clue": "___ action has become poor, so landing may be delayed.",
+        "answer": "BRAKING",
+        "row": 2,
+        "col": 2
+      },
+      {
+        "number": 7,
+        "entry_id": "cw_003",
+        "clue": "The runway has become ___ and may affect take-off or landing performance.",
+        "answer": "CONTAMINATED",
+        "row": 7,
+        "col": 0
+      },
+      {
+        "number": 9,
+        "entry_id": "cw_004",
+        "clue": "The pilot has ___ a bird strike.",
+        "answer": "REPORTED",
+        "row": 11,
+        "col": 0
+      },
+      {
+        "number": 10,
+        "entry_id": "cw_005",
+        "clue": "We have received updated ___ before approach.",
+        "answer": "WEATHER",
+        "row": 13,
+        "col": 0
+      }
+    ],
+    "down": [
+      {
+        "number": 2,
+        "entry_id": "cw_006",
+        "clue": "The aircraft has ___ safely.",
+        "answer": "LANDED",
+        "row": 0,
+        "col": 7
+      },
+      {
+        "number": 4,
+        "entry_id": "cw_007",
+        "clue": "The ___ has become unstable, so we should go around.",
+        "answer": "APPROACH",
+        "row": 2,
+        "col": 4
+      },
+      {
+        "number": 5,
+        "entry_id": "cw_008",
+        "clue": "ATC has ___ us new safety information.",
+        "answer": "GIVEN",
+        "row": 4,
+        "col": 10
+      },
+      {
+        "number": 6,
+        "entry_id": "cw_009",
+        "clue": "We have ___ the before-takeoff checklist.",
+        "answer": "COMPLETED",
+        "row": 6,
+        "col": 1
+      },
+      {
+        "number": 8,
+        "entry_id": "cw_010",
+        "clue": "The aircraft has ___ hydraulic pressure.",
+        "answer": "LOST",
+        "row": 10,
+        "col": 3
+      }
+    ]
+  },
+  "answer_key": {
+    "entries": [
+      {
+        "number": 1,
+        "direction": "across",
+        "answer": "FLOWN",
+        "clue": "Experience: I have ___ in strong crosswind conditions before."
+      },
+      {
+        "number": 2,
+        "direction": "down",
+        "answer": "LANDED",
+        "clue": "The aircraft has ___ safely."
+      },
+      {
+        "number": 3,
+        "direction": "across",
+        "answer": "BRAKING",
+        "clue": "___ action has become poor, so landing may be delayed."
+      },
+      {
+        "number": 4,
+        "direction": "down",
+        "answer": "APPROACH",
+        "clue": "The ___ has become unstable, so we should go around."
+      },
+      {
+        "number": 5,
+        "direction": "down",
+        "answer": "GIVEN",
+        "clue": "ATC has ___ us new safety information."
+      },
+      {
+        "number": 6,
+        "direction": "down",
+        "answer": "COMPLETED",
+        "clue": "We have ___ the before-takeoff checklist."
+      },
+      {
+        "number": 7,
+        "direction": "across",
+        "answer": "CONTAMINATED",
+        "clue": "The runway has become ___ and may affect take-off or landing performance."
+      },
+      {
+        "number": 8,
+        "direction": "down",
+        "answer": "LOST",
+        "clue": "The aircraft has ___ hydraulic pressure."
+      },
+      {
+        "number": 9,
+        "direction": "across",
+        "answer": "REPORTED",
+        "clue": "The pilot has ___ a bird strike."
+      },
+      {
+        "number": 10,
+        "direction": "across",
+        "answer": "WEATHER",
+        "clue": "We have received updated ___ before approach."
+      }
+    ],
+    "filled_grid": [
+      [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "F",
+        "L",
+        "O",
+        "W",
+        "N",
+        ""
+      ],
+      [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "A",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "",
+        "B",
+        "R",
+        "A",
+        "K",
+        "I",
+        "N",
+        "G",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "",
+        "",
+        "",
+        "P",
+        "",
+        "",
+        "D",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "",
+        "",
+        "",
+        "P",
+        "",
+        "",
+        "E",
+        "",
+        "",
+        "G",
+        ""
+      ],
+      [
+        "",
+        "",
+        "",
+        "",
+        "R",
+        "",
+        "",
+        "D",
+        "",
+        "",
+        "I",
+        ""
+      ],
+      [
+        "",
+        "C",
+        "",
+        "",
+        "O",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "V",
+        ""
+      ],
+      [
+        "C",
+        "O",
+        "N",
+        "T",
+        "A",
+        "M",
+        "I",
+        "N",
+        "A",
+        "T",
+        "E",
+        "D"
+      ],
+      [
+        "",
+        "M",
+        "",
+        "",
+        "C",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "N",
+        ""
+      ],
+      [
+        "",
+        "P",
+        "",
+        "",
+        "H",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "L",
+        "",
+        "L",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "R",
+        "E",
+        "P",
+        "O",
+        "R",
+        "T",
+        "E",
+        "D",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "T",
+        "",
+        "S",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "W",
+        "E",
+        "A",
+        "T",
+        "H",
+        "E",
+        "R",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ],
+      [
+        "",
+        "D",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+      ]
+    ]
+  },
+  "metrics": {
+    "total_entries_received": 10,
+    "valid_entries_used": 10,
+    "placed_count": 10,
+    "unplaced_count": 0,
+    "intersections": 10,
+    "density": 0.339,
+    "bounding_box_area": 180,
+    "across_count": 5,
+    "down_count": 5,
+    "score": 10960,
+    "attempt_count": 1
+  },
+  "quality_report": {
+    "status": "success",
+    "warnings": [],
+    "errors": [],
+    "layout_notes": [
+      "Imported layout: 10 placed, 10 intersections, 12x15."
+    ],
+    "unplaced_reasons": []
+  }
+}</script>
+<script>
+(function () {
+  const statusToast = document.getElementById('status-toast');
+  const dataElement = document.getElementById('crossword-data');
+  const progressBar = document.getElementById('progress-bar-fill');
+  const progressText = document.getElementById('progress-text');
+  
+  // Trainer UI elements
+  const modeTabs = document.querySelectorAll('.mode-tab');
+  const trainerCockpit = document.getElementById('trainer-cockpit');
+  const mainHudMeta = document.getElementById('main-hud-meta');
+  const metaInfoText = document.getElementById('meta-info-text');
+  const crosswordToolbar = document.getElementById('crossword-toolbar');
+  const trainerFiltersBox = document.getElementById('trainer-filters-box');
+  
+  const labelWPM = document.getElementById('trainer-wpm');
+  const labelAccuracy = document.getElementById('trainer-accuracy');
+  const labelMistakes = document.getElementById('trainer-mistakes');
+  const labelProgress = document.getElementById('trainer-progress');
+  const trainerHintMessage = document.getElementById('trainer-hint-message');
+  
+  const typingCapture = document.getElementById('typing-capture');
+
+  // Audio Engine
+  const AudioEngine = {
+    ctx: null,
+    init() {
+      if (!this.ctx) {
+        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+    },
+    playTick() {
+      this.init();
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(1200, this.ctx.currentTime);
+      gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.05);
+    },
+    playCorrect() {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(587.33, now); // D5
+      osc.frequency.setValueAtTime(880, now + 0.1); // A5
+      gain.gain.setValueAtTime(0.1, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
+      osc.start();
+      osc.stop(now + 0.4);
+    },
+    playWarning() {
+      this.init();
+      if (!this.ctx) return;
+      const now = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(180, now);
+      osc.frequency.linearRampToValueAtTime(120, now + 0.3);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
+      osc.start();
+      osc.stop(now + 0.3);
+    }
+  };
+
+  function setStatus(m) {
+    if (statusToast) {
+      if (m) {
+        statusToast.textContent = m;
+        statusToast.style.display = 'block';
+      } else {
+        statusToast.style.display = 'none';
+      }
+    }
+  }
+
+  let data;
+  try { data = JSON.parse(dataElement.textContent); }
+  catch (e) { console.error(e); setStatus('Error loading data.'); return; }
+
+  const cells = data.layout.grid;
+  const placed = data.layout.placed_entries;
+
+  const inputs = Array.from(document.querySelectorAll('.input-field'));
+  const cellMap = new Map();
+  inputs.forEach(i => cellMap.set(i.dataset.row + ':' + i.dataset.col, i));
+
+  const answerMap = new Map();
+  cells.forEach(row => row.forEach(cell => {
+    if (!cell.is_blocked) answerMap.set(cell.row + ':' + cell.col, (cell.solution || '').toLocaleUpperCase());
+  }));
+
+  const entries = placed.map(p => ({
+    id: p.id, number: p.number, direction: p.direction, row: p.row, col: p.col, answer: p.grid_answer
+  }));
+
+  const cellEntries = new Map();
+  const clueLiByKey = new Map();
+
+  function entryCells(entry) {
+    const out = []; const len = Array.from(entry.answer).length;
+    for (let i = 0; i < len; i++) {
+      const r = entry.direction === 'down' ? entry.row + i : entry.row;
+      const c = entry.direction === 'across' ? entry.col + i : entry.col;
+      out.push(r + ':' + c);
+    }
+    return out;
+  }
+
+  entries.forEach(entry => {
+    const ec = entryCells(entry);
+    const rec = { entry, cells: ec };
+    ec.forEach(k => {
+      let info = cellEntries.get(k);
+      if (!info) { info = { across: null, down: null }; cellEntries.set(k, info); }
+      info[entry.direction] = rec;
+    });
+  });
+
+  // Keep track of classic board user state
+  let classicBoardValues = new Map();
+  function saveClassicBoardState() {
+    inputs.forEach(inp => {
+      const k = inp.dataset.row + ':' + inp.dataset.col;
+      classicBoardValues.set(k, inp.value);
+    });
+  }
+  function restoreClassicBoardState() {
+    inputs.forEach(inp => {
+      const k = inp.dataset.row + ':' + inp.dataset.col;
+      inp.value = classicBoardValues.get(k) || '';
+      clearCellState(inp);
+    });
+    recalculateProgress();
+  }
+
+  /* =========================================
+     TYPING TRAINER STATE & LOGIC
+     =========================================
+  */
+  let gameMode = 'crossword'; // 'crossword' | 'type-single' | 'type-all'
+  let activeFilter = 'all';  // 'all' | 'across' | 'down'
+  
+  let typingQueue = [];
+  let currentQueueIndex = 0;
+  let singlePracticeWord = null; // target entry for single-word training
+
+  // Typing Stats
+  let totalChars = 0;
+  let correctChars = 0;
+  let mistakes = 0;
+  let startTime = null;
+  let currentTypedString = "";
+  let waitingForSpaceToRepeat = false;
+
+  // Initialize clues lists binding
+  document.querySelectorAll('.clues-list li[data-number]').forEach(li => {
+    const number = Number(li.dataset.number), direction = li.dataset.direction;
+    const entry = entries.find(e => e.number === number && e.direction === direction);
+    if (!entry) return;
+    clueLiByKey.set(direction + ':' + number, li);
+  });
+
+  function focusCapture() {
+    if (gameMode !== 'crossword') {
+      typingCapture.focus({ preventScroll: true });
+      typingCapture.value = '';
+    }
+  }
+
+  function getQueue() {
+    let list = [...entries];
+    // Sort Across first, then Down
+    list.sort((a, b) => {
+      if (a.direction === b.direction) return a.number - b.number;
+      return a.direction === 'across' ? -1 : 1;
+    });
+    if (activeFilter === 'across') {
+      return list.filter(e => e.direction === 'across');
+    } else if (activeFilter === 'down') {
+      return list.filter(e => e.direction === 'down');
+    }
+    return list;
+  }
+
+  function clearAllGridStates() {
+    inputs.forEach(input => {
+      input.value = '';
+      input.className = 'input-field';
+      const td = input.closest('td');
+      if (td) td.className = 'cell';
+    });
+  }
+
+  // Visual cues renderer for typing modes
+  function drawTrainerVisuals() {
+    clearAllGridStates();
+
+    if (gameMode === 'type-single') {
+      if (!singlePracticeWord) {
+        trainerHintMessage.textContent = "Click a word on the grid or in the list to start practising!";
+        return;
+      }
+      
+      const targetEntry = singlePracticeWord;
+      const ec = entryCells(targetEntry);
+      
+      // Update clue item style
+      document.querySelectorAll('.clues-list li').forEach(li => li.classList.remove('typing-active-clue', 'typing-next-clue'));
+      const activeLi = clueLiByKey.get(targetEntry.direction + ':' + targetEntry.number);
+      if (activeLi) activeLi.classList.add('typing-active-clue');
+
+      ec.forEach((key, charIdx) => {
+        const inp = cellMap.get(key);
+        if (!inp) return;
+        
+        inp.classList.add('typing-active');
+        
+        if (charIdx < currentTypedString.length) {
+          inp.value = targetEntry.answer[charIdx];
+          inp.classList.add('typing-correct');
+        } else {
+          inp.value = targetEntry.answer[charIdx]; // ghost letter
+          inp.classList.add('typing-ghost');
+          if (charIdx === currentTypedString.length) { const ctd = inp.closest('td'); if (ctd) ctd.classList.add('cursor-cell'); }
+        }
+      });
+
+      if (waitingForSpaceToRepeat) {
+        trainerHintMessage.textContent = "Word complete! Press [SPACE] to repeat.";
+      } else {
+        trainerHintMessage.textContent = `Type the word: "${targetEntry.answer}"`;
+      }
+      
+    } else if (gameMode === 'type-all') {
+      if (typingQueue.length === 0) return;
+      
+      const currentEntry = typingQueue[currentQueueIndex];
+      const nextEntry = typingQueue[currentQueueIndex + 1];
+
+      // Reset list styles
+      document.querySelectorAll('.clues-list li').forEach(li => li.classList.remove('typing-active-clue', 'typing-next-clue'));
+
+      // Mark settled words on board
+      for (let q = 0; q < currentQueueIndex; q++) {
+        const entry = typingQueue[q];
+        const cellsOfEntry = entryCells(entry);
+        cellsOfEntry.forEach((key, charIdx) => {
+          const inp = cellMap.get(key);
+          if (inp) {
+            inp.value = entry.answer[charIdx];
+            inp.classList.add('typing-correct');
+          }
+        });
+      }
+
+      // Draw Next entry warning cue
+      if (nextEntry) {
+        const nextLi = clueLiByKey.get(nextEntry.direction + ':' + nextEntry.number);
+        if (nextLi) nextLi.classList.add('typing-next-clue');
+        
+        const nextCells = entryCells(nextEntry);
+        nextCells.forEach(key => {
+          const inp = cellMap.get(key);
+          if (inp && !inp.classList.contains('typing-correct')) {
+            inp.classList.add('typing-next');
+          }
+        });
+      }
+
+      // Draw Active entry
+      if (currentEntry) {
+        const activeLi = clueLiByKey.get(currentEntry.direction + ':' + currentEntry.number);
+        if (activeLi) {
+          activeLi.classList.add('typing-active-clue');
+          activeLi.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        const activeCells = entryCells(currentEntry);
+        activeCells.forEach((key, charIdx) => {
+          const inp = cellMap.get(key);
+          if (!inp) return;
+          inp.classList.add('typing-active');
+          
+          if (charIdx < currentTypedString.length) {
+            inp.value = currentEntry.answer[charIdx];
+            inp.classList.remove('typing-next');
+            inp.classList.add('typing-correct');
+          } else {
+            inp.value = currentEntry.answer[charIdx];
+            inp.classList.remove('typing-next');
+            inp.classList.add('typing-ghost');
+            if (charIdx === currentTypedString.length) { const ctd = inp.closest('td'); if (ctd) ctd.classList.add('cursor-cell'); }
+          }
+        });
+
+        trainerHintMessage.textContent = `Type the word: "${currentEntry.answer}"`;
+      } else {
+        trainerHintMessage.textContent = "Congratulations! All words typed! Press Alt + R to restart.";
+      }
+    }
+    
+    renderStats();
+  }
+
+  function renderStats() {
+    labelMistakes.textContent = mistakes;
+    const acc = totalChars === 0 ? 100 : Math.round((correctChars / totalChars) * 100);
+    labelAccuracy.textContent = acc + '%';
+    
+    if (startTime && correctChars > 0) {
+      const minutes = (Date.now() - startTime) / 60000;
+      const wpm = minutes > 0 ? Math.round((correctChars / 5) / minutes) : 0;
+      labelWPM.textContent = wpm;
+    } else {
+      labelWPM.textContent = 0;
+    }
+
+    if (gameMode === 'type-single') {
+      labelProgress.textContent = singlePracticeWord ? "1 / 1" : "0 / 1";
+    } else if (gameMode === 'type-all') {
+      labelProgress.textContent = `${currentQueueIndex} / ${typingQueue.length}`;
+    }
+  }
+
+  function startTrainerSingle(entry) {
+    singlePracticeWord = entry;
+    currentTypedString = "";
+    totalChars = 0;
+    correctChars = 0;
+    mistakes = 0;
+    startTime = null;
+    waitingForSpaceToRepeat = false;
+    
+    drawTrainerVisuals();
+    focusCapture();
+  }
+
+  function startTrainerAll() {
+    typingQueue = getQueue();
+    currentQueueIndex = 0;
+    currentTypedString = "";
+    totalChars = 0;
+    correctChars = 0;
+    mistakes = 0;
+    startTime = null;
+    waitingForSpaceToRepeat = false;
+
+    drawTrainerVisuals();
+    focusCapture();
+  }
+
+  function triggerIncorrectLetterShake() {
+    let targetEntry = gameMode === 'type-single' ? singlePracticeWord : typingQueue[currentQueueIndex];
+    if (!targetEntry) return;
+    
+    const key = entryCells(targetEntry)[currentTypedString.length];
+    const inp = cellMap.get(key);
+    if (inp) {
+      inp.classList.remove('typing-ghost');
+      inp.classList.add('typing-wrong');
+      setTimeout(() => {
+        inp.classList.remove('typing-wrong');
+        inp.classList.add('typing-ghost');
+      }, 140);
+    }
+  }
+
+  function handleTypingChar(ch) {
+    ch = ch.toLocaleUpperCase('en-US').trim();
+    if (!ch) return;
+
+    let targetEntry = gameMode === 'type-single' ? singlePracticeWord : typingQueue[currentQueueIndex];
+    if (!targetEntry) return;
+    if (waitingForSpaceToRepeat) return;
+
+    if (!startTime) startTime = Date.now();
+    
+    const expectedChar = targetEntry.answer[currentTypedString.length];
+    totalChars++;
+
+    if (ch === expectedChar) {
+      currentTypedString += ch;
+      correctChars++;
+      AudioEngine.playTick();
+      
+      // Check word completion
+      if (currentTypedString.length === targetEntry.answer.length) {
+        if (gameMode === 'type-single') {
+          waitingForSpaceToRepeat = true;
+          AudioEngine.playCorrect();
+        } else {
+          // Advance Type All sequence
+          currentQueueIndex++;
+          currentTypedString = "";
+          AudioEngine.playCorrect();
+          
+          if (currentQueueIndex >= typingQueue.length) {
+            trainerHintMessage.textContent = "All words typed! Restart: [Alt + R]";
+            setStatus("Great! Training completed successfully!");
+          }
+        }
+      }
+      drawTrainerVisuals();
+    } else {
+      mistakes++;
+      AudioEngine.playWarning();
+      triggerIncorrectLetterShake();
+      renderStats();
+    }
+  }
+
+  // Keyboard capture events
+  typingCapture.addEventListener('input', () => {
+    const data = typingCapture.value;
+    typingCapture.value = '';
+    if (!data) return;
+    
+    const ch = data[data.length - 1];
+    handleTypingChar(ch);
+  });
+
+  // Hotkey & Spacebar captures
+  document.addEventListener('keydown', (ev) => {
+    // Mode restart shortcut Alt + R
+    if (ev.altKey && ev.key.toLowerCase() === 'r') {
+      ev.preventDefault();
+      if (gameMode === 'type-all') {
+        startTrainerAll();
+      } else if (gameMode === 'type-single' && singlePracticeWord) {
+        startTrainerSingle(singlePracticeWord);
+      }
+      return;
+    }
+
+    if (gameMode !== 'crossword') {
+      if (document.activeElement !== typingCapture) {
+        focusCapture();
+      }
+
+      if (ev.key === ' ') {
+        ev.preventDefault();
+        if (gameMode === 'type-single' && waitingForSpaceToRepeat && singlePracticeWord) {
+          startTrainerSingle(singlePracticeWord);
+        }
+      }
+    }
+  });
+
+  // Ensure focus is kept on our hidden capture input during practice
+  document.addEventListener('click', (e) => {
+    if (gameMode !== 'crossword') {
+      if (!e.target.closest('button') && !e.target.closest('.mode-tab') && !e.target.closest('input:not(#typing-capture)')) {
+        focusCapture();
+      }
+    }
+  });
+
+
+  /* =========================================
+     CLASSIC CROSSWORD LOGIC
+     =========================================
+  */
+  let currentDirection = 'across';
+  let activeRecord = null;
+  let lastFocusedInput = null; // tracks the last focused cell on grid for hints
+
+  function setStatus(m) {
+    if (statusToast) {
+      if (m) {
+        statusToast.textContent = m;
+        statusToast.style.display = 'block';
+      } else {
+        statusToast.style.display = 'none';
+      }
+    }
+  }
+
+  function normalizeLetter(v) {
+    const up = v.normalize('NFC').toLocaleUpperCase();
+    const mm = up.match(/\p{L}/gu);
+    return (!mm || !mm.length) ? '' : mm[mm.length - 1];
+  }
+  
+  function clearCellState(input) {
+    input.classList.remove('correct', 'wrong', 'solved', 'typing-ghost', 'typing-correct', 'typing-active', 'typing-next', 'typing-wrong');
+    input.removeAttribute('aria-invalid');
+    const td = input.closest('td');
+    if (td) td.classList.remove('mark-correct', 'mark-wrong');
+  }
+
+  function clearHighlight() {
+    document.querySelectorAll('.input-field.active-word').forEach(e => e.classList.remove('active-word'));
+    document.querySelectorAll('.clues-list li.active-clue').forEach(e => e.classList.remove('active-clue'));
+  }
+
+  function applyHighlight(rec) {
+    clearHighlight();
+    if (!rec) return;
+    rec.cells.forEach(k => { const inp = cellMap.get(k); if (inp) inp.classList.add('active-word'); });
+    const li = clueLiByKey.get(rec.entry.direction + ':' + rec.entry.number);
+    if (li) {
+      li.classList.add('active-clue');
+      li.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  function pickRecord(key, preferred) {
+    const info = cellEntries.get(key);
+    if (!info) return null;
+    if (info[preferred]) return info[preferred];
+    return info.across || info.down;
+  }
+
+  function updateActive(input) {
+    const key = input.dataset.row + ':' + input.dataset.col;
+    const rec = pickRecord(key, currentDirection);
+    if (rec && rec.entry.direction !== currentDirection) currentDirection = rec.entry.direction;
+    activeRecord = rec; applyHighlight(rec);
+  }
+
+  function focusNextInWord(input) {
+    if (!activeRecord) return;
+    const key = input.dataset.row + ':' + input.dataset.col;
+    const idx = activeRecord.cells.indexOf(key);
+    if (idx === -1) return;
+    for (let i = idx + 1; i < activeRecord.cells.length; i++) {
+      const n = cellMap.get(activeRecord.cells[i]);
+      if (n && !n.value) { n.focus(); return; }
+    }
+    const imm = cellMap.get(activeRecord.cells[idx + 1]); if (imm) imm.focus();
+  }
+
+  function focusPrevInWord(input) {
+    if (!activeRecord) return;
+    const key = input.dataset.row + ':' + input.dataset.col;
+    const idx = activeRecord.cells.indexOf(key);
+    if (idx <= 0) return;
+    const p = cellMap.get(activeRecord.cells[idx - 1]); if (p) p.focus();
+  }
+
+  function focusDirectional(row, col, dr, dc) {
+    let r = row + dr, c = col + dc;
+    for (let s = 0; s < 500; s++) {
+      if (r < 0 || c < 0 || r > 800 || c > 800) return;
+      const k = r + ':' + c;
+      if (cellMap.has(k)) { cellMap.get(k).focus(); return; }
+      r += dr; c += dc;
+    }
+  }
+
+  function recalculateProgress() {
+    let filled = 0;
+    inputs.forEach(input => {
+      if (input.value.trim() !== '') filled++;
+    });
+    const percentage = Math.round((filled / inputs.length) * 100);
+    progressBar.style.width = percentage + '%';
+    progressText.textContent = percentage + '%';
+  }
+
+  // Bind Standard input actions
+  inputs.forEach(input => {
+    input.addEventListener('input', () => {
+      if (gameMode !== 'crossword') return;
+      const n = normalizeLetter(input.value);
+      input.value = n; clearCellState(input);
+      recalculateProgress();
+      if (n) {
+        AudioEngine.playTick();
+        focusNextInWord(input);
+      }
+    });
+
+    input.addEventListener('keydown', ev => {
+      if (gameMode !== 'crossword') return;
+      const row = Number(input.dataset.row), col = Number(input.dataset.col);
+      if (ev.key === 'Backspace') {
+        if (!input.value) { ev.preventDefault(); focusPrevInWord(input); }
+        else { input.value = ''; clearCellState(input); recalculateProgress(); }
+        return;
+      }
+      if (ev.key === ' ' || ev.key === 'Spacebar') {
+        ev.preventDefault();
+        const ordered = [...entries].sort((a, b) => a.direction === b.direction ? a.number - b.number : (a.direction === 'across' ? -1 : 1));
+        if (ordered.length) {
+          const cur = activeRecord ? activeRecord.entry : null;
+          const idx = cur ? ordered.findIndex(e => e.number === cur.number && e.direction === cur.direction) : -1;
+          const next = ordered[(idx + 1) % ordered.length];
+          if (next) { currentDirection = next.direction; const inp = cellMap.get(next.row + ':' + next.col); if (inp) inp.focus(); }
+        }
+        return;
+      }
+      if (ev.key === 'ArrowLeft') { ev.preventDefault(); currentDirection = 'across'; focusDirectional(row, col, 0, -1); }
+      else if (ev.key === 'ArrowRight') { ev.preventDefault(); currentDirection = 'across'; focusDirectional(row, col, 0, 1); }
+      else if (ev.key === 'ArrowUp') { ev.preventDefault(); currentDirection = 'down'; focusDirectional(row, col, -1, 0); }
+      else if (ev.key === 'ArrowDown') { ev.preventDefault(); currentDirection = 'down'; focusDirectional(row, col, 1, 0); }
+      else if (ev.key === 'Enter') { ev.preventDefault(); focusNextInWord(input); }
+    });
+
+    input.addEventListener('focus', () => { 
+      if (gameMode !== 'crossword') return;
+      input.select(); 
+      lastFocusedInput = input;
+      updateActive(input); 
+    });
+    
+    input.addEventListener('mousedown', () => {
+      if (gameMode === 'crossword') {
+        if (document.activeElement === input) {
+          const info = cellEntries.get(input.dataset.row + ':' + input.dataset.col);
+          if (info && info.across && info.down) { currentDirection = currentDirection === 'across' ? 'down' : 'across'; updateActive(input); }
+        }
+      } else if (gameMode === 'type-single') {
+        // Switch practice target to this word on click
+        const info = cellEntries.get(input.dataset.row + ':' + input.dataset.col);
+        const entryObj = info ? (info.across?.entry || info.down?.entry) : null;
+        if (entryObj) {
+          startTrainerSingle(entryObj);
+        }
+      }
+    });
+  });
+
+  // Bind lists for both modes
+  document.querySelectorAll('.clues-list li[data-number]').forEach(li => {
+    const number = Number(li.dataset.number), direction = li.dataset.direction;
+    const entry = entries.find(e => e.number === number && e.direction === direction);
+    if (!entry) return;
+    
+    li.addEventListener('click', () => {
+      if (gameMode === 'crossword') {
+        const inp = cellMap.get(entry.row + ':' + entry.col);
+        if (!inp) return;
+        currentDirection = direction; inp.focus();
+      } else if (gameMode === 'type-single') {
+        startTrainerSingle(entry);
+      }
+    });
+  });
+
+  function mark(input, state) {
+    const td = input.closest('td'); if (!td) return;
+    td.classList.remove('mark-correct', 'mark-wrong');
+    if (state) td.classList.add(state === 'correct' ? 'mark-correct' : 'mark-wrong');
+  }
+
+  // Crossword Buttons
+  const checkButton = document.getElementById('check-button');
+  if (checkButton) checkButton.addEventListener('click', () => {
+    if (gameMode !== 'crossword') return;
+    let correct = 0, wrong = 0, empty = 0;
+    inputs.forEach(input => {
+      clearCellState(input);
+      const ans = answerMap.get(input.dataset.row + ':' + input.dataset.col) || '';
+      const cur = normalizeLetter(input.value); input.value = cur;
+      if (!cur) { empty++; return; }
+      if (cur === ans) { input.classList.add('correct'); input.setAttribute('aria-invalid', 'false'); mark(input, 'correct'); correct++; }
+      else { input.classList.add('wrong'); input.setAttribute('aria-invalid', 'true'); mark(input, 'wrong'); wrong++; }
+    });
+    
+    if (wrong === 0 && empty === 0) {
+      setStatus('Solved! Everything is absolutely correct.');
+      AudioEngine.playCorrect();
+    } else if (wrong === 0) {
+      setStatus('Great job, no mistakes! Correct: ' + correct + ' · Empty cells: ' + empty);
+      AudioEngine.playCorrect();
+    } else {
+      setStatus('Correct: ' + correct + ' · Mistakes: ' + wrong + ' · Empty cells: ' + empty);
+      AudioEngine.playWarning();
+    }
+  });
+
+  // Crossword Hint System Action
+  const hintButton = document.getElementById('hint-button');
+  if (hintButton) {
+    hintButton.addEventListener('click', () => {
+      if (gameMode !== 'crossword') return;
+      
+      const target = lastFocusedInput || document.activeElement;
+      if (!target || !target.classList.contains('input-field')) {
+        setStatus('First click any crossword cell to get a hint for it!');
+        AudioEngine.playWarning();
+        return;
+      }
+      
+      const key = target.dataset.row + ':' + target.dataset.col;
+      const correctLetter = answerMap.get(key);
+      
+      if (correctLetter) {
+        target.value = correctLetter;
+        clearCellState(target);
+        target.classList.add('correct');
+        mark(target, 'correct');
+        recalculateProgress();
+        AudioEngine.playTick();
+        
+        // Auto-select or focus the next field in the current word automatically
+        focusNextInWord(target);
+        setStatus('Revealed the letter for the current cell.');
+      }
+    });
+  }
+
+  const showButton = document.getElementById('show-button');
+  if (showButton) showButton.addEventListener('click', () => {
+    if (gameMode !== 'crossword') return;
+    inputs.forEach(input => {
+      input.value = answerMap.get(input.dataset.row + ':' + input.dataset.col) || '';
+      clearCellState(input); input.classList.add('solved');
+    });
+    recalculateProgress();
+    setStatus('Answers shown.');
+    AudioEngine.playCorrect();
+  });
+
+  const clearButton = document.getElementById('clear-button');
+  if (clearButton) clearButton.addEventListener('click', () => {
+    if (gameMode !== 'crossword') return;
+    inputs.forEach(input => { input.value = ''; clearCellState(input); });
+    clearHighlight(); activeRecord = null; lastFocusedInput = null; setStatus('');
+    recalculateProgress();
+    AudioEngine.playWarning();
+  });
+
+  // Theme Switcher Logic (Day & Night Ops)
+  const themeSwitch = document.getElementById('theme-switch');
+  themeSwitch.addEventListener('click', () => {
+    const body = document.body;
+    const currentTheme = body.getAttribute('data-theme');
+    const label = themeSwitch.querySelector('span');
+    const icon = themeSwitch.querySelector('svg');
+    
+    if (currentTheme === 'day') {
+      body.setAttribute('data-theme', 'night');
+      label.textContent = 'Daylight Ops';
+      icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+    } else {
+      body.setAttribute('data-theme', 'day');
+      label.textContent = 'Night Ops';
+      icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+    }
+    AudioEngine.playTick();
+  });
+
+  // Switch Game Mode Handler
+  modeTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      modeTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      setStatus('');
+
+      const lastMode = gameMode;
+      gameMode = tab.dataset.mode;
+      AudioEngine.playTick();
+
+      if (lastMode === 'crossword') {
+        saveClassicBoardState();
+      }
+
+      if (gameMode === 'crossword') {
+        // Restore classic elements
+        trainerCockpit.style.display = 'none';
+        crosswordToolbar.style.display = 'flex';
+        mainHudMeta.style.display = 'flex';
+        
+        // Remove typing classes
+        document.querySelectorAll('.clues-list li').forEach(li => li.classList.remove('typing-active-clue', 'typing-next-clue'));
+        inputs.forEach(input => input.removeAttribute('readonly'));
+        
+        restoreClassicBoardState();
+      } else {
+        // Setup typing environment
+        trainerCockpit.style.display = 'block';
+        crosswordToolbar.style.display = 'none';
+        mainHudMeta.style.display = 'none';
+        
+        inputs.forEach(input => input.setAttribute('readonly', true));
+
+        if (gameMode === 'type-single') {
+          trainerFiltersBox.style.display = 'none';
+          
+          // Use previously selected entry in crossword if available
+          let preselected = null;
+          if (activeRecord) preselected = activeRecord.entry;
+          else preselected = entries[0];
+          
+          startTrainerSingle(preselected);
+        } else if (gameMode === 'type-all') {
+          trainerFiltersBox.style.display = 'flex';
+          startTrainerAll();
+        }
+      }
+    });
+  });
+
+  // Type All Direction Filters Box
+  document.querySelectorAll('.trainer-filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.trainer-filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      AudioEngine.playTick();
+      startTrainerAll();
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
