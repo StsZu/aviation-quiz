@@ -1,0 +1,780 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ICAO RTF Compliance Protocol Quiz</title>
+  <style>
+    :root {
+      --ink: #15202b;
+      --muted: #5d6b78;
+      --line: #d8e0e7;
+      --panel: rgba(255, 255, 255, 0.9);
+      --panel-solid: #ffffff;
+      --navy: #213243;
+      --teal: #0f766e;
+      --amber: #b87918;
+      --green: #18794e;
+      --red: #bd3030;
+      --green-bg: #e7f6ee;
+      --red-bg: #fae8e8;
+      --shadow: 0 18px 42px rgba(21, 32, 43, 0.14);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(238, 241, 241, 0.97), rgba(218, 232, 230, 0.94) 46%, rgba(244, 234, 216, 0.96));
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1040px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 28px 0;
+    }
+
+    .hero {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      width: fit-content;
+      padding: 7px 10px;
+      border: 1px solid rgba(15, 118, 110, 0.35);
+      border-radius: 8px;
+      color: #0d5b56;
+      background: rgba(255, 255, 255, 0.62);
+      font-size: 0.84rem;
+      font-weight: 750;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2.05rem;
+      line-height: 1.1;
+      font-weight: 850;
+    }
+
+    .subtitle {
+      max-width: 780px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 18px;
+      align-items: start;
+    }
+
+    .card,
+    .side-card {
+      border: 1px solid rgba(255, 255, 255, 0.72);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .card {
+      padding: 22px;
+    }
+
+    .side-card {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 12px;
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 750;
+    }
+
+    .progress-track {
+      height: 10px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: #e8edf1;
+      border: 1px solid #dce3e8;
+      margin-bottom: 20px;
+    }
+
+    .progress-fill {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--teal), var(--amber));
+      transition: width 240ms ease;
+    }
+
+    .question-title {
+      margin: 0 0 10px;
+      font-size: 1.35rem;
+      line-height: 1.25;
+    }
+
+    .question-text {
+      margin: 0 0 18px;
+      color: #2a3744;
+      font-size: 1.05rem;
+      line-height: 1.55;
+    }
+
+    .options {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .option {
+      width: 100%;
+      min-height: 58px;
+      padding: 14px 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel-solid);
+      color: var(--ink);
+      text-align: left;
+      cursor: pointer;
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+    }
+
+    .option:hover:not(:disabled) {
+      transform: translateY(-1px);
+      border-color: rgba(15, 118, 110, 0.55);
+      box-shadow: 0 10px 22px rgba(21, 32, 43, 0.1);
+    }
+
+    .option:focus-visible,
+    .primary:focus-visible,
+    .secondary:focus-visible {
+      outline: 3px solid rgba(15, 118, 110, 0.28);
+      outline-offset: 2px;
+    }
+
+    .option:disabled {
+      cursor: default;
+    }
+
+    .option.correct {
+      border-color: rgba(24, 121, 78, 0.72);
+      background: var(--green-bg);
+    }
+
+    .option.incorrect {
+      border-color: rgba(189, 48, 48, 0.72);
+      background: var(--red-bg);
+    }
+
+    .feedback {
+      display: none;
+      padding: 14px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.76);
+      line-height: 1.5;
+    }
+
+    .feedback.show {
+      display: block;
+    }
+
+    .feedback strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .feedback.correct strong {
+      color: var(--green);
+    }
+
+    .feedback.incorrect strong {
+      color: var(--red);
+    }
+
+    .actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 18px;
+    }
+
+    .primary,
+    .secondary {
+      min-height: 44px;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 0;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 160ms ease, opacity 160ms ease, box-shadow 160ms ease;
+    }
+
+    .primary {
+      color: #ffffff;
+      background: var(--navy);
+      box-shadow: 0 10px 20px rgba(33, 50, 67, 0.22);
+    }
+
+    .secondary {
+      color: var(--navy);
+      background: #eef4f4;
+      border: 1px solid #d7e1e1;
+    }
+
+    .primary:hover:not(:disabled),
+    .secondary:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .primary:disabled {
+      cursor: not-allowed;
+      opacity: 0.48;
+      box-shadow: none;
+    }
+
+    .metric {
+      padding: 12px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid var(--line);
+    }
+
+    .metric span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 750;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 1.22rem;
+    }
+
+    .result {
+      display: none;
+      text-align: center;
+      padding: 28px 20px;
+    }
+
+    .result.show {
+      display: block;
+    }
+
+    .result-score {
+      margin: 12px auto;
+      width: 148px;
+      height: 148px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      border: 10px solid rgba(15, 118, 110, 0.22);
+      background: #ffffff;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--teal);
+    }
+
+    .result h2 {
+      margin: 0;
+      font-size: 1.7rem;
+    }
+
+    .result p {
+      margin: 8px auto 18px;
+      max-width: 560px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    footer {
+      margin-top: 18px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      text-align: center;
+    }
+
+    @media (max-width: 820px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .side-card {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 560px) {
+      .page {
+        width: min(100% - 24px, 1040px);
+        padding: 18px 0;
+      }
+
+      h1 {
+        font-size: 1.62rem;
+      }
+
+      .card {
+        padding: 16px;
+      }
+
+      .topline {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .side-card {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        justify-content: stretch;
+      }
+
+      .primary,
+      .secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a href="index.html" style="display:inline-block;margin-bottom:18px;color:#5f6c76;text-decoration:none;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;">&larr; All quizzes</a>
+    <header class="hero">
+      <div class="badge">Aviation English RTF Quiz</div>
+      <h1>ICAO RTF Compliance Protocol</h1>
+      <p class="subtitle">Practice runway-safety phraseology, readback discipline, TORA communication, urgency calls, and abnormal-situation radio management based on the ASL86C / Belgrade Tower / Runway 30L incident analysis.</p>
+    </header>
+
+    <main class="shell">
+      <section class="card" aria-label="Quiz">
+        <div id="quiz-view">
+          <div class="topline">
+            <span id="counter">Question 1 of 20</span>
+            <span id="score-inline">Score 0</span>
+          </div>
+          <div class="progress-track" aria-label="Quiz progress">
+            <div id="progress" class="progress-fill"></div>
+          </div>
+          <h2 id="question-title" class="question-title"></h2>
+          <p id="question-text" class="question-text"></p>
+          <div id="options" class="options"></div>
+          <div id="feedback" class="feedback" role="status" aria-live="polite"></div>
+          <div class="actions">
+            <button id="next-button" class="primary" type="button" disabled>Next question</button>
+          </div>
+        </div>
+
+        <section id="result-view" class="result" aria-label="Quiz result">
+          <h2 id="result-heading">Result</h2>
+          <div id="result-score" class="result-score">0%</div>
+          <p id="result-details"></p>
+          <button id="restart-button" class="secondary" type="button">Restart quiz</button>
+        </section>
+      </section>
+
+      <aside class="side-card" aria-label="Quiz summary">
+        <div class="metric">
+          <span>Total questions</span>
+          <strong id="total-count">20</strong>
+        </div>
+        <div class="metric">
+          <span>Answered</span>
+          <strong id="answered-count">0</strong>
+        </div>
+        <div class="metric">
+          <span>Correct</span>
+          <strong id="correct-count">0</strong>
+        </div>
+      </aside>
+    </main>
+
+    <footer>Offline single-file quiz generated from the local ICAO RTF Compliance Protocol source.<br><a href="index.html" style="color:inherit;">&larr; All quizzes</a></footer>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        "title": "Initial Position Report",
+        "question": "Why is \"holding point D6, runway 30L, ready for departure\" safer than \"approaching D6, ready\"?",
+        "options": [
+          "It confirms the exact runway holding point and avoids uncertainty about whether the aircraft has reached D6.",
+          "It tells ATC that the aircraft has already entered the runway and is waiting for takeoff clearance.",
+          "It removes the need for ATC to issue a line-up clearance."
+        ],
+        "correct": 0,
+        "feedback": "Runway operations require precise position reporting. \"Approaching D6\" may mean the aircraft is not yet at the holding point, while \"holding point D6, runway 30L\" gives ATC a clear runway-safety picture."
+      },
+      {
+        "title": "Hold Short Readback",
+        "question": "What is the main problem with replying only \"Air Serbia 86C\" to a hold-short instruction?",
+        "options": [
+          "The callsign is too long for standard RTF.",
+          "It does not read back the safety-critical instruction or the runway designator.",
+          "It should include the aircraft type instead of the callsign."
+        ],
+        "correct": 1,
+        "feedback": "A hold-short instruction must be read back completely because it protects the runway. A callsign-only response does not confirm \"hold short\" or \"runway 30L.\""
+      },
+      {
+        "title": "Line-Up Clearance",
+        "question": "Which readback best matches the clearance \"line up and wait via D6, runway 30L\"?",
+        "options": [
+          "Line up and wait runway 30L via D6, Air Serbia 86C.",
+          "Air Serbia 86C, ready.",
+          "Runway 30L, cleared for takeoff, Air Serbia 86C."
+        ],
+        "correct": 0,
+        "feedback": "The readback must include the instruction, runway, and intersection. Reading back D6 is essential because the intersection defines available takeoff distance."
+      },
+      {
+        "title": "Wrong Intersection",
+        "question": "After ATC notices that the aircraft entered via D5 instead of D6, what should be the immediate communication priority?",
+        "options": [
+          "Ask the crew whether they are familiar with the airport layout.",
+          "Continue with other traffic because the aircraft is already on the runway.",
+          "Confirm the exact position and require a clear performance decision for D5."
+        ],
+        "correct": 2,
+        "feedback": "The operational issue is not familiarity; it is whether the aircraft can safely depart from D5. ATC should confirm position and ask whether performance permits departure from that intersection."
+      },
+      {
+        "title": "TORA Message",
+        "question": "Which version gives the safest TORA communication?",
+        "options": [
+          "TORA is 22, actually sorry, I assume that is not enough.",
+          "TORA from D5 is one thousand two hundred seventy-three meters. Confirm performance is sufficient.",
+          "The runway is shorter from there, but you can decide."
+        ],
+        "correct": 1,
+        "feedback": "Performance-related numbers must be clear, corrected formally if needed, and followed by an explicit confirmation request. \"I assume\" is too weak for a safety-critical exchange."
+      },
+      {
+        "title": "Crew Performance Check",
+        "question": "What should the crew say if they need time to verify whether D5 departure is safe?",
+        "options": [
+          "Stand by, calculating performance.",
+          "Probably okay from here.",
+          "We are familiar with the airport."
+        ],
+        "correct": 0,
+        "feedback": "\"Stand by, calculating performance\" makes the delay operational and clear. It tells ATC that the crew is not accepting the departure until the performance check is complete."
+      },
+      {
+        "title": "Unable Phraseology",
+        "question": "If performance from D5 is not confirmed or is insufficient, which response is most appropriate?",
+        "options": [
+          "We will try from D5.",
+          "Unable departure from D5. Request backtrack runway 30L to D6.",
+          "Maybe we need more runway."
+        ],
+        "correct": 1,
+        "feedback": "\"Unable\" is decisive and safety-focused. It clearly rejects an unsafe or unconfirmed clearance and gives ATC a specific corrective request."
+      },
+      {
+        "title": "Backtrack Option",
+        "question": "Why is \"Backtrack runway 30L to line up via D6 available\" better than \"If you need, you can commence backtrack\"?",
+        "options": [
+          "It is shorter, more operational, and avoids vague conversational wording.",
+          "It transfers performance responsibility from the crew to ATC.",
+          "It means the aircraft is already cleared for takeoff."
+        ],
+        "correct": 0,
+        "feedback": "The safer version uses direct operational language and identifies the available option. It does not rely on informal phrases such as \"call me\" or \"if you need.\""
+      },
+      {
+        "title": "Performance Responsibility",
+        "question": "Who must make the final operational decision that performance permits departure from D5?",
+        "options": [
+          "The cabin crew, because they can feel acceleration during takeoff.",
+          "ATC, because ATC gives takeoff clearance.",
+          "The flight crew, because aircraft performance acceptance is a pilot responsibility."
+        ],
+        "correct": 2,
+        "feedback": "ATC can provide TORA and request confirmation, but the flight crew must calculate and accept aircraft performance. The acceptance must be explicit, not implied."
+      },
+      {
+        "title": "Assumption Language",
+        "question": "Why is \"I assume that is not enough\" weak in an ATC transmission?",
+        "options": [
+          "It is speculative and does not require a clear operational confirmation.",
+          "It is too formal for radio communication.",
+          "It gives the crew an exact performance calculation."
+        ],
+        "correct": 0,
+        "feedback": "Safety-critical communication should not depend on assumptions. ATC should provide exact information and request a clear confirmation from the crew."
+      },
+      {
+        "title": "Abnormal Return",
+        "question": "What is the main problem with \"No, we have probably to go back\" after a possible impact and technical problem?",
+        "options": [
+          "It uses too many technical terms for ATC.",
+          "It is vague, grammatically weak, and does not declare urgency or a clear intention.",
+          "It is an official PAN PAN call."
+        ],
+        "correct": 1,
+        "feedback": "\"Probably\" weakens the message and gives ATC no clear operational picture. After impact or damage, the crew should state the problem and request immediate return with urgency phraseology if appropriate."
+      },
+      {
+        "title": "PAN PAN Use",
+        "question": "In the source protocol, why would PAN PAN be appropriate after takeoff?",
+        "options": [
+          "Because the aircraft had a suspected abnormal condition, struck ground equipment, and needed priority handling while still controllable.",
+          "Because every return to the airport must be declared MAYDAY.",
+          "Because PAN PAN is used only when radio reception is weak."
+        ],
+        "correct": 0,
+        "feedback": "PAN PAN signals urgency without necessarily declaring grave and imminent danger. A damaged aircraft with a slat problem and a need to return should receive priority handling."
+      },
+      {
+        "title": "Impact Wording",
+        "question": "Which phrase best communicates the seriousness of \"we touched something on the ground\"?",
+        "options": [
+          "We had a small contact with something.",
+          "We struck ground equipment after takeoff.",
+          "The ground touched us during departure."
+        ],
+        "correct": 1,
+        "feedback": "\"Struck ground equipment\" is specific and serious. \"Touched something\" sounds minor and does not clearly communicate possible aircraft damage."
+      },
+      {
+        "title": "Traffic Circuit",
+        "question": "After the abnormal report, which ATC instruction is more structured and useful?",
+        "options": [
+          "Do you want to join a traffic circuit?",
+          "Air Serbia 86C, roger. Join left-hand circuit runway 30L. You are number one. Report downwind.",
+          "Is everything OK?"
+        ],
+        "correct": 1,
+        "feedback": "In an abnormal situation, ATC should provide clear sequencing and instructions. The safer version gives runway, circuit direction, priority, and a reporting point."
+      },
+      {
+        "title": "Circuit Readback",
+        "question": "Why is \"Left hand circuit\" an incomplete readback?",
+        "options": [
+          "It does not include runway 30L or the aircraft callsign.",
+          "It includes too much information for ATC to process.",
+          "It should be replaced by \"wilco\" in all cases."
+        ],
+        "correct": 0,
+        "feedback": "A circuit instruction should be read back with the runway and callsign. \"Joining left-hand circuit runway 30L, Air Serbia 86C\" is clearer."
+      },
+      {
+        "title": "All-Stations Broadcast",
+        "question": "What is wrong with telling all stations to \"hold your position\" and also \"traffic on the runway, immediately vacate runway\" in one mixed message?",
+        "options": [
+          "It may be ambiguous because different aircraft groups need different instructions.",
+          "It is too short for emergency communication.",
+          "It gives every aircraft the same clear instruction."
+        ],
+        "correct": 0,
+        "feedback": "Broadcast instructions must identify who must hold and who must vacate. Different instructions should be addressed to different aircraft groups to avoid confusion."
+      },
+      {
+        "title": "Runway Exit Difference",
+        "question": "If ATC instructs an aircraft to vacate via D4 but the aircraft vacates via D5, what should the aircraft communicate?",
+        "options": [
+          "Nothing, because any runway exit is acceptable in an urgent situation.",
+          "Unable D4, vacating via D5.",
+          "Vacating somewhere, callsign."
+        ],
+        "correct": 1,
+        "feedback": "If an aircraft cannot comply with the instructed exit, it should say so clearly and state the actual action. This helps ATC maintain runway situational awareness."
+      },
+      {
+        "title": "Terrain Warning",
+        "question": "Which terrain warning is the most direct and operationally useful?",
+        "options": [
+          "Please climb due to a mountain on your left.",
+          "Maybe climb because terrain could be near you.",
+          "Climb immediately. Terrain on your left."
+        ],
+        "correct": 2,
+        "feedback": "A terrain warning must be direct, concise, and urgent. \"Climb immediately. Terrain on your left\" removes polite or indirect wording."
+      },
+      {
+        "title": "Terrain Response",
+        "question": "Which pilot response best replaces \"We have mountain in sight, we are climbing\"?",
+        "options": [
+          "Terrain in sight, climbing, Air Serbia 86C.",
+          "We see a mountain somewhere.",
+          "The mountain is probably not a problem."
+        ],
+        "correct": 0,
+        "feedback": "\"Terrain in sight\" is standard and concise. Adding \"climbing\" and the callsign confirms both visual awareness and action."
+      },
+      {
+        "title": "Main Safety Lesson",
+        "question": "Which statement best summarizes the core lesson of the protocol?",
+        "options": [
+          "Unclear language can reduce safety margins because it weakens readback, confirmation, and decision-making barriers.",
+          "Radio phraseology matters only after an emergency has been declared.",
+          "ATC should avoid asking about aircraft performance in all runway situations."
+        ],
+        "correct": 0,
+        "feedback": "The protocol shows that precise readback, explicit confirmation, and decisive words such as \"unable\" are safety barriers. When language is vague, a performance problem can continue instead of being stopped."
+      }
+    ];
+
+    const state = {
+      index: 0,
+      score: 0,
+      answered: false
+    };
+
+    const quizView = document.getElementById("quiz-view");
+    const resultView = document.getElementById("result-view");
+    const counter = document.getElementById("counter");
+    const scoreInline = document.getElementById("score-inline");
+    const progress = document.getElementById("progress");
+    const questionTitle = document.getElementById("question-title");
+    const questionText = document.getElementById("question-text");
+    const options = document.getElementById("options");
+    const feedback = document.getElementById("feedback");
+    const nextButton = document.getElementById("next-button");
+    const totalCount = document.getElementById("total-count");
+    const answeredCount = document.getElementById("answered-count");
+    const correctCount = document.getElementById("correct-count");
+    const resultHeading = document.getElementById("result-heading");
+    const resultScore = document.getElementById("result-score");
+    const resultDetails = document.getElementById("result-details");
+    const restartButton = document.getElementById("restart-button");
+
+    function renderQuestion() {
+      const current = quizData[state.index];
+      state.answered = false;
+
+      counter.textContent = `Question ${state.index + 1} of ${quizData.length}`;
+      scoreInline.textContent = `Score ${state.score}`;
+      progress.style.width = `${(state.index / quizData.length) * 100}%`;
+      questionTitle.textContent = current.title;
+      questionText.textContent = current.question;
+      options.innerHTML = "";
+      feedback.className = "feedback";
+      feedback.textContent = "";
+      nextButton.disabled = true;
+      nextButton.textContent = state.index === quizData.length - 1 ? "Show result" : "Next question";
+      answeredCount.textContent = String(state.index);
+      correctCount.textContent = String(state.score);
+
+      current.options.forEach((optionText, optionIndex) => {
+        const button = document.createElement("button");
+        button.className = "option";
+        button.type = "button";
+        button.textContent = optionText;
+        button.setAttribute("aria-label", `Answer option ${optionIndex + 1}`);
+        button.addEventListener("click", () => selectAnswer(optionIndex));
+        options.appendChild(button);
+      });
+    }
+
+    function selectAnswer(selectedIndex) {
+      if (state.answered) {
+        return;
+      }
+
+      const current = quizData[state.index];
+      const isCorrect = selectedIndex === current.correct;
+      state.answered = true;
+
+      if (isCorrect) {
+        state.score += 1;
+      }
+
+      Array.from(options.children).forEach((button, optionIndex) => {
+        button.disabled = true;
+        if (optionIndex === current.correct) {
+          button.classList.add("correct");
+        } else if (optionIndex === selectedIndex) {
+          button.classList.add("incorrect");
+        }
+      });
+
+      feedback.className = `feedback show ${isCorrect ? "correct" : "incorrect"}`;
+      feedback.innerHTML = `<strong>${isCorrect ? "Correct" : "Incorrect"}</strong>${current.feedback}`;
+      scoreInline.textContent = `Score ${state.score}`;
+      answeredCount.textContent = String(state.index + 1);
+      correctCount.textContent = String(state.score);
+      progress.style.width = `${((state.index + 1) / quizData.length) * 100}%`;
+      nextButton.disabled = false;
+      nextButton.focus();
+    }
+
+    function showResult() {
+      const percent = Math.round((state.score / quizData.length) * 100);
+      let message = "Review the protocol again and focus on readback discipline, TORA communication, urgency phraseology, and abnormal-situation radio management.";
+
+      if (percent >= 90) {
+        message = "Excellent result. You can identify safety-critical RTF weaknesses and select clearer ICAO-style alternatives.";
+      } else if (percent >= 70) {
+        message = "Good result. Review the weaker areas and keep practicing decisive operational phraseology.";
+      } else if (percent >= 50) {
+        message = "Keep practicing. Pay close attention to complete readbacks, explicit performance confirmation, and PAN PAN use.";
+      }
+
+      quizView.classList.add("hidden");
+      resultView.classList.add("show");
+      resultHeading.textContent = "Quiz complete";
+      resultScore.textContent = `${percent}%`;
+      resultDetails.textContent = `${state.score} correct answers out of ${quizData.length}. ${message}`;
+      progress.style.width = "100%";
+    }
+
+    function goNext() {
+      if (!state.answered) {
+        return;
+      }
+
+      if (state.index === quizData.length - 1) {
+        showResult();
+        return;
+      }
+
+      state.index += 1;
+      renderQuestion();
+    }
+
+    function restartQuiz() {
+      state.index = 0;
+      state.score = 0;
+      state.answered = false;
+      quizView.classList.remove("hidden");
+      resultView.classList.remove("show");
+      renderQuestion();
+    }
+
+    totalCount.textContent = String(quizData.length);
+    nextButton.addEventListener("click", goNext);
+    restartButton.addEventListener("click", restartQuiz);
+    renderQuestion();
+  </script>
+</body>
+</html>
