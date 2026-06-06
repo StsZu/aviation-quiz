@@ -2,3 +2,10 @@
 .claude/
 Quiz-1/
 Drafts/
+Pages/
+
+# Audacity projects and raw audio source folders (export MP3s only)
+*.aup3
+*.aup3-shm
+*.aup3-wal
+Flight_academy_trainer/Embraer E190 Takeoff Accident at Belgrade/
