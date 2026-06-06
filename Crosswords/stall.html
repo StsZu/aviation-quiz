@@ -678,6 +678,13 @@ td.cursor-cell::after {
 @media (max-width: 900px) { .grid-layout { grid-template-columns: 1fr; grid-template-rows: auto auto auto;
   grid-template-areas: "active" "grid" "list"; } .clues-panel { max-height: none; overflow: visible; } #active-clue { top: 8px; } }
 @media print { #active-clue { display: none; } }
+
+/* back-link to the quizzes index (added by build_html.py) */
+.back-nav { margin: 0 0 14px; }
+.back-nav a { color: var(--text-secondary); text-decoration: none; font-weight: 600; font-size: .9rem;
+  display: inline-flex; align-items: center; gap: 6px; }
+.back-nav a:hover { color: var(--accent-color); }
+@media print { .back-nav { display: none; } }
 </style>
 </head>
 <body data-theme="day">
@@ -694,8 +701,8 @@ td.cursor-cell::after {
 </header>
 
 <div class="page-container">
+  <nav class="back-nav"><a href="../index.html">&larr; All quizzes</a></nav>
   <main class="dashboard">
-    <nav style="margin-bottom: 14px;"><a href="../index.html" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">&larr; All quizzes</a></nav>
     <h1 style="font-size: 1.4rem; margin-bottom: 6px;">RECOGNITION AND RECOVERY</h1>
     <p style="margin: 0 0 20px 0; font-size: 0.95rem;">Practise the vocabulary by solving the crossword or training your typing speed.</p>
 
