@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="day">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EFB Training System - ICAO English Practice</title>
+    <style>
+        /* === COCKPIT CSS RESET & VARIABLE DESIGN SYSTEM === */
+        :root {
+            /* Daylight Flight Deck Operations Theme */
+            --bg-primary: #f1f5f9;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --bg-input: #f8fafc;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            
+            --efb-brand: #0284c7; /* Aviation Blue */
+            --efb-accent: #0f172a;
+            --efb-green: #10b981;
+            --efb-amber: #f59e0b;
+            --efb-red: #ef4444;
+            
+            --border-color: #cbd5e1;
+            --border-glow: transparent;
+            --glow-pulse: none;
+            
+            --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            --shadow-card: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            --shadow-active: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+        }
+
+        [data-theme="night"] {
+            /* Night Cockpit/CRT Display Operations Theme */
+            --bg-primary: #090d16;
+            --bg-secondary: #111827;
+            --bg-card: #1f2937;
+            --bg-input: #111827;
+            --text-primary: #38bdf8; /* Honeywell Cyan */
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            
+            --efb-brand: #0284c7;
+            --efb-accent: #34d399; /* Primary Green Alert */
+            --efb-green: #10b981;
+            --efb-amber: #fbbf24;
+            --efb-red: #f87171;
+            
+            --border-color: #374151;
+            --border-glow: 0 0 8px rgba(56, 189, 248, 0.2);
+            --glow-pulse: 0 0 10px rgba(56, 189, 248, 0.3);
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.5);
+            --shadow-active: 0 4px 25px rgba(56, 189, 248, 0.15);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--font-family);
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* === EFB TOP BAR INSTRUMENT STATUS === */
+        .efb-status-bar {
+            background-color: var(--bg-secondary);
+            border-bottom: 2px solid var(--border-color);
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            box-shadow: var(--shadow-card);
+            z-index: 50;
+        }
+
+        .efb-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--efb-brand);
+        }
+
+        .efb-logo svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+        .efb-indicators {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .indicator-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Rotary/Interactive Theme Switcher style */
+        .theme-control {
+            display: flex;
+            align-items: center;
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .theme-btn {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            border-radius: 15px;
+            border: none;
+            background: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .theme-btn.active {
+            background-color: var(--efb-brand);
+            color: #ffffff;
+        }
+
+        /* === MAIN LAYOUT WITH FLIGHT DECK NAVIGATION === */
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 16px;
+            gap: 16px;
+        }
+
+        /* Navigation CDU Tabs */
+        .efb-nav-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+            scrollbar-width: thin;
+        }
+
+        .efb-nav-tabs::-webkit-scrollbar {
+            height: 4px;
+        }
+
+        .nav-tab {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-tab:hover {
+            color: var(--efb-brand);
+            border-color: var(--efb-brand);
+        }
+
+        .nav-tab.active {
+            background-color: var(--efb-brand);
+            color: #ffffff !important;
+            border-color: var(--efb-brand);
+            box-shadow: var(--shadow-active);
+        }
+
+        .nav-tab svg {
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
+        }
+
+        /* === TAB CONTENT GROUPS === */
+        .tab-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* === REUSABLE CARD COMPONENTS === */
+        .efb-card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .efb-card:hover {
+            border-color: var(--text-primary);
+        }
+
+        .efb-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            margin-bottom: 20px;
+        }
+
+        .efb-card-title {
+            font-size: 1.25rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .efb-card-title svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            flex-shrink: 0;
+        }
+
+        .badge {
+            background-color: var(--efb-brand);
+            color: #ffffff;
+            font-size: 0.75rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .badge-warning {
+            background-color: var(--efb-amber);
+        }
+
+        .badge-danger {
+            background-color: var(--efb-red);
+        }
+
+        /* === HERO PANEL === */
+        .hero-panel {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 900px) {
+            .hero-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .incident-badge-panel {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        /* === DISPATCH BRIEFING SHEET === */
+        .dispatch-sheet {
+            border-left: 4px solid var(--efb-red);
+            padding-left: 16px;
+        }
+
+        .dispatch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+            background-color: var(--bg-primary);
+            padding: 16px;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+        }
+
+        .dispatch-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dispatch-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .dispatch-value {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        /* === VOCABULARY FLIP CARDS === */
+        .vocab-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .vocab-card {
+            perspective: 1000px;
+            height: 180px;
+            cursor: pointer;
+        }
+
+        .vocab-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .vocab-card.flipped .vocab-inner {
+            transform: rotateY(180deg);
+        }
+
+        .vocab-front, .vocab-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .vocab-front {
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+        }
+
+        .vocab-back {
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            transform: rotateY(180deg);
+            overflow-y: auto;
+        }
+
+        .vocab-term {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--efb-brand);
+            margin-bottom: 8px;
+        }
+
+        .vocab-meaning {
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .vocab-example {
+            font-size: 0.75rem;
+            font-style: italic;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 8px;
+            width: 100%;
+        }
+
+        .vocab-hint {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* === PATTERNS & STRUCTURES === */
+        .pattern-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .pattern-item {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 16px;
+            background-color: var(--bg-input);
+        }
+
+        .pattern-header {
+            font-weight: 800;
+            color: var(--efb-brand);
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+        }
+
+        .pattern-sub {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 8px;
+        }
+
+        .pattern-examples {
+            list-style: none;
+            padding-left: 0;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .pattern-examples li {
+            position: relative;
+            padding-left: 16px;
+        }
+
+        .pattern-examples li::before {
+            content: "➔";
+            position: absolute;
+            left: 0;
+            color: var(--efb-brand);
+        }
+
+        /* === SYSTEM CHECK / INTERACTIVE QUIZ === */
+        .system-quiz-item {
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .quiz-label {
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .quiz-select {
+            width: 100%;
+            max-width: 300px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-input);
+            color: var(--text-primary);
+            font-weight: 700;
+        }
+
+        .quiz-select:focus {
+            outline: 2px solid var(--efb-brand);
+        }
+
+        .quiz-btn {
+            background-color: var(--efb-brand);
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .quiz-btn:hover {
+            opacity: 0.9;
+        }
+
+        .quiz-feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            display: none;
+            font-weight: 700;
+        }
+
+        .quiz-feedback.success {
+            background-color: rgba(16, 185, 129, 0.15);
+            color: var(--efb-green);
+            border: 1px solid var(--efb-green);
+        }
+
+        .quiz-feedback.error {
+            background-color: rgba(239, 68, 68, 0.15);
+            color: var(--efb-red);
+            border: 1px solid var(--efb-red);
+        }
+
+        /* === PHRASE TRANSFORMER === */
+        .transformer-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        .transformer-card {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-input);
+            overflow: hidden;
+        }
+
+        .transformer-header {
+            background-color: var(--bg-secondary);
+            padding: 12px;
+            font-weight: 800;
+            font-size: 0.85rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .transformer-body {
+            padding: 16px;
+        }
+
+        .transformer-textarea {
+            width: 100%;
+            height: 80px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            padding: 10px;
+            font-size: 0.9rem;
+            resize: none;
+            margin-bottom: 10px;
+        }
+
+        .transformer-textarea:focus {
+            outline: 2px solid var(--efb-brand);
+        }
+
+        .transformer-model {
+            display: none;
+            background-color: rgba(2, 132, 199, 0.1);
+            border: 1px solid var(--efb-brand);
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            margin-top: 10px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* === COLLAPSIBLE ACCORDIONS === */
+        .accordion {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .accordion-trigger {
+            background-color: var(--bg-secondary);
+            width: 100%;
+            text-align: left;
+            padding: 16px;
+            font-weight: 800;
+            font-size: 0.95rem;
+            border: none;
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-trigger:hover {
+            background-color: var(--bg-primary);
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 16px;
+            background-color: var(--bg-input);
+            border-top: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .accordion.open .accordion-content {
+            display: block;
+        }
+
+        .accordion-icon {
+            transition: transform 0.2s ease;
+        }
+
+        .accordion.open .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* === ROLE PLAY SIMULATOR === */
+        .role-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .role-btn {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .role-btn.active {
+            background-color: var(--efb-brand);
+            color: #ffffff;
+            border-color: var(--efb-brand);
+        }
+
+        .chat-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .chat-bubble {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .chat-bubble.captain {
+            align-self: flex-start;
+            background-color: var(--bg-primary);
+            border-bottom-left-radius: 2px;
+            border-left: 4px solid var(--efb-brand);
+        }
+
+        .chat-bubble.fo {
+            align-self: flex-end;
+            background-color: var(--bg-input);
+            border-bottom-right-radius: 2px;
+            border-right: 4px solid var(--efb-amber);
+            text-align: right;
+        }
+
+        .bubble-role {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        /* Highlight role study state */
+        .role-active-captain .chat-bubble.captain {
+            outline: 2px solid var(--efb-brand);
+            box-shadow: var(--shadow-active);
+        }
+
+        .role-active-fo .chat-bubble.fo {
+            outline: 2px solid var(--efb-amber);
+            box-shadow: var(--shadow-active);
+        }
+
+        /* === 60-SECOND SUMMARY DRILL DRILL TIMER === */
+        .summary-drill-panel {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .summary-drill-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .timer-module {
+            background-color: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .timer-display {
+            font-family: monospace;
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--efb-amber);
+            margin: 12px 0;
+            text-shadow: var(--glow);
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            width: 100%;
+        }
+
+        .timer-btn {
+            flex: 1;
+            padding: 8px;
+            border-radius: 6px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .timer-btn.start {
+            background-color: var(--efb-green);
+            color: white;
+        }
+
+        .timer-btn.reset {
+            background-color: var(--text-muted);
+            color: white;
+        }
+
+        .keywords-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .keyword-chip {
+            background-color: var(--bg-primary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .keyword-chip.checked {
+            background-color: var(--efb-green);
+            color: #ffffff;
+            border-color: var(--efb-green);
+        }
+
+        /* === EMERGENCY COMMUNICATION INTERACTIVE VERIFIER === */
+        .emergency-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .checklist-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--bg-input);
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .checklist-item.verified {
+            border-color: var(--efb-green);
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--efb-green);
+        }
+
+        .checklist-item input {
+            cursor: pointer;
+        }
+
+        /* === ERROR SYSTEM DETECTOR === */
+        .error-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        .error-table th, .error-table td {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            text-align: left;
+        }
+
+        .error-table th {
+            background-color: var(--bg-input);
+            font-weight: 800;
+        }
+
+        .error-table tr:hover {
+            background-color: var(--bg-input);
+        }
+
+        .error-input {
+            width: 100%;
+            padding: 6px 10px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 0.85rem;
+        }
+
+        .error-input.verified-ok {
+            border-color: var(--efb-green);
+            background-color: rgba(16, 185, 129, 0.1);
+        }
+
+        /* === FINAL EXAM TASK === */
+        .exam-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .exam-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Common spacing */
+        p, li {
+            margin-bottom: 8px;
+        }
+        
+        strong {
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+
+    <a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(15,23,42,0.85);color:#fff;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.25);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);">&larr; All quizzes</a>
+
+    <!-- === EFB STATUS BAR === -->
+    <div class="efb-status-bar">
+        <div class="efb-logo">
+            <svg viewBox="0 0 24 24">
+                <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+            <span>EFB PRO FLIGHT INSTRUCTOR [EMB-E190-STUDY]</span>
+        </div>
+        <div class="efb-indicators">
+            <div class="indicator-item">
+                <span>DATABASE: </span>
+                <span class="badge" style="background-color: var(--efb-green);">ACTIVE</span>
+            </div>
+            <div class="indicator-item">
+                <span>UTC CLOCK: </span>
+                <span id="utc-clock">00:00:00 Z</span>
+            </div>
+            <div class="theme-control" onclick="toggleTheme(event)">
+                <button class="theme-btn" id="day-btn">DAYLIGHT</button>
+                <button class="theme-btn" id="night-btn">NIGHT OPS</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === MAIN WORKSPACE === -->
+    <div class="main-container">
+        
+        <!-- Flight Deck Navigation Display Tabs -->
+        <div class="efb-nav-tabs">
+            <button class="nav-tab active" onclick="switchTab(this, 'briefing-tab')">
+                <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                FLT PLAN & DISPATCH
+            </button>
+            <button class="nav-tab" onclick="switchTab(this, 'practice-tab')">
+                <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                SYSTEM PERFORMANCE (SYSTEMS)
+            </button>
+            <button class="nav-tab" onclick="switchTab(this, 'tasks-tab')">
+                <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM6 9h12v2H6V9zm8 5H6v-2h8v2zm4-6H6V6h12v2z"/></svg>
+                COMMUNICATIONS (ATC TASKS)
+            </button>
+            <button class="nav-tab" onclick="switchTab(this, 'debrief-tab')">
+                <svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+                DEBRIEF / CHECKLISTS
+            </button>
+        </div>
+
+        <!-- ======================= TAB 1: BRIEFING ======================= -->
+        <div id="briefing-tab" class="tab-panel active">
+            
+            <div class="hero-panel">
+                <!-- Course Introduction -->
+                <div class="efb-card">
+                    <div class="efb-card-header">
+                        <div class="efb-card-title">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                            COURSE PROFILE: EMBRAER E190 TAKEOFF ACCIDENT AT BELGRADE
+                        </div>
+                        <span class="badge">ICAO LEVEL 4–5</span>
+                    </div>
+                    <p>Welcome to the ICAO Flight Safety interactive module. This training system helps pilots and air traffic controllers master aviation communication, incident description, and decision-making logic through the critical lens of the real-world Embraer E190 accident in Belgrade (2024).</p>
+                    
+                    <div class="incident-badge-panel">
+                        <span class="badge" style="background-color: var(--text-muted)">Focus: Speaking & Cause Analysis</span>
+                        <span class="badge" style="background-color: var(--text-muted)">Vocabulary: Runway Parameters</span>
+                        <span class="badge" style="background-color: var(--text-muted)">Skills: Explaining CRM Errors</span>
+                    </div>
+                </div>
+
+                <!-- Learning Outcomes Checklist -->
+                <div class="efb-card" style="border-left: 4px solid var(--efb-brand);">
+                    <div class="efb-card-header">
+                        <div class="efb-card-title">LEARNING OUTCOMES</div>
+                    </div>
+                    <ul style="list-style: none; padding-left: 0; font-size: 0.9rem;">
+                        <li style="display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px;">
+                            <input type="checkbox" checked disabled>
+                            <span>Describe a takeoff performance accident clearly</span>
+                        </li>
+                        <li style="display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px;">
+                            <input type="checkbox" checked disabled>
+                            <span>Explain immediate & contributing cause parameters</span>
+                        </li>
+                        <li style="display: flex; gap: 8px; align-items: flex-start; margin-bottom: 10px;">
+                            <input type="checkbox" checked disabled>
+                            <span>Deploy complex aviation safety terms under stress</span>
+                        </li>
+                        <li style="display: flex; gap: 8px; align-items: flex-start;">
+                            <input type="checkbox" checked disabled>
+                            <span>Synthesize CRM lessons in professional standard answers</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Case Summary Panel Styled as Dispatch Release / Incident Briefing -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M13 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V9l-7-7zm0 1.5L18.5 9H13V3.5zM6 20V4h6v6h6v10H6z"/></svg>
+                        OFFICIAL DISPATCH BRIEFING SHEET
+                    </div>
+                    <span class="badge badge-danger">INCIDENT DOSSIER</span>
+                </div>
+                <div class="dispatch-sheet">
+                    <p>On <strong>February 18, 2024</strong>, an Embraer E190-200LR operated by Marathon Airlines for Air Serbia was involved in a serious takeoff performance accident at Nikola Tesla Aerodrome (LYBE) in Belgrade, Serbia.</p>
+                    
+                    <div class="dispatch-grid">
+                        <div class="dispatch-item">
+                            <span class="dispatch-label">AIRCRAFT TYPE</span>
+                            <span class="dispatch-value">Embraer E190-200LR</span>
+                        </div>
+                        <div class="dispatch-item">
+                            <span class="dispatch-label">REGISTRATION</span>
+                            <span class="dispatch-value">OY-GDC</span>
+                        </div>
+                        <div class="dispatch-item">
+                            <span class="dispatch-label">ATTEMPTED RUNWAY INT.</span>
+                            <span class="dispatch-value">Intersection D5 (Wrong)</span>
+                        </div>
+                        <div class="dispatch-item">
+                            <span class="dispatch-label">EXPECTED RUNWAY INT.</span>
+                            <span class="dispatch-value">Intersection D6 (Correct)</span>
+                        </div>
+                        <div class="dispatch-item">
+                            <span class="dispatch-label">TORA AVAILABLE (D5)</span>
+                            <span class="dispatch-value" style="color: var(--efb-red);">1,273 Meters</span>
+                        </div>
+                        <div class="dispatch-item">
+                            <span class="dispatch-label">TORA REQUIRED</span>
+                            <span class="dispatch-value" style="color: var(--efb-green);">1,440 Meters</span>
+                        </div>
+                    </div>
+
+                    <p style="margin-top: 16px;"><strong>Accident Dynamics:</strong> The aircraft mistakenly initiated the takeoff roll from runway intersection <strong>D5</strong> instead of <strong>D6</strong>. As a result, the crew began takeoff with only <strong>1,273 meters</strong> of Runway TORA, which was 167 meters less than safety margins dictated.</p>
+                    <p>During takeoff roll, the cockpit crew realized they were approaching the end of the runway. Despite this, the captain <strong>failed to select maximum takeoff thrust (TOGA)</strong>, continuing instead with reduced FLEX thrust. The aircraft crossed the runway boundary, struck airport ground equipment (including the <strong>ILS Far Field Monitor antenna</strong>), sustaining extreme structural damage, but managed to return for an emergency landing. There were no injuries.</p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Cards Section -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H8V4h12v12z"/></svg>
+                        KEY AVIATION VOCABULARY [EFB CARD DECKS]
+                    </div>
+                    <span class="badge" style="background-color: var(--efb-brand);">FLIP ACTIVE</span>
+                </div>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 12px;">Interactive Flashcards. Click on any card to flip and review its standard technical explanation and usage examples.</p>
+                
+                <div class="vocab-grid">
+                    <!-- Vocab Card 1 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">Takeoff Roll</div>
+                                <div class="vocab-hint">Tap to study definitions</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">The movement of the aircraft along the runway during takeoff prior to lift-off.</div>
+                                <div class="vocab-example">"During the takeoff roll, the crew noticed the runway end was approaching."</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Card 2 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">Runway Intersection</div>
+                                <div class="vocab-hint">Tap to study definitions</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">A location where an aircraft enters the runway from a specific taxiway intersection.</div>
+                                <div class="vocab-example">"The crew entered the runway at the wrong intersection."</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Card 3 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">TORA</div>
+                                <div class="vocab-hint">Takeoff Run Available</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">The length of runway declared available and suitable for the ground run of an aeroplane taking off.</div>
+                                <div class="vocab-example">"Only 1,273 meters of TORA were available from D5."</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Card 4 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">FMS</div>
+                                <div class="vocab-hint">Flight Management System</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">A specialized computer system that automates a wide variety of in-flight tasks, including performance calculations.</div>
+                                <div class="vocab-example">"The captain failed to update the FMS correctly."</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Card 5 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">Flap Setting</div>
+                                <div class="vocab-hint">Tap to study definitions</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">The selected position of the wing flaps, adjusting lift and drag parameters for performance.</div>
+                                <div class="vocab-example">"The flap setting remained at FLAPS 1 instead of FLAPS 4."</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Card 6 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">TOGA</div>
+                                <div class="vocab-hint">Takeoff/Go-Around Thrust</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">A cockpit thrust setting that commands maximum emergency/takeoff engine power.</div>
+                                <div class="vocab-example">"The crew did not select TOGA thrust."</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Card 7 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">FLEX Thrust</div>
+                                <div class="vocab-hint">Reduced Takeoff Thrust</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">A method of takeoff thrust reduction used to save engine life and reduce noise.</div>
+                                <div class="vocab-example">"The captain continued with FLEX thrust instead of maximum thrust."</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Card 8 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">CRM</div>
+                                <div class="vocab-hint">Crew Resource Management</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">A cockpit system of management designed to optimize the safe and efficient use of all available resources.</div>
+                                <div class="vocab-example">"Poor CRM contributed to the accident."</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vocab Card 9 -->
+                    <div class="vocab-card" onclick="flipCard(this)">
+                        <div class="vocab-inner">
+                            <div class="vocab-front">
+                                <div class="vocab-term">Situational Awareness</div>
+                                <div class="vocab-hint">Tap to study definitions</div>
+                            </div>
+                            <div class="vocab-back">
+                                <div class="vocab-meaning">The perception of environmental elements and events with respect to time or space.</div>
+                                <div class="vocab-example">"The crew lost situational awareness during taxiing."</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= TAB 2: PRACTICE ======================= -->
+        <div id="practice-tab" class="tab-panel">
+            
+            <!-- Useful Speaking Patterns -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+                        FLIGHT PHRASEOLOGY REFERENCE PATTERNS
+                    </div>
+                </div>
+                
+                <div class="pattern-list">
+                    <div class="pattern-item">
+                        <div class="pattern-header">Describing the event</div>
+                        <div class="pattern-sub">Formulate a clear chronological narrative.</div>
+                        <ul class="pattern-examples">
+                            <li>The incident occurred during takeoff.</li>
+                            <li>The aircraft was operating a scheduled passenger flight.</li>
+                            <li>The crew attempted to take off from the wrong runway intersection.</li>
+                            <li>The available runway distance was not sufficient.</li>
+                            <li>The aircraft struck ground equipment after failing to climb properly.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pattern-item">
+                        <div class="pattern-header">Explaining causes</div>
+                        <div class="pattern-sub">Differentiate between causal factors.</div>
+                        <ul class="pattern-examples">
+                            <li>The immediate cause was...</li>
+                            <li>One contributing factor was...</li>
+                            <li>The accident was caused by a combination of...</li>
+                            <li>Poor communication between the pilots contributed to the situation.</li>
+                            <li>The crew failed to verify the runway data.</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="pattern-item">
+                        <div class="pattern-header">Explaining consequences</div>
+                        <div class="pattern-sub">Explain structural or operational damage cleanly.</div>
+                        <ul class="pattern-examples">
+                            <li>As a result, the aircraft sustained significant damage.</li>
+                            <li>Fortunately, there were no injuries.</li>
+                            <li>The airport infrastructure was also damaged.</li>
+                            <li>The ILS system was degraded after the impact.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grammar Focus & Interactive Quiz -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.53c-.26-.81-1-1.4-1.9-1.4h-1v-3c0-.55-.45-1-1-1h-6v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                        GRAMMAR FOCUS: PAST SIMPLE VS PRESENT PERFECT
+                    </div>
+                    <span class="badge badge-warning">COCKPIT EVALUATION</span>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
+                    <div style="background-color: var(--bg-input); padding: 16px; border-radius: 8px;">
+                        <h4 style="color: var(--efb-red); font-weight: 800; margin-bottom: 8px;">PAST SIMPLE: Incident Sequence</h4>
+                        <p style="font-size: 0.85rem;">Use Past Simple to narrate completed historical actions in the chain of events.</p>
+                        <p style="font-size: 0.85rem; font-style: italic; color: var(--text-muted);">"The crew <strong>entered</strong> the runway at D5. The aircraft <strong>struck</strong> the antenna."</p>
+                    </div>
+                    <div style="background-color: var(--bg-input); padding: 16px; border-radius: 8px;">
+                        <h4 style="color: var(--efb-green); font-weight: 800; margin-bottom: 8px;">PRESENT PERFECT: Lessons Learned</h4>
+                        <p style="font-size: 0.85rem;">Use Present Perfect to describe actions that relate to the current safety state or ongoing systemic changes.</p>
+                        <p style="font-size: 0.85rem; font-style: italic; color: var(--text-muted);">"The accident <strong>has shown</strong> the critical importance of CRM."</p>
+                    </div>
+                </div>
+
+                <!-- Interactive Quiz Block -->
+                <div style="border-top: 1px solid var(--border-color); padding-top: 20px;">
+                    <h3 style="margin-bottom: 12px; font-weight: 800; font-size: 1rem;">INTEGRATED GRAMMAR SELF-CHECK</h3>
+                    
+                    <div class="system-quiz-item">
+                        <span class="quiz-label">1. The crew ________ the runway at the wrong intersection.</span>
+                        <select id="q1" class="quiz-select">
+                            <option value="">-- Choose verb form --</option>
+                            <option value="entered">entered</option>
+                            <option value="has entered">has entered</option>
+                        </select>
+                        <div id="q1-feed" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="system-quiz-item">
+                        <span class="quiz-label">2. The aircraft ________ ground equipment during takeoff.</span>
+                        <select id="q2" class="quiz-select">
+                            <option value="">-- Choose verb form --</option>
+                            <option value="struck">struck</option>
+                            <option value="has struck">has struck</option>
+                        </select>
+                        <div id="q2-feed" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="system-quiz-item">
+                        <span class="quiz-label">3. The accident ________ shown the importance of runway verification.</span>
+                        <select id="q3" class="quiz-select">
+                            <option value="">-- Choose aux form --</option>
+                            <option value="did">did</option>
+                            <option value="has">has</option>
+                        </select>
+                        <div id="q3-feed" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="system-quiz-item">
+                        <span class="quiz-label">4. The investigation ________ identified problems with CRM.</span>
+                        <select id="q4" class="quiz-select">
+                            <option value="">-- Choose aux form --</option>
+                            <option value="did">did</option>
+                            <option value="has">has</option>
+                        </select>
+                        <div id="q4-feed" class="quiz-feedback"></div>
+                    </div>
+
+                    <div class="system-quiz-item">
+                        <span class="quiz-label">5. The captain ________ not select TOGA thrust.</span>
+                        <select id="q5" class="quiz-select">
+                            <option value="">-- Choose aux form --</option>
+                            <option value="did">did</option>
+                            <option value="has">has</option>
+                        </select>
+                        <div id="q5-feed" class="quiz-feedback"></div>
+                    </div>
+
+                    <button class="quiz-btn" onclick="checkQuiz()">VET VERB SYSTEMS</button>
+                </div>
+            </div>
+
+            <!-- Aviation Phrase Practice (Interactive rewriting card) -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M21 15v4c0 1.1-.9 2-2 2H5c-1.1 0-2-.9-2-2v-4h2v4h14v-4h2zM12 16l4-4-1.41-1.41L13 12.17V4h-2v8.17L9.41 10.59 8 12l4 4z"/></svg>
+                        AVIATION PHRASE TRANSFORMER [SIMPLE ➔ ICAO PHRASEOLOGY]
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; margin-bottom: 16px;">Transform standard conversational phrases into clear, professional ICAO-style safety communications. Type your try and hit "TRANSFORM" to check.</p>
+                
+                <div class="transformer-grid">
+                    <!-- Task 1 -->
+                    <div class="transformer-card">
+                        <div class="transformer-header">
+                            <span>SITUATION 1: "The runway was too short."</span>
+                            <span class="badge">PERFORMANCE SPEC</span>
+                        </div>
+                        <div class="transformer-body">
+                            <textarea class="transformer-textarea" placeholder="Type your professional translation..."></textarea>
+                            <button class="quiz-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="revealBenchmark(this)">TRANSFORM</button>
+                            <div class="transformer-model">
+                                <strong>Professional Benchmark:</strong> The available takeoff distance was insufficient for the aircraft’s weight and configuration.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 2 -->
+                    <div class="transformer-card">
+                        <div class="transformer-header">
+                            <span>SITUATION 2: "The captain made a bad decision."</span>
+                            <span class="badge">CRM BREACH</span>
+                        </div>
+                        <div class="transformer-body">
+                            <textarea class="transformer-textarea" placeholder="Type your professional translation..."></textarea>
+                            <button class="quiz-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="revealBenchmark(this)">TRANSFORM</button>
+                            <div class="transformer-model">
+                                <strong>Professional Benchmark:</strong> The captain continued the takeoff roll despite an unsafe performance situation.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Task 3 -->
+                    <div class="transformer-card">
+                        <div class="transformer-header">
+                            <span>SITUATION 3: "The first officer did not say anything."</span>
+                            <span class="badge">CRM FAILURE</span>
+                        </div>
+                        <div class="transformer-body">
+                            <textarea class="transformer-textarea" placeholder="Type your professional translation..."></textarea>
+                            <button class="quiz-btn" style="padding: 6px 12px; font-size: 0.8rem;" onclick="revealBenchmark(this)">TRANSFORM</button>
+                            <div class="transformer-model">
+                                <strong>Professional Benchmark:</strong> The first officer failed to challenge the captain’s decision effectively.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= TAB 3: COMMUNICATIONS ======================= -->
+        <div id="tasks-tab" class="tab-panel">
+            
+            <!-- ICAO Speaking Task 1 -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z"/></svg>
+                        ICAO EXAM TASK 1: INCIDENT OVERVIEW
+                    </div>
+                </div>
+                <p style="margin-bottom: 16px;">Prepare a structured response describing the incident. Structure your speech using the system checklist below:</p>
+                
+                <div style="background-color: var(--bg-input); padding: 16px; border-radius: 8px; margin-bottom: 20px;">
+                    <ul style="padding-left: 20px; font-size: 0.85rem;">
+                        <li><strong>What?</strong> Type of accident & critical performance factors</li>
+                        <li><strong>Where & When?</strong> Location coordinates, exact weather or date factors</li>
+                        <li><strong>Causes?</strong> Split into direct crew errors and FMS mismatches</li>
+                        <li><strong>Consequences?</strong> Damage to infrastructure and fuselage</li>
+                    </ul>
+                </div>
+
+                <div class="accordion">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <span>REVEAL MODEL TRANSMISSION</span>
+                        <svg class="accordion-icon" width="24" height="24" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <p>The accident happened on February 18, 2024, at Nikola Tesla Aerodrome in Belgrade. An Embraer E190 attempted to take off from the wrong runway intersection. The crew planned to use intersection D6, but they entered the runway at D5.</p>
+                        <p>The main problem was that the available takeoff distance from D5 was too short. The aircraft needed at least 1,440 meters, but only 1,273 meters were available. The crew also failed to update the FMS correctly, and the aircraft used an incorrect flap setting and reduced thrust.</p>
+                        <p>During the takeoff roll, the crew realized that the runway end was approaching, but they did not apply maximum thrust. The aircraft failed to climb properly and struck ground equipment. Fortunately, nobody was injured, but the aircraft and airport infrastructure were badly damaged. This case shows that runway verification, proper briefing, and strong crew resource management are essential for flight safety.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ICAO Speaking Task 2 -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M21 6h-2v9H6v2c0 .55.45 1 1 1h11l4 4V7c0-.55-.45-1-1-1zm-4 6V3c0-.55-.45-1-1-1H3c-.55 0-1 .45-1 1v14l4-4h10c.55 0 1-.45 1-1z"/></svg>
+                        ICAO EXAM TASK 2: TARGETED INTERROGATION Q&A
+                    </div>
+                </div>
+                
+                <!-- Q1 -->
+                <div class="accordion">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <span>QUESTION 1: Why was the runway distance important in this accident?</span>
+                        <svg class="accordion-icon" width="24" height="24" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <strong>Model Answer:</strong> The runway distance was critical because the aircraft did not have enough space to take off safely. From intersection D5, only 1,273 meters of TORA were available. However, the aircraft required at least 1,440 meters for its actual weight and configuration. This created a dangerous situation because the aircraft could not accelerate and climb normally. In aviation, runway length is not flexible; it is a hard safety limit.
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="accordion">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <span>QUESTION 2: What role did Crew Resource Management play in this accident?</span>
+                        <svg class="accordion-icon" width="24" height="24" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <strong>Model Answer:</strong> Crew Resource Management played a major role in this accident. The captain made unsafe decisions, but the first officer did not challenge them strongly enough. Communication between the pilots was not effective, and standard procedures were not followed. In a safe cockpit, both pilots must monitor each other and speak up when something is wrong. This accident shows that CRM is not just theory; it can prevent real accidents.
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="accordion">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <span>QUESTION 3: Why is FMS verification important before takeoff?</span>
+                        <svg class="accordion-icon" width="24" height="24" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <strong>Model Answer:</strong> FMS verification is important because the aircraft must be configured according to the correct runway, weight, thrust, and flap settings. If the FMS contains incorrect data, the crew may believe the takeoff is safe when it is not. In this case, the captain changed some data but did not properly update the FMS configuration. This created a mismatch between the required performance and the actual aircraft configuration. Before takeoff, pilots must make sure that the FMS agrees with the real situation.
+                    </div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="accordion">
+                    <button class="accordion-trigger" onclick="toggleAccordion(this)">
+                        <span>QUESTION 4: What should the crew have done after realizing they were at the wrong intersection?</span>
+                        <svg class="accordion-icon" width="24" height="24" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <strong>Model Answer:</strong> The safest option would have been to stop and clarify the situation with air traffic control. The crew should have recalculated the performance carefully and verified the runway data, FMS, thrust setting, and flap setting. They should not have rushed the decision. If there was any doubt about the available runway distance, they should have rejected the takeoff plan and requested repositioning. In aviation, taking extra time is much safer than continuing with uncertain data.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Cockpit Roleplay -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5s-3 1.34-3 3 1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5 5 3.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                        COCKPIT ROLE-PLAY: CRM CHALLENGE INTERFACE
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; margin-bottom: 12px;">The aircraft has entered the runway at intersection D5 instead of D6. Select your practice role below to highlight your dialogue segment and practice speaking out loud.</p>
+                
+                <div class="role-selector">
+                    <button class="role-btn" id="cap-role-btn" onclick="setRole('captain')">PRACTICE CAPTAIN LOGIC</button>
+                    <button class="role-btn" id="fo-role-btn" onclick="setRole('fo')">PRACTICE FIRST OFFICER CHALLENGE</button>
+                </div>
+
+                <div class="chat-flow" id="chat-flow-container">
+                    <div class="chat-bubble captain">
+                        <div class="bubble-role">Captain [Decision-maker]</div>
+                        <div>"I think we can still make it from D5. The calculations look acceptable. We do not need to delay the departure."</div>
+                    </div>
+
+                    <div class="chat-bubble fo">
+                        <div class="bubble-role">First Officer [Challenge agent]</div>
+                        <div>"Captain, I am not comfortable with this option. The available distance from intersection D5 is only 1,273 meters, which is insufficient for our current configuration."</div>
+                    </div>
+
+                    <div class="chat-bubble captain">
+                        <div class="bubble-role">Captain [Decision-maker]</div>
+                        <div>"We'll adjust standard calculations. Let's line up and continue takeoff roll with the current flap config."</div>
+                    </div>
+
+                    <div class="chat-bubble fo">
+                        <div class="bubble-role">First Officer [Challenge agent]</div>
+                        <div>"I recommend we reject this takeoff plan immediately and request repositioning from ATC. We must verify our FMS inputs."</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ======================= TAB 4: CHECKLISTS & DEBRIEF ======================= -->
+        <div id="debrief-tab" class="tab-panel">
+            
+            <!-- Emergency Communication Practice (With Checklist Verification) -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+                        EMERGENCY RADIO COMMUNICATION COMPLIANCE VERIFIER
+                    </div>
+                    <span class="badge badge-danger">MAYDAY SIM</span>
+                </div>
+                <p style="font-size: 0.9rem; margin-bottom: 16px;">The aircraft has hit the ILS antenna, suffered wing tearing, and possible fuel leakage. Practice delivering the Emergency Transmission. Click items to self-verify compliance before transmission:</p>
+                
+                <div class="checklist-grid">
+                    <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                        <input type="checkbox">
+                        <span>1. Callsign Entered</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                        <input type="checkbox">
+                        <span>2. Emergency State Declared</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                        <input type="checkbox">
+                        <span>3. Position Updated</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                        <input type="checkbox">
+                        <span>4. Direct Intentions</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                        <input type="checkbox">
+                        <span>5. Souls On Board</span>
+                    </div>
+                    <div class="checklist-item" onclick="toggleChecklistItem(this)">
+                        <input type="checkbox">
+                        <span>6. Damage/Fuel Status</span>
+                    </div>
+                </div>
+
+                <div style="background-color: var(--bg-input); padding: 16px; border-radius: 8px;">
+                    <strong style="display: block; margin-bottom: 8px; font-size: 0.85rem; color: var(--efb-red);">STANDARD ATC VERBAL MODEL MESSAGE:</strong>
+                    <p style="font-family: monospace; font-size: 0.9rem; line-height: 1.4; color: var(--text-primary);">
+                        "MAYDAY, MAYDAY, MAYDAY, Air Serbia 324. We have struck ground equipment during takeoff from runway 30L. We are airborne but have possible structural damage and fuel leakage. Request immediate return to Belgrade and emergency services on standby. We have 111 persons on board."
+                    </p>
+                </div>
+            </div>
+
+            <!-- 60-Second Keyword Drill with Interactive Cross-Off & Stopwatch -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                        60-SECOND INCIDENT SUMMARY TRAINING
+                    </div>
+                    <span class="badge">STOPWATCH DRILLED</span>
+                </div>
+                <p style="font-size: 0.9rem; margin-bottom: 16px;">Practice summarizing the Belgrade Embraer takeoff crash in exactly 60 seconds. Start the simulator timer and click the aviation target keywords to "arm" or cross them off your training list as you speak.</p>
+                
+                <div class="summary-drill-panel">
+                    <!-- Dynamic Timer Module -->
+                    <div class="timer-module">
+                        <span class="dispatch-label">DRILL CHRONOMETER</span>
+                        <div class="timer-display" id="drill-timer">60.0</div>
+                        <div class="timer-controls">
+                            <button class="timer-btn start" id="start-btn" onclick="toggleDrillTimer()">START</button>
+                            <button class="timer-btn reset" onclick="resetDrillTimer()">RESET</button>
+                        </div>
+                    </div>
+
+                    <!-- Target Vocabulary List with dynamic states -->
+                    <div>
+                        <span class="dispatch-label" style="display: block; margin-bottom: 8px;">TARGET KEYWORDS (CLICK AS YOU SPELL/UTTER):</span>
+                        <div class="keywords-grid">
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">takeoff</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">wrong intersection</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">insufficient runway</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">FMS</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">flap setting</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">reduced thrust</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">CRM</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">no injuries</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">aircraft damage</div>
+                            <div class="keyword-chip" onclick="toggleKeyword(this)">safety lesson</div>
+                        </div>
+
+                        <div style="margin-top: 16px; font-size: 0.85rem; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                            <strong>Model 60-Second Summary Draft:</strong> This accident happened during takeoff at Belgrade. The Embraer E190 entered the runway at the wrong intersection, D5 instead of D6. As a result, the available runway distance was insufficient for the aircraft’s weight and configuration. The captain also failed to properly update the FMS, and the flap setting remained incorrect. The aircraft continued the takeoff with reduced thrust instead of maximum TOGA thrust. Poor CRM was also a major factor because the first officer did not effectively challenge the captain’s decision. The aircraft failed to climb properly and struck ground equipment, causing serious damage. Fortunately, there were no injuries. The main safety lesson is that runway data, aircraft configuration, and crew communication must always be verified before takeoff.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Correction Practice -->
+            <div class="efb-card">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                        COCKPIT SYSTEM TELEMETRY ERROR DETECTOR
+                    </div>
+                </div>
+                <p style="font-size: 0.9rem; margin-bottom: 12px;">Type the grammatical and stylistic corrections in the boxes below to check your flight log compliance.</p>
+                
+                <table class="error-table">
+                    <thead>
+                        <tr>
+                            <th>Incorrect Log Entry</th>
+                            <th>Operational System Correction Input</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>1. The aircraft take off from wrong intersection.</td>
+                            <td><input type="text" class="error-input" id="err-1" placeholder="Type correct sentence..." oninput="evaluateLogLine(1, 'The aircraft took off from the wrong intersection.')"></td>
+                        </tr>
+                        <tr>
+                            <td>2. The crew was not update the FMS.</td>
+                            <td><input type="text" class="error-input" id="err-2" placeholder="Type correct sentence..." oninput="evaluateLogLine(2, 'The crew did not update the FMS.')"></td>
+                        </tr>
+                        <tr>
+                            <td>3. The runway distance were insufficient.</td>
+                            <td><input type="text" class="error-input" id="err-3" placeholder="Type correct sentence..." oninput="evaluateLogLine(3, 'The runway distance was insufficient.')"></td>
+                        </tr>
+                        <tr>
+                            <td>4. The first officer didn’t challenged the captain.</td>
+                            <td><input type="text" class="error-input" id="err-4" placeholder="Type correct sentence..." oninput="evaluateLogLine(4, 'The first officer did not challenge the captain.')"></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 8px;">Tip: Check spelling and punctuation precisely! Inputs turn green once validated perfectly.</p>
+            </div>
+
+            <!-- Final Speaking Exam Profile -->
+            <div class="efb-card" style="border-left: 4px solid var(--efb-brand);">
+                <div class="efb-card-header">
+                    <div class="efb-card-title">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+                        FINAL LEVEL 4/5 ORAL PRACTICE BOARD
+                    </div>
+                </div>
+                
+                <div class="exam-grid">
+                    <div>
+                        <h4 style="font-weight: 800; margin-bottom: 8px;">TASK DIRECTIONS (2 MINUTES CONTINUOUS)</h4>
+                        <p style="font-size: 0.85rem;">Deliver a fluent presentation detailing the Belgrade takeoff incident. You must structure your summary logically following standard airline training patterns:</p>
+                        <ol style="font-size: 0.85rem; padding-left: 20px; line-height: 1.6;">
+                            <li><strong>Setup:</strong> February 18, 2024 - LYBE runway configuration</li>
+                            <li><strong>Deviation:</strong> Entering runway intersection D5 instead of D6</li>
+                            <li><strong>System failures:</strong> Mismatched flap config & continued reduced thrust roll</li>
+                            <li><strong>Causal Analysis:</strong> Critical failure in cockpit hierarchy and challenging protocols</li>
+                            <li><strong>Resolution:</strong> Safety modifications introduced internationally</li>
+                        </ol>
+                    </div>
+
+                    <div style="background-color: var(--bg-input); padding: 16px; border-radius: 8px;">
+                        <h5 style="font-weight: 800; margin-bottom: 6px; color: var(--efb-brand);">ICAO EXAM TEMPLATE FORMULAS</h5>
+                        <p style="font-size: 0.8rem; font-style: italic;">"I would like to describe a takeoff accident involving an Embraer E190 at Belgrade. This case is highly educational for runway performance parameters and critical crew resource management."</p>
+                        <p style="font-size: 0.8rem; font-style: italic; margin-top: 10px;">"In conclusion, this incident underscores that modern aviation safety depends on procedural discipline and assertiveness between cockpit members rather than technical systems alone."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer style="text-align:center;padding:28px 16px;font-family:'SF Pro Text',Arial,sans-serif;"><a href="../index.html" style="color:#64748b;font-size:15px;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;">&larr; All quizzes</a></footer>
+
+    <!-- === COCKPIT JAVASCRIPT === -->
+    <script>
+        // Real-time UTC clock simulation
+        function updateUTCClock() {
+            const clockEl = document.getElementById('utc-clock');
+            const now = new Date();
+            const utcString = now.toUTCString().replace('GMT', 'Z').split(' ')[4];
+            clockEl.textContent = utcString + ' UTC';
+        }
+        setInterval(updateUTCClock, 1000);
+        updateUTCClock();
+
+        // Theme Toggle Logic
+        function toggleTheme(e) {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const targetTheme = currentTheme === 'day' ? 'night' : 'day';
+            document.documentElement.setAttribute('data-theme', targetTheme);
+            
+            const dayBtn = document.getElementById('day-btn');
+            const nightBtn = document.getElementById('night-btn');
+            
+            if (targetTheme === 'day') {
+                dayBtn.classList.add('active');
+                nightBtn.classList.remove('active');
+            } else {
+                dayBtn.classList.remove('active');
+                nightBtn.classList.add('active');
+            }
+        }
+
+        // Setup theme buttons on startup
+        document.getElementById('day-btn').classList.add('active');
+
+        // Navigation Tab Switching
+        function switchTab(button, tabId) {
+            // Remove active state from all tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            // Hide all tab panels
+            document.querySelectorAll('.tab-panel').forEach(panel => {
+                panel.classList.remove('active');
+            });
+            // Activate current
+            button.classList.add('active');
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        // Vocabulary Flashcard flipper
+        function flipCard(card) {
+            card.classList.toggle('flipped');
+        }
+
+        // Accordion collapsing mechanics
+        function toggleAccordion(trigger) {
+            const accordion = trigger.parentElement;
+            accordion.classList.toggle('open');
+        }
+
+        // Interactive Grammar Checking System
+        function checkQuiz() {
+            const answers = {
+                q1: 'entered',
+                q2: 'struck',
+                q3: 'has',
+                q4: 'has',
+                q5: 'did'
+            };
+
+            for (let id in answers) {
+                const select = document.getElementById(id);
+                const feedback = document.getElementById(id + '-feed');
+                
+                if (select.value === answers[id]) {
+                    feedback.textContent = '✔ VERB PATH VERIFIED: CORRECT.';
+                    feedback.className = 'quiz-feedback success';
+                    feedback.style.display = 'block';
+                } else if (select.value === '') {
+                    feedback.textContent = '⚠ ERROR: ENTRY BLANK.';
+                    feedback.className = 'quiz-feedback error';
+                    feedback.style.display = 'block';
+                } else {
+                    feedback.textContent = '✖ PARAMETER CONFLICT. Target verbal element: ' + answers[id];
+                    feedback.className = 'quiz-feedback error';
+                    feedback.style.display = 'block';
+                }
+            }
+        }
+
+        // Professional Phrase Transformer helper
+        function revealBenchmark(button) {
+            const modelDiv = button.nextElementSibling;
+            modelDiv.style.display = 'block';
+        }
+
+        // Interactive Cockpit Roleplayer highlighting
+        function setRole(role) {
+            const container = document.getElementById('chat-flow-container');
+            document.getElementById('cap-role-btn').classList.remove('active');
+            document.getElementById('fo-role-btn').classList.remove('active');
+
+            if (role === 'captain') {
+                container.className = 'chat-flow role-active-captain';
+                document.getElementById('cap-role-btn').classList.add('active');
+            } else if (role === 'fo') {
+                container.className = 'chat-flow role-active-fo';
+                document.getElementById('fo-role-btn').classList.add('active');
+            }
+        }
+
+        // Emergency Compliance Verifier helper
+        function toggleChecklistItem(item) {
+            const checkbox = item.querySelector('input');
+            // Toggle checklist visual class
+            if (checkbox) {
+                checkbox.checked = !checkbox.checked;
+                if (checkbox.checked) {
+                    item.classList.add('verified');
+                } else {
+                    item.classList.remove('verified');
+                }
+            }
+        }
+
+        // Vocabulary Checklist Toggles
+        function toggleKeyword(chip) {
+            chip.classList.toggle('checked');
+        }
+
+        // Dynamic 60-Second Chronometer Logic
+        let timerInterval = null;
+        let timeLeft = 60.0;
+        let isRunning = false;
+
+        function toggleDrillTimer() {
+            const startBtn = document.getElementById('start-btn');
+            
+            if (isRunning) {
+                clearInterval(timerInterval);
+                isRunning = false;
+                startBtn.textContent = 'START';
+                startBtn.style.backgroundColor = 'var(--efb-green)';
+            } else {
+                isRunning = true;
+                startBtn.textContent = 'PAUSE';
+                startBtn.style.backgroundColor = 'var(--efb-amber)';
+                
+                timerInterval = setInterval(() => {
+                    timeLeft -= 0.1;
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        timeLeft = 0.0;
+                        isRunning = false;
+                        startBtn.textContent = 'DONE';
+                        startBtn.style.backgroundColor = 'var(--text-muted)';
+                    }
+                    document.getElementById('drill-timer').textContent = timeLeft.toFixed(1);
+                }, 100);
+            }
+        }
+
+        function resetDrillTimer() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = 60.0;
+            document.getElementById('drill-timer').textContent = '60.0';
+            const startBtn = document.getElementById('start-btn');
+            startBtn.textContent = 'START';
+            startBtn.style.backgroundColor = 'var(--efb-green)';
+            
+            // Uncheck all chips
+            document.querySelectorAll('.keyword-chip').forEach(chip => {
+                chip.classList.remove('checked');
+            });
+        }
+
+        // Telemetry Error Detector Real-Time verification
+        function evaluateLogLine(lineId, expectedText) {
+            const input = document.getElementById('err-' + lineId);
+            const userText = input.value.trim().replace(/\s+/g, ' ');
+            
+            // Check match ignoring small trailing punctuation changes
+            if (userText.toLowerCase().replace(/[^a-z0-9]/g, '') === expectedText.toLowerCase().replace(/[^a-z0-9]/g, '')) {
+                input.classList.add('verified-ok');
+            } else {
+                input.classList.remove('verified-ok');
+            }
+        }
+    </script>
+</body>
+</html>
