@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICAO RTF Compliance Portal - ASL86C Incident Study</title>
+  <style>
+    :root {
+      /* DAYLIGHT NAVIGATION THEME */
+      --bg-primary: #f1f5f9;
+      --bg-secondary: #ffffff;
+      --bg-accent: #e2e8f0;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent-color: #0284c7; /* Sky blue */
+      --accent-hover: #0369a1;
+      --accent-glow: rgba(2, 132, 199, 0.15);
+      --border-color: #cbd5e1;
+      
+      --safety-green: #16a34a;
+      --safety-green-bg: #dcfce7;
+      --warning-amber: #d97706;
+      --warning-amber-bg: #fef3c7;
+      --danger-red: #dc2626;
+      --danger-red-bg: #fee2e2;
+
+      --card-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+      --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    }
+
+    [data-theme="night"] {
+      /* NIGHT COCKPIT THEME */
+      --bg-primary: #080c14;
+      --bg-secondary: #0d1527;
+      --bg-accent: #17223b;
+      --text-primary: #e2e8f0;
+      --text-secondary: #94a3b8;
+      --accent-color: #ff9f0a; /* Cockpit CRT Amber */
+      --accent-hover: #ffb340;
+      --accent-glow: rgba(255, 159, 10, 0.25);
+      --border-color: #2e3e5c;
+      
+      --safety-green: #30d158;
+      --safety-green-bg: #0d2a15;
+      --warning-amber: #ff9f0a;
+      --warning-amber-bg: #2b1a03;
+      --danger-red: #ff453a;
+      --danger-red-bg: #2d0c0c;
+
+      --card-shadow: 0 0 15px rgba(255, 159, 10, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      padding-bottom: 80px;
+    }
+
+    /* GLASS HEADER / AVIONICS BAR */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background-color: var(--bg-secondary);
+      border-bottom: 2px solid var(--border-color);
+      box-shadow: var(--card-shadow);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-block {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 32px;
+      height: 32px;
+      fill: var(--accent-color);
+    }
+
+    .logo-text h1 {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      text-transform: uppercase;
+    }
+
+    .logo-text span {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+      text-transform: uppercase;
+    }
+
+    /* THEME CONTROLLER & SYSTEM STATUS Indicator */
+    .controls-block {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      background-color: var(--bg-accent);
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      font-family: var(--font-mono);
+      border: 1px solid var(--border-color);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--safety-green);
+      border-radius: 50%;
+      animation: blink 2s infinite;
+    }
+
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+
+    .theme-toggle-btn {
+      background: var(--bg-accent);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 8px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .theme-toggle-btn:hover {
+      background-color: var(--accent-glow);
+      border-color: var(--accent-color);
+    }
+
+    /* CONTAINER */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* HERO BLOCK */
+    .hero-section {
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      padding: 40px;
+      margin-bottom: 32px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: var(--card-shadow);
+    }
+
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background-color: var(--accent-color);
+    }
+
+    .hero-badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      background-color: var(--danger-red-bg);
+      color: var(--danger-red);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 0.75rem;
+      margin-bottom: 16px;
+      border: 1px solid var(--danger-red);
+    }
+
+    .hero-title {
+      font-size: 2.25rem;
+      font-weight: 900;
+      margin-bottom: 12px;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+    }
+
+    .hero-subtitle {
+      font-size: 1.125rem;
+      color: var(--text-secondary);
+      max-width: 800px;
+      margin-bottom: 24px;
+    }
+
+    .hero-outcomes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
+      border-top: 1px dashed var(--border-color);
+      padding-top: 24px;
+    }
+
+    .outcome-card {
+      display: flex;
+      gap: 12px;
+    }
+
+    .outcome-number {
+      font-family: var(--font-mono);
+      font-weight: bold;
+      color: var(--accent-color);
+      font-size: 1.1rem;
+    }
+
+    .outcome-text {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* TWO-COLUMN LAYOUT */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 32px;
+      margin-bottom: 32px;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* CARDS */
+    .content-card {
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* SITUATION PLAYBACK & TRANSCRIPT */
+    .incident-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 500px;
+      overflow-y: auto;
+      padding-right: 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      background-color: var(--bg-primary);
+    }
+
+    .timeline-item {
+      padding: 12px;
+      border-radius: 8px;
+      background-color: var(--bg-secondary);
+      border-left: 4px solid var(--border-color);
+    }
+
+    .timeline-item.pilot {
+      border-left-color: var(--accent-color);
+    }
+
+    .timeline-item.twr {
+      border-left-color: var(--warning-amber);
+    }
+
+    .item-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: bold;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+    }
+
+    .item-content {
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+
+    /* EXPLORER TABS AND DATABASE */
+    .explorer-filters {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background: var(--bg-accent);
+      border: 1px solid var(--border-color);
+      color: var(--text-secondary);
+      padding: 6px 14px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .filter-btn.active {
+      background-color: var(--accent-color);
+      color: #ffffff;
+      border-color: var(--accent-color);
+    }
+
+    .database-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .db-record {
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      background-color: var(--bg-secondary);
+      overflow: hidden;
+    }
+
+    .db-header {
+      padding: 12px 16px;
+      background-color: var(--bg-accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .db-header h4 {
+      font-size: 0.9rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .db-body {
+      padding: 16px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    @media (max-width: 768px) {
+      .db-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .comparison-block {
+      padding: 12px;
+      border-radius: 8px;
+    }
+
+    .comparison-block.erroneous {
+      background-color: var(--danger-red-bg);
+      border: 1px solid var(--danger-red);
+    }
+
+    .comparison-block.compliant {
+      background-color: var(--safety-green-bg);
+      border: 1px solid var(--safety-green);
+    }
+
+    .block-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    .comparison-block.erroneous .block-label { color: var(--danger-red); }
+    .comparison-block.compliant .block-label { color: var(--safety-green); }
+
+    .block-text {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .db-details {
+      grid-column: 1 / -1;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      background-color: var(--bg-primary);
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px dashed var(--border-color);
+    }
+
+    /* COMPREHENSIVE DRILLS / INTERACTIVE QUIZ */
+    .quiz-progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+    }
+
+    .progress-bar-container {
+      flex-grow: 1;
+      height: 8px;
+      background-color: var(--bg-accent);
+      border-radius: 4px;
+      margin: 0 16px;
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background-color: var(--accent-color);
+      width: 25%;
+      transition: width 0.3s ease;
+    }
+
+    .quiz-card {
+      min-height: 250px;
+    }
+
+    .quiz-question {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .quiz-options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .quiz-option {
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
+      padding: 14px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      text-align: left;
+      font-size: 0.9rem;
+      font-weight: 500;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--accent-color);
+      background-color: var(--accent-glow);
+    }
+
+    .quiz-feedback {
+      margin-top: 16px;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      display: none;
+    }
+
+    /* SPEAKING COACH (with UKRAINIAN prompts) */
+    .coach-card {
+      background-color: var(--bg-secondary);
+      border: 2px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+    }
+
+    .coach-layout {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .coach-prompt {
+      background: var(--warning-amber-bg);
+      border: 1px solid var(--warning-amber);
+      color: var(--text-primary);
+      padding: 16px;
+      border-radius: 8px;
+      position: relative;
+    }
+
+    .coach-prompt::after {
+      content: 'SCENARIO CONTEXT';
+      position: absolute;
+      top: -8px;
+      right: 12px;
+      background: var(--warning-amber);
+      color: #ffffff;
+      font-family: var(--font-mono);
+      font-size: 0.6rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .prompt-ua {
+      font-weight: 700;
+      font-size: 1.05rem;
+      margin-bottom: 6px;
+    }
+
+    .prompt-desc {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .coach-action {
+      display: flex;
+      gap: 12px;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+    }
+
+    .btn-primary {
+      background-color: var(--accent-color);
+      color: #ffffff;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--accent-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-accent);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--border-color);
+    }
+
+    .coach-reveal {
+      background: var(--safety-green-bg);
+      border: 1px dashed var(--safety-green);
+      padding: 16px;
+      border-radius: 8px;
+      display: none;
+    }
+
+    .reveal-title {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: bold;
+      color: var(--safety-green);
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .reveal-phrase {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--text-primary);
+      margin-bottom: 12px;
+    }
+
+    .reveal-audio-box {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    /* VOCABULARY REFERENCE GRID */
+    .vocab-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+      font-size: 0.9rem;
+    }
+
+    .vocab-table th, .vocab-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .vocab-table th {
+      background-color: var(--bg-accent);
+      font-family: var(--font-mono);
+      font-weight: bold;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .vocab-table td strong {
+      font-weight: 700;
+      color: var(--accent-color);
+    }
+
+    .vocab-ua {
+      color: var(--text-secondary);
+      font-style: italic;
+    }
+
+    /* BADGES */
+    .badge {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 0.65rem;
+      font-weight: bold;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .badge-pilot { background-color: var(--accent-glow); color: var(--accent-color); border: 1px solid var(--accent-color); }
+    .badge-twr { background-color: var(--warning-amber-bg); color: var(--warning-amber); border: 1px solid var(--warning-amber); }
+    .badge-danger { background-color: var(--danger-red-bg); color: var(--danger-red); border: 1px solid var(--danger-red); }
+
+    /* FOOTER CONTROL BAR */
+    footer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--bg-secondary);
+      border-top: 2px solid var(--border-color);
+      padding: 14px;
+      text-align: center;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-family: var(--font-mono);
+      box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+      z-index: 40;
+    }
+  </style>
+</head>
+<body data-theme="day">
+
+  <a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(15,23,42,0.85);color:#fff;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.25);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);">&larr; All quizzes</a>
+
+  <!-- GLASS HEADER -->
+  <header>
+    <div class="header-container">
+      <div class="logo-block">
+        <svg class="logo-icon" viewBox="0 0 24 24">
+          <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+        </svg>
+        <div class="logo-text">
+          <h1>ICAO RTF Compliance</h1>
+          <span>Aviation Communications Training Portal</span>
+        </div>
+      </div>
+      <div class="controls-block">
+        <div class="status-pill">
+          <div class="status-dot"></div>
+          <span>COMMS LINK ACTIVE</span>
+        </div>
+        <button class="theme-toggle-btn" id="theme-toggle">
+          <svg style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24">
+            <path d="M12 2A10 10 0 0 0 2 12a10 10 0 0 0 10 10 10 10 0 0 0 10-10A10 10 0 0 0 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+          </svg>
+          <span id="theme-btn-text">Night Ops Mode</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="main-container">
+
+    <!-- HERO SECTION -->
+    <section class="hero-section">
+      <span class="hero-badge">Critical Case Analysis</span>
+      <h2 class="hero-title">Belgrade Runway 30L Incident Study</h2>
+      <p class="hero-subtitle">Interactive micro-course detailing the communications breakdown, procedural non-compliance, and standard phraseology corrections for the Marathon Embraer ERJ-195 overrun incident.</p>
+      
+      <div class="hero-outcomes">
+        <div class="outcome-card">
+          <div class="outcome-number">01</div>
+          <div class="outcome-text">
+            <strong>Runway Clearances</strong><br>
+            Master the strict checklist mechanics of hold short & intersection entry confirmations.
+          </div>
+        </div>
+        <div class="outcome-card">
+          <div class="outcome-number">02</div>
+          <div class="outcome-text">
+            <strong>Performance Safeguards</strong><br>
+            Synthesize available TORA data and respond definitively with structural safety limits.
+          </div>
+        </div>
+        <div class="outcome-card">
+          <div class="outcome-number">03</div>
+          <div class="outcome-text">
+            <strong>Abnormal Evasion</strong><br>
+            Deploy high-urgency phraseology (PAN PAN) and decisive emergency signaling protocols.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DASHBOARD GRID -->
+    <div class="dashboard-grid">
+      
+      <!-- LEFT COLUMN: TRANSACTION EXPLORER & INCIDENT PLAYBACK -->
+      <div>
+        <div class="content-card">
+          <h3 class="card-title">Incident Audio Timeline Playback</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Sequential transmission overview. Blue markers indicate Pilot calls; Amber markers represent Controller interventions.
+          </p>
+          <div class="incident-timeline">
+            <div class="timeline-item pilot">
+              <div class="item-meta">
+                <span>ASL86C</span>
+                <span class="badge badge-pilot">PILOT</span>
+              </div>
+              <div class="item-content">“Air Serbia 86C approaching D6, ready.”</div>
+            </div>
+            <div class="timeline-item twr">
+              <div class="item-meta">
+                <span>LYBE TWR</span>
+                <span class="badge badge-twr">TWR</span>
+              </div>
+              <div class="item-content">“Roger, Air Serbia 86C, hold short of runway,”</div>
+            </div>
+            <div class="timeline-item pilot">
+              <div class="item-meta">
+                <span>ASL86C</span>
+                <span class="badge badge-pilot">PILOT</span>
+              </div>
+              <div class="item-content">“Air Serbia 86C.”</div>
+            </div>
+            <div class="timeline-item twr">
+              <div class="item-meta">
+                <span>LYBE TWR</span>
+                <span class="badge badge-twr">TWR</span>
+              </div>
+              <div class="item-content">“Air Serbia 86C, line up and wait via D6, runway 30L.”</div>
+            </div>
+            <div class="timeline-item pilot">
+              <div class="item-meta">
+                <span>ASL86C</span>
+                <span class="badge badge-pilot">PILOT</span>
+              </div>
+              <div class="item-content">“...Air Serbia 86C.”</div>
+            </div>
+            <div class="timeline-item twr">
+              <div class="item-meta">
+                <span>LYBE TWR</span>
+                <span class="badge badge-twr">TWR</span>
+              </div>
+              <div class="item-content">“Are you familiar that you entered the runway via D5 intersection?”</div>
+            </div>
+            <div class="timeline-item twr">
+              <div class="item-meta">
+                <span>LYBE TWR</span>
+                <span class="badge badge-twr">TWR</span>
+              </div>
+              <div class="item-content">“Yes, TORA is 22 - actually, sorry, TORA is 1273 meters. I assume that's not enough.”</div>
+            </div>
+            <div class="timeline-item twr">
+              <div class="item-meta">
+                <span>LYBE TWR</span>
+                <span class="badge badge-twr">TWR</span>
+              </div>
+              <div class="item-content">“Okay, calculate and call me. If you need, you can commence backtrack and line up abeam D6. Okay, able to depart via D5?”</div>
+            </div>
+            <div class="timeline-item twr">
+              <div class="item-meta">
+                <span>LYBE TWR</span>
+                <span class="badge badge-twr">TWR</span>
+              </div>
+              <div class="item-content">“Air Serbia 86C, is everything OK?”</div>
+            </div>
+            <div class="timeline-item pilot">
+              <div class="item-meta">
+                <span>ASL86C</span>
+                <span class="badge badge-pilot">PILOT</span>
+              </div>
+              <div class="item-content">“No, we have probably to go back. Stand by one. 8DC - 86C, we have probably to go back to land, number 1.”</div>
+            </div>
+            <div class="timeline-item pilot">
+              <div class="item-meta">
+                <span>ASL86C</span>
+                <span class="badge badge-pilot">PILOT</span>
+              </div>
+              <div class="item-content">“So, we need to go back. We touched something on the ground.”</div>
+            </div>
+            <div class="timeline-item twr">
+              <div class="item-meta">
+                <span>LYBE TWR</span>
+                <span class="badge badge-twr">TWR</span>
+              </div>
+              <div class="item-content">“Please climb due to a mountain on your left.”</div>
+            </div>
+            <div class="timeline-item pilot">
+              <div class="item-meta">
+                <span>ASL86C</span>
+                <span class="badge badge-pilot">PILOT</span>
+              </div>
+              <div class="item-content">“We have mountain in sight, we are climbing. We have a problem with the slats.”</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COMPLIANCE EXPLORER -->
+        <div class="content-card">
+          <h3 class="card-title">Interventions Database</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Explore details of the 28 recorded anomalies. Filters allow targeting specific operational roles.
+          </p>
+          <div class="explorer-filters">
+            <button class="filter-btn active" onclick="filterDB('all')">All Anomalies (28)</button>
+            <button class="filter-btn" onclick="filterDB('pilot')">Pilot Non-Compliance</button>
+            <button class="filter-btn" onclick="filterDB('twr')">ATC Non-Compliance</button>
+            <button class="filter-btn" onclick="filterDB('critical')">High Risk (SORA)</button>
+          </div>
+          <div class="database-container" id="db-container">
+            <!-- Dynamically populated -->
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: COACHING, INTERACTIVE PRACTICE, VOCABULARY -->
+      <div>
+        
+        <!-- INTERACTIVE COMPREHENSION QUIZ -->
+        <div class="content-card">
+          <h3 class="card-title">Compliance Evaluation</h3>
+          <div class="quiz-progress">
+            <span>Assessment Progress</span>
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" id="quiz-progress-bar"></div>
+            </div>
+            <span id="quiz-progress-text">1 of 4</span>
+          </div>
+          <div class="quiz-card" id="quiz-card-content">
+            <!-- Dynamic Content -->
+          </div>
+        </div>
+
+        <!-- UKRAINIAN DRILLS COACH -->
+        <div class="coach-card">
+          <h3 class="card-title">Speaking Evasion Coach</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Use standard ICAO translation cues to practice prompt formulation under high stress conditions.
+          </p>
+        <!-- SPEAKING COACH -->
+        <div class="coach-card">
+          <h3 class="card-title">Speaking Evasion Coach</h3>
+          <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 16px;">
+            Use situational cues to practice standard ICAO phraseology formulation under high stress conditions.
+          </p>
+          <div class="coach-layout">
+            <div class="coach-prompt">
+              <div class="prompt-ua" id="prompt-ua-text">State precise positioning and readiness to tower upon arrival at intersection D6.</div>
+              <div class="prompt-desc" id="prompt-desc-text">State precise positioning and readiness to tower upon arrival at intersection D6.</div>
+            </div>
+            <div class="coach-action">
+              <button class="btn btn-secondary" onclick="prevCoach()">Prev</button>
+              <button class="btn btn-primary" onclick="revealCoach()">Check Phraseology</button>
+              <button class="btn btn-secondary" onclick="nextCoach()">Next</button>
+            </div>
+            <div class="coach-reveal" id="coach-reveal-box">
+              <div class="reveal-title">Recommended ICAO Phraseology</div>
+              <div class="reveal-phrase" id="reveal-phrase-text">"Belgrade Tower, Air Serbia 86C, holding point D6, runway 30L, ready for departure."</div>
+              <div class="reveal-audio-box" id="reveal-audio-desc">
+                <strong>Readback Check:</strong> Verifies location, runway and status. Prevents non-readback failures.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- KEY VOCABULARY REFERENCE -->
+        <div class="content-card">
+          <h3 class="card-title">Vocab Quick Reference</h3>
+          <table class="vocab-table">
+            <thead>
+              <tr>
+                <th>Term</th>
+                <th>Aviation Definition / Context</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>TORA</strong></td>
+                <td>Takeoff Run Available</td>
+              </tr>
+              <tr>
+                <td><strong>Hold Short</strong></td>
+                <td>Stop before entering the runway surface</td>
+              </tr>
+              <tr>
+                <td><strong>Backtrack</strong></td>
+                <td>Taxi on the runway in opposite direction</td>
+              </tr>
+              <tr>
+                <td><strong>Slat Malfunction</strong></td>
+                <td>Problem with leading-edge devices</td>
+              </tr>
+              <tr>
+                <td><strong>PAN PAN</strong></td>
+                <td>Urgency signal for serious control issues</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- STICKY FOOTER -->
+  <footer>
+    ICAO RTF COMPLIANCE PROTOCOL ENGINE // HARNESSING FLIGHT SAFETY ACCIDENT BARRIERS
+  </footer>
+
+  <script>
+    // DATA INJECTED DIRECTLY FROM LESSON MATERIAL
+    const anomaliesData = [
+      {
+        id: 1,
+        speaker: "ASL86C",
+        type: "pilot",
+        critical: false,
+        original: "“Air Serbia 86C approaching D6, ready.”",
+        problem: "The pilot reports ready but does not clearly state holding point status or departure readiness from a specific intersection.",
+        correction: "“Belgrade Tower, Air Serbia 86C, holding point D6, runway 30L, ready for departure.”",
+        explanation: "For runway operations, position must be precise. “Approaching D6” is less clear than “holding point D6.”"
+      },
+      {
+        id: 2,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: false,
+        original: "“Roger, Air Serbia 86C, hold short of runway,”",
+        problem: "Incomplete runway identification. The instruction should include the runway designator.",
+        correction: "“Air Serbia 86C, hold short of runway 30L.”",
+        explanation: "Hold short instructions are runway safety-critical. Runway number should be included."
+      },
+      {
+        id: 3,
+        speaker: "ASL86C",
+        type: "pilot",
+        critical: false,
+        original: "“Air Serbia 86C.”",
+        problem: "Incomplete readback. The pilot does not read back “hold short” or runway.",
+        correction: "“Holding short runway 30L, Air Serbia 86C.”",
+        explanation: "Hold short instructions must be read back completely. Callsign only is insufficient."
+      },
+      {
+        id: 4,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: true,
+        original: "“Air Serbia 86C, line up and wait via D6, runway 30L.”",
+        problem: "ATC phrase is mostly correct, but because intersection departure is critical, the readback must be complete and monitored.",
+        correction: "“Air Serbia 86C, line up and wait runway 30L via intersection D6.”",
+        explanation: "The clearance is safety-critical because D6 defines available takeoff distance."
+      },
+      {
+        id: 5,
+        speaker: "ASL86C",
+        type: "pilot",
+        critical: true,
+        original: "“...Air Serbia 86C.”",
+        problem: "Critical incomplete readback. The pilot does not read back “line up and wait,” runway, or D6.",
+        correction: "“Line up and wait runway 30L via D6, Air Serbia 86C.”",
+        explanation: "This is one of the key failures. A complete readback could have prevented confusion about the intersection."
+      },
+      {
+        id: 6,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: false,
+        original: "“Air Serbia 86C, Tower.”",
+        problem: "ATC calls aircraft after noticing something, but the transmission does not immediately state the safety-critical concern.",
+        correction: "“Air Serbia 86C, Belgrade Tower, confirm you entered runway 30L via D5, not D6.”",
+        explanation: "In time-critical situations, ATC should be direct and specific."
+      },
+      {
+        id: 7,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: true,
+        original: "“Are you familiar that you entered the runway via D5 intersection?”",
+        problem: "The question is procedural but weak. It does not require a clear operational decision.",
+        correction: "“Air Serbia 86C, confirm you are on runway 30L at intersection D5. Advise if able departure from D5.”",
+        explanation: "The issue is not whether the crew is “familiar”; the issue is whether departure performance is safe."
+      },
+      {
+        id: 9,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: true,
+        original: "“Yes, TORA is 22 - actually, sorry, TORA is 1273 meters. I assume that's not enough.”",
+        problem: "Unclear and hesitant performance-related communication. “I assume” is weak for a safety-critical issue.",
+        correction: "“Air Serbia 86C, TORA from D5 is one thousand two hundred seventy-three meters. Confirm performance is sufficient.”",
+        explanation: "ATC should provide clear data and request confirmation. The crew must decide performance capability."
+      },
+      {
+        id: 11,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: false,
+        original: "“Okay, calculate and call me. If you need, you can commence backtrack and line up abeam D6.”",
+        problem: "Better than previous phrase, but still non-standard. “Call me” is not standard RTF. “If you need” leaves a safety-critical decision too vague.",
+        correction: "“Air Serbia 86C, calculate performance. Advise when ready. Backtrack runway 30L to line up via D6 available.”",
+        explanation: "ATC should use clear operational phraseology. “Advise” is better than “call me.”"
+      },
+      {
+        id: 12,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: true,
+        original: "“Okay, able to depart via D5?”",
+        problem: "Critical question, but should require explicit performance confirmation.",
+        correction: "“Air Serbia 86C, confirm performance permits departure from intersection D5.”",
+        explanation: "For intersection departure, the crew should confirm performance is sufficient."
+      },
+      {
+        id: 16,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: false,
+        original: "“Air Serbia 86C, is everything OK?”",
+        problem: "Non-standard and vague after a possible runway/performance abnormality.",
+        correction: "“Air Serbia 86C, confirm operations normal.” / “Air Serbia 86C, advise intentions.”",
+        explanation: "“Is everything OK?” is conversational, not standard operational phraseology."
+      },
+      {
+        id: 17,
+        speaker: "ASL86C",
+        type: "pilot",
+        critical: true,
+        original: "“No, we have probably to go back. Stand by one.”",
+        problem: "No clear urgency, no clear intention, no condition report. “Probably” is unsafe in abnormal communication.",
+        correction: "“PAN PAN, PAN PAN, PAN PAN, Air Serbia 86C, we have a technical problem, request immediate return.”",
+        explanation: "If aircraft struck objects and has a control/configuration problem, urgency communication is appropriate."
+      },
+      {
+        id: 22,
+        speaker: "ASL86C",
+        type: "pilot",
+        critical: true,
+        original: "“So, we need to go back. We touched something on the ground.”",
+        problem: "Serious abnormal event reported too casually; no emergency/urgency phrase.",
+        correction: "“PAN PAN, Air Serbia 86C, we struck ground equipment after takeoff. Request immediate return.”",
+        explanation: "Impact with objects and aircraft damage should trigger clear urgency communication."
+      },
+      {
+        id: 27,
+        speaker: "LYBE TWR",
+        type: "twr",
+        critical: true,
+        original: "“Please climb due to a mountain on your left.”",
+        problem: "Non-standard and unclear instruction. No altitude, heading, or avoiding action phrase.",
+        correction: "“Air Serbia 86C, climb immediately. Terrain on your left.” / “Turn right heading ___, climb altitude ___.”",
+        explanation: "Terrain warning must be direct, concise, and operationally useful."
+      },
+      {
+        id: 28,
+        speaker: "ASL86C",
+        type: "pilot",
+        critical: false,
+        original: "“We have mountain in sight, we are climbing. We have a problem with the slats.”",
+        problem: "Important abnormal configuration reported late and without urgency status.",
+        correction: "“Air Serbia 86C, terrain in sight, climbing. PAN PAN, slat problem, request immediate landing.”",
+        explanation: "Slat problem after impact affects climb and landing performance. ATC needs clear abnormal status."
+      }
+    ];
+
+    const quizQuestions = [
+      {
+        q: "What was the most critical safety readback failure committed by ASL86C that compromised intersection boundaries?",
+        options: [
+          { text: "Replying only with the flight callsign '...Air Serbia 86C' instead of repeating runway 30L and intersection D6.", correct: true },
+          { text: "Failing to report ground visibility metrics to the tower controller.", correct: false },
+          { text: "Saying 'ready' too many times on holding frequency.", correct: false }
+        ],
+        feedback: "Correct! The lack of complete readback removed the 'hearback barrier'. ATC could not catch that the pilot assumed a different intersection entry plan."
+      },
+      {
+        q: "How should a pilot respond when ATC alerts a wrong entry and asks if a TORA of 1273m is enough with unverified performance numbers?",
+        options: [
+          { text: "Accept the takeoff run since ATC gave clearance earlier anyway.", correct: false },
+          { text: "Immediately request to backtrack via runway to line up abeam the standard intersection or say 'Unable departure from D5'.", correct: true },
+          { text: "Ask other aircraft if they think the distance is adequate.", correct: false }
+        ],
+        feedback: "Correct! Ambiguity kills. If performance is not actively verified, the response must be 'Unable' immediately followed by a safe backtrack request."
+      },
+      {
+        q: "What is the primary danger associated with reporting a crash or strike on departure as 'We touched something'?",
+        options: [
+          { text: "It minimizes the hazard, delaying crash-tender deployment and priority routing protocols.", correct: true },
+          { text: "It triggers a standard administrative flight suspension.", correct: false },
+          { text: "It confuses the passengers in flight.", correct: false }
+        ],
+        feedback: "Correct! Precise, non-minimized descriptions are required. Stating 'We struck ground equipment' triggers immediate priority and fire safety positioning."
+      },
+      {
+        q: "When warning about terrain obstacles, what is the core procedural requirement for ATC?",
+        options: [
+          { text: "Use conversational guidance to keep the pilots calm.", correct: false },
+          { text: "Issue immediate, non-polite, explicit instructions like 'Climb immediately. Terrain on your left.'", correct: true },
+          { text: "Advise the pilots to review the aeronautical chart database.", correct: false }
+        ],
+        feedback: "Correct! In high-stress terrain encounters, direct, short commands save critical seconds."
+      }
+    ];
+
+    const coachDrills = [
+      {
+        desc: "State precise positioning and readiness to tower upon arrival at intersection D6.",
+        en: "Belgrade Tower, Air Serbia 86C, holding point D6, runway 30L, ready for departure.",
+        check: "Check Readback Checklist: Verifies location, runway and readiness cleanly."
+      },
+      {
+        desc: "State that you cannot complete the takeoff with the reduced runway performance and request correction.",
+        en: "Unable departure from D5. Request backtrack runway 30L to D6.",
+        check: "Check Readback Checklist: Standard 'Unable' removes operational ambiguity immediately."
+      },
+      {
+        desc: "Declare urgency and report severe structural performance degradation to ATC.",
+        en: "PAN PAN, PAN PAN, PAN PAN, Air Serbia 86C. We struck ground equipment after takeoff. We have a slat problem, request immediate return.",
+        check: "Check Readback Checklist: Slat abnormalities require structured emergency priority routing."
+      },
+      {
+        desc: "Confirm visual tracking of the mountain while executing altitude transition.",
+        en: "Terrain in sight, climbing, Air Serbia 86C.",
+        check: "Check Readback Checklist: Validates clear evasion routing and visual separation."
+      }
+    ];
+
+    // THEME CONTROLLER
+    const themeBtn = document.getElementById('theme-toggle');
+    const themeBtnText = document.getElementById('theme-btn-text');
+    themeBtn.addEventListener('click', () => {
+      const currentTheme = document.body.getAttribute('data-theme');
+      if (currentTheme === 'day') {
+        document.body.setAttribute('data-theme', 'night');
+        themeBtnText.innerText = "Daylight Mode";
+      } else {
+        document.body.setAttribute('data-theme', 'day');
+        themeBtnText.innerText = "Night Ops Mode";
+      }
+    });
+
+    // POPULATE DATABASE
+    const dbContainer = document.getElementById('db-container');
+    function renderAnomalies(list) {
+      dbContainer.innerHTML = '';
+      list.forEach(item => {
+        const record = document.createElement('div');
+        record.className = 'db-record';
+        
+        const priorityBadge = item.critical ? '<span class="badge badge-danger">High Risk</span>' : '';
+        const roleBadge = item.type === 'pilot' ? '<span class="badge badge-pilot">PILOT</span>' : '<span class="badge badge-twr">ATC</span>';
+
+        record.innerHTML = `
+          <div class="db-header" onclick="toggleRecord(${item.id})">
+            <h4>#${item.id} - ${item.speaker} ${roleBadge}</h4>
+            <div style="display:flex; gap:8px; align-items:center;">
+              ${priorityBadge}
+              <svg id="arrow-${item.id}" style="width:16px;height:16px;fill:currentColor;" viewBox="0 0 24 24">
+                <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+              </svg>
+            </div>
+          </div>
+          <div class="db-body" id="body-${item.id}" style="display:none;">
+            <div class="comparison-block erroneous">
+              <span class="block-label">Erroneous Transmission</span>
+              <div class="block-text">${item.original}</div>
+            </div>
+            <div class="comparison-block compliant">
+              <span class="block-label">Corrected ICAO RTF</span>
+              <div class="block-text">${item.correction}</div>
+            </div>
+            <div class="db-details">
+              <strong>Operational Issue:</strong> ${item.problem}<br><br>
+              <strong>Safety Barrier Rationale:</strong> ${item.explanation}
+            </div>
+          </div>
+        `;
+        dbContainer.appendChild(record);
+      });
+    }
+
+    function toggleRecord(id) {
+      const body = document.getElementById(`body-${id}`);
+      const arrow = document.getElementById(`arrow-${id}`);
+      if (body.style.display === 'none') {
+        body.style.display = 'grid';
+        arrow.style.transform = 'rotate(180deg)';
+      } else {
+        body.style.display = 'none';
+        arrow.style.transform = 'rotate(0deg)';
+      }
+    }
+
+    function filterDB(type) {
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      if (type === 'all') {
+        renderAnomalies(anomaliesData);
+      } else if (type === 'pilot') {
+        renderAnomalies(anomaliesData.filter(item => item.type === 'pilot'));
+      } else if (type === 'twr') {
+        renderAnomalies(anomaliesData.filter(item => item.type === 'twr'));
+      } else if (type === 'critical') {
+        renderAnomalies(anomaliesData.filter(item => item.critical === true));
+      }
+    }
+
+    // INITIAL DB RENDER
+    renderAnomalies(anomaliesData);
+
+    // QUIZ CONTROLLER
+    let currentQuizIndex = 0;
+    const quizCard = document.getElementById('quiz-card-content');
+    const quizBar = document.getElementById('quiz-progress-bar');
+    const quizProgressText = document.getElementById('quiz-progress-text');
+
+    function renderQuiz() {
+      const q = quizQuestions[currentQuizIndex];
+      quizBar.style.width = `${((currentQuizIndex + 1) / quizQuestions.length) * 100}%`;
+      quizProgressText.innerText = `${currentQuizIndex + 1} of ${quizQuestions.length}`;
+
+      let optionsHTML = '';
+      q.options.forEach((opt, idx) => {
+        optionsHTML += `
+          <button class="quiz-option" onclick="checkQuizAnswer(${idx})">
+            <span>${opt.text}</span>
+            <svg style="width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"/>
+            </svg>
+          </button>
+        `;
+      });
+
+      quizCard.innerHTML = `
+        <div class="quiz-question">${q.q}</div>
+        <div class="quiz-options">${optionsHTML}</div>
+        <div class="quiz-feedback" id="quiz-feedback-box"></div>
+        <button class="btn btn-primary" id="quiz-next-btn" style="margin-top:16px; display:none;" onclick="nextQuizQuestion()">Next Scenario</button>
+      `;
+    }
+
+    function checkQuizAnswer(selectedIdx) {
+      const q = quizQuestions[currentQuizIndex];
+      const feedbackBox = document.getElementById('quiz-feedback-box');
+      const nextBtn = document.getElementById('quiz-next-btn');
+      
+      const optionsElements = document.querySelectorAll('.quiz-option');
+      optionsElements.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (q.options[idx].correct) {
+          btn.style.backgroundColor = 'var(--safety-green-bg)';
+          btn.style.borderColor = 'var(--safety-green)';
+        } else if (idx === selectedIdx) {
+          btn.style.backgroundColor = 'var(--danger-red-bg)';
+          btn.style.borderColor = 'var(--danger-red)';
+        }
+      });
+
+      feedbackBox.style.display = 'block';
+      if (q.options[selectedIdx].correct) {
+        feedbackBox.style.backgroundColor = 'var(--safety-green-bg)';
+        feedbackBox.style.color = 'var(--safety-green)';
+        feedbackBox.innerHTML = `<strong>CORRECT PROCEDURAL EXECUTION:</strong> ${q.feedback}`;
+      } else {
+        feedbackBox.style.backgroundColor = 'var(--danger-red-bg)';
+        feedbackBox.style.color = 'var(--danger-red)';
+        feedbackBox.innerHTML = `<strong>NON-COMPLIANT ERROR:</strong> ${q.feedback}`;
+      }
+      nextBtn.style.display = 'inline-flex';
+    }
+
+    function nextQuizQuestion() {
+      currentQuizIndex = (currentQuizIndex + 1) % quizQuestions.length;
+      renderQuiz();
+    }
+
+    // INITIAL QUIZ RENDER
+    renderQuiz();
+
+    // COACH DRILL CONTROLLER
+    let currentCoachIndex = 0;
+    const promptUa = document.getElementById('prompt-ua-text');
+    const promptDesc = document.getElementById('prompt-desc-text');
+    const coachRevealBox = document.getElementById('coach-reveal-box');
+    const revealPhrase = document.getElementById('reveal-phrase-text');
+    const revealAudio = document.getElementById('reveal-audio-desc');
+
+    function renderCoach() {
+      const drill = coachDrills[currentCoachIndex];
+      promptUa.innerText = drill.desc;
+      promptDesc.innerText = "Situation Prompt Guide";
+      coachRevealBox.style.display = 'none';
+    }
+
+    function revealCoach() {
+      const drill = coachDrills[currentCoachIndex];
+      revealPhrase.innerText = drill.en;
+      revealAudio.innerHTML = `<strong>Aviation Safety Alignment:</strong> ${drill.check}`;
+      coachRevealBox.style.display = 'block';
+    }
+
+    function nextCoach() {
+      currentCoachIndex = (currentCoachIndex + 1) % coachDrills.length;
+      renderCoach();
+    }
+
+    function prevCoach() {
+      currentCoachIndex = (currentCoachIndex - 1 + coachDrills.length) % coachDrills.length;
+      renderCoach();
+    }
+
+    // INITIAL COACH RENDER
+    renderCoach();
+  </script>
+  <footer style="text-align:center;padding:28px 16px;font-family:'SF Pro Text',Arial,sans-serif;"><a href="../index.html" style="color:#64748b;font-size:15px;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;">&larr; All quizzes</a></footer>
+</body>
+</html>
