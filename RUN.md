@@ -34,13 +34,14 @@
 - Сторінка кросворду самодостатня (власний день/ніч-дизайн, без локальних ресурсів).
 - **Важливо:** сторінка в підпапці, тож back-link `← All quizzes` веде на `../index.html`, а картка в `index.html` (і посилання з `songs.html`/`infographics.html`) — через `Crosswords/<файл>.html`.
 
-Поточні кросворди (5):
+Поточні кросворди (6):
 
 - `present-perfect-1.html` — Present Perfect Crossword: Set 1
 - `present-perfect-2.html` — Present Perfect Crossword: Set 2
 - `1_crossword.html` — Communication Problems (радіотелефонія)
 - `rejected-takeoffs.html` — Rejected Takeoffs (V1 / abort decision)
 - `stall.html` — Stall Recognition and Recovery
+- `embraer-e190-belgrade-takeoff-accident-crossword.html` — Belgrade Takeoff Accident
 
 ### Flight Academy Trainer (folder-backed секція)
 
@@ -53,6 +54,19 @@
 - **Audacity-проєкт (`*.aup3*`) не комітимо** — у репо йдуть лише експортовані MP3 (+ опційно `.md`-транскрипт).
 - Підпапка, тож back-link `← All quizzes` → `../index.html`, картка в `index.html` → `Flight_academy_trainer/<курс>_trainer.html`.
 - **Повна специфікація додавання курсу — `Flight_academy_trainer/README.md`.**
+
+### Кейс Belgrade 30L (де що лежить)
+
+Матеріали про катастрофу Embraer E190 на зльоті в Белграді (18.02.2024) розкидані по
+типах розділів — ось повний набір в одному місці:
+
+- Інфографіка — `img/embraer-e190-belgrade-takeoff-accident.png` (запис у `infographics.html`).
+- Cockpit Class — `aviation_english_cockpit_class/embraer-e190-belgrade-takeoff-accident.html` (розбір кейсу).
+- Cockpit Class — `aviation_english_cockpit_class/belgrade-runway-30l-incident-study-transmissions.html` (RTF-радіообмін).
+- Кросворд — `Crosswords/embraer-e190-belgrade-takeoff-accident-crossword.html`.
+- Квіз — `icao-rtf-compliance-protocol-quiz.html` (20 питань, ICAO RTF).
+- Flight Academy — `Flight_academy_trainer/belgrade_takeoff_accident_trainer.html` (14 розділів, аудіо в `Belgrade_Accident/`).
+- Пісні (`songs.html`) — `wrong-intersection`, `tora-is-a-hard-limit`, `speak-up-in-the-cockpit`.
 
 ## Дві папки (ролі)
 
