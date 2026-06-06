@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Embraer E190 Takeoff Accident at Belgrade — listen &amp; read</title>
+<style>
+  :root {
+    --bg-main: #f1f5f9;
+    --bg-panel: #ffffff;
+    --bg-panel-2: #f8fafc;
+    --border: #cbd5e1;
+    --text: #0f172a;
+    --text-2: #334155;
+    --muted: #64748b;
+    --accent: #0f4c81;
+    --accent-2: #0284c7;
+    --active-bg: rgba(2, 132, 199, 0.12);
+    --active-border: #0284c7;
+    --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  body.night {
+    --bg-main: #06090e;
+    --bg-panel: #0d121c;
+    --bg-panel-2: #131a29;
+    --border: #1e293b;
+    --text: #f8fafc;
+    --text-2: #cbd5e1;
+    --muted: #64748b;
+    --accent: #10b981;
+    --accent-2: #10b981;
+    --active-bg: rgba(16, 185, 129, 0.14);
+    --active-border: #10b981;
+    --shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    padding: 24px 16px 64px;
+    transition: background-color .3s ease, color .3s ease;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .back-link { color: var(--accent-2); text-decoration: none; font-weight: 600; font-size: 14px; }
+  .back-link:hover { text-decoration: underline; }
+  .theme-switch {
+    background: var(--bg-panel); color: var(--text-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+  }
+  .theme-switch:hover { background: var(--bg-panel-2); }
+
+  .hero { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); }
+  .kicker { color: var(--accent-2); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(22px, 4vw, 30px); margin: 6px 0 8px; }
+  .hero p { color: var(--muted); max-width: 70ch; font-size: 15px; }
+
+  /* Chapter rail */
+  .rail { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+  .chap-btn {
+    flex: 0 0 auto; background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; cursor: pointer; font: inherit; color: var(--text-2);
+    display: flex; gap: 8px; align-items: center; transition: all .15s ease; white-space: nowrap;
+  }
+  .chap-btn:hover { background: var(--bg-panel-2); }
+  .chap-btn.active { border-color: var(--active-border); background: var(--active-bg); color: var(--text); font-weight: 600; }
+  .chap-btn .num {
+    width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+
+  /* Player */
+  .player { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); position: sticky; top: 12px; z-index: 5; }
+  .player-title { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
+  .controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .play-btn {
+    width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--accent); color: #fff; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-btn svg { width: 22px; height: 22px; }
+  .timeline { flex: 1 1 240px; display: flex; align-items: center; gap: 10px; min-width: 200px; }
+  .time { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); flex: 0 0 auto; }
+  .scrub { flex: 1; height: 8px; background: var(--border); border-radius: 99px; cursor: pointer; position: relative; }
+  .scrub-fill { height: 100%; background: var(--accent-2); border-radius: 99px; width: 0; }
+  .speeds { display: flex; gap: 4px; flex: 0 0 auto; }
+  .speed-btn { background: var(--bg-panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; font: inherit; font-size: 12px; cursor: pointer; color: var(--text-2); }
+  .speed-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .sync-note { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  /* Transcript */
+  .transcript { display: flex; flex-direction: column; gap: 12px; }
+  .seg {
+    background: var(--bg-panel); border: 1px solid var(--border); border-left: 4px solid transparent;
+    border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all .15s ease;
+  }
+  .seg:hover { background: var(--bg-panel-2); }
+  .seg.active { border-left-color: var(--active-border); background: var(--active-bg); }
+  .seg-q { font-size: 13px; font-weight: 700; color: var(--accent-2); margin-bottom: 6px; }
+  .seg-a { color: var(--text-2); font-size: 15.5px; }
+  .seg.active .seg-a { color: var(--text); }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back-link" href="../index.html">&larr; All quizzes</a>
+    <button class="theme-switch" id="themeBtn"><span id="themeLabel">Night mode</span></button>
+  </header>
+
+  <section class="hero">
+    <p class="kicker">Case Study — Listen &amp; Read</p>
+    <h1>Embraer E190 Takeoff Accident at Belgrade</h1>
+    <p>Play a chapter and follow along: the active answer is highlighted as the audio plays, and the transcript scrolls with it. Tap any answer to jump the audio to that point. Use the speed controls to slow down for shadowing practice.</p>
+  </section>
+
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+
+  <section class="player">
+    <div class="player-title" id="nowPlaying">Chapter 1 — Embraer E190 Takeoff Accident at Belgrade</div>
+    <div class="controls">
+      <button class="play-btn" id="playBtn" aria-label="Play / pause">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="timeline">
+        <span class="time" id="curTime">00:00</span>
+        <div class="scrub" id="scrub"><div class="scrub-fill" id="scrubFill"></div></div>
+        <span class="time" id="durTime">00:00</span>
+      </div>
+      <div class="speeds">
+        <button class="speed-btn" data-rate="0.75">0.75x</button>
+        <button class="speed-btn active" data-rate="1">1x</button>
+        <button class="speed-btn" data-rate="1.25">1.25x</button>
+        <button class="speed-btn" data-rate="1.5">1.5x</button>
+      </div>
+    </div>
+    <p class="sync-note">Sync is approximate (estimated from text length). Exact sentence-level timing comes with the forced-alignment step.</p>
+    <audio id="audio" preload="none"></audio>
+  </section>
+
+  <div class="transcript" id="transcript"></div>
+
+  <footer><a href="../index.html">&larr; All quizzes</a></footer>
+</div>
+
+<script>
+const DIR = 'Belgrade_Accident/';
+const CHAPTERS = [
+  { num: 1, title: "Embraer E190 Takeoff Accident at Belgrade", mp3: "embraer-e190-belgrade-takeoff-accident.mp3", segments: [
+    { q: "Event overview", a: "On February 18, 2024, an Embraer E190-200LR operated by Marathon Airlines for Air Serbia was involved in a takeoff accident at Nikola Tesla Aerodrome in Belgrade, Serbia. The aircraft attempted to take off from runway intersection Delta 5 instead of Delta 6. The available takeoff distance from Delta 5 was only 1,273 meters, but the aircraft required at least 1,440 meters for its actual weight and configuration." },
+    { q: "What happened during the takeoff roll", a: "During the takeoff roll, the crew realized they were approaching the end of the runway. However, the captain did not select maximum takeoff thrust. The aircraft failed to climb properly, struck grass, and then hit ground equipment, including an ILS Far Field Monitor antenna. There were no fatalities or injuries, but the aircraft and airport infrastructure were seriously damaged." },
+    { q: "Vocabulary — Takeoff roll", a: "Takeoff roll means the movement of the aircraft along the runway during takeoff. Example: During the takeoff roll, the crew noticed the runway end was approaching." },
+    { q: "Vocabulary — Runway intersection", a: "A runway intersection is a point where an aircraft enters the runway from a taxiway. Example: The crew entered the runway at the wrong intersection." },
+    { q: "Vocabulary — TORA", a: "TORA means takeoff run available. Example: Only one thousand two hundred seventy-three meters of TORA were available from Delta five." },
+    { q: "Vocabulary — FMS", a: "FMS means Flight Management System. Example: The captain failed to update the FMS correctly." },
+    { q: "Vocabulary — Flap setting", a: "Flap setting means the selected position of the wing flaps. Example: The flap setting remained at flaps one instead of flaps four." },
+    { q: "Vocabulary — TOGA", a: "TOGA means Takeoff Go-Around thrust mode. Example: The crew did not select TOGA thrust." },
+    { q: "Vocabulary — FLEX thrust", a: "FLEX thrust means reduced takeoff thrust. Example: The captain continued with FLEX thrust instead of maximum thrust." },
+    { q: "Vocabulary — CRM", a: "CRM means Crew Resource Management. Example: Poor CRM contributed to the accident." },
+    { q: "Vocabulary — Situational awareness", a: "Situational awareness means understanding what is happening around you. Example: The crew lost situational awareness during taxiing." },
+    { q: "Vocabulary — Procedural failure", a: "Procedural failure means failure to follow or use proper procedures. Example: The accident involved several procedural failures." },
+    { q: "Vocabulary — Safety margin", a: "Safety margin means the extra safety buffer in an operation. Example: The incorrect runway reduced the safety margin." },
+    { q: "Vocabulary — Infrastructure damage", a: "Infrastructure damage means damage to airport equipment or facilities. Example: The aircraft caused serious infrastructure damage." },
+    { q: "Describing the event", a: "The incident occurred during takeoff. The aircraft was operating a scheduled passenger flight. The crew attempted to take off from the wrong runway intersection. The available runway distance was not sufficient. The aircraft struck ground equipment after failing to climb properly." },
+    { q: "Explaining consequences", a: "As a result, the aircraft sustained significant damage. Fortunately, there were no injuries. The airport infrastructure was also damaged. The ILS system was degraded after the impact." },
+    { q: "Key safety points", a: "This case shows the importance of proper briefing. It highlights the need for effective CRM. Pilots must verify runway data before takeoff. A first officer must be ready to challenge unsafe decisions. Standard operating procedures exist to prevent exactly this type of error." },
+    { q: "Example sentences", a: "The crew entered the runway at Delta 5. The aircraft struck the antenna. The captain failed to update the FMS. The accident has shown the importance of CRM. The investigation has identified several procedural gaps. The airline has revised some operational procedures." },
+    { q: "Summary — what happened", a: "The accident happened on February 18, 2024, at Nikola Tesla Aerodrome in Belgrade. An Embraer E190 attempted to take off from the wrong runway intersection. The crew planned to use intersection Delta 6, but they entered the runway at Delta 5. The main problem was that the available takeoff distance from Delta 5 was too short. The aircraft needed at least 1,440 meters, but only 1,273 meters were available. The crew also failed to update the FMS correctly, and the aircraft used an incorrect flap setting and reduced thrust." },
+    { q: "Summary — outcome and lesson", a: "During the takeoff roll, the crew realized that the runway end was approaching, but they did not apply maximum thrust. The aircraft failed to climb properly and struck ground equipment. Fortunately, nobody was injured, but the aircraft and airport infrastructure were badly damaged. This case shows that runway verification, proper briefing, and strong crew resource management are essential for flight safety." },
+    { q: "Why was the runway distance important in this accident?", a: "The runway distance was critical because the aircraft did not have enough space to take off safely. From intersection D5, only 1,273 meters of TORA were available. However, the aircraft required at least 1,440 meters for its actual weight and configuration. This created a dangerous situation because the aircraft could not accelerate and climb normally. In aviation, runway length is not flexible; it is a hard safety limit." },
+    { q: "What role did Crew Resource Management play in this accident?", a: "Crew Resource Management played a major role in this accident. The captain made unsafe decisions, but the first officer did not challenge them strongly enough. Communication between the pilots was not effective, and standard procedures were not followed. In a safe cockpit, both pilots must monitor each other and speak up when something is wrong. This accident shows that CRM is not just theory; it can prevent real accidents." },
+    { q: "Why is FMS verification important before takeoff?", a: "FMS verification is important because the aircraft must be configured according to the correct runway, weight, thrust, and flap settings. If the FMS contains incorrect data, the crew may believe the takeoff is safe when it is not. In this case, the captain changed some data but did not properly update the FMS configuration. This created a mismatch between the required performance and the actual aircraft configuration. Before takeoff, pilots must make sure that the FMS agrees with the real situation." },
+    { q: "What should the crew have done after realizing they were at the wrong intersection?", a: "The safest option would have been to stop and clarify the situation with air traffic control. The crew should have recalculated the performance carefully and verified the runway data, FMS, thrust setting, and flap setting. They should not have rushed the decision. If there was any doubt about the available runway distance, they should have rejected the takeoff plan and requested repositioning. In aviation, taking extra time is much safer than continuing with uncertain data." },
+    { q: "Useful phrases — plain to professional", a: "The runway was too short. The available takeoff distance was insufficient for the aircraft’s weight and configuration. The captain made a bad decision. The captain continued the takeoff despite an unsafe performance situation. The first officer did not say anything. The first officer failed to challenge the captain’s decision effectively. The aircraft hit something. The aircraft struck ground equipment after failing to climb normally. The company did not have enough procedures. The operator’s manual lacked important procedures for runway changes after taxiing had started." },
+    { q: "Emergency call — MAYDAY", a: "MAYDAY, MAYDAY, MAYDAY, Air Serbia 3-2-4. We have struck ground equipment during takeoff from runway 30 Left. We are airborne but have possible structural damage and fuel leakage. Request immediate return to Belgrade and emergency services on standby. We have 111 persons on board." },
+    { q: "Full summary", a: "This accident happened during takeoff at Belgrade. The Embraer E190 entered the runway at the wrong intersection, Delta 5 instead of Delta 6. As a result, the available runway distance was insufficient for the aircraft’s weight and configuration. The captain also failed to properly update the FMS, and the flap setting remained incorrect. The aircraft continued the takeoff with reduced thrust instead of maximum TOGA thrust. Poor CRM was also a major factor because the first officer did not effectively challenge the captain’s decision. The aircraft failed to climb properly and struck ground equipment, causing serious damage. Fortunately, there were no injuries. The main safety lesson is that runway data, aircraft configuration, and crew communication must always be verified before takeoff." },
+    { q: "Personal opinion", a: "In my opinion, this accident shows that aviation safety depends not only on aircraft systems but also on disciplined procedures and clear communication between crew members." },
+    { q: "Present perfect — narration", a: "This accident has shown how quickly a takeoff can become unsafe when several small errors are not corrected in time. The aircraft has entered the runway at the wrong intersection, so the available runway distance has become too short for the aircraft’s weight and configuration. The flight management system has not been updated correctly, and the flap setting has remained wrong. Also, the crew has continued the takeoff with reduced thrust instead of maximum takeoff thrust. Another important factor has been poor crew resource management. The first officer has not challenged the captain effectively, so the error chain has continued. As a result, the aircraft has failed to climb properly and has hit ground equipment. The aircraft has been seriously damaged, but fortunately, no one has been injured. From a safety perspective, this accident has demonstrated that runway data, aircraft configuration, thrust setting, and crew communication must always be checked before takeoff." },
+    { q: "Present perfect — repeat-after-me drill", a: "The aircraft has entered the wrong runway intersection. The available runway distance has become insufficient. The flight management system has not been updated correctly. The flap setting has remained incorrect. The crew has continued the takeoff with reduced thrust. The first officer has not challenged the captain effectively. The aircraft has failed to climb properly. The aircraft has been seriously damaged. Fortunately, no one has been injured. This accident has shown the importance of disciplined procedures." },
+    { q: "Passive voice — narration", a: "This accident was created by several errors during takeoff preparation. The aircraft was positioned on the runway from the wrong intersection. Because of that, the available takeoff distance was reduced. The runway distance was not enough for the aircraft’s weight and configuration. The flight management system was not updated correctly, and the correct flap setting was not selected. Also, reduced thrust was used instead of maximum takeoff thrust. As a result, the aircraft’s performance was reduced. Another important problem was crew communication. The captain’s decision was not challenged effectively, so the mistake was not corrected before takeoff. After rotation, the aircraft was not able to climb normally. Ground equipment was hit, and the aircraft was seriously damaged. Fortunately, no one was injured. From a safety perspective, all takeoff data must be checked, the aircraft configuration must be confirmed, and any doubt must be discussed by the crew before takeoff." },
+    { q: "Passive voice — repeat-after-me drill", a: "The aircraft was lined up from the wrong intersection. The available runway distance was reduced. The flight management system was not updated correctly. The correct flap setting was not selected. Reduced thrust was used instead of maximum takeoff thrust. The captain’s decision was not challenged effectively. The error chain was not broken. Ground equipment was struck during takeoff. The aircraft was seriously damaged. No injuries were reported. Runway data must be verified before takeoff. Aircraft configuration must be confirmed before departure." },
+    { q: "Final summary", a: "This accident happened during takeoff at Belgrade. The aircraft entered the runway from the wrong intersection, so the available takeoff distance was not sufficient for the aircraft’s weight and configuration. The flight management system was not updated correctly, the flap setting was wrong, and reduced thrust was used instead of maximum takeoff thrust. Crew communication was also weak because the first officer did not challenge the captain effectively. As a result, the aircraft could not climb properly and hit ground equipment. The aircraft was seriously damaged, but fortunately, no one was injured. The main safety lesson is clear: before takeoff, runway data, aircraft configuration, thrust setting, and crew communication must always be verified. Safety depends on good procedures, cross-checking, and teamwork." },
+    { q: "Final repeat-after-me drill", a: "The aircraft entered the runway from the wrong intersection. The available takeoff distance was not sufficient. The flight management system was not updated correctly. The flap setting was wrong. Reduced thrust was used instead of maximum takeoff thrust. Crew communication was weak. The first officer did not challenge the captain effectively. The aircraft could not climb properly. The aircraft was seriously damaged. Runway data must always be verified before takeoff. Aircraft configuration must always be checked. Safety depends on cross-checking and teamwork." }
+  ]}
+];
+
+const audio = document.getElementById('audio');
+const railEl = document.getElementById('rail');
+const transcriptEl = document.getElementById('transcript');
+const nowPlaying = document.getElementById('nowPlaying');
+const playBtn = document.getElementById('playBtn');
+const playIcon = document.getElementById('playIcon');
+const curTime = document.getElementById('curTime');
+const durTime = document.getElementById('durTime');
+const scrub = document.getElementById('scrub');
+const scrubFill = document.getElementById('scrubFill');
+
+const PLAY = 'M8 5v14l11-7z';
+const PAUSE = 'M6 5h4v14H6zM14 5h4v14h-4z';
+
+let current = -1;
+let segEls = [];
+let timings = [];
+let activeIdx = -1;
+
+function fmt(s) {
+  if (!isFinite(s)) return '00:00';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+function buildRail() {
+  railEl.innerHTML = CHAPTERS.map((c, i) =>
+    `<button class="chap-btn" data-i="${i}"><span class="num">${c.num}</span>${c.title}</button>`
+  ).join('');
+  railEl.querySelectorAll('.chap-btn').forEach(btn =>
+    btn.addEventListener('click', () => loadChapter(+btn.dataset.i, true)));
+}
+
+function loadChapter(i, autoplay) {
+  if (i === current) { if (autoplay) togglePlay(); return; }
+  current = i;
+  const ch = CHAPTERS[i];
+  audio.src = DIR + ch.mp3;
+  audio.load();
+  nowPlaying.textContent = `Chapter ${ch.num} — ${ch.title}`;
+  timings = [];
+  activeIdx = -1;
+  scrubFill.style.width = '0';
+  curTime.textContent = '00:00';
+  durTime.textContent = '00:00';
+
+  transcriptEl.innerHTML = ch.segments.map((s, idx) =>
+    `<div class="seg" data-idx="${idx}"><div class="seg-q">${s.q}</div><p class="seg-a">${s.a}</p></div>`
+  ).join('');
+  segEls = [...transcriptEl.querySelectorAll('.seg')];
+  segEls.forEach((el, idx) => el.addEventListener('click', () => seekToSeg(idx)));
+
+  railEl.querySelectorAll('.chap-btn').forEach((b, bi) => b.classList.toggle('active', bi === i));
+  if (autoplay) audio.play();
+}
+
+function computeTimings() {
+  const ch = CHAPTERS[current];
+  const dur = audio.duration;
+  if (!dur || !isFinite(dur)) { timings = []; return; }
+  const lens = ch.segments.map(s => s.a.length);
+  const total = lens.reduce((a, b) => a + b, 0);
+  let acc = 0;
+  timings = lens.map(l => {
+    const start = (acc / total) * dur;
+    acc += l;
+    return { start, end: (acc / total) * dur };
+  });
+}
+
+function setActive(idx) {
+  if (idx === activeIdx) return;
+  activeIdx = idx;
+  segEls.forEach((el, i) => el.classList.toggle('active', i === idx));
+  if (idx >= 0 && segEls[idx]) segEls[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function seekToSeg(idx) {
+  if (!timings.length) computeTimings();
+  if (timings[idx]) {
+    audio.currentTime = timings[idx].start + 0.05;
+    audio.play();
+  }
+}
+
+function togglePlay() {
+  if (current === -1) { loadChapter(0, true); return; }
+  if (audio.paused) audio.play(); else audio.pause();
+}
+
+playBtn.addEventListener('click', togglePlay);
+audio.addEventListener('play', () => playIcon.setAttribute('d', PAUSE));
+audio.addEventListener('pause', () => playIcon.setAttribute('d', PLAY));
+audio.addEventListener('loadedmetadata', () => { computeTimings(); durTime.textContent = fmt(audio.duration); });
+audio.addEventListener('timeupdate', () => {
+  curTime.textContent = fmt(audio.currentTime);
+  const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+  scrubFill.style.width = pct + '%';
+  if (!timings.length) computeTimings();
+  if (!timings.length) return;
+  const t = audio.currentTime;
+  let idx = timings.findIndex(s => t >= s.start && t < s.end);
+  if (idx === -1 && timings.length && t >= timings[timings.length - 1].end - 0.25) idx = timings.length - 1;
+  setActive(idx);
+});
+
+scrub.addEventListener('click', (e) => {
+  if (!audio.duration) return;
+  const rect = scrub.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+});
+
+document.querySelectorAll('.speed-btn').forEach(btn =>
+  btn.addEventListener('click', () => {
+    audio.playbackRate = parseFloat(btn.dataset.rate);
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  })
+);
+
+// Theme
+const themeBtn = document.getElementById('themeBtn');
+const themeLabel = document.getElementById('themeLabel');
+function applyTheme(night) {
+  document.body.classList.toggle('night', night);
+  themeLabel.textContent = night ? 'Day mode' : 'Night mode';
+}
+applyTheme(localStorage.getItem('fa-theme') === 'night');
+themeBtn.addEventListener('click', () => {
+  const night = !document.body.classList.contains('night');
+  applyTheme(night);
+  localStorage.setItem('fa-theme', night ? 'night' : 'day');
+});
+
+buildRail();
+loadChapter(0, false);
+</script>
+</body>
+</html>
