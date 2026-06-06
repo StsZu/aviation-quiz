@@ -18,7 +18,7 @@
 - **Songs** — пісні (`songs.html`): картки з обкладинками, клік відкриває плеєр + текст.
 - **Cockpit Class** — імерсивні уроки в підпапці `aviation_english_cockpit_class/` (власний темний дизайн, Web Speech API). Картка на головній веде на сторінку уроку.
 - **Crosswords** — інтерактивні кросворди + тренажери набору тексту. **Усі кросворди лежать у підпапці `Crosswords/`** (напр. `Crosswords/1_crossword.html`). Картка на головній веде на сторінку кросворду.
-- **Flight Academy Trainer** — «слухай + читай синхронно»: програвач MP3 + транскрипт, у якому активна відповідь підсвічується в такт аудіо (автоскрол, клік-на-відповідь → перемотка). Підпапка `Flight_academy_trainer/`; перший курс — Pilot Guide LSA (7 розділів, MP3 у `Pilot_Guide_LSA/`).
+- **Flight Academy Trainer** — «слухай + читай синхронно»: програвач MP3 + транскрипт, у якому активна відповідь підсвічується в такт аудіо (автоскрол, клік-на-відповідь → перемотка). Підпапка `Flight_academy_trainer/`; кожен **курс — окрема сторінка зі своєю папкою аудіо** й окремою карткою (тег «Listen & Read»). Зараз два курси: Pilot Guide LSA (`flight_academy_trainer.html`, 7 розділів, аудіо в `Pilot_Guide_LSA/`) і Embraer E190 Belgrade (`belgrade_takeoff_accident_trainer.html`, 14 розділів, аудіо в `Belgrade_Accident/`).
 
 Головна `index.html` — це меню-дашборд: картки всіх розділів (рендеряться з масиву `MODULES`), пошук + фільтри за категоріями, чекбокси прогресу (зберігаються в браузері), міні-дрил ATC і перемикач день/ніч.
 
@@ -44,10 +44,15 @@
 
 ### Flight Academy Trainer (folder-backed секція)
 
-- Сторінка `Flight_academy_trainer/flight_academy_trainer.html`, аудіо в `Flight_academy_trainer/Pilot_Guide_LSA/*.mp3` (імена lowercase-hyphen).
-- Контент = масив `CHAPTERS` у JS: `{ num, title, mp3, segments: [{ q, a }] }`. Додати розділ — дописати об'єкт у масив + покласти MP3.
-- Синхронізація зараз **приблизна** (рахується з довжини тексту відповіді). Точні таймкоди по реченнях — наступний крок через forced alignment (`aeneas` → `chapters.json`).
-- Підпапка, тож back-link `← All quizzes` → `../index.html`, картка в `index.html` → `Flight_academy_trainer/flight_academy_trainer.html`.
+- Кожен курс = **окрема standalone-сторінка** + **своя папка аудіо** + своя картка в `index.html` (тег «Listen & Read»). Курси не змішуються в одному файлі.
+  - Pilot Guide LSA: `Flight_academy_trainer/flight_academy_trainer.html`, аудіо в `Pilot_Guide_LSA/` (7 розділів).
+  - Embraer E190 Belgrade: `Flight_academy_trainer/belgrade_takeoff_accident_trainer.html`, аудіо в `Belgrade_Accident/` (14 розділів).
+- Контент = масив `CHAPTERS` у JS: `{ num, title, mp3, segments: [{ q, a }] }`; `const DIR` вказує на папку аудіо курсу. `q` — заголовок секції, `a` — дослівний озвучений текст.
+- **Стандарт: один MP3 на розділ** (`NN-<slug>.mp3`), коли матеріал має ≥3 секції — повноцінна «рейка» розділів і точніша синхронізація.
+- Синхронізація зараз **приблизна** (рахується з довжини тексту `a`). Точні таймкоди по реченнях — наступний крок через forced alignment (`aeneas` → `chapters.json`).
+- **Audacity-проєкт (`*.aup3*`) не комітимо** — у репо йдуть лише експортовані MP3 (+ опційно `.md`-транскрипт).
+- Підпапка, тож back-link `← All quizzes` → `../index.html`, картка в `index.html` → `Flight_academy_trainer/<курс>_trainer.html`.
+- **Повна специфікація додавання курсу — `Flight_academy_trainer/README.md`.**
 
 ## Дві папки (ролі)
 
