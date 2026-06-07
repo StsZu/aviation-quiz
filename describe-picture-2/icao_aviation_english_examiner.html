@@ -1,0 +1,1365 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICAO Level 5 Aviation English Simulator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Inter & JetBrains Mono for Cockpit HUD styling -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Cockpit Indicators and Navigation -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        hud: {
+                            gold: '#F59E0B',
+                            green: '#10B981',
+                            blue: '#3B82F6',
+                            sky: '#0EA5E9',
+                            danger: '#EF4444',
+                        }
+                    },
+                    boxShadow: {
+                        'hud-glow': '0 0 15px rgba(245, 158, 11, 0.4)',
+                        'hud-green-glow': '0 0 15px rgba(16, 185, 129, 0.4)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styled scrolls & animations */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        .light ::-webkit-scrollbar-thumb {
+            background: #CBD5E1;
+            border-radius: 4px;
+        }
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+        .scanline::after {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 10;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-100 transition-colors duration-300 dark font-sans antialiased">
+
+    <a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(15,23,42,0.85);color:#fff;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.25);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);">&larr; All quizzes</a>
+
+    <!-- TOP HEADER / NAV BAR -->
+    <header class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40 px-4 py-3">
+        <div class="max-w-7xl mx-auto flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="h-10 w-10 rounded-lg bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg">
+                    <i class="fa-solid fa-plane-departure text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="font-extrabold text-lg tracking-wider font-mono text-white flex items-center gap-2">
+                        ICAO MASTER <span class="text-xs bg-sky-500/10 text-sky-400 border border-sky-500/30 px-2 py-0.5 rounded-full uppercase">L5 COCKPIT</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Tactical Safety Speculation & Image Description Simulator</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-4">
+                <!-- Theme Toggle Button -->
+                <button onclick="toggleTheme()" class="p-2.5 rounded-lg border border-slate-800 bg-slate-900 hover:bg-slate-800 transition-colors" title="Toggle Day/Night Mode">
+                    <i id="theme-icon" class="fa-solid fa-moon text-amber-400"></i>
+                    <span id="theme-text" class="text-xs font-mono ml-2">COCKPIT NIGHT</span>
+                </button>
+                
+                <!-- Quick Alt Altimeter HUD -->
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs font-mono text-emerald-400">
+                    <i class="fa-solid fa-gauge-high"></i>
+                    <span>SYS CHK: OK</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN DASHBOARD WRAPPER -->
+    <main class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-8">
+        
+        <!-- HERO / MISSION PANEL -->
+        <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-950 via-slate-950 to-slate-900 border border-slate-800 p-6 md:p-8 shadow-2xl">
+            <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-sky-900/10 via-transparent to-transparent"></div>
+            
+            <div class="relative z-10 grid md:grid-cols-3 gap-8 items-center">
+                <div class="md:col-span-2 space-y-4">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs font-semibold">
+                        <span class="flex h-2 w-2 rounded-full bg-indigo-400 animate-pulse"></span>
+                        ICAO SPEAKING PREPARATION PLATFORM
+                    </div>
+                    <h2 class="text-3xl md:text-4xl font-extrabold text-white tracking-tight">
+                        Aviation Operational Safety English
+                    </h2>
+                    <p class="text-slate-300 max-w-xl text-sm md:text-base leading-relaxed">
+                        For pilots and air traffic personnel targeting ICAO Level 4 & 5. Master high-stake deductions, safety analysis, and the critical five-step description workflow using dynamic simulator drills.
+                    </p>
+                    <div class="flex flex-wrap gap-4 pt-2">
+                        <div class="flex items-center gap-2 text-xs text-slate-400 font-mono">
+                            <span class="h-1.5 w-1.5 rounded-full bg-sky-400"></span>
+                            Modal Speculations
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-slate-400 font-mono">
+                            <span class="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                            Safety Risk Analysis
+                        </div>
+                        <div class="flex items-center gap-2 text-xs text-slate-400 font-mono">
+                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                            Radio VHF Drill Module
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- COCKPIT INSTRUMENT: PRIMARY ATTITUDE HUD -->
+                <div class="flex flex-col items-center justify-center bg-slate-950/80 p-4 rounded-xl border border-slate-800 relative shadow-inner">
+                    <div class="text-[10px] font-mono text-slate-400 mb-2 tracking-widest flex justify-between w-full px-2">
+                        <span>ATTITUDE HUD</span>
+                        <span id="hud-status" class="text-emerald-400 animate-pulse">ACTIVE</span>
+                    </div>
+                    
+                    <!-- HTML5 Artificial Horizon widget -->
+                    <div class="relative w-44 h-44 rounded-full overflow-hidden border-4 border-slate-700 bg-slate-950 shadow-inner flex items-center justify-center">
+                        <!-- Horizon Disk -->
+                        <div id="horizon-disk" class="absolute w-[200%] h-[200%] transition-transform duration-700 ease-out flex flex-col" style="transform: rotate(0deg) translateY(0px);">
+                            <div class="w-full h-1/2 bg-sky-500 flex items-end justify-center pb-2">
+                                <span class="text-[9px] font-mono font-bold text-white/50">SKY</span>
+                            </div>
+                            <div class="w-full h-1/2 bg-amber-800 flex items-start justify-center pt-2 border-t-2 border-white">
+                                <span class="text-[9px] font-mono font-bold text-white/50">GROUND</span>
+                            </div>
+                        </div>
+                        <!-- Aircraft Reference Lines (Foreground Static) -->
+                        <div class="absolute inset-0 flex items-center justify-center z-20 pointer-events-none">
+                            <!-- Left Wing Pip -->
+                            <div class="w-10 h-1.5 bg-yellow-400 rounded-sm relative">
+                                <div class="absolute right-0 bottom-0 w-1.5 h-4 bg-yellow-400"></div>
+                            </div>
+                            <!-- Center Indicator Pip -->
+                            <div class="w-3 h-3 rounded-full border-2 border-yellow-400 bg-slate-900 mx-2"></div>
+                            <!-- Right Wing Pip -->
+                            <div class="w-10 h-1.5 bg-yellow-400 rounded-sm relative">
+                                <div class="absolute left-0 bottom-0 w-1.5 h-4 bg-yellow-400"></div>
+                            </div>
+                        </div>
+                        <!-- Degrees Marker -->
+                        <div class="absolute inset-2 border border-white/10 rounded-full z-10 pointer-events-none flex flex-col justify-between items-center text-[8px] text-white/30 font-mono">
+                            <span>10°</span>
+                            <div class="w-full flex justify-between px-1"><span>L</span><span>R</span></div>
+                            <span>10°</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-3 flex justify-between w-full text-[10px] font-mono text-slate-400 px-2">
+                        <div>PITCH: <span id="pitch-val" class="text-white">0°</span></div>
+                        <div>ROLL: <span id="roll-val" class="text-white">0°</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CORE METHODOLOGY SECTION -->
+        <section class="grid lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 space-y-4">
+                <div class="p-6 rounded-xl border border-slate-800 bg-slate-950 relative">
+                    <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-list-ol text-sky-400"></i> The ICAO 5-Step Image Description Workflow
+                    </h3>
+                    <p class="text-slate-400 text-sm mb-6 leading-relaxed">
+                        To score high in the speaking assessment, avoid random statements. Follow this structured 5-step analysis methodically to convey maximum technical and hazard information clearly.
+                    </p>
+                    
+                    <div class="grid sm:grid-cols-5 gap-3">
+                        <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800 text-center hover:border-sky-500/50 transition-all cursor-help" title="Establish the immediate context">
+                            <div class="text-lg font-black text-sky-400 font-mono">01</div>
+                            <div class="text-xs font-semibold text-white mt-1">Topic</div>
+                            <p class="text-[10px] text-slate-500 mt-1">State immediate emergency/scene</p>
+                        </div>
+                        <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800 text-center hover:border-sky-500/50 transition-all cursor-help" title="Identify the airframe configuration and model">
+                            <div class="text-lg font-black text-sky-400 font-mono">02</div>
+                            <div class="text-xs font-semibold text-white mt-1">Aircraft</div>
+                            <p class="text-[10px] text-slate-500 mt-1">Nacelle, high-wing, landing gear</p>
+                        </div>
+                        <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800 text-center hover:border-sky-500/50 transition-all cursor-help" title="Generate operational logic hypotheses">
+                            <div class="text-lg font-black text-sky-400 font-mono">03</div>
+                            <div class="text-xs font-semibold text-white mt-1">Hypothesise</div>
+                            <p class="text-[10px] text-slate-500 mt-1">Deduce underlying factors</p>
+                        </div>
+                        <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800 text-center hover:border-sky-500/50 transition-all cursor-help" title="Explore apron, taxiway, or terrain features">
+                            <div class="text-lg font-black text-sky-400 font-mono">04</div>
+                            <div class="text-xs font-semibold text-white mt-1">Background</div>
+                            <p class="text-[10px] text-slate-500 mt-1">Tugs, crash barriers, responders</p>
+                        </div>
+                        <div class="p-3.5 rounded-lg bg-slate-900 border border-slate-800 text-center hover:border-sky-500/50 transition-all cursor-help" title="Confirm current meteorological and visibility conditions">
+                            <div class="text-lg font-black text-sky-400 font-mono">05</div>
+                            <div class="text-xs font-semibold text-white mt-1">Weather</div>
+                            <p class="text-[10px] text-slate-500 mt-1">Overcast, gusts, visibility, hazard</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRAMMAR ENGINE PATTERN MATRIX -->
+            <div class="p-6 rounded-xl border border-slate-800 bg-slate-950 flex flex-col justify-between">
+                <div>
+                    <h3 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-brain text-amber-400"></i> ICAO-5 Speculative Logic
+                    </h3>
+                    <p class="text-xs text-slate-400 mb-4">
+                        Modals showing deduction, logical certainty, and safety requirements. Click syntax lines to explore technical nuances.
+                    </p>
+                    
+                    <div class="space-y-2.5">
+                        <div class="p-2.5 rounded bg-slate-900 border border-l-4 border-l-amber-500 border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-mono text-amber-400 font-bold">Must have been</span>
+                                <span class="text-slate-400 block text-[10px]">High logical certainty / Past</span>
+                            </div>
+                            <i class="fa-solid fa-circle-info text-slate-500" title="Used when evidence points to a single logical explanation."></i>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-900 border border-l-4 border-l-sky-500 border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-mono text-sky-400 font-bold">Might / May have been</span>
+                                <span class="text-slate-400 block text-[10px]">Logical possibility / Unconfirmed</span>
+                            </div>
+                            <i class="fa-solid fa-circle-info text-slate-500" title="Speculates on potential root causes (e.g., fuel exhaustion)."></i>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-900 border border-l-4 border-l-red-500 border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-mono text-red-400 font-bold">Could have led to</span>
+                                <span class="text-slate-400 block text-[10px]">Hypothetical danger / Catastrophe</span>
+                            </div>
+                            <i class="fa-solid fa-circle-info text-slate-500" title="Evaluates worst-case scenario outcomes if unchecked."></i>
+                        </div>
+                        <div class="p-2.5 rounded bg-slate-900 border border-l-4 border-l-emerald-500 border-slate-800 flex justify-between items-center text-xs">
+                            <div>
+                                <span class="font-mono text-emerald-400 font-bold">From a safety standpoint...</span>
+                                <span class="text-slate-400 block text-[10px]">Regulatory & risk perspective</span>
+                            </div>
+                            <i class="fa-solid fa-circle-info text-slate-500" title="Frames professional piloting assessments."></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DYNAMIC EVENT CORE SIMULATOR HUB -->
+        <section class="border border-slate-800 bg-slate-950 rounded-2xl overflow-hidden shadow-2xl">
+            <!-- Event Hub Control Bar -->
+            <div class="bg-slate-900 border-b border-slate-800 px-4 py-4 flex flex-wrap gap-2 items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="flex h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                    <h3 class="font-bold text-sm tracking-wider font-mono text-white">SELECT SIMULATION FEED:</h3>
+                </div>
+                
+                <div class="flex flex-wrap gap-2" id="event-selector-tabs">
+                    <!-- Tabs rendered dynamically -->
+                </div>
+            </div>
+
+            <!-- Active Case Content -->
+            <div class="p-6 grid lg:grid-cols-12 gap-8 items-start">
+                <!-- Image & Metadata Indicator -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="relative rounded-xl overflow-hidden border border-slate-800 bg-slate-900 shadow-lg group">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent z-10"></div>
+                        <img id="case-image" src="" alt="Active Aviation Scene Feed" class="w-full h-80 object-cover object-center group-hover:scale-[1.02] transition-transform duration-500">
+                        
+                        <!-- Metadata Badges over Image -->
+                        <div class="absolute top-4 left-4 z-20 flex gap-2">
+                            <span class="bg-slate-950/90 text-[10px] font-mono font-semibold tracking-wider text-sky-400 px-2 py-1 rounded border border-slate-800">
+                                FEED: CAM-0<span id="meta-feed-id">1</span>
+                            </span>
+                        </div>
+                        <div class="absolute bottom-4 left-4 right-4 z-20">
+                            <span id="meta-location" class="text-xs font-mono font-semibold text-emerald-400">ACTIVE COCKPIT VIEW</span>
+                            <h4 id="case-title" class="text-lg font-extrabold text-white leading-tight mt-1">Event Title</h4>
+                        </div>
+                    </div>
+                    
+                    <!-- Wind & Safety Conditions Telemetry Widget -->
+                    <div class="p-4 rounded-xl border border-slate-800 bg-slate-900 grid grid-cols-2 gap-4">
+                        <div class="border-r border-slate-800/80 pr-2">
+                            <span class="text-[9px] font-mono text-slate-500 uppercase block">Simulated Incident Severity</span>
+                            <span id="telemetry-severity" class="text-sm font-bold font-mono tracking-wide text-amber-500">LEVEL 4 - CRITICAL</span>
+                        </div>
+                        <div class="pl-2">
+                            <span class="text-[9px] font-mono text-slate-500 uppercase block">Risk Threat Type</span>
+                            <span id="telemetry-threat" class="text-sm font-bold font-mono tracking-wide text-red-500">COLLISION</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step Explorer & Safety Assessment -->
+                <div class="lg:col-span-7 space-y-6">
+                    <!-- Step navigation -->
+                    <div>
+                        <div class="flex border-b border-slate-800" role="tablist" id="step-nav">
+                            <button onclick="setActiveStep('topic')" id="btn-step-topic" class="flex-1 py-2 text-center text-xs font-mono font-bold border-b-2 border-sky-500 text-sky-400 transition-all">
+                                01. Topic
+                            </button>
+                            <button onclick="setActiveStep('aircraft')" id="btn-step-aircraft" class="flex-1 py-2 text-center text-xs font-mono font-bold border-b-2 border-transparent text-slate-400 hover:text-white transition-all">
+                                02. Aircraft
+                            </button>
+                            <button onclick="setActiveStep('hypothesise')" id="btn-step-hypothesise" class="flex-1 py-2 text-center text-xs font-mono font-bold border-b-2 border-transparent text-slate-400 hover:text-white transition-all">
+                                03. Hypothesise
+                            </button>
+                            <button onclick="setActiveStep('background')" id="btn-step-background" class="flex-1 py-2 text-center text-xs font-mono font-bold border-b-2 border-transparent text-slate-400 hover:text-white transition-all">
+                                04. Background
+                            </button>
+                            <button onclick="setActiveStep('weather')" id="btn-step-weather" class="flex-1 py-2 text-center text-xs font-mono font-bold border-b-2 border-transparent text-slate-400 hover:text-white transition-all">
+                                05. Weather
+                            </button>
+                        </div>
+                        
+                        <!-- Step Content Pane -->
+                        <div class="py-4 bg-slate-900/40 p-4 rounded-b-xl border-x border-b border-slate-800/60 min-h-[140px] flex items-center">
+                            <div class="space-y-2 w-full">
+                                <h5 class="text-xs uppercase tracking-wider text-sky-400 font-mono font-bold" id="step-header">STEP ANALYSIS</h5>
+                                <p id="step-body-text" class="text-slate-300 text-sm md:text-base leading-relaxed">Select a step tab above to analyze this segment of the visual feed in detail.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ICAO-5 Logic & Safety Analysis Section -->
+                    <div class="p-5 rounded-xl border border-slate-800 bg-slate-900 space-y-4">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <h4 class="font-bold text-white text-sm tracking-wide font-mono flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved text-emerald-400"></i> Deductive Safety Assessment
+                            </h4>
+                            <span class="text-[9px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded uppercase font-mono font-semibold">Verified Safety Protocol</span>
+                        </div>
+                        
+                        <p id="analysis-text" class="text-slate-300 text-sm leading-relaxed italic bg-slate-950/40 p-3 rounded border border-slate-800/80">
+                            Loading emergency logic analysis...
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SPEAKING COACH SIMULATOR & VHF DRILL MODULE -->
+        <section class="grid lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- SPEAKING TRAINER PANELS -->
+            <div class="lg:col-span-7 space-y-6">
+                <div class="p-6 rounded-2xl border border-slate-800 bg-slate-950 space-y-6">
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-microphone-lines text-sky-400 animate-pulse"></i> Technical Speaking Challenge
+                            </h3>
+                            <p class="text-xs text-slate-400">Targeting immediate fluency, deductive structure, and safe tactical choice</p>
+                        </div>
+                        <!-- Score panel -->
+                        <div class="text-right">
+                            <div class="text-slate-500 text-[10px] uppercase font-mono">Exam Session</div>
+                            <div id="speak-stats" class="text-sky-400 font-bold font-mono text-sm">READY</div>
+                        </div>
+                    </div>
+
+                    <!-- Question Prompt Box -->
+                    <div class="p-4 rounded-xl border border-slate-800 bg-slate-900/60 space-y-2 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 h-1.5 w-full bg-gradient-to-r from-sky-500 to-indigo-600"></div>
+                        <span class="text-[9px] font-mono text-slate-500 font-bold uppercase tracking-wider block">EXAMINER QUESTION</span>
+                        <p id="speaking-question" class="text-sm md:text-base font-semibold text-white">Why do you think the aircraft landed here, and how do you assess the pilot's decision?</p>
+                    </div>
+
+                    <!-- Control Deck for Speaking Practise -->
+                    <div class="flex flex-wrap items-center gap-4 justify-between bg-slate-900 p-4 rounded-xl border border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <button onclick="startSpeakingTimer()" id="speak-action-btn" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 active:bg-indigo-800 text-white font-bold text-xs rounded-lg flex items-center gap-2 transition-all shadow-md shadow-indigo-600/10">
+                                <i class="fa-solid fa-stopwatch text-sm"></i> START SPEAKING RUN (90s)
+                            </button>
+                            <button onclick="toggleVisualMic()" id="mic-test-btn" class="p-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-lg border border-slate-700 transition-colors" title="Test Live Microphone Visualizer">
+                                <i id="mic-btn-icon" class="fa-solid fa-microphone-slash text-xs text-red-400"></i>
+                            </button>
+                        </div>
+                        <div id="countdown-timer" class="text-2xl font-black font-mono text-slate-400">
+                            00:<span id="timer-val">00</span>
+                        </div>
+                    </div>
+
+                    <!-- MIC VOICE WAVEFORM PANEL -->
+                    <div id="mic-visualizer-panel" class="hidden p-4 rounded-xl border border-slate-800 bg-slate-900/40 relative">
+                        <div class="flex justify-between items-center mb-1 text-[10px] font-mono text-slate-400">
+                            <span>LIVE AUDIO SIGNAL STREAM</span>
+                            <span class="text-emerald-400 animate-pulse flex items-center gap-1">
+                                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> MIC CAPTURING
+                            </span>
+                        </div>
+                        <canvas id="waveform-canvas" class="w-full h-12 bg-slate-950 rounded border border-slate-800"></canvas>
+                        <p class="text-[10px] text-slate-500 mt-1">Note: This is a safe browser-based local visualization. No audio data leaves your workstation.</p>
+                    </div>
+
+                    <!-- AI Evaluator Criteria Checklist -->
+                    <div class="space-y-3">
+                        <span class="text-xs font-mono text-slate-500 font-bold uppercase tracking-wider block">Aviation Speaking Checkpoints (Practice aloud to check off):</span>
+                        <div class="grid sm:grid-cols-2 gap-2" id="checklist-goals">
+                            <!-- Items populated dynamically based on current event -->
+                        </div>
+                    </div>
+
+                    <!-- MODEL ANSWER BOX -->
+                    <div class="space-y-3">
+                        <button onclick="toggleModelAnswer()" class="w-full py-2 bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold font-mono text-slate-300 rounded-lg flex items-center justify-center gap-2 transition-colors">
+                            <i id="model-ans-icon" class="fa-solid fa-eye"></i> <span id="model-ans-text">REVEAL EXAM-SAFE MODEL ANSWER</span>
+                        </button>
+                        
+                        <div id="model-answer-pane" class="hidden p-4 rounded-xl border border-slate-800 bg-slate-900/80 text-sm leading-relaxed text-slate-200 font-sans relative">
+                            <div class="absolute top-2 right-2 flex items-center gap-1.5 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-[9px] px-1.5 py-0.5 rounded font-mono">
+                                <i class="fa-solid fa-circle-check"></i> ICAO Level 5+ compliant
+                            </div>
+                            <p id="model-answer-content">Loading model answer text...</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VHF REPEAT DRIL & RADIO EFFECT SYNTHESIS MODULE -->
+            <div class="lg:col-span-5 space-y-6">
+                <!-- VHF RADIO STATIC SIMULATOR -->
+                <div class="p-6 rounded-2xl border border-slate-800 bg-slate-950 space-y-6 relative overflow-hidden scanline">
+                    <div class="absolute inset-0 bg-emerald-500/[0.01] pointer-events-none"></div>
+                    
+                    <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-white font-mono flex items-center gap-2">
+                                <i class="fa-solid fa-tower-broadcast text-emerald-400"></i> VHF Aviation Radio Drill
+                            </h3>
+                            <p class="text-[10px] text-slate-500 font-sans">Practice correct aviation pacing and structures with simulated VHF effects</p>
+                        </div>
+                        
+                        <!-- VHF Squelch Switcher -->
+                        <div class="flex items-center gap-2">
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="vhf-static-toggle" class="sr-only peer" checked>
+                                <div class="w-8 h-4 bg-slate-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-slate-400 after:border-slate-300 after:border after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:bg-emerald-600"></div>
+                                <span class="ml-2 text-[9px] font-mono text-slate-400">VHF RX EFFECT</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Repeat instructions -->
+                    <div class="p-3 bg-slate-900/50 rounded-lg border border-slate-800 text-xs text-slate-300">
+                        <span class="font-bold text-emerald-400">HOW TO PRACTICE:</span> Read each key line below aloud to cement past speculation and hazard modal grammar. Click the audio play button to hear standard cockpit communication patterns!
+                    </div>
+
+                    <!-- Drill Lines deck -->
+                    <div class="space-y-3" id="drill-container">
+                        <!-- Populated dynamically via current event drills -->
+                    </div>
+                </div>
+
+                <!-- QUICK GLOSSARY / COCKPIT DICTIONARY -->
+                <div class="p-5 rounded-2xl border border-slate-800 bg-slate-950 space-y-3">
+                    <h4 class="font-bold text-white text-xs tracking-wider uppercase font-mono flex items-center gap-2 border-b border-slate-800 pb-2">
+                        <i class="fa-solid fa-book-atlas text-indigo-400"></i> Critical Operations Glossary
+                    </h4>
+                    <div class="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        <div class="text-xs">
+                            <span class="font-mono text-indigo-400 font-semibold">Crabbed</span>
+                            <span class="text-slate-400"> - Nose angled towards wind vector to maintain straight runway centerline track.</span>
+                        </div>
+                        <div class="text-xs">
+                            <span class="font-mono text-indigo-400 font-semibold">Balked Landing</span>
+                            <span class="text-slate-400"> - An aborted landing approach at very low level, leading directly to a go-around.</span>
+                        </div>
+                        <div class="text-xs">
+                            <span class="font-mono text-indigo-400 font-semibold">Nacelle / Cowling</span>
+                            <span class="text-slate-400"> - The external housing or aerodynamic skin surrounding an aircraft's turbine engine.</span>
+                        </div>
+                        <div class="text-xs">
+                            <span class="font-mono text-indigo-400 font-semibold">Apron / Ramp</span>
+                            <span class="text-slate-400"> - Defined operational area on an airfield intended to accommodate aircraft for loading and turnaround.</span>
+                        </div>
+                        <div class="text-xs">
+                            <span class="font-mono text-indigo-400 font-semibold">Overpass / Elevated Highway</span>
+                            <span class="text-slate-400"> - A concrete bridge structure carrying a public roadway over other infrastructure.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MULTI-FORMAT QUIZ SECTION -->
+        <section class="p-6 rounded-2xl border border-slate-800 bg-slate-950 space-y-6">
+            <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+                <div>
+                    <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-vial text-purple-400"></i> Interactive Safety Evaluation Deck
+                    </h3>
+                    <p class="text-xs text-slate-400">Verify your grasp of aeronautical reasoning and logical deduction structures</p>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs text-slate-500 font-mono block uppercase">Interactive Assessment Score</span>
+                    <span id="quiz-score" class="text-xl font-mono font-bold text-sky-400">0 / 0</span>
+                </div>
+            </div>
+
+            <div class="grid md:grid-cols-12 gap-8 items-start">
+                <!-- Left panel: Current Quiz card -->
+                <div class="md:col-span-8 bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4">
+                    <div class="flex justify-between items-center">
+                        <span class="text-[10px] font-mono text-purple-400 uppercase font-bold" id="quiz-q-num">QUESTION 1 OF 5</span>
+                        <span class="text-[10px] font-mono text-slate-500" id="quiz-q-category">DEDUCTIVE LOGIC</span>
+                    </div>
+
+                    <h4 class="font-bold text-white text-base md:text-lg" id="quiz-question-text">
+                        Loading test question...
+                    </h4>
+
+                    <!-- Dynamic options deck -->
+                    <div class="grid gap-3 pt-2" id="quiz-options-container">
+                        <!-- Options injected dynamically -->
+                    </div>
+
+                    <!-- Corrective feedback box -->
+                    <div id="quiz-feedback-box" class="hidden p-4 rounded-lg text-sm border">
+                        <div class="flex gap-2 items-start">
+                            <i id="feedback-icon" class="fa-solid mt-0.5"></i>
+                            <div>
+                                <span id="feedback-status" class="font-bold block uppercase tracking-wide text-xs">Correct / Incorrect</span>
+                                <p id="feedback-desc" class="text-slate-300 mt-1">Detailed evaluation context here.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right panel: Quick reference comparison table for ICAO exams -->
+                <div class="md:col-span-4 bg-slate-900/60 border border-slate-800/80 p-5 rounded-xl space-y-4">
+                    <h4 class="font-bold text-white text-sm tracking-wide font-mono flex items-center gap-1.5">
+                        <i class="fa-solid fa-ban text-red-400"></i> ICAO Exam Trap Analyzer
+                    </h4>
+                    
+                    <div class="space-y-3.5">
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-red-400 font-bold font-mono uppercase block"><i class="fa-solid fa-times-circle"></i> HIGH INCIDENCE PILOT ERROR</span>
+                            <div class="p-2 bg-slate-950 rounded text-xs text-slate-400 border border-red-950">
+                                "The engine must hit by baggage tug during turnaround."
+                            </div>
+                        </div>
+                        <div class="space-y-1">
+                            <span class="text-[10px] text-emerald-400 font-bold font-mono uppercase block"><i class="fa-solid fa-check-circle"></i> EXAM COMPLIANT PATTERN</span>
+                            <div class="p-2 bg-slate-950 rounded text-xs text-white border border-emerald-950">
+                                "The engine cowling <span class="text-emerald-400 font-semibold font-mono">must have been struck</span> by a baggage tug on the ground."
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-500 leading-relaxed font-sans">
+                            <strong class="text-slate-400">Why?</strong> Aviation examiners require the passive past perfect modal construct ("must + have + been + V3") to accurately assess logical historical deductions where the direct action was not directly recorded but deduced.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVENT GRID FOR EXPLORATORY REVISION -->
+        <section class="space-y-4">
+            <h3 class="text-xl font-extrabold text-white flex items-center gap-2">
+                <i class="fa-solid fa-rectangle-list text-sky-400"></i> Safety Portfolio Review (5 Cases + Bonus)
+            </h3>
+            <p class="text-xs text-slate-400">Quickly toggle, read, and cross-reference all available materials directly in this card-deck layout.</p>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6" id="portfolio-deck">
+                <!-- Injected dynamically via JS -->
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-slate-800 bg-slate-950 py-8 px-4 text-center space-y-3">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-500 font-mono">
+            <div>
+                &copy; 2026 ICAO LEVEL 5 COCKPIT SIMULATOR. ALL RIGHTS RESERVED.
+            </div>
+            <div class="flex gap-4">
+                <a href="../index.html" class="hover:text-white transition-colors">&larr; ALL QUIZZES</a>
+                <span>|</span>
+                <span class="hover:text-white transition-colors cursor-pointer">SAFETY PROTOCOLS</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE SCRIPTS -->
+    <script>
+        // CORE DATABASE FOR ALL 5 EVENTS EXTRACTED FROM MD SOURCE
+        const eventsData = [
+            {
+                id: "01",
+                title: "Runway Incursion / Go-Around",
+                image: "01-runway-incursion.jpg",
+                telemetry: { severity: "LEVEL 5 - CATASTROPHIC RISK", threat: "COLLISION TRAP" },
+                attitude: { pitch: 15, roll: 0 },
+                icaoSteps: {
+                    topic: "This picture depicts a serious runway incursion. One four-engined wide-body in SkyTeam livery is lined up on the runway while a second airliner is passing directly overhead at very low altitude, only a few metres above the tail of the first aircraft.",
+                    aircraft: "In the foreground I can see what looks like an Airbus A340 — a long, narrow-body fuselage with four under-wing engines and a swept wing. It appears to be intact, on its main and nose landing gear. Above it, a second twin-engined airliner is in a nose-high, landing or balked-landing attitude with its gear still extended.",
+                    hypothesise: "This looks like a near-collision caused by a runway incursion: the aircraft on the ground must have entered or crossed the active runway without clearance while the second aircraft was on short final. The crew of the landing aircraft probably initiated a last-second go-around to avoid hitting the tail. If they had not reacted in time, this could have ended in a catastrophic collision.",
+                    background: "The scene is an airport runway at dusk, with flat terrain and low vegetation on both sides. Runway edge markings and the centreline are visible. There are no ground vehicles or personnel in shot, which suggests this was captured from a distance by a spotter.",
+                    weather: "The conditions appear calm and clear with good visibility — a warm, pinkish evening sky at sunset, no significant cloud. Weather was probably not a factor; the cause is far more likely to be an ATC or crew coordination error."
+                },
+                analysis: "**It must have been** a runway incursion. **It might have been caused by** an ATC clearance error or a misunderstanding between the controller and one of the crews. **It could have led to** a catastrophic collision on the runway. **From a safety perspective**, the landing crew were right to initiate an immediate go-around. **The main risk is** a high-speed collision, so **for safety reasons** both flights and the ATC recordings must be investigated.",
+                drills: [
+                    "It must have been a runway incursion.",
+                    "It might have been caused by an ATC clearance error.",
+                    "It could have led to a catastrophic collision.",
+                    "From a safety perspective, the crew were right to go around.",
+                    "The main risk is a runway collision.",
+                    "For safety reasons, the incident must be investigated."
+                ],
+                speaking: {
+                    question: "What do you think happened in this picture, and what was the safest decision?",
+                    answer: "This must have been a runway incursion, with one aircraft on the runway while another was on short final. It might have been caused by a clearance misunderstanding between ATC and the crew. From a safety perspective, the safest decision was for the landing crew to perform an immediate go-around, because the main risk was a collision on the runway."
+                }
+            },
+            {
+                id: "02",
+                title: "Crosswind Landing (Turboprop)",
+                // Since 02-crosswind-landing.jpg in source actually depicts Emirates A380 touchdown (matching Event 04), 
+                // we gracefully map the image assets so the turboprop uses the gorgeous military tanker landing image 
+                // (which is a magnificent illustration of turbulent landing mechanics) or fallback gracefully.
+                // We will use 06-military-tanker-landing.jpg for military/severe operations, 
+                // and let's map a custom styled indicator representation for Event 02.
+                image: "06-military-tanker-landing.jpg", 
+                telemetry: { severity: "LEVEL 3 - MODERATE WIND EXTREME", threat: "WINGTIP STRIKE" },
+                attitude: { pitch: 2, roll: -12 },
+                icaoSteps: {
+                    topic: "This picture shows a twin-engined turboprop in the final moments of a difficult crosswind landing. The aircraft is crabbed and banked over to one side as it touches down.",
+                    aircraft: "It looks like an ATR 72 or Dash 8 — a high-wing commuter turboprop with a T-tail and two wing-mounted propeller engines. The airframe appears undamaged; the landing gear is extended and the navigation lights (red and green) are on.",
+                    hypothesise: "The aircraft seems to be fighting a strong, gusty crosswind. The pilot must be applying a wing-low / crab technique to keep the nose aligned with the runway. It could be on the verge of a wingtip or engine strike if the bank angle increases. If the gust had been any stronger, the crew might have been forced to go around.",
+                    background: "The setting is an airport runway with a line of bright runway and approach lights along the touchdown zone. Behind the runway there is a row of bare trees and flat terrain. No ground vehicles or personnel are visible.",
+                    weather: "The weather is poor: an overcast, grey sky with low cloud and what looks like a damp, blustery winter’s day. Strong crosswinds and gusts are clearly the main challenge in this scene; visibility is reduced and the light is dull."
+                },
+                analysis: "**It could have been** a strong, gusting crosswind. The bank angle **may indicate** difficult, turbulent conditions close to the surface. **It could have led to** a wingtip or engine strike during the flare. **From a safety standpoint**, the crew must be ready to abandon the landing. **The safest decision would be** to go around if the approach becomes unstable, because **the main risk is** loss of control during touchdown.",
+                drills: [
+                    "It could have been a strong crosswind.",
+                    "It may indicate gusty conditions near the runway.",
+                    "It could have led to a wingtip strike.",
+                    "From a safety standpoint, the crew should be ready to go around.",
+                    "The safest decision would be to go around if unstable.",
+                    "The main risk is loss of control during landing."
+                ],
+                speaking: {
+                    question: "What are the main risks here, and what should the crew do?",
+                    answer: "The aircraft appears to be landing in a strong, gusting crosswind, which may indicate difficult low-level conditions. The main risk is a wingtip or engine strike if the bank angle increases. From a safety standpoint, the crew must be ready to go around, and the safest decision would be to abandon the landing if the approach becomes unstable."
+                }
+            },
+            {
+                id: "03",
+                title: "Engine / Ground-Handling Collision",
+                image: "03-engine-ground-collision.jpg",
+                telemetry: { severity: "LEVEL 4 - CRITICAL HARDWARE FAULT", threat: "UNDETECTED INT ENGINE DAMAGE" },
+                attitude: { pitch: 0, roll: 0 },
+                icaoSteps: {
+                    topic: "This image portrays a ground-handling incident on the apron. The engine cowling of an easyJet airliner has been struck and damaged, with a ground service tug parked right next to it.",
+                    aircraft: "The aircraft is an Airbus A320 in easyJet’s orange-and-white livery, with a large under-wing turbofan engine (a CFM56). The engine nacelle / cowling is clearly buckled and punctured along its lower lip — the metal is crushed and bent inward where it has been hit.",
+                    hypothesise: "It looks as if a baggage tug or ground vehicle has rolled into, or collided with, the engine intake during turnaround. The damage must have been caused on the ground rather than in flight, because the aircraft is stationary on a wet apron. The engine would certainly have to be inspected and the flight delayed or cancelled.",
+                    background: "In the foreground is a white Swissport baggage tug marked “TAE 214/1354”. The aircraft is parked on a wet asphalt apron with yellow taxi-lane markings and green grass in the background. This is clearly the ramp area of a busy airport.",
+                    weather: "The weather is grey and damp — the ground is wet from recent rain under an overcast sky. The conditions are gloomy but the rain itself is not the cause; the slippery, wet apron may have contributed to the vehicle losing control."
+                },
+                analysis: "The cowling damage **must have been** caused on the ground, not in flight. **It might have been caused by** a baggage tug colliding with the engine during the turnaround. The crushed nacelle **may indicate** hidden internal damage to the fan or intake. **From a safety perspective**, the engine cannot be considered airworthy. **For safety reasons**, the flight should be delayed, and **the safest decision would be** to ground the aircraft until engineers complete a full inspection; **the main risk is** undetected internal engine damage.",
+                drills: [
+                    "It must have been caused by a ground vehicle.",
+                    "It might have been caused by a baggage tug.",
+                    "This may indicate hidden engine damage.",
+                    "From a safety perspective, the engine is not airworthy.",
+                    "For safety reasons, the flight should be delayed.",
+                    "The safest decision would be to ground the aircraft."
+                ],
+                speaking: {
+                    question: "What probably caused this damage, and what should happen next?",
+                    answer: "The damage to the engine cowling must have been caused on the ground, probably by a baggage tug colliding with the engine during the turnaround. This may indicate hidden internal damage. From a safety perspective the engine is not airworthy, so for safety reasons the safest decision would be to ground the aircraft until engineers complete a full inspection."
+                }
+            },
+            {
+                id: "04",
+                title: "Wide-Body Touchdown (Airbus A380)",
+                // In the uploaded photos, "02-crosswind-landing.jpg" contains the Emirates A380 landing.
+                image: "02-crosswind-landing.jpg",
+                telemetry: { severity: "LEVEL 1 - ROUTINE FLOW", threat: "RUNWAY EXCURSION" },
+                attitude: { pitch: 5, roll: 0 },
+                icaoSteps: {
+                    topic: "This picture shows a large double-deck airliner from behind at the moment of touchdown on the runway.",
+                    aircraft: "The aircraft is an Airbus A380 in Emirates livery — the world’s largest passenger jet, with a full-length double-deck fuselage, four under-wing engines and a very broad swept wing. The airframe looks intact; the main landing gear is on the runway and the wingtips are flexing under the weight of the aircraft.",
+                    hypothesise: "This appears to be a normal, routine landing rather than an incident. The pilots must be holding the nose slightly high as they settle the main gear onto the runway. The slight smoke from the tyres is simply the normal puff of rubber on touchdown. Everything looks under control, so the passengers are probably unaware of anything unusual.",
+                    background: "The runway is lined with bright edge and approach lights and clear white markings. In the hazy distance there is a built-up area with tower blocks and some industrial chimneys giving off steam, suggesting an airport close to a city in a cold climate.",
+                    weather: "The weather looks cool and mostly overcast with patchy, scattered cloud and a slightly hazy sky. Visibility is acceptable. The conditions do not appear to be a factor in this otherwise normal landing."
+                },
+                analysis: "This **must have been** a routine arrival. The small puff of smoke **may indicate** nothing more than the tyres contacting the runway. There is no sign that **it could have led to** an incident. **From a safety perspective**, everything looks stable and under control. **The main risk is** a hard touchdown or a runway excursion, but here **the safety margin** appears to be maintained.",
+                drills: [
+                    "It must have been a routine landing.",
+                    "The smoke may indicate normal tyre contact.",
+                    "From a safety perspective, the landing looks stable.",
+                    "To maintain the safety margin, the crew use proper braking.",
+                    "The main risk is a hard landing or excursion.",
+                    "The safest decision is to continue the normal roll-out."
+                ],
+                speaking: {
+                    question: "Is this a normal or an abnormal situation? Explain your reasoning.",
+                    answer: "This must have been a normal, routine landing. The small puff of smoke may indicate nothing more than the main tyres contacting the runway. From a safety perspective the aircraft looks stable and under control, and the safety margin appears to be maintained, so there is no sign of an emergency."
+                }
+            },
+            {
+                id: "05",
+                title: "Forced Landing on a Highway Overpass",
+                image: "05-highway-forced-landing.jpg",
+                telemetry: { severity: "LEVEL 5 - EXTREME EMERGENCY", threat: "FATAL HIGHWAY COLLISION" },
+                attitude: { pitch: -6, roll: 7 },
+                icaoSteps: {
+                    topic: "This picture depicts a light aircraft that has made an emergency landing on a public highway. The plane is sitting across the carriageway surrounded by emergency responders.",
+                    aircraft: "It looks like a single-engine general-aviation aircraft — most likely a Cessna — with a high wing and a registration on the rear fuselage. The airframe appears largely intact, though the nose and propeller may be damaged from the hard landing; it has come to rest at an angle, partly blocking the lanes.",
+                    hypothesise: "This must have been a forced landing following an engine failure or fuel problem. The pilot could not reach an airfield and chose the motorway as the only flat, open surface available. He must have done a remarkable job avoiding the traffic and the central barrier. If there had been more cars on the road, this could easily have ended in a fatal collision.",
+                    background: "The aircraft is on an elevated highway / overpass with a concrete crash barrier and a yellow centre line. Police cars, fire crews and a worker in high-vis orange clothing and a hard hat are attending the scene; traffic is backed up in the distance. Power-line pylons and flat scrubland line the road.",
+                    weather: "The weather is fine — clear blue skies, bright sunshine and excellent visibility. The good weather was not a cause and probably helped the pilot make a controlled, visual forced landing."
+                },
+                analysis: "**It must have been** a forced landing after an engine failure. **It might have been caused by** fuel exhaustion or a mechanical malfunction. **It could have led to** a fatal collision with road traffic. **From a safety perspective**, with no airfield within reach, the pilot made the safest possible choice. **The main risk is** striking vehicles or pedestrians on the highway, so **for safety reasons** the road must be closed and the wreckage examined.",
+                drills: [
+                    "It must have been a forced landing.",
+                    "It might have been caused by engine failure.",
+                    "It could have led to a collision with traffic.",
+                    "From a safety perspective, the pilot chose the safest option.",
+                    "The main risk is hitting vehicles on the road.",
+                    "For safety reasons, the road must be closed."
+                ],
+                speaking: {
+                    question: "Why do you think the aircraft landed here, and how do you assess the pilot's decision?",
+                    answer: "It must have been a forced landing following an engine failure, which might have been caused by fuel exhaustion or a mechanical problem. With no airfield within reach, the safest decision was to use the highway as the only flat, open surface. The main risk was a collision with road traffic, but from a safety perspective the pilot handled a serious emergency very well."
+                }
+            }
+        ];
+
+        // QUIZ CONTENT ENGINE
+        const quizData = [
+            {
+                id: 1,
+                question: "Which of the following describes a situation where an aircraft enters or crosses an active runway without clearance?",
+                options: [
+                    { text: "Balked landing sequence", isCorrect: false },
+                    { text: "Runway excursion hazard", isCorrect: false },
+                    { text: "Runway incursion", isCorrect: true },
+                    { text: "Wind-low alignment slip", isCorrect: false }
+                ],
+                explanation: "A runway incursion is defined by ICAO as any occurrence at an aerodrome involving the incorrect presence of an aircraft, vehicle or person on the protected area of a surface designated for the landing and take-off of aircraft.",
+                category: "TERMINOLOGY"
+            },
+            {
+                id: 2,
+                question: "Complete the deduction sentence with correct exam-safe grammar: 'The engine cowling damage ______ on the ground by a baggage tug during turnaround.'",
+                options: [
+                    { text: "must have been caused", isCorrect: true },
+                    { text: "must causing", isCorrect: false },
+                    { text: "could causing", isCorrect: false },
+                    { text: "might have caused", isCorrect: false } // Active instead of passive
+                ],
+                explanation: "The passive past deduction format 'must have been + past participle (V3)' is required because the cowling received the damage from an external force in the past.",
+                category: "ICAO GRAMMAR"
+            },
+            {
+                id: 3,
+                question: "During a strong, gusting crosswind landing, what main risk does a high bank angle create near the surface?",
+                options: [
+                    { text: "Fuel exhaustion", isCorrect: false },
+                    { text: "A wingtip or engine cowling strike during the flare", isCorrect: true },
+                    { text: "Apologizing to ATC for incorrect squelch settings", isCorrect: false },
+                    { text: "Rapid engine turbine reversal", isCorrect: false }
+                ],
+                explanation: "A high bank angle during touchdown in a crosswind creates a severe risk of the lower wingtip or engine nacelle striking the ground, leading to loss of control.",
+                category: "OPERATIONAL HAZARD"
+            },
+            {
+                id: 4,
+                question: "Why is using a public highway considered an acceptable option for a pilot during a severe emergency?",
+                options: [
+                    { text: "It is the standard procedure to bypass congested apron operations.", isCorrect: false },
+                    { text: "With no airfield within reach, the highway serves as the only flat, open surface available for a forced landing.", isCorrect: true },
+                    { text: "It allows pilots to inspect airport runway lighting systems from the outside.", isCorrect: false },
+                    { text: "The emergency responders prefer highway tarmac over soft dirt runways.", isCorrect: false }
+                ],
+                explanation: "From a safety standpoint, when engine failure or fuel exhaustion leaves no airfields within glide range, a flat public overpass or highway acts as a necessary survival runway surface.",
+                category: "TACTICAL PRACTICE"
+            },
+            {
+                id: 5,
+                question: "Identify the correct technical aviation term for the aerodynamic protective engine casing that easyJet's airliner buckled:",
+                options: [
+                    { text: "Aerofoil sweep wing", isCorrect: false },
+                    { text: "Wingtip winglet", isCorrect: false },
+                    { text: "Nacelle / Engine Cowling", isCorrect: true },
+                    { text: "T-tail structural root", isCorrect: false }
+                ],
+                explanation: "An engine cowling (or nacelle) is the removable metal/composite housing wrapper surrounding a jet turbine or piston engine.",
+                category: "HARDWARE GLOSSARY"
+            }
+        ];
+
+        // STATE MANAGER
+        let activeEventIdx = 0;
+        let activeStep = 'topic';
+        let useRadioEffect = true;
+        let speakTimer = null;
+        let isRecordingSimulated = false;
+        let currentQuizIdx = 0;
+        let scoreCount = 0;
+
+        // ANIMATION WAVEFORM VARS
+        let canvas, ctx, animationFrameId;
+
+        // ON LOAD INITIALIZER
+        window.onload = function() {
+            // Render Event Tabs
+            renderEventTabs();
+            // Load Active Case
+            loadActiveEvent();
+            // Load Quiz Card
+            loadQuizQuestion();
+            // Initialize Event Portfolio deck
+            renderPortfolioDeck();
+        };
+
+        // RENDER EVENT TABS
+        function renderEventTabs() {
+            const container = document.getElementById('event-selector-tabs');
+            container.innerHTML = '';
+            eventsData.forEach((ev, idx) => {
+                const btn = document.createElement('button');
+                btn.id = `tab-ev-${idx}`;
+                btn.onclick = () => selectEvent(idx);
+                btn.className = `px-3 py-1.5 rounded text-xs font-mono font-bold transition-all border ${
+                    idx === activeEventIdx 
+                    ? 'bg-sky-500 text-white border-sky-600 shadow' 
+                    : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:bg-slate-800'
+                }`;
+                btn.textContent = `EVENT ${ev.id}`;
+                container.appendChild(btn);
+            });
+        }
+
+        // SELECT EVENT
+        function selectEvent(idx) {
+            // Remove active style from former tab
+            document.getElementById(`tab-ev-${activeEventIdx}`).className = "px-3 py-1.5 rounded text-xs font-mono font-bold transition-all border bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:bg-slate-800";
+            
+            activeEventIdx = idx;
+            
+            // Apply active style to new tab
+            document.getElementById(`tab-ev-${activeEventIdx}`).className = "px-3 py-1.5 rounded text-xs font-mono font-bold transition-all border bg-sky-500 text-white border-sky-600 shadow";
+            
+            // Set first step active
+            activeStep = 'topic';
+            
+            // Load active event data
+            loadActiveEvent();
+        }
+
+        // LOAD CURRENT ACTIVE EVENT DATA
+        function loadActiveEvent() {
+            const data = eventsData[activeEventIdx];
+            
+            // Title & Meta
+            document.getElementById('case-title').textContent = `Event ${data.id} — ${data.title}`;
+            document.getElementById('meta-feed-id').textContent = data.id;
+            document.getElementById('case-image').src = data.image;
+            document.getElementById('meta-location').textContent = `FEED CAMERA CH-${data.id} // ACTIVE CAPTURE`;
+            
+            // Telemetry values
+            document.getElementById('telemetry-severity').textContent = data.telemetry.severity;
+            document.getElementById('telemetry-threat').textContent = data.telemetry.threat;
+            
+            // Adjust Artificial Horizon Pitch and Roll
+            const disk = document.getElementById('horizon-disk');
+            disk.style.transform = `rotate(${data.attitude.roll}deg) translateY(${data.attitude.pitch * 3}px)`;
+            document.getElementById('pitch-val').textContent = `${data.attitude.pitch > 0 ? '+' : ''}${data.attitude.pitch}°`;
+            document.getElementById('roll-val').textContent = `${data.attitude.roll > 0 ? '+' : ''}${data.attitude.roll}°`;
+            
+            // Step contents
+            updateStepPane();
+
+            // Safety Analysis text
+            const cleanAnalysis = data.analysis
+                .replace(/\*\*It must have been\*\*/g, '<span class="text-amber-400 font-bold font-mono">It must have been</span>')
+                .replace(/\*\*It might have been caused by\*\*/g, '<span class="text-sky-400 font-bold font-mono">It might have been caused by</span>')
+                .replace(/\*\*It could have led to\*\*/g, '<span class="text-red-400 font-bold font-mono">It could have led to</span>')
+                .replace(/\*\*From a safety perspective\*\*/g, '<span class="text-emerald-400 font-bold font-mono">From a safety perspective</span>')
+                .replace(/\*\*The main risk is\*\*/g, '<span class="text-amber-500 font-bold font-mono">The main risk is</span>')
+                .replace(/\*\*for safety reasons\*\*/g, '<span class="text-emerald-400 font-bold font-mono">for safety reasons</span>')
+                .replace(/\*\*It could have been\*\*/g, '<span class="text-amber-400 font-bold font-mono">It could have been</span>')
+                .replace(/\*\*may indicate\*\*/g, '<span class="text-sky-400 font-bold font-mono">may indicate</span>')
+                .replace(/\*\*From a safety standpoint\*\*/g, '<span class="text-emerald-400 font-bold font-mono">From a safety standpoint</span>')
+                .replace(/\*\*The safest decision would be\*\*/g, '<span class="text-emerald-400 font-bold font-mono">The safest decision would be</span>')
+                .replace(/\*\*the safety margin\*\*/g, '<span class="text-emerald-400 font-bold font-mono">the safety margin</span>');
+            
+            document.getElementById('analysis-text').innerHTML = cleanAnalysis;
+
+            // Speaking Module Question and Answers
+            document.getElementById('speaking-question').textContent = data.speaking.question;
+            document.getElementById('model-answer-content').innerHTML = data.speaking.answer;
+            
+            // Reset checklist goals
+            const checklistContainer = document.getElementById('checklist-goals');
+            checklistContainer.innerHTML = '';
+            
+            // Checklist points dynamically filled
+            const goalWords = ["must have been", "might have been", "could have led to", "From a safety standpoint", "The main risk", "For safety reasons"];
+            goalWords.forEach(word => {
+                const item = document.createElement('div');
+                item.className = "flex items-center gap-2 p-2 rounded bg-slate-900 border border-slate-800 text-xs";
+                item.innerHTML = `
+                    <input type="checkbox" class="rounded border-slate-800 text-sky-500 focus:ring-sky-500 bg-slate-950 w-4 h-4 cursor-pointer">
+                    <span class="font-mono text-slate-300 font-medium">${word}</span>
+                `;
+                checklistContainer.appendChild(item);
+            });
+
+            // Populate Radio Repeat Drills
+            const drillBox = document.getElementById('drill-container');
+            drillBox.innerHTML = '';
+            data.drills.forEach((drill, dIdx) => {
+                const card = document.createElement('div');
+                card.className = "flex items-center justify-between p-2.5 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 transition-all group";
+                card.innerHTML = `
+                    <div class="flex items-center gap-3 pr-2">
+                        <span class="text-[10px] font-mono text-slate-500">${dIdx + 1}</span>
+                        <p class="text-xs text-white leading-relaxed font-sans font-medium">${drill}</p>
+                    </div>
+                    <button onclick="synthesizeVHF('${drill.replace(/'/g, "\\'")}')" class="p-1.5 rounded bg-slate-950 text-emerald-400 group-hover:bg-emerald-500 group-hover:text-white transition-all text-xs flex items-center justify-center h-8 w-8" title="Broadcast Line Over VHF Radio">
+                        <i class="fa-solid fa-volume-high"></i>
+                    </button>
+                `;
+                drillBox.appendChild(card);
+            });
+
+            // Ensure model answer is closed
+            document.getElementById('model-answer-pane').classList.add('hidden');
+            document.getElementById('model-ans-icon').className = "fa-solid fa-eye";
+            document.getElementById('model-ans-text').textContent = "REVEAL EXAM-SAFE MODEL ANSWER";
+        }
+
+        // SET STEPS EXPLORER ACTIVE
+        function setActiveStep(stepKey) {
+            activeStep = stepKey;
+            
+            // Reset navigation indicators
+            const buttons = ['topic', 'aircraft', 'hypothesise', 'background', 'weather'];
+            buttons.forEach(b => {
+                const el = document.getElementById(`btn-step-${b}`);
+                if (b === stepKey) {
+                    el.className = "flex-1 py-2 text-center text-xs font-mono font-bold border-b-2 border-sky-500 text-sky-400 transition-all";
+                } else {
+                    el.className = "flex-1 py-2 text-center text-xs font-mono font-bold border-b-2 border-transparent text-slate-400 hover:text-white transition-all";
+                }
+            });
+
+            updateStepPane();
+        }
+
+        // UPDATE TEXT IN STEP PANE
+        function updateStepPane() {
+            const data = eventsData[activeEventIdx];
+            const text = data.icaoSteps[activeStep];
+            
+            document.getElementById('step-header').textContent = `${activeStep.toUpperCase()} PROFILE`;
+            
+            // Inject bold tags for key terminology in steps explorer for learning purposes
+            let highlightedText = text
+                .replace(/Cessna/gi, '<strong class="text-yellow-400">Cessna</strong>')
+                .replace(/Airbus A380/gi, '<strong class="text-sky-400">Airbus A380</strong>')
+                .replace(/Airbus A340/gi, '<strong class="text-sky-400">Airbus A340</strong>')
+                .replace(/ATR 72/gi, '<strong class="text-yellow-400">ATR 72</strong>')
+                .replace(/Dash 8/gi, '<strong class="text-yellow-400">Dash 8</strong>')
+                .replace(/cowling/gi, '<strong class="text-indigo-400">cowling</strong>')
+                .replace(/nacelle/gi, '<strong class="text-indigo-400">nacelle</strong>')
+                .replace(/balked-landing/gi, '<strong class="text-indigo-400">balked-landing</strong>')
+                .replace(/go-around/gi, '<strong class="text-amber-400">go-around</strong>')
+                .replace(/runway incursion/gi, '<strong class="text-red-400">runway incursion</strong>')
+                .replace(/crosswind/gi, '<strong class="text-amber-400">crosswind</strong>')
+                .replace(/forced landing/gi, '<strong class="text-red-400">forced landing</strong>')
+                .replace(/apron/gi, '<strong class="text-indigo-400">apron</strong>')
+                .replace(/Swissport/gi, '<strong class="text-slate-300">Swissport</strong>')
+                .replace(/turnaround/gi, '<strong class="text-slate-300">turnaround</strong>')
+                .replace(/wing-low/gi, '<strong class="text-indigo-400">wing-low</strong>')
+                .replace(/crab/gi, '<strong class="text-indigo-400">crab</strong>');
+
+            document.getElementById('step-body-text').innerHTML = highlightedText;
+        }
+
+        // TOGGLE THEME: LIGHT / COCKPIT NIGHT
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            const themeText = document.getElementById('theme-text');
+            
+            if (body.classList.contains('dark')) {
+                // Switch to light
+                body.classList.remove('dark');
+                body.classList.add('light');
+                body.className = "bg-slate-50 text-slate-800 transition-colors duration-300 light font-sans antialiased";
+                themeIcon.className = "fa-solid fa-sun text-amber-500";
+                themeText.textContent = "COCKPIT DAY";
+            } else {
+                // Switch to dark
+                body.classList.remove('light');
+                body.classList.add('dark');
+                body.className = "bg-slate-900 text-slate-100 transition-colors duration-300 dark font-sans antialiased";
+                themeIcon.className = "fa-solid fa-moon text-amber-400";
+                themeText.textContent = "COCKPIT NIGHT";
+            }
+        }
+
+        // SPEAKING TIMERS SIMULATOR
+        function startSpeakingTimer() {
+            const btn = document.getElementById('speak-action-btn');
+            const statText = document.getElementById('speak-stats');
+            const timerVal = document.getElementById('timer-val');
+            
+            // Clear any active interval
+            if (speakTimer) clearInterval(speakTimer);
+            
+            // Play initial cockpit warning bleep
+            playCockpitBleep(880, 0.15); // Clear warning frequency
+            
+            let timeLeft = 90;
+            statText.textContent = "IN PROGRESS";
+            statText.className = "text-amber-400 font-bold font-mono text-sm animate-pulse";
+            btn.innerHTML = `<i class="fa-solid fa-microphone text-sm text-red-500 animate-pulse"></i> TRANSMITTING VOICE...`;
+            btn.className = "px-5 py-2.5 bg-red-600/20 hover:bg-red-600/30 text-red-400 font-bold text-xs rounded-lg flex items-center gap-2 border border-red-500/40 transition-all";
+            
+            // Automatically open Mic Visualizer
+            const visualizerPanel = document.getElementById('mic-visualizer-panel');
+            visualizerPanel.classList.remove('hidden');
+            initFakeMicrophoneWave();
+
+            speakTimer = setInterval(() => {
+                timeLeft--;
+                timerVal.textContent = timeLeft < 10 ? `0${timeLeft}` : timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(speakTimer);
+                    // Session complete bleep
+                    playCockpitBleep(440, 0.4); // Squelch release bleep
+                    
+                    statText.textContent = "RUN COMPLETE";
+                    statText.className = "text-emerald-400 font-bold font-mono text-sm";
+                    btn.innerHTML = `<i class="fa-solid fa-circle-check text-sm"></i> DRILL ATTAINED`;
+                    btn.className = "px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-lg flex items-center gap-2 transition-all";
+                    
+                    stopFakeMicrophoneWave();
+                }
+            }, 1000);
+        }
+
+        // MIC BUTTON HARDWARE TEST TOGGLE
+        function toggleVisualMic() {
+            const micBtnIcon = document.getElementById('mic-btn-icon');
+            const visualizerPanel = document.getElementById('mic-visualizer-panel');
+            
+            if (visualizerPanel.classList.contains('hidden')) {
+                visualizerPanel.classList.remove('hidden');
+                micBtnIcon.className = "fa-solid fa-microphone text-xs text-emerald-400";
+                initFakeMicrophoneWave();
+            } else {
+                visualizerPanel.classList.add('hidden');
+                micBtnIcon.className = "fa-solid fa-microphone-slash text-xs text-red-400";
+                stopFakeMicrophoneWave();
+            }
+        }
+
+        // WAVEFORM GENERATOR USING CANVAS
+        function initFakeMicrophoneWave() {
+            canvas = document.getElementById('waveform-canvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            isRecordingSimulated = true;
+            
+            function draw() {
+                if (!isRecordingSimulated) return;
+                animationFrameId = requestAnimationFrame(draw);
+                
+                ctx.fillStyle = 'rgba(15, 23, 42, 0.2)'; // Slate-950 fading background
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                
+                ctx.beginPath();
+                ctx.strokeStyle = '#10B981'; // Emerald-500 line
+                ctx.lineWidth = 2;
+                
+                let sliceWidth = canvas.width / 50;
+                let x = 0;
+                
+                for (let i = 0; i < 50; i++) {
+                    // Generate pseudo-random microphone waves modulated by simple sinus curves
+                    let amplitude = Math.sin(i * 0.2 + Date.now() * 0.015) * (Math.random() * 15 + 2);
+                    // Damp edges
+                    if (i < 5 || i > 45) amplitude *= 0.1;
+                    
+                    let y = canvas.height / 2 + amplitude;
+                    
+                    if (i === 0) {
+                        ctx.moveTo(x, y);
+                    } else {
+                        ctx.lineTo(x, y);
+                    }
+                    
+                    x += sliceWidth;
+                }
+                
+                ctx.stroke();
+            }
+            draw();
+        }
+
+        function stopFakeMicrophoneWave() {
+            isRecordingSimulated = false;
+            if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        }
+
+        // TOGGLE MODEL EXAM-SAFE ANSWER
+        function toggleModelAnswer() {
+            const pane = document.getElementById('model-answer-pane');
+            const icon = document.getElementById('model-ans-icon');
+            const text = document.getElementById('model-ans-text');
+            
+            if (pane.classList.contains('hidden')) {
+                pane.classList.remove('hidden');
+                icon.className = "fa-solid fa-eye-slash";
+                text.textContent = "HIDE MODEL ANSWER";
+            } else {
+                pane.classList.add('hidden');
+                icon.className = "fa-solid fa-eye";
+                text.textContent = "REVEAL EXAM-SAFE MODEL ANSWER";
+            }
+        }
+
+        // COCKPIT WARNING BLEEP GENERATOR
+        function playCockpitBleep(frequency, duration) {
+            try {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (!AudioContext) return;
+                const audioCtx = new AudioContext();
+                
+                const oscillator = audioCtx.createOscillator();
+                const gainNode = audioCtx.createGain();
+                
+                oscillator.type = 'sine';
+                oscillator.frequency.value = frequency;
+                
+                gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime); // keep volume low and comfortable
+                gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioCtx.destination);
+                
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + duration);
+            } catch (e) {
+                // Sound failed or browser restricted audio context auto-start
+            }
+        }
+
+        // VHF TECHNICAL AUDIO SYNTHESIZER FOR BROADCASTS
+        function synthesizeVHF(phrase) {
+            if (!('speechSynthesis' in window)) {
+                // Fallback if Speech Synthesis is unsupported on this browser
+                return;
+            }
+            
+            // Cancel current speech runs
+            window.speechSynthesis.cancel();
+            
+            const checkbox = document.getElementById('vhf-static-toggle');
+            const playVhfEffect = checkbox ? checkbox.checked : true;
+            
+            if (playVhfEffect) {
+                // 1. Play mic click ON squelch sound
+                playCockpitBleep(950, 0.08);
+                setTimeout(() => {
+                    playCockpitBleep(1100, 0.05);
+                }, 30);
+                
+                // Introduce slight transmission delay
+                setTimeout(() => {
+                    speakStandardUtterance(phrase);
+                }, 150);
+            } else {
+                speakStandardUtterance(phrase);
+            }
+        }
+
+        function speakStandardUtterance(phrase) {
+            const utterance = new SpeechSynthesisUtterance(phrase);
+            utterance.rate = 0.88; // Aviation radio tempo: clear, measured, standardized pace
+            utterance.pitch = 1.0;
+            utterance.lang = 'en-US';
+            
+            utterance.onend = function() {
+                const checkbox = document.getElementById('vhf-static-toggle');
+                if (checkbox && checkbox.checked) {
+                    // Play end mic click Squelch burst
+                    setTimeout(() => {
+                        playCockpitBleep(550, 0.12);
+                    }, 50);
+                }
+            };
+            
+            window.speechSynthesis.speak(utterance);
+        }
+
+        // QUIZ FLOW ENGINE
+        function loadQuizQuestion() {
+            const currentQ = quizData[currentQuizIdx];
+            
+            document.getElementById('quiz-q-num').textContent = `QUESTION ${currentQuizIdx + 1} OF ${quizData.length}`;
+            document.getElementById('quiz-q-category').textContent = currentQ.category;
+            document.getElementById('quiz-question-text').textContent = currentQ.question;
+            
+            const optionsContainer = document.getElementById('quiz-options-container');
+            optionsContainer.innerHTML = '';
+            
+            currentQ.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.onclick = () => selectQuizOption(idx);
+                btn.className = "w-full p-3.5 rounded-lg bg-slate-950 hover:bg-slate-800 text-left text-xs md:text-sm font-sans font-medium text-slate-300 border border-slate-800 hover:border-slate-700 transition-all flex justify-between items-center group";
+                btn.innerHTML = `
+                    <span>${opt.text}</span>
+                    <i class="fa-solid fa-chevron-right text-slate-600 group-hover:text-sky-400 transition-colors"></i>
+                `;
+                optionsContainer.appendChild(btn);
+            });
+            
+            // Hide feedback box on new question
+            document.getElementById('quiz-feedback-box').className = "hidden";
+        }
+
+        function selectQuizOption(selectedIdx) {
+            const currentQ = quizData[currentQuizIdx];
+            const isCorrect = currentQ.options[selectedIdx].isCorrect;
+            
+            // Build visual feedback panel
+            const feedbackBox = document.getElementById('quiz-feedback-box');
+            const feedIcon = document.getElementById('feedback-icon');
+            const feedStatus = document.getElementById('feedback-status');
+            const feedDesc = document.getElementById('feedback-desc');
+            
+            // Check scoring update
+            if (isCorrect) {
+                scoreCount++;
+                feedbackBox.className = "p-4 rounded-lg text-sm border bg-emerald-500/10 border-emerald-500/30 text-emerald-400";
+                feedIcon.className = "fa-solid fa-circle-check text-base mt-0.5";
+                feedStatus.textContent = "TRANSMISSION CLEAR / ANSWER CORRECT";
+                // Play feedback success bleep
+                playCockpitBleep(1000, 0.08);
+                setTimeout(() => playCockpitBleep(1300, 0.1), 80);
+            } else {
+                feedbackBox.className = "p-4 rounded-lg text-sm border bg-red-500/10 border-red-500/30 text-red-400";
+                feedIcon.className = "fa-solid fa-triangle-exclamation text-base mt-0.5";
+                feedStatus.textContent = "LOGICAL FAULT / TRANSMISSION BLOCKED";
+                // Play incorrect fault bleep
+                playCockpitBleep(320, 0.25);
+            }
+            
+            feedDesc.textContent = currentQ.explanation;
+            feedbackBox.classList.remove('hidden');
+            
+            // Update HUD tracker score
+            document.getElementById('quiz-score').textContent = `${scoreCount} / ${quizData.length}`;
+            
+            // Turn choice buttons unclickable to prevent double scoring
+            const buttons = document.getElementById('quiz-options-container').querySelectorAll('button');
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // Append a NEXT action button to complete progression
+            const nextBtn = document.createElement('button');
+            nextBtn.onclick = () => advanceQuiz();
+            nextBtn.className = "w-full py-2.5 mt-3 bg-purple-600 hover:bg-purple-700 active:bg-purple-800 text-white text-xs font-bold font-mono rounded-lg transition-colors flex items-center justify-center gap-2";
+            nextBtn.innerHTML = `NEXT QUESTION CARD <i class="fa-solid fa-arrow-right"></i>`;
+            feedbackBox.appendChild(nextBtn);
+        }
+
+        function advanceQuiz() {
+            currentQuizIdx++;
+            if (currentQuizIdx >= quizData.length) {
+                // Final assessment check
+                const feedbackBox = document.getElementById('quiz-feedback-box');
+                feedbackBox.innerHTML = `
+                    <div class="text-center py-4 space-y-3">
+                        <i class="fa-solid fa-award text-3xl text-yellow-400 animate-bounce"></i>
+                        <h5 class="text-white font-extrabold text-base">ICAO EVALUATION COMPLETED</h5>
+                        <p class="text-xs text-slate-300">You scored ${scoreCount} out of ${quizData.length} structural proficiency checkpoints.</p>
+                        <button onclick="resetQuiz()" class="px-4 py-2 bg-slate-950 hover:bg-slate-800 text-[10px] font-mono text-slate-300 rounded border border-slate-800 transition-colors">
+                            RELOAD SYSTEM QUIZ CARDS
+                        </button>
+                    </div>
+                `;
+            } else {
+                loadQuizQuestion();
+            }
+        }
+
+        function resetQuiz() {
+            currentQuizIdx = 0;
+            scoreCount = 0;
+            document.getElementById('quiz-score').textContent = `0 / ${quizData.length}`;
+            loadQuizQuestion();
+        }
+
+        // PORTFOLIO EXPLORATION DECK GENERATOR
+        function renderPortfolioDeck() {
+            const container = document.getElementById('portfolio-deck');
+            container.innerHTML = '';
+            
+            eventsData.forEach((ev, idx) => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow-md flex flex-col justify-between hover:border-slate-700 transition-all";
+                card.innerHTML = `
+                    <div>
+                        <div class="h-40 relative">
+                            <img src="${ev.image}" alt="${ev.title}" class="w-full h-full object-cover">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                            <span class="absolute top-2 left-2 bg-slate-950/80 border border-slate-800 text-slate-300 text-[9px] font-mono px-2 py-0.5 rounded">CASE ${ev.id}</span>
+                        </div>
+                        <div class="p-4 space-y-2">
+                            <h4 class="font-extrabold text-sm text-white leading-snug">${ev.title}</h4>
+                            <p class="text-xs text-slate-400 line-clamp-3 leading-relaxed">${ev.icaoSteps.topic}</p>
+                        </div>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <button onclick="selectEvent(${idx}); window.scrollTo({top: document.getElementById('event-selector-tabs').offsetTop - 100, behavior: 'smooth'});" class="w-full py-2 bg-slate-950 hover:bg-slate-800 text-[10px] font-mono font-bold text-sky-400 hover:text-white rounded border border-slate-800 transition-colors">
+                            LOAD SYSTEM FEED
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+    </script>
+</body>
+</html>
