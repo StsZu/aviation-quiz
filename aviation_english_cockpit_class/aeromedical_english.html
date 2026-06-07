@@ -1,0 +1,1444 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroMedical English - First Aid on Board</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        sky: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        },
+                        slate: {
+                            900: '#0f172a',
+                            950: '#020617',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .dark ::-webkit-scrollbar-thumb {
+            background: #1e293b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col antialiased">
+
+    <a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(15,23,42,0.85);color:#fff;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.25);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);">&larr; All quizzes</a>
+
+    <!-- NAVIGATION BAR -->
+    <nav class="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <div class="flex items-center gap-3">
+                    <div class="p-2.5 bg-gradient-to-br from-sky-500 to-indigo-600 rounded-xl shadow-lg shadow-sky-500/20 text-white">
+                        <i class="fa-solid fa-plane-arrival text-lg"></i>
+                    </div>
+                    <div>
+                        <span class="font-extrabold text-lg tracking-tight bg-gradient-to-r from-sky-500 to-indigo-500 bg-clip-text text-transparent">AeroMedical</span>
+                        <span class="text-xs block font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest leading-none">Flight Safety English</span>
+                    </div>
+                </div>
+
+                <!-- Navigation Links & Interactive Widgets -->
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#hero" class="text-sm font-medium hover:text-sky-500 transition-colors">Home</a>
+                    <a href="#concepts" class="text-sm font-medium hover:text-sky-500 transition-colors">Library</a>
+                    <a href="#examples" class="text-sm font-medium hover:text-sky-500 transition-colors">Scenarios</a>
+                    <a href="#practice" class="text-sm font-medium hover:text-sky-500 transition-colors">Interactive Practice</a>
+                    <a href="#mistakes" class="text-sm font-medium hover:text-sky-500 transition-colors">Key Nuances</a>
+                </div>
+
+                <!-- Right Side Controls -->
+                <div class="flex items-center gap-4">
+                    <!-- Progress Tracker Mini-Widget -->
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-full text-xs font-semibold">
+                        <i class="fa-solid fa-graduation-cap text-sky-500"></i>
+                        <span>Progress: <span id="topBarProgress">0%</span></span>
+                    </div>
+
+                    <!-- Theme Toggle -->
+                    <button id="themeToggle" class="p-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-xl transition-all duration-200" aria-label="Toggle Theme">
+                        <i class="fa-solid fa-moon dark:hidden"></i>
+                        <i class="fa-solid fa-sun hidden dark:block"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <header id="hero" class="relative overflow-hidden bg-gradient-to-b from-sky-100/50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-950 dark:to-slate-950 py-16 sm:py-24 border-b border-slate-200 dark:border-slate-800">
+        <!-- Abstract Aviation Sky Grid Background -->
+        <div class="absolute inset-0 opacity-15 dark:opacity-5 pointer-events-none">
+            <svg class="w-full h-full" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 40" fill="none" stroke="currentColor" stroke-width="1" />
+                    </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+            </svg>
+        </div>
+        
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Text Area -->
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-kit-medical animate-pulse"></i> Flight Crew Medical Training
+                    </div>
+                    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+                        Aviation First Aid & <span class="bg-gradient-to-r from-sky-500 to-indigo-500 bg-clip-text text-transparent">Emergency English</span>
+                    </h1>
+                    <p class="text-lg text-slate-600 dark:text-slate-300 max-w-2xl mx-auto lg:mx-0">
+                        Master the professional, life-saving vocabulary and communication protocols required to handle medical incidents on board confidently and professionally.
+                    </p>
+                    
+                    <!-- Learning Outcomes -->
+                    <div class="space-y-3 pt-4">
+                        <h4 class="text-xs font-semibold text-slate-400 dark:text-slate-500 uppercase tracking-widest text-left">Key Learning Outcomes</h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+                            <div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl shadow-sm">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-check text-sm"></i></span>
+                                <span class="text-sm font-medium">Recognize 28 critical conditions & tools</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl shadow-sm">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-check text-sm"></i></span>
+                                <span class="text-sm font-medium">Deploy accurate action verbs under pressure</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl shadow-sm">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-check text-sm"></i></span>
+                                <span class="text-sm font-medium">Handle passenger collapses & arrest events</span>
+                            </div>
+                            <div class="flex items-center gap-3 p-3 bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-800 rounded-xl shadow-sm">
+                                <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-500 flex items-center justify-center"><i class="fa-solid fa-check text-sm"></i></span>
+                                <span class="text-sm font-medium">Improve safety-critical pronunciation</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Cockpit-Panel Graphic -->
+                <div class="lg:col-span-5">
+                    <div class="relative bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-2xl overflow-hidden">
+                        <!-- Header Bar resembling a Primary Flight Display widget -->
+                        <div class="flex justify-between items-center pb-4 mb-4 border-b border-slate-100 dark:border-slate-800">
+                            <div class="flex items-center gap-2 text-xs font-bold text-slate-400">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+                                SYS ACTIVE: EFB FIRST AID UNIT
+                            </div>
+                            <span class="text-xs font-mono px-2 py-0.5 bg-sky-500/10 text-sky-500 rounded">V2.46</span>
+                        </div>
+                        
+                        <!-- Panel Values -->
+                        <div class="space-y-4">
+                            <!-- Live Terminal Display -->
+                            <div class="bg-slate-950 p-4 rounded-xl text-xs font-mono text-emerald-400 space-y-1 shadow-inner relative">
+                                <div class="flex justify-between border-b border-emerald-950 pb-1 mb-1 text-slate-500">
+                                    <span>MED PROTOCOL MONITOR</span>
+                                    <span>STABLE</span>
+                                </div>
+                                <div class="flex items-center gap-1.5"><i class="fa-solid fa-angle-right"></i> <span id="typedCommand">INIT_CABIN_FIRST_AID_MODULE</span></div>
+                                <div class="text-slate-400 flex items-center gap-1.5"><i class="fa-solid fa-angle-right"></i> Ready for oral & vocabulary drill simulation...</div>
+                                <div class="text-emerald-500/80 font-semibold" id="dynamicStatusText">💡 Tip: Use the dynamic TTS controller below to hear actual pronunciation!</div>
+                            </div>
+                            
+                            <!-- Mini EFB Controller Widget -->
+                            <div class="grid grid-cols-2 gap-3 pt-2">
+                                <a href="#practice" class="flex flex-col items-center justify-center p-4 bg-sky-500/10 hover:bg-sky-500/20 text-sky-500 rounded-xl transition-all group border border-sky-500/20">
+                                    <i class="fa-solid fa-clipboard-question text-xl mb-1.5 group-hover:scale-110 transition-transform"></i>
+                                    <span class="text-xs font-bold uppercase tracking-wider">Start Quiz</span>
+                                </a>
+                                <a href="#drills" class="flex flex-col items-center justify-center p-4 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-500 rounded-xl transition-all group border border-indigo-500/20">
+                                    <i class="fa-solid fa-microphone-lines text-xl mb-1.5 group-hover:scale-110 transition-transform"></i>
+                                    <span class="text-xs font-bold uppercase tracking-wider">Audio Drill</span>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- CORE CONCEPTS / MAIN LIBRARY SECTION -->
+    <main id="concepts" class="py-16 bg-white dark:bg-slate-900 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-4">
+                <div>
+                    <span class="text-sky-500 dark:text-sky-400 text-xs font-extrabold uppercase tracking-widest block mb-2"><i class="fa-solid fa-book-bookmark"></i> Reference Manual</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white">Aviation First Aid Vocabulary Library</h2>
+                    <p class="text-slate-500 dark:text-slate-400 mt-2 max-w-2xl">
+                        A full dynamic dictionary of onboard emergency terms. Click on any card to listen to the TTS-ready audio rendering or expand complete flight situations.
+                    </p>
+                </div>
+                <!-- Search & Filters -->
+                <div class="flex flex-wrap items-center gap-2">
+                    <input type="text" id="vocabSearch" placeholder="Search terms (e.g., Asthma)..." class="w-full sm:w-64 px-4 py-2 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-sky-500 text-slate-900 dark:text-slate-100 placeholder-slate-400">
+                    <div class="flex gap-1.5" id="vocabFilters">
+                        <button class="filter-btn active px-3 py-1.5 bg-sky-500 text-white text-xs font-bold rounded-lg transition-all" data-category="all">All</button>
+                        <button class="filter-btn px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold rounded-lg transition-all" data-category="condition">Conditions</button>
+                        <button class="filter-btn px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold rounded-lg transition-all" data-category="equipment">Equipment/Drugs</button>
+                        <button class="filter-btn px-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold rounded-lg transition-all" data-category="action">Actions</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Vocabulary Cards Dynamic Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="vocabGrid">
+                <!-- Javascript will load the 28 vocabulary cards here dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <!-- PATTERN / FORMULA / PHRASE STRUCTURE SECTION -->
+    <section class="py-16 bg-slate-50 dark:bg-slate-950 border-t border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-indigo-500 text-xs font-extrabold uppercase tracking-widest"><i class="fa-solid fa-bolt"></i> Onboard Speech Patterns</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Medical Announcement & Action Formula</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">
+                    How to structure critical medical reports on the cabin address (PA) or direct communication with the flight deck.
+                </p>
+            </div>
+
+            <!-- Formulas Container -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Card 1: Medical PA Announcement -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-sky-500/10 text-sky-500 flex items-center justify-center"><i class="fa-solid fa-bullhorn text-lg"></i></span>
+                        <div>
+                            <h3 class="font-bold text-lg">The Onboard Doctor / Nurse Request</h3>
+                            <span class="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest">Public Address Pattern</span>
+                        </div>
+                    </div>
+                    <!-- Core Structure -->
+                    <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-sky-500 text-sm font-mono text-slate-300 space-y-2">
+                        <p class="text-xs text-sky-400 uppercase font-bold tracking-widest">Formula Syntax</p>
+                        <p class="italic">"Ladies and gentlemen, we have a <span class="text-sky-400 font-bold">[Medical Condition / Emergency]</span> on board. If there is a <span class="text-sky-400 font-bold">[Medical Specialist]</span> among our passengers, please contact cabin crew immediately."</p>
+                    </div>
+                    <!-- Real Example Card -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Interactive Sample</span>
+                        <div class="bg-slate-100 dark:bg-slate-800/50 p-3.5 rounded-xl text-sm flex justify-between items-center group">
+                            <p class="italic text-slate-600 dark:text-slate-300">"Ladies and gentlemen, we have a possible <strong>baby delivery</strong> on board. If there is a doctor or qualified practitioner among our passengers, please contact cabin crew immediately."</p>
+                            <button onclick="speakText('Ladies and gentlemen, we have a possible baby delivery on board. If there is a doctor or qualified practitioner among our passengers, please contact cabin crew immediately.')" class="p-2.5 rounded-lg bg-sky-500 hover:bg-sky-600 text-white ml-3 flex-shrink-0 transition-colors shadow" title="Listen Example">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Reporting to Captain / ATC -->
+                <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 shadow-xl space-y-4">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center"><i class="fa-solid fa-headset text-lg"></i></span>
+                        <div>
+                            <h3 class="font-bold text-lg">Pilot / Cabin Interphone Medical Report</h3>
+                            <span class="text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest">Cockpit Notification Structure</span>
+                        </div>
+                    </div>
+                    <!-- Core Structure -->
+                    <div class="p-4 bg-slate-950 rounded-xl border-l-4 border-indigo-500 text-sm font-mono text-slate-300 space-y-2">
+                        <p class="text-xs text-indigo-400 uppercase font-bold tracking-widest">Formula Syntax</p>
+                        <p class="italic">"Captain, we have a <span class="text-indigo-400 font-bold">[Passenger Condition/State]</span>. We have administered <span class="text-indigo-400 font-bold">[First Aid Device/Treatment]</span>. Recommend requesting <span class="text-indigo-400 font-bold">[Ground Assistance Requirement]</span> on arrival."</p>
+                    </div>
+                    <!-- Real Example Card -->
+                    <div class="space-y-2">
+                        <span class="text-xs font-semibold text-slate-400 uppercase tracking-widest">Interactive Sample</span>
+                        <div class="bg-slate-100 dark:bg-slate-800/50 p-3.5 rounded-xl text-sm flex justify-between items-center group">
+                            <p class="italic text-slate-600 dark:text-slate-300">"Captain, we have an <strong>incapacitated passenger</strong> showing symptoms of a <strong>heart attack</strong>. We have deployed the <strong>AED</strong> and are executing <strong>CPR</strong>. Recommend requesting priority landing."</p>
+                            <button onclick="speakText('Captain, we have an incapacitated passenger showing symptoms of a heart attack. We have deployed the AED and are executing CPR. Recommend requesting priority landing.')" class="p-2.5 rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white ml-3 flex-shrink-0 transition-colors shadow" title="Listen Example">
+                                <i class="fa-solid fa-volume-high"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRACTICAL EXAMPLES & SCENARIO EXPLORER -->
+    <section id="examples" class="py-16 bg-white dark:bg-slate-900 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-emerald-500 text-xs font-extrabold uppercase tracking-widest"><i class="fa-solid fa-clipboard-list"></i> Real Cabin Scenarios</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">First-Aid Medical Event Logs</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">
+                    Review realistic post-incident reports illustrating how correct terminology is applied during real-world flight operations.
+                </p>
+            </div>
+
+            <!-- Categories Tabs -->
+            <div class="flex justify-center mb-8">
+                <div class="inline-flex p-1.5 bg-slate-100 dark:bg-slate-800 rounded-2xl gap-1">
+                    <button class="scenario-tab active px-4 py-2.5 rounded-xl text-sm font-bold transition-all bg-white dark:bg-slate-900 shadow-sm text-slate-800 dark:text-white" data-tab="respiratory">Respiratory & Cardiac</button>
+                    <button class="scenario-tab px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white" data-tab="trauma">Trauma & Accidents</button>
+                    <button class="scenario-tab px-4 py-2.5 rounded-xl text-sm font-bold transition-all text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white" data-tab="other">Critical Events</button>
+                </div>
+            </div>
+
+            <!-- Scenario Content Panels -->
+            <div id="scenariosContainer" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Javascript will load the appropriate tab cards dynamically below -->
+            </div>
+        </div>
+    </section>
+
+    <!-- INTERACTIVE PRACTICE SECTION -->
+    <section id="practice" class="py-16 bg-slate-50 dark:bg-slate-950 border-t border-b border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-sky-500 text-xs font-extrabold uppercase tracking-widest"><i class="fa-solid fa-gamepad"></i> Verify Your Knowledge</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Cabin Emergency Practice Deck</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">
+                    Test your reflexes. Complete the onboard medical scenarios and fill-in-the-blank logs to unlock the "Active Responder" rank.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+                <!-- Left Hand Quiz Interface -->
+                <div class="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-6 sm:p-8">
+                    <!-- Practice Type Selector -->
+                    <div class="flex gap-4 border-b border-slate-100 dark:border-slate-800 pb-4 mb-6">
+                        <button id="btnQuizMc" class="practice-toggle-btn pb-2 font-bold text-base text-sky-500 border-b-2 border-sky-500">Multiple Choice</button>
+                        <button id="btnQuizFitb" class="practice-toggle-btn pb-2 font-bold text-base text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 border-b-2 border-transparent">Fill-in-the-Blanks</button>
+                    </div>
+
+                    <!-- MULTIPLE CHOICE CONTENT CONTAINER -->
+                    <div id="mcContainer" class="space-y-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Question <span id="mcNum">1</span> of 5</span>
+                            <span class="text-xs font-bold bg-sky-500/10 text-sky-500 px-2 py-1 rounded">Weight: 10XP</span>
+                        </div>
+                        <h3 id="mcQuestionText" class="text-lg font-bold text-slate-900 dark:text-white"></h3>
+                        <div id="mcOptions" class="grid grid-cols-1 gap-3">
+                            <!-- Dynamic rendering of MC options -->
+                        </div>
+                        <div id="mcFeedback" class="hidden p-4 rounded-xl text-sm font-semibold"></div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <span class="text-sm font-semibold text-slate-400">Streak: <span id="mcStreak" class="text-emerald-500">🔥 0</span></span>
+                            <button id="btnNextMc" class="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all flex items-center gap-2">
+                                Next Scenario <i class="fa-solid fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- FILL-IN-THE-BLANK CONTENT CONTAINER (HIDDEN ON START) -->
+                    <div id="fitbContainer" class="hidden space-y-6">
+                        <div class="flex justify-between items-center">
+                            <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">Fill-in-the-Blank <span id="fitbNum">1</span> of 5</span>
+                            <span class="text-xs font-bold bg-indigo-500/10 text-indigo-500 px-2 py-1 rounded">Weight: 15XP</span>
+                        </div>
+                        <h3 id="fitbInstructions" class="text-lg font-bold text-slate-900 dark:text-white">Type the missing medical term based on context:</h3>
+                        <div class="p-6 bg-slate-100 dark:bg-slate-800/50 rounded-xl space-y-4">
+                            <p id="fitbContextText" class="text-base italic text-slate-700 dark:text-slate-300"></p>
+                            <input type="text" id="fitbAnswerInput" placeholder="Type answer here..." class="w-full px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none dark:text-white font-semibold">
+                        </div>
+                        <div id="fitbFeedback" class="hidden p-4 rounded-xl text-sm font-semibold"></div>
+                        <div class="flex justify-between items-center pt-4 border-t border-slate-100 dark:border-slate-800">
+                            <button id="btnCheckFitb" class="px-5 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition-all">Check Answer</button>
+                            <button id="btnNextFitb" class="px-5 py-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold text-sm rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all hidden">Next Section <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Hand Onboard First-Aid Scoreboard -->
+                <div class="lg:col-span-4 space-y-6">
+                    <!-- Progress Card -->
+                    <div class="bg-gradient-to-br from-slate-900 to-indigo-950 text-white p-6 rounded-2xl shadow-xl relative overflow-hidden">
+                        <div class="absolute -right-12 -bottom-12 opacity-10 text-9xl text-white">
+                            <i class="fa-solid fa-suitcase-medical"></i>
+                        </div>
+                        <h3 class="font-extrabold text-lg tracking-tight mb-2">Onboard Safety Rating</h3>
+                        <p class="text-xs text-indigo-300 leading-relaxed mb-6">Complete both quiz modes to master critical flight-safety terms and earn your active responder badge.</p>
+                        
+                        <!-- Progress Circle Chart Component -->
+                        <div class="flex items-center gap-6">
+                            <div class="relative w-20 h-20 flex items-center justify-center bg-white/5 rounded-full border border-white/10">
+                                <span id="progressPercent" class="font-mono text-2xl font-black">0%</span>
+                            </div>
+                            <div class="space-y-1">
+                                <div class="text-xs font-bold text-indigo-300 uppercase tracking-widest">Active Rank</div>
+                                <div id="responderRank" class="text-base font-black text-emerald-400">CABIN CADET</div>
+                                <div class="text-xs text-slate-400"><span id="pointsXP">0</span> / 125 XP earned</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Real-time Log panel (Simulated ACARS printer) -->
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-lg">
+                        <h4 class="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fa-solid fa-print"></i> Live Responder Log
+                        </h4>
+                        <div id="responderHistory" class="space-y-2 text-xs font-mono text-slate-600 dark:text-slate-400 max-h-[180px] overflow-y-auto">
+                            <div class="text-emerald-500">▶ SYSTEM: System initialized... Ready.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMMON MISTAKES / KEY NUANCES SECTION -->
+    <section id="mistakes" class="py-16 bg-white dark:bg-slate-900 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-12">
+                <span class="text-rose-500 text-xs font-extrabold uppercase tracking-widest"><i class="fa-solid fa-triangle-exclamation"></i> Critical Safety Nuances</span>
+                <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">First-Aid Vocabulary Pitfalls</h2>
+                <p class="text-slate-500 dark:text-slate-400 mt-2">
+                    Using incorrect terms during an aviation emergency can cause passenger anxiety or crew confusion. Avoid these common semantic mistakes.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Card 1: Cardiac Arrest vs. Heart Attack -->
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase px-2.5 py-1 bg-rose-500/10 text-rose-500 rounded-full">Severity: High</span>
+                            <i class="fa-solid fa-heart-crack text-slate-400"></i>
+                        </div>
+                        <h3 class="font-extrabold text-lg">Cardiac Arrest vs. Heart Attack</h3>
+                        <p class="text-xs text-slate-500">Crucial medical distinction for radio relays and cabin management.</p>
+                        
+                        <!-- Side-by-side comparative points -->
+                        <div class="space-y-2">
+                            <div class="p-3 bg-red-500/10 border-l-4 border-red-500 rounded text-xs text-slate-700 dark:text-slate-300">
+                                <span class="font-bold text-red-500 block">Heart Attack:</span> Blocked blood flow to heart. Patient is usually awake, complaining of severe chest discomfort.
+                            </div>
+                            <div class="p-3 bg-indigo-500/10 border-l-4 border-indigo-500 rounded text-xs text-slate-700 dark:text-slate-300">
+                                <span class="font-bold text-indigo-500 block">Cardiac Arrest:</span> Heart stops beating completely. Patient collapses, stops breathing, and needs CPR immediately.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: To Control vs. To Stop Bleeding -->
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase px-2.5 py-1 bg-amber-500/10 text-amber-500 rounded-full">Severity: Moderate</span>
+                            <i class="fa-solid fa-droplet text-slate-400"></i>
+                        </div>
+                        <h3 class="font-extrabold text-lg">To Control vs. To Stop Bleeding</h3>
+                        <p class="text-xs text-slate-500">Subtle differences when communicating first-aid results to the captain.</p>
+                        
+                        <!-- Side-by-side comparative points -->
+                        <div class="space-y-2">
+                            <div class="p-3 bg-red-500/10 border-l-4 border-red-500 rounded text-xs text-slate-700 dark:text-slate-300">
+                                <span class="font-bold text-red-500 block">To Control Bleeding:</span> Action of reducing blood flow from a major wound by applying active pressure.
+                            </div>
+                            <div class="p-3 bg-indigo-500/10 border-l-4 border-indigo-500 rounded text-xs text-slate-700 dark:text-slate-300">
+                                <span class="font-bold text-indigo-500 block">To Stop Bleeding:</span> Achieving full arrest of blood loss before backup emergency services arrive.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Plaster (UK) vs. Cast -->
+                <div class="bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-200 dark:border-slate-800 flex flex-col justify-between shadow-sm hover:shadow-md transition-all">
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold uppercase px-2.5 py-1 bg-sky-500/10 text-sky-500 rounded-full">Severity: Informative</span>
+                            <i class="fa-solid fa-band-aid text-slate-400"></i>
+                        </div>
+                        <h3 class="font-extrabold text-lg">Plaster (UK) vs. Cast</h3>
+                        <p class="text-xs text-slate-500">Differentiating minor cut adhesive from major bone fractures.</p>
+                        
+                        <!-- Side-by-side comparative points -->
+                        <div class="space-y-2">
+                            <div class="p-3 bg-red-500/10 border-l-4 border-red-500 rounded text-xs text-slate-700 dark:text-slate-300">
+                                <span class="font-bold text-red-500 block">Plaster (UK):</span> A tiny, soft adhesive bandage for a minor scratch or split finger.
+                            </div>
+                            <div class="p-3 bg-indigo-500/10 border-l-4 border-indigo-500 rounded text-xs text-slate-700 dark:text-slate-300">
+                                <span class="font-bold text-indigo-500 block">Cast:</span> Hard medical plaster shell to immobilize a fractured arm/leg.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPEAKING / CABIN DRILL SIMULATOR -->
+    <section id="drills" class="py-16 bg-slate-50 dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <!-- Drill Info Desk -->
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-indigo-500 text-xs font-extrabold uppercase tracking-widest"><i class="fa-solid fa-microphone"></i> Speaking Simulator</span>
+                    <h2 class="text-3xl font-extrabold text-slate-900 dark:text-white leading-tight">Cabin Audio Drills & Flashcards</h2>
+                    <p class="text-slate-500 dark:text-slate-400">
+                        Practice announcing emergency instructions clearly and speaking cabin first-aid logs aloud. This section uses flashcard drills and live Text-to-Speech (TTS) integration.
+                    </p>
+                    <div class="p-4 bg-sky-500/5 dark:bg-sky-500/10 rounded-xl border border-sky-500/20 text-xs leading-relaxed space-y-2">
+                        <p class="font-bold text-sky-500 uppercase tracking-wider"><i class="fa-solid fa-circle-info"></i> How to use:</p>
+                        <p class="text-slate-600 dark:text-slate-300">1. Click the microphone button to play back the TTS announcement with standard aviation cadence.</p>
+                        <p class="text-slate-600 dark:text-slate-300">2. Rehearse the statement yourself until you sound natural and professional.</p>
+                    </div>
+                </div>
+
+                <!-- Flashcard Active Panel -->
+                <div class="lg:col-span-7">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 sm:p-8 shadow-2xl relative">
+                        <!-- Card Header -->
+                        <div class="flex justify-between items-center pb-4 mb-6 border-b border-slate-100 dark:border-slate-800">
+                            <span class="text-xs font-bold text-slate-400">SCENARIO PROTOCOL DRILL</span>
+                            <span id="drillStep" class="text-xs font-mono font-bold text-indigo-500">CARD 1 OF 4</span>
+                        </div>
+
+                        <!-- Card Body (Flashcard Frame) -->
+                        <div class="min-h-[220px] flex flex-col justify-between space-y-4">
+                            <!-- Scenario Title -->
+                            <div>
+                                <span class="text-xs font-extrabold text-indigo-500/80 uppercase tracking-widest" id="drillCategory">CATEGORY: RESPIRATORY EMERGENCY</span>
+                                <h3 class="text-xl font-extrabold text-slate-900 dark:text-white mt-1" id="drillPrompt">Passenger Asthma Episode</h3>
+                                <p class="text-slate-400 dark:text-slate-500 text-xs mt-2 italic">A passenger complains of chest tightness, wheezing, and is struggling to breathe.</p>
+                            </div>
+
+                            <!-- Model Answer Block -->
+                            <div id="drillAnswerBox" class="hidden p-4 bg-slate-50 dark:bg-slate-950 rounded-xl border-l-4 border-emerald-500">
+                                <span class="text-[10px] font-extrabold text-emerald-500 uppercase tracking-wider block mb-1">Model Action & Cabin Report</span>
+                                <p class="text-sm italic font-medium text-slate-700 dark:text-slate-300" id="drillAnswerText">The passenger used an inhaler during an asthma attack. Ensure they remain upright and monitor vital signs.</p>
+                            </div>
+
+                            <!-- Controls -->
+                            <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-slate-100 dark:border-slate-800">
+                                <div class="flex items-center gap-2">
+                                    <button id="btnRevealDrill" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 rounded-xl text-xs font-bold transition-all">
+                                        Show Model Action
+                                    </button>
+                                    <button id="btnListenDrill" class="px-4 py-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-1.5">
+                                        <i class="fa-solid fa-volume-high"></i> Listen Prompt
+                                    </button>
+                                </div>
+                                <button id="btnNextDrill" class="p-2.5 bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-xl hover:bg-slate-800 dark:hover:bg-slate-100 transition-all text-xs font-bold flex items-center gap-1">
+                                    Next Flashcard <i class="fa-solid fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL REVISION SECTION -->
+    <section class="py-16 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 transition-colors">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-gradient-to-br from-sky-500 via-sky-600 to-indigo-700 text-white rounded-3xl p-8 md:p-12 shadow-2xl relative overflow-hidden">
+                <!-- Abstract Aircraft Art -->
+                <div class="absolute -right-20 -top-20 opacity-10 text-[300px] pointer-events-none">
+                    <i class="fa-solid fa-plane"></i>
+                </div>
+
+                <div class="max-w-3xl space-y-6 relative z-10">
+                    <span class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-white text-xs font-bold uppercase tracking-wider">
+                        <i class="fa-solid fa-clipboard-check"></i> Master Review Checklist
+                    </span>
+                    <h2 class="text-3xl md:text-4xl font-extrabold tracking-tight">Onboard Medical Checklist Summary</h2>
+                    <p class="text-sky-100 text-base leading-relaxed">
+                        Never compromise safety. When reporting medical emergencies to the flight deck, always clearly state:
+                    </p>
+
+                    <!-- Bullet Checklist grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                        <div class="flex items-start gap-3">
+                            <span class="mt-0.5 flex-shrink-0 w-5 h-5 bg-white/10 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-circle-1 text-[10px]"></i></span>
+                            <span class="text-sm text-sky-50"><strong>The patient's conscious state:</strong> Are they an <em>incapacitated person</em> or did they just <em>faint</em> temporarily?</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="mt-0.5 flex-shrink-0 w-5 h-5 bg-white/10 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-circle-2 text-[10px]"></i></span>
+                            <span class="text-sm text-sky-50"><strong>Critical Actions Taken:</strong> E.g., administered first aid, applied pressure to <em>control bleeding</em>, or used an <em>AED</em>.</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="mt-0.5 flex-shrink-0 w-5 h-5 bg-white/10 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-circle-3 text-[10px]"></i></span>
+                            <span class="text-sm text-sky-50"><strong>Specific conditions present:</strong> Is it a <em>stroke</em>, <em>epileptic seizure</em>, or <em>deep vein thrombosis</em>?</span>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <span class="mt-0.5 flex-shrink-0 w-5 h-5 bg-white/10 rounded-full flex items-center justify-center text-xs"><i class="fa-solid fa-circle-4 text-[10px]"></i></span>
+                            <span class="text-sm text-sky-50"><strong>Onboard resources deployed:</strong> Note the use of specialized tools like an <em>inhaler</em> or <em>EpiPen</em>.</span>
+                        </div>
+                    </div>
+
+                    <!-- Reset Progress button -->
+                    <div class="pt-6 border-t border-white/20 flex flex-wrap gap-4 items-center justify-between">
+                        <span class="text-sm text-sky-100">Ensure to log your drills before leaving!</span>
+                        <button id="btnResetProgress" class="px-5 py-2.5 bg-white text-sky-900 hover:bg-sky-50 font-extrabold text-sm rounded-xl transition-all shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-rotate-left"></i> Reset Responder Stats
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="mt-auto py-8 bg-slate-900 text-slate-400 border-t border-slate-800 text-xs">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-2">
+                <span class="font-extrabold text-white">AeroMedical English Platform</span>
+                <span>• Flight Safety & First-Aid Reference Manual</span>
+            </div>
+            <p>© 2026 AeroMedical Inc. Safe and sound flight operations.</p>
+        </div>
+    </footer>
+
+    <!-- COMPACT CUSTOM JAVASCRIPT ENGINE -->
+    <script>
+        /* ---------------------------------------------------------------- */
+        /* VOLUMINOUS RAW VOCABULARY AND SCENARIOS DATABASE                 */
+        /* ---------------------------------------------------------------- */
+        const VOCAB_DATA = [
+            {
+                term: "To administer first aid",
+                def: "To give basic medical help before professional medical care arrives.",
+                example: "The cabin crew administered first aid to the injured passenger.",
+                category: "action",
+                tag: "Essential Action"
+            },
+            {
+                term: "Concussion",
+                def: "A brain injury caused by a blow to the head.",
+                example: "After the hard landing, one passenger was checked for concussion.",
+                category: "condition",
+                tag: "Trauma Condition"
+            },
+            {
+                term: "Inhaler",
+                def: "A small medical device used to breathe medicine into the lungs.",
+                example: "The passenger used an inhaler during an asthma attack.",
+                category: "equipment",
+                tag: "Medical Tool"
+            },
+            {
+                term: "Painkiller",
+                def: "Medicine used to reduce pain.",
+                example: "The passenger asked for a painkiller because of a severe headache.",
+                category: "equipment",
+                tag: "Onboard Pharmacy"
+            },
+            {
+                term: "Pain reliever",
+                def: "Medicine used to reduce pain.",
+                example: "A pain reliever can help reduce discomfort during the flight.",
+                category: "equipment",
+                tag: "Onboard Pharmacy"
+            },
+            {
+                term: "Life-threatening condition",
+                def: "A medical condition that can cause death if it is not treated quickly.",
+                example: "A severe allergic reaction can become a life-threatening condition.",
+                category: "condition",
+                tag: "Emergency Level"
+            },
+            {
+                term: "Stretcher",
+                def: "Equipment used to carry a person who cannot walk.",
+                example: "The injured passenger was removed from the aircraft on a stretcher.",
+                category: "equipment",
+                tag: "Mobility Tool"
+            },
+            {
+                term: "Deep vein thrombosis",
+                def: "A blood clot in a deep vein, usually in the leg.",
+                example: "Long flights can increase the risk of deep vein thrombosis.",
+                category: "condition",
+                tag: "Cardiovascular"
+            },
+            {
+                term: "Epileptic seizure",
+                def: "A sudden medical episode caused by abnormal electrical activity in the brain.",
+                example: "The crew requested medical assistance because a passenger had an epileptic seizure.",
+                category: "condition",
+                tag: "Neurological"
+            },
+            {
+                term: "Stroke",
+                def: "A serious condition when blood flow to the brain is blocked or reduced.",
+                example: "Signs of a stroke may include weakness, confusion, and difficulty speaking.",
+                category: "condition",
+                tag: "Neurological"
+            },
+            {
+                term: "Cardiac arrest",
+                def: "A medical emergency when the heart suddenly stops beating effectively.",
+                example: "The crew started CPR after the passenger went into cardiac arrest.",
+                category: "condition",
+                tag: "Critical Emergency"
+            },
+            {
+                term: "Heart attack",
+                def: "A serious condition when blood flow to the heart is blocked.",
+                example: "The passenger had chest pain, and the crew suspected a heart attack.",
+                category: "condition",
+                tag: "Cardiovascular"
+            },
+            {
+                term: "CPR",
+                def: "Cardiopulmonary resuscitation. An emergency procedure using chest compressions and rescue breathing to help a person whose heart or breathing has stopped.",
+                example: "The crew performed CPR until medical help arrived.",
+                category: "action",
+                tag: "Life-Saving Action"
+            },
+            {
+                term: "Incapacitated person",
+                def: "A person who is unable to move, act, or make decisions normally because of illness or injury.",
+                example: "The crew had to assist an incapacitated passenger.",
+                category: "condition",
+                tag: "Flight Safety Status"
+            },
+            {
+                term: "To control bleeding",
+                def: "To reduce or stop blood loss from a wound.",
+                example: "The crew used pressure to control the bleeding.",
+                category: "action",
+                tag: "Essential Action"
+            },
+            {
+                term: "To stop bleeding",
+                def: "To prevent more blood from leaving the body after an injury.",
+                example: "The first aider tried to stop the bleeding before the ambulance arrived.",
+                category: "action",
+                tag: "Essential Action"
+            },
+            {
+                term: "To faint",
+                def: "To suddenly lose consciousness for a short time.",
+                example: "The passenger fainted during the climb.",
+                category: "action",
+                tag: "Mild Action"
+            },
+            {
+                term: "To resuscitate",
+                def: "To try to bring someone back to consciousness or restore breathing and circulation.",
+                example: "The crew tried to resuscitate the passenger.",
+                category: "action",
+                tag: "Life-Saving Action"
+            },
+            {
+                term: "Cast",
+                def: "A hard medical support used to protect a broken bone.",
+                example: "The passenger had a cast on his leg.",
+                category: "equipment",
+                tag: "Support Tool"
+            },
+            {
+                term: "Plaster",
+                def: "In British English, a plaster is a small adhesive covering for a minor cut.",
+                example: "The crew gave the passenger a plaster for a small cut.",
+                category: "equipment",
+                tag: "First-Aid Kit"
+            },
+            {
+                term: "Wheelchair passenger",
+                def: "A passenger who needs a wheelchair for mobility.",
+                example: "A wheelchair passenger requested assistance during boarding.",
+                category: "condition",
+                tag: "Mobility Status"
+            },
+            {
+                term: "Fracture",
+                def: "A break or crack in a bone.",
+                example: "The passenger may have suffered a fracture after the fall.",
+                category: "condition",
+                tag: "Trauma Condition"
+            },
+            {
+                term: "I am safe and sound",
+                def: "An idiomatic phrase meaning 'I am not injured, and I am okay.'",
+                example: "After the evacuation, the pilot reported, 'I am safe and sound.'",
+                category: "action",
+                tag: "Key Expression"
+            },
+            {
+                term: "Severe allergic reaction",
+                def: "A serious reaction of the body to food, medicine, or another allergen.",
+                example: "A severe allergic reaction may require an EpiPen.",
+                category: "condition",
+                tag: "Critical Emergency"
+            },
+            {
+                term: "Childbirth",
+                def: "The process of giving birth to a baby.",
+                example: "The crew prepared for possible childbirth on board.",
+                category: "condition",
+                tag: "Onboard Event"
+            },
+            {
+                term: "Baby delivery",
+                def: "The process of helping a baby to be born.",
+                example: "The crew asked if there was a doctor on board because of a possible baby delivery.",
+                category: "action",
+                tag: "Onboard Event"
+            },
+            {
+                term: "Asthma",
+                def: "A medical condition that makes breathing difficult.",
+                example: "The passenger suffered from asthma and needed an inhaler.",
+                category: "condition",
+                tag: "Chronic Condition"
+            },
+            {
+                term: "AED",
+                def: "Automated External Defibrillator. A portable device that can give an electric shock to restart or correct the heart rhythm.",
+                example: "The crew brought the automated external defibrillator when the passenger collapsed.",
+                category: "equipment",
+                tag: "Emergency Equipment"
+            },
+            {
+                term: "EpiPen",
+                def: "An auto-injector used to give epinephrine during a severe allergic reaction.",
+                example: "The passenger used an EpiPen during an allergic reaction.",
+                category: "equipment",
+                tag: "Emergency Medication"
+            },
+            {
+                term: "Passenger collapse",
+                def: "A situation when a passenger suddenly falls down or loses consciousness.",
+                example: "The captain requested a priority landing due to a passenger collapse.",
+                category: "condition",
+                tag: "Flight Emergency Code"
+            },
+            {
+                term: "Death of a passenger",
+                def: "An event where a passenger has died on board or during the flight.",
+                example: "The crew had to follow company procedures after the death of a passenger.",
+                category: "condition",
+                tag: "Ultimate Onboard Event"
+            }
+        ];
+
+        /* Real Flight Scenarios organized by Categories */
+        const SCENARIO_DATA = {
+            respiratory: [
+                {
+                    title: "Asthma & Inhaler Action Protocol",
+                    meta: "Incident Code: RES-204",
+                    narrative: "An economy passenger suffered a sudden asthma flare-up. Crew located an inhaler inside the passenger's carry-on luggage and assisted them. They remained upright until stability returned.",
+                    highlight: "Useful Pattern: Asthma / Inhaler",
+                    tag: "Assisted"
+                },
+                {
+                    title: "Cardiac Arrest and CPR",
+                    meta: "Incident Code: CAR-550",
+                    narrative: "During mid-flight cruising, a passenger experienced a massive cardiac arrest. Cabin crew cleared the aisle, deployed the onboard AED to analyze heart rhythm, and initiated immediate CPR.",
+                    highlight: "Useful Pattern: Cardiac arrest / AED / CPR",
+                    tag: "Urgent"
+                }
+            ],
+            trauma: [
+                {
+                    title: "Severe Fracture & Splint Setup",
+                    meta: "Incident Code: TRM-109",
+                    narrative: "A passenger slipped during sudden turbulence, sustaining a fracture to the lower tibia. Crew evaluated the break, immobilized the leg using a customized cast, and arranged a stretcher.",
+                    highlight: "Useful Pattern: Fracture / Cast / Stretcher",
+                    tag: "Handled"
+                },
+                {
+                    title: "Uncontrolled Cut & Bleeding",
+                    meta: "Incident Code: TRM-332",
+                    narrative: "A galley assistant sliced their forearm on open equipment. Crew applied heavy continuous direct pressure to control the bleeding and then secured it with sterilized bandages.",
+                    highlight: "Useful Pattern: To control bleeding",
+                    tag: "Controlled"
+                }
+            ],
+            other: [
+                {
+                    title: "Allergic Reaction & EpiPen Action",
+                    meta: "Incident Code: ALL-881",
+                    narrative: "A traveler ingested hidden peanut oils. Within minutes they suffered a severe allergic reaction showing breathing difficulty. Cabin crew deployed an EpiPen immediately into the outer thigh.",
+                    highlight: "Useful Pattern: Severe allergic reaction / EpiPen",
+                    tag: "Urgent"
+                },
+                {
+                    title: "Onboard Baby Delivery",
+                    meta: "Incident Code: GYN-902",
+                    narrative: "A pregnant mother went into intense early labor. Crew broadcasted a PA request for a doctor, sanitized the premium cabin workspace, and prepared for baby delivery.",
+                    highlight: "Useful Pattern: Onboard childbirth / Baby delivery",
+                    tag: "Delivered"
+                }
+            ]
+        };
+
+        /* Multichoice Practice Scenarios (Strictly aligned to text definitions & examples) */
+        const MC_QUESTIONS = [
+            {
+                question: "An elderly passenger suddenly stops breathing and collapses. What immediate procedure must the cabin crew initiate before medical help arrives?",
+                options: [
+                    "Perform CPR (cardiopulmonary resuscitation)",
+                    "Administer a pain reliever",
+                    "Offer an inhaler",
+                    "Place them on a stretcher"
+                ],
+                correct: 0,
+                feedback: "Correct! CPR is the emergency procedure using compressions and rescue breathing to help a person whose heart has stopped."
+            },
+            {
+                question: "A passenger suffers a sudden blow to the head during severe clear-air turbulence and appears confused. What condition should you monitor them for?",
+                options: [
+                    "Deep vein thrombosis",
+                    "Concussion",
+                    "Cardiac arrest",
+                    "An epileptic seizure"
+                ],
+                correct: 1,
+                feedback: "Correct! A concussion is a brain injury caused by a blow to the head."
+            },
+            {
+                question: "A traveler begins wheezing heavily and struggling to breathe. They state they are suffering an asthma attack. What medical device do you need?",
+                options: [
+                    "An EpiPen",
+                    "A plaster",
+                    "An inhaler",
+                    "A cast"
+                ],
+                correct: 2,
+                feedback: "Correct! An inhaler is the medical device used to breathe medicine directly into the lungs during an asthma attack."
+            },
+            {
+                question: "The Captain reports an emergency because a passenger has collapsed. In aviation English, what phrase implies the passenger is safe and unharmed?",
+                options: [
+                    "The passenger is incapacitated",
+                    "I am safe and sound",
+                    "We have controlled the bleeding",
+                    "The passenger is resuscitated"
+                ],
+                correct: 1,
+                feedback: "Correct! 'Safe and sound' is an expression used to confirm a person is not injured and completely okay."
+            },
+            {
+                question: "A passenger has a severe allergic reaction after eating a snack. Which medication is specifically designed to auto-inject epinephrine to treat this life-threatening condition?",
+                options: [
+                    "An AED",
+                    "An EpiPen",
+                    "A painkiller",
+                    "A plaster"
+                ],
+                correct: 1,
+                feedback: "Correct! An EpiPen is an auto-injector used specifically to administer epinephrine during a severe allergic reaction."
+            }
+        ];
+
+        /* Fill-in-the-Blank Questions */
+        const FITB_QUESTIONS = [
+            {
+                text: "Due to the long-haul flight duration, the senior crew advised passengers to stretch to prevent deep vein ____________.",
+                answer: "thrombosis",
+                instructions: "Hint: It is a blood clot in a deep vein, usually in the leg."
+            },
+            {
+                text: "The cabin crew immediately brought the automated external ____________ (AED) to restart the passenger's heart rhythm.",
+                answer: "defibrillator",
+                instructions: "Hint: Complete the term 'AED' (automated external ...)."
+            },
+            {
+                text: "A severe allergic reaction is a ____________ condition that can cause death if not treated quickly.",
+                answer: "life-threatening",
+                instructions: "Hint: Words used for an extremely dangerous state (life-...)."
+            },
+            {
+                text: "If a traveler faints or collapses and has no heartbeat, you must perform CPR and try to ____________ them.",
+                answer: "resuscitate",
+                instructions: "Hint: Verb meaning to bring someone back to consciousness/circulation."
+            },
+            {
+                text: "To give basic medical help before professional medical care arrives is to ____________ first aid.",
+                answer: "administer",
+                instructions: "Hint: Choose the correct flight action verb (to ____________ first aid)."
+            }
+        ];
+
+        /* Drill Flashcard Dataset */
+        const DRILL_CARDS = [
+            {
+                category: "CATEGORY: CARDIOVASCULAR EMERGENCY",
+                prompt: "A passenger suddenly collapses, is unresponsive, and has no heartbeat.",
+                answer: "The crew started CPR after the passenger went into cardiac arrest, and called for the AED.",
+                speech: "The crew started CPR after the passenger went into cardiac arrest."
+            },
+            {
+                category: "CATEGORY: SEVERE ALLERGIC REACTION",
+                prompt: "A traveler experiences throat swelling and hives after their meal.",
+                answer: "A severe allergic reaction may require an EpiPen. Administer the auto-injector quickly.",
+                speech: "A severe allergic reaction may require an EpiPen."
+            },
+            {
+                category: "CATEGORY: RESPIRATORY EMERGENCY",
+                prompt: "An asthmatic passenger is struggling to catch their breath.",
+                answer: "The passenger used an inhaler during an asthma attack to breathe medicine into their lungs.",
+                speech: "The passenger used an inhaler during an asthma attack."
+            },
+            {
+                category: "CATEGORY: PHYSICAL TRAUMA",
+                prompt: "A passenger breaks their wrist falling during heavy turbulence.",
+                answer: "The crew assisted the passenger with a fracture and stabilized it. A cast may be needed later.",
+                speech: "The passenger suffered a fracture after the fall."
+            }
+        ];
+
+        /* ---------------------------------------------------------------- */
+        /* APPLICATION STATE & LOGIC                                        */
+        /* ---------------------------------------------------------------- */
+        let state = {
+            currentMcIdx: 0,
+            currentFitbIdx: 0,
+            currentDrillIdx: 0,
+            mcPoints: 0,
+            fitbPoints: 0,
+            streakMc: 0,
+            userAnswersLogged: []
+        };
+
+        // Dark/Light Theme Handler
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            logAction(`Theme toggled to: ${isDark ? 'Dark Mode' : 'Light Mode'}`);
+        });
+
+        // Load Theme on Launch
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Action Logger to simulation feed
+        function logAction(msg) {
+            const container = document.getElementById('responderHistory');
+            const div = document.createElement('div');
+            div.className = "border-b border-slate-100 dark:border-slate-800/50 pb-1 mb-1";
+            div.innerHTML = `▶ ${new Date().toLocaleTimeString()}: ${msg}`;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        /* ---------------------------------------------------------------- */
+        /* TEXT TO SPEECH CONTROLLER                                        */
+        /* ---------------------------------------------------------------- */
+        function speakText(text) {
+            if ('speechSynthesis' in window) {
+                // Cancel ongoing speak requests
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.95; // Clear medical speaking rate
+                window.speechSynthesis.speak(utterance);
+                logAction(`Synthesizing speech: "${text.substring(0, 35)}..."`);
+            } else {
+                logAction("⚠️ System speech engine not supported in your browser.");
+            }
+        }
+
+        /* ---------------------------------------------------------------- */
+        /* DYNAMIC VOLUMINOUS VOCABULARY GENERATION                          */
+        /* ---------------------------------------------------------------- */
+        function renderVocabulary(filterCategory = 'all', searchQuery = '') {
+            const grid = document.getElementById('vocabGrid');
+            grid.innerHTML = ''; // Reset UI
+
+            const filteredList = VOCAB_DATA.filter(item => {
+                const matchesCategory = (filterCategory === 'all' || item.category === filterCategory);
+                const matchesSearch = item.term.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                                      item.def.toLowerCase().includes(searchQuery.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filteredList.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12">
+                        <i class="fa-solid fa-folder-open text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
+                        <p class="text-slate-500">No medical terms match your current parameters.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filteredList.forEach(item => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 dark:bg-slate-800/30 rounded-2xl p-5 border border-slate-200/60 dark:border-slate-800/80 hover:border-sky-500/50 dark:hover:border-sky-500/50 hover:shadow-xl transition-all duration-300 group flex flex-col justify-between";
+                
+                // Color badges depending on categorization
+                let badgeClass = "bg-sky-500/10 text-sky-500";
+                if (item.category === "condition") badgeClass = "bg-rose-500/10 text-rose-500";
+                if (item.category === "action") badgeClass = "bg-indigo-500/10 text-indigo-500";
+
+                card.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full ${badgeClass}">
+                                ${item.tag}
+                            </span>
+                            <button onclick="speakText('${item.term}. Example sentence: ${item.example.replace(/'/g, "\\'")}')" class="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 hover:bg-sky-500 hover:text-white dark:hover:bg-sky-500 flex items-center justify-center transition-all shadow-sm" title="Listen Audio">
+                                <i class="fa-solid fa-volume-high text-xs"></i>
+                            </button>
+                        </div>
+                        <h3 class="font-bold text-lg text-slate-900 dark:text-white tracking-tight group-hover:text-sky-500 transition-colors">${item.term}</h3>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 line-clamp-3">${item.def}</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-200/40 dark:border-slate-800/40 space-y-1.5">
+                        <span class="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest block">Onboard Example:</span>
+                        <p class="text-xs italic text-slate-500 dark:text-slate-400">"${item.example}"</p>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        /* Vocabulary Search/Filter Event Handlers */
+        document.getElementById('vocabSearch').addEventListener('input', (e) => {
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.category;
+            renderVocabulary(activeFilter, e.target.value);
+        });
+
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-sky-500', 'text-white');
+                    b.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-400');
+                });
+                btn.classList.add('active', 'bg-sky-500', 'text-white');
+                btn.classList.remove('bg-slate-100', 'dark:bg-slate-800', 'text-slate-600', 'dark:text-slate-400');
+                
+                const searchQuery = document.getElementById('vocabSearch').value;
+                renderVocabulary(btn.dataset.category, searchQuery);
+            });
+        });
+
+
+        /* ---------------------------------------------------------------- */
+        /* SCENARIOS TAB HANDLER                                            */
+        /* ---------------------------------------------------------------- */
+        function renderScenarios(category = 'respiratory') {
+            const container = document.getElementById('scenariosContainer');
+            container.innerHTML = '';
+
+            const list = SCENARIO_DATA[category];
+            list.forEach(scenario => {
+                const element = document.createElement('div');
+                element.className = "bg-slate-50 dark:bg-slate-800/20 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 flex flex-col justify-between shadow-sm relative";
+                
+                element.innerHTML = `
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-xs">
+                            <span class="font-mono text-slate-400">${scenario.meta}</span>
+                            <span class="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 font-bold uppercase tracking-widest text-[10px]">${scenario.tag}</span>
+                        </div>
+                        <h4 class="font-bold text-lg text-slate-900 dark:text-white">${scenario.title}</h4>
+                        <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">${scenario.narrative}</p>
+                    </div>
+                    <div class="pt-4 mt-4 border-t border-slate-200/50 dark:border-slate-800/80 flex items-center justify-between">
+                        <span class="text-xs font-mono text-sky-500 font-semibold">${scenario.highlight}</span>
+                        <button onclick="speakText('${scenario.narrative.replace(/'/g, "\\'")}')" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 rounded-lg text-xs font-bold transition-all flex items-center gap-1">
+                            <i class="fa-solid fa-volume-high"></i> Listen Log
+                        </button>
+                    </div>
+                `;
+                container.appendChild(element);
+            });
+        }
+
+        const scenarioTabs = document.querySelectorAll('.scenario-tab');
+        scenarioTabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                scenarioTabs.forEach(t => {
+                    t.classList.remove('active', 'bg-white', 'dark:bg-slate-900', 'shadow-sm', 'text-slate-800', 'dark:text-white');
+                    t.classList.add('text-slate-500', 'dark:text-slate-400');
+                });
+                tab.classList.add('active', 'bg-white', 'dark:bg-slate-900', 'shadow-sm', 'text-slate-800', 'dark:text-white');
+                renderScenarios(tab.dataset.tab);
+            });
+        });
+
+
+        /* ---------------------------------------------------------------- */
+        /* MULTIPLE CHOICE PRACTICE CONTROLLER                              */
+        /* ---------------------------------------------------------------- */
+        function loadMcQuestion() {
+            const currentObj = MC_QUESTIONS[state.currentMcIdx];
+            document.getElementById('mcNum').innerText = state.currentMcIdx + 1;
+            document.getElementById('mcQuestionText').innerText = currentObj.question;
+
+            const optionsBox = document.getElementById('mcOptions');
+            optionsBox.innerHTML = ''; // Clear previous
+
+            currentObj.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 bg-slate-50 dark:bg-slate-800/50 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl text-sm font-semibold border border-slate-200/80 dark:border-slate-700/80 transition-all flex justify-between items-center group";
+                btn.innerHTML = `
+                    <span>${opt}</span>
+                    <span class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-400 group-hover:bg-sky-500 group-hover:text-white flex items-center justify-center text-xs font-bold transition-all">${String.fromCharCode(65 + idx)}</span>
+                `;
+                btn.onclick = () => selectMcOption(idx);
+                optionsBox.appendChild(btn);
+            });
+
+            // Reset feedback element
+            const feedback = document.getElementById('mcFeedback');
+            feedback.className = "hidden p-4 rounded-xl text-sm font-semibold";
+            feedback.innerHTML = '';
+        }
+
+        function selectMcOption(idx) {
+            const currentObj = MC_QUESTIONS[state.currentMcIdx];
+            const feedback = document.getElementById('mcFeedback');
+            feedback.classList.remove('hidden');
+
+            const optionButtons = document.querySelectorAll('#mcOptions button');
+            // Disable all buttons to freeze choice
+            optionButtons.forEach(btn => btn.disabled = true);
+
+            if (idx === currentObj.correct) {
+                feedback.className = "p-4 bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 rounded-xl text-sm font-semibold";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> ${currentObj.feedback}`;
+                state.mcPoints += 10;
+                state.streakMc += 1;
+                document.getElementById('mcStreak').innerText = `🔥 ${state.streakMc}`;
+                logAction(`Correct: Multi-Choice Scenario ${state.currentMcIdx + 1} completed.`);
+            } else {
+                feedback.className = "p-4 bg-rose-500/10 text-rose-500 border border-rose-500/30 rounded-xl text-sm font-semibold";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Incorrect. Review definition and try again!`;
+                state.streakMc = 0;
+                document.getElementById('mcStreak').innerText = `🔥 ${state.streakMc}`;
+                logAction(`Incorrect: Scenario ${state.currentMcIdx + 1} missed.`);
+            }
+
+            // Style actual correctness colors directly inside options list
+            optionButtons[currentObj.correct].classList.add('border-emerald-500', 'bg-emerald-500/5');
+            if (idx !== currentObj.correct) {
+                optionButtons[idx].classList.add('border-rose-500', 'bg-rose-500/5');
+            }
+
+            updateGlobalProgress();
+        }
+
+        document.getElementById('btnNextMc').addEventListener('click', () => {
+            state.currentMcIdx++;
+            if (state.currentMcIdx >= MC_QUESTIONS.length) {
+                state.currentMcIdx = 0; // Wrap around safely
+                logAction("🔄 Resetting Multiple-Choice Deck for continuous practice.");
+            }
+            loadMcQuestion();
+        });
+
+
+        /* ---------------------------------------------------------------- */
+        /* FILL IN THE BLANK PRACTICE CONTROLLER                            */
+        /* ---------------------------------------------------------------- */
+        function loadFitbQuestion() {
+            const currentObj = FITB_QUESTIONS[state.currentFitbIdx];
+            document.getElementById('fitbNum').innerText = state.currentFitbIdx + 1;
+            document.getElementById('fitbInstructions').innerText = currentObj.instructions;
+            document.getElementById('fitbContextText').innerText = currentObj.text;
+            document.getElementById('fitbAnswerInput').value = '';
+
+            const feedback = document.getElementById('fitbFeedback');
+            feedback.className = "hidden p-4 rounded-xl text-sm font-semibold";
+            feedback.innerHTML = '';
+
+            document.getElementById('btnCheckFitb').classList.remove('hidden');
+            document.getElementById('btnNextFitb').classList.add('hidden');
+        }
+
+        document.getElementById('btnCheckFitb').addEventListener('click', () => {
+            const userInput = document.getElementById('fitbAnswerInput').value.trim().toLowerCase();
+            const correctWord = FITB_QUESTIONS[state.currentFitbIdx].answer.toLowerCase();
+            const feedback = document.getElementById('fitbFeedback');
+
+            feedback.classList.remove('hidden');
+            if (userInput === correctWord) {
+                feedback.className = "p-4 bg-emerald-500/10 text-emerald-500 border border-emerald-500/30 rounded-xl text-sm font-semibold";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-check"></i> Splendid choice! Term matched correctly.`;
+                state.fitbPoints += 15;
+                logAction(`Correct: Fill-in-the-Blank ${state.currentFitbIdx + 1} answered.`);
+            } else {
+                feedback.className = "p-4 bg-rose-500/10 text-rose-500 border border-rose-500/30 rounded-xl text-sm font-semibold";
+                feedback.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> Incorrect value. The correct term was: <strong>${correctWord}</strong>`;
+                logAction(`Incorrect: Fill-in-the-Blank ${state.currentFitbIdx + 1} skipped.`);
+            }
+
+            document.getElementById('btnCheckFitb').classList.add('hidden');
+            document.getElementById('btnNextFitb').classList.remove('hidden');
+            updateGlobalProgress();
+        });
+
+        document.getElementById('btnNextFitb').addEventListener('click', () => {
+            state.currentFitbIdx++;
+            if (state.currentFitbIdx >= FITB_QUESTIONS.length) {
+                state.currentFitbIdx = 0; // Reset index loop
+                logAction("🔄 Resetting Fill-in-the-Blank Deck for loop.");
+            }
+            loadFitbQuestion();
+        });
+
+
+        /* ---------------------------------------------------------------- */
+        /* COMPACT SCORES AND PROGRESS GAUGE ENGINE                         */
+        /* ---------------------------------------------------------------- */
+        function updateGlobalProgress() {
+            const maxPoints = (MC_QUESTIONS.length * 10) + (FITB_QUESTIONS.length * 15); // 125 Total Points
+            const earnedPoints = Math.min(state.mcPoints + state.fitbPoints, maxPoints);
+            const percentage = Math.round((earnedPoints / maxPoints) * 100);
+
+            // Update DOM text
+            document.getElementById('topBarProgress').innerText = `${percentage}%`;
+            document.getElementById('progressPercent').innerText = `${percentage}%`;
+            document.getElementById('pointsXP').innerText = earnedPoints;
+
+            // Set Rank based on performance
+            let rank = "CABIN CADET";
+            let color = "text-amber-500";
+            if (percentage >= 30 && percentage < 70) {
+                rank = "MEDICAL FIRST-OFFICER";
+                color = "text-sky-500";
+            } else if (percentage >= 70) {
+                rank = "CHIEF FLIGHT RESPONDER";
+                color = "text-emerald-400";
+            }
+
+            const rankEl = document.getElementById('responderRank');
+            rankEl.innerText = rank;
+            rankEl.className = `text-base font-black ${color}`;
+        }
+
+        // Handle Practice Mode Toggling
+        const btnQuizMc = document.getElementById('btnQuizMc');
+        const btnQuizFitb = document.getElementById('btnQuizFitb');
+        const mcContainer = document.getElementById('mcContainer');
+        const fitbContainer = document.getElementById('fitbContainer');
+
+        btnQuizMc.addEventListener('click', () => {
+            btnQuizMc.className = "practice-toggle-btn pb-2 font-bold text-base text-sky-500 border-b-2 border-sky-500";
+            btnQuizFitb.className = "practice-toggle-btn pb-2 font-bold text-base text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 border-b-2 border-transparent";
+            mcContainer.classList.remove('hidden');
+            fitbContainer.classList.add('hidden');
+        });
+
+        btnQuizFitb.addEventListener('click', () => {
+            btnQuizFitb.className = "practice-toggle-btn pb-2 font-bold text-base text-indigo-500 border-b-2 border-indigo-500";
+            btnQuizMc.className = "practice-toggle-btn pb-2 font-bold text-base text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 border-b-2 border-transparent";
+            fitbContainer.classList.remove('hidden');
+            mcContainer.classList.add('hidden');
+        });
+
+
+        /* ---------------------------------------------------------------- */
+        /* CABIN DRILL & FLASHCARD MECHANICS                                */
+        /* ---------------------------------------------------------------- */
+        function loadDrillCard() {
+            const currentObj = DRILL_CARDS[state.currentDrillIdx];
+            document.getElementById('drillStep').innerText = `CARD ${state.currentDrillIdx + 1} OF ${DRILL_CARDS.length}`;
+            document.getElementById('drillCategory').innerText = currentObj.category;
+            document.getElementById('drillPrompt').innerText = currentObj.prompt;
+            document.getElementById('drillAnswerText').innerText = currentObj.answer;
+
+            // Hide the model answer until explicitly clicked
+            document.getElementById('drillAnswerBox').classList.add('hidden');
+            document.getElementById('btnRevealDrill').innerText = "Show Model Action";
+        }
+
+        document.getElementById('btnRevealDrill').addEventListener('click', () => {
+            const box = document.getElementById('drillAnswerBox');
+            const btn = document.getElementById('btnRevealDrill');
+            
+            if (box.classList.contains('hidden')) {
+                box.classList.remove('hidden');
+                btn.innerText = "Hide Model Action";
+                logAction(`Flipped Card ${state.currentDrillIdx + 1} to view correct response.`);
+            } else {
+                box.classList.add('hidden');
+                btn.innerText = "Show Model Action";
+            }
+        });
+
+        document.getElementById('btnListenDrill').addEventListener('click', () => {
+            const textToSpeak = DRILL_CARDS[state.currentDrillIdx].speech;
+            speakText(textToSpeak);
+        });
+
+        document.getElementById('btnNextDrill').addEventListener('click', () => {
+            state.currentDrillIdx++;
+            if (state.currentDrillIdx >= DRILL_CARDS.length) {
+                state.currentDrillIdx = 0;
+            }
+            loadDrillCard();
+        });
+
+
+        /* Reset Progress */
+        document.getElementById('btnResetProgress').addEventListener('click', () => {
+            state.mcPoints = 0;
+            state.fitbPoints = 0;
+            state.currentMcIdx = 0;
+            state.currentFitbIdx = 0;
+            state.streakMc = 0;
+            document.getElementById('mcStreak').innerText = "🔥 0";
+            
+            updateGlobalProgress();
+            loadMcQuestion();
+            loadFitbQuestion();
+            
+            logAction("♻️ All performance parameters and XP reset successfully.");
+        });
+
+        /* ---------------------------------------------------------------- */
+        /* PAGE STARTUP TRIGGERS                                            */
+        /* ---------------------------------------------------------------- */
+        window.onload = function() {
+            renderVocabulary('all', '');
+            renderScenarios('respiratory');
+            loadMcQuestion();
+            loadFitbQuestion();
+            loadDrillCard();
+            logAction("✈️ Flight Safety English Deck Engine Loaded. Flight ready.");
+        };
+    </script>
+</body>
+</html>
