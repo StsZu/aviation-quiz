@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Useful Aviation Phrases for Emergencies — ICAO Level 4 to 5 — listen &amp; read</title>
+<style>
+  :root {
+    --bg-main: #f1f5f9;
+    --bg-panel: #ffffff;
+    --bg-panel-2: #f8fafc;
+    --border: #cbd5e1;
+    --text: #0f172a;
+    --text-2: #334155;
+    --muted: #64748b;
+    --accent: #0f4c81;
+    --accent-2: #0284c7;
+    --active-bg: rgba(2, 132, 199, 0.12);
+    --active-border: #0284c7;
+    --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  body.night {
+    --bg-main: #06090e;
+    --bg-panel: #0d121c;
+    --bg-panel-2: #131a29;
+    --border: #1e293b;
+    --text: #f8fafc;
+    --text-2: #cbd5e1;
+    --muted: #64748b;
+    --accent: #10b981;
+    --accent-2: #10b981;
+    --active-bg: rgba(16, 185, 129, 0.14);
+    --active-border: #10b981;
+    --shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    padding: 24px 16px 64px;
+    transition: background-color .3s ease, color .3s ease;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .back-link { color: var(--accent-2); text-decoration: none; font-weight: 600; font-size: 14px; }
+  .back-link:hover { text-decoration: underline; }
+  .theme-switch {
+    background: var(--bg-panel); color: var(--text-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+  }
+  .theme-switch:hover { background: var(--bg-panel-2); }
+
+  .hero { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); }
+  .kicker { color: var(--accent-2); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(22px, 4vw, 30px); margin: 6px 0 8px; }
+  .hero p { color: var(--muted); max-width: 70ch; font-size: 15px; }
+
+  /* Chapter rail */
+  .rail { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+  .chap-btn {
+    flex: 0 0 auto; background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; cursor: pointer; font: inherit; color: var(--text-2);
+    display: flex; gap: 8px; align-items: center; transition: all .15s ease; white-space: nowrap;
+  }
+  .chap-btn:hover { background: var(--bg-panel-2); }
+  .chap-btn.active { border-color: var(--active-border); background: var(--active-bg); color: var(--text); font-weight: 600; }
+  .chap-btn .num {
+    width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+
+  /* Player */
+  .player { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); position: sticky; top: 12px; z-index: 5; }
+  .player-title { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
+  .controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .play-btn {
+    width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--accent); color: #fff; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-btn svg { width: 22px; height: 22px; }
+  .timeline { flex: 1 1 240px; display: flex; align-items: center; gap: 10px; min-width: 200px; }
+  .time { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); flex: 0 0 auto; }
+  .scrub { flex: 1; height: 8px; background: var(--border); border-radius: 99px; cursor: pointer; position: relative; }
+  .scrub-fill { height: 100%; background: var(--accent-2); border-radius: 99px; width: 0; }
+  .speeds { display: flex; gap: 4px; flex: 0 0 auto; }
+  .speed-btn { background: var(--bg-panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; font: inherit; font-size: 12px; cursor: pointer; color: var(--text-2); }
+  .speed-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .sync-note { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  /* Transcript */
+  .transcript { display: flex; flex-direction: column; gap: 12px; }
+  .seg {
+    background: var(--bg-panel); border: 1px solid var(--border); border-left: 4px solid transparent;
+    border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all .15s ease;
+  }
+  .seg:hover { background: var(--bg-panel-2); }
+  .seg.active { border-left-color: var(--active-border); background: var(--active-bg); }
+  .seg-q { font-size: 13px; font-weight: 700; color: var(--accent-2); margin-bottom: 6px; }
+  .seg-a { color: var(--text-2); font-size: 15.5px; }
+  .seg.active .seg-a { color: var(--text); }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back-link" href="../index.html">&larr; All quizzes</a>
+    <button class="theme-switch" id="themeBtn"><span id="themeLabel">Night mode</span></button>
+  </header>
+
+  <section class="hero">
+    <p class="kicker">Listen &amp; Read · phrases</p>
+    <h1>Useful Aviation Phrases for Emergencies — ICAO Level 4 to 5</h1>
+    <p>Play a chapter and follow along: the active answer is highlighted as the audio plays, and the transcript scrolls with it. Tap any answer to jump the audio to that point. Use the speed controls to slow down for shadowing practice.</p>
+  </section>
+
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+
+  <section class="player">
+    <div class="player-title" id="nowPlaying">Chapter 1 — Key phrases for serious situations</div>
+    <div class="controls">
+      <button class="play-btn" id="playBtn" aria-label="Play / pause">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="timeline">
+        <span class="time" id="curTime">00:00</span>
+        <div class="scrub" id="scrub"><div class="scrub-fill" id="scrubFill"></div></div>
+        <span class="time" id="durTime">00:00</span>
+      </div>
+      <div class="speeds">
+        <button class="speed-btn" data-rate="0.75">0.75x</button>
+        <button class="speed-btn active" data-rate="1">1x</button>
+        <button class="speed-btn" data-rate="1.25">1.25x</button>
+        <button class="speed-btn" data-rate="1.5">1.5x</button>
+      </div>
+    </div>
+    <p class="sync-note" id="syncNote">Sync is sentence-level (timed from the audio).</p>
+    <audio id="audio" preload="none"></audio>
+  </section>
+
+  <div class="transcript" id="transcript"></div>
+
+  <footer><a href="../index.html">&larr; All quizzes</a></footer>
+</div>
+
+<script>
+const DIR = 'useful-aviation-phrases-for-emergencies-icao-level-4-to-5/';
+const CHAPTERS = [
+  {
+    "num": 1,
+    "title": "Key phrases for serious situations",
+    "mp3": "01-key-phrases-for-serious-situations.mp3",
+    "duration": 102.08,
+    "segments": [
+      {
+        "q": "Words for oxygen and pressure problems",
+        "a": "To suffer from hypoxia means to have a lack of oxygen in the body. For example, at high altitude, passengers may suffer from hypoxia if the cabin is not pressurized. The phrase it can be accompanied by means it can happen together with something else, as in: hypoxia can be accompanied by confusion, dizziness, and slow reaction. To experience explosive decompression means to have a sudden and violent loss of cabin pressure; the aircraft experienced explosive decompression at cruising altitude. And to don an oxygen mask simply means to put on an oxygen mask, so the crew had to don oxygen masks immediately.",
+        "start": 0.0,
+        "end": 39.15
+      },
+      {
+        "q": "Words for events and involvement",
+        "a": "To be involved in something means to take part in or be part of an event, so we say the aircraft was involved in a runway excursion. To anticipate turbulence means to expect turbulence before it happens, as in: the crew should anticipate turbulence near cumulonimbus clouds. And to eject from the aircraft means to leave it using an ejection seat; the military pilot had to eject from the aircraft after engine failure.",
+        "start": 40.55,
+        "end": 65.7
+      },
+      {
+        "q": "Words for damage and vibration",
+        "a": "To experience heavy vibration means to feel strong shaking, as in: the crew experienced heavy vibration after takeoff. To be severely injured means to be badly hurt; several passengers were severely injured during the accident. When we say the cargo door was ripped off, it means the door was violently torn away during decompression. Debris was sucked into the engine means loose pieces entered the engine by airflow and caused serious damage. And the phrase I am concerned about this parameter means I think this reading may be unsafe, for example because the oil temperature is rising.",
+        "start": 67.1,
+        "end": 102.08
+      }
+    ]
+  },
+  {
+    "num": 2,
+    "title": "Hypoxia",
+    "mp3": "02-hypoxia.mp3",
+    "duration": 61.75,
+    "segments": [
+      {
+        "q": "ICAO Level 4 model answer",
+        "a": "A pilot or passenger can suffer from hypoxia when there is not enough oxygen, especially at high altitude. It can be accompanied by dizziness, confusion, slow reaction, and poor decision-making. From a safety perspective, the crew should don oxygen masks and start an emergency descent if necessary. Hypoxia is dangerous because the person may not understand that something is wrong.",
+        "start": 0.0,
+        "end": 24.4
+      },
+      {
+        "q": "ICAO Level 5 model answer",
+        "a": "Hypoxia is a serious physiological problem because the body and brain do not receive enough oxygen. It can be accompanied by headache, blurred vision, confusion, poor coordination, and delayed reactions. In aviation, this is especially dangerous because the pilot may lose situational awareness and make unsafe decisions. If hypoxia is suspected, the crew must don oxygen masks immediately, inform air traffic control, and descend to a safer altitude. From a safety perspective, quick recognition and immediate action are critical.",
+        "start": 25.8,
+        "end": 61.75
+      }
+    ]
+  },
+  {
+    "num": 3,
+    "title": "Explosive decompression",
+    "mp3": "03-explosive-decompression.mp3",
+    "duration": 52.38,
+    "segments": [
+      {
+        "q": "ICAO Level 4 model answer",
+        "a": "Explosive decompression is a sudden loss of cabin pressure. It can be accompanied by loud noise, fog in the cabin, falling temperature, and oxygen mask deployment. The crew should don oxygen masks, control the aircraft, and start an emergency descent. The main priority is to keep control and restore safe breathing conditions.",
+        "start": 0.0,
+        "end": 19.4
+      },
+      {
+        "q": "ICAO Level 5 model answer",
+        "a": "Explosive decompression is one of the most dangerous cabin pressure failures. It can be accompanied by a loud bang, rapid fogging, flying objects, oxygen mask deployment, and possible structural damage. In some cases, a cargo door can be ripped off, and debris can be sucked into the engine. The crew must don oxygen masks immediately, maintain aircraft control, declare an emergency, and descend to a breathable altitude. From a safety standpoint, the first priority is always aircraft control and crew survival.",
+        "start": 20.8,
+        "end": 52.38
+      }
+    ]
+  },
+  {
+    "num": 4,
+    "title": "Heavy vibration after takeoff",
+    "mp3": "04-heavy-vibration-after-takeoff.mp3",
+    "duration": 62.48,
+    "segments": [
+      {
+        "q": "ICAO Level 4 model answer",
+        "a": "If the crew experiences heavy vibration after takeoff, it may indicate engine damage, propeller damage, or a mechanical problem. Debris may have been sucked into the engine, or a component may have failed. The pilot should maintain control, check the instruments, reduce power if necessary, and inform ATC. A precautionary landing may be required.",
+        "start": 0.0,
+        "end": 22.03
+      },
+      {
+        "q": "ICAO Level 5 model answer",
+        "a": "Heavy vibration after takeoff is a serious abnormal situation because it may indicate engine damage, bird strike, propeller imbalance, or structural failure. I would be concerned about engine parameters such as oil pressure, oil temperature, vibration level, and power output. If debris was sucked into the engine, the aircraft may lose thrust or experience further damage. The crew should maintain control, analyze the situation, declare PAN PAN or MAYDAY if necessary, and prepare for a return or emergency landing. From a safety perspective, the pilot should not continue the flight if the vibration is severe or increasing.",
+        "start": 23.43,
+        "end": 62.48
+      }
+    ]
+  },
+  {
+    "num": 5,
+    "title": "Turbulence",
+    "mp3": "05-turbulence.mp3",
+    "duration": 51.9,
+    "segments": [
+      {
+        "q": "ICAO Level 4 model answer",
+        "a": "Pilots should anticipate turbulence when flying near thunderstorms, mountains, jet streams, or strong wind shear. Turbulence can be uncomfortable and sometimes dangerous. The crew should reduce speed, secure the cabin, and avoid dangerous weather if possible. Safety depends on preparation and early decision-making.",
+        "start": 0.0,
+        "end": 18.3
+      },
+      {
+        "q": "ICAO Level 5 model answer",
+        "a": "A professional crew should anticipate turbulence by checking weather radar, forecasts, pilot reports, and cloud development. Turbulence can be accompanied by sudden altitude changes, speed fluctuations, and passenger injuries if people are not seated. The crew should turn on the seat belt sign, inform the cabin crew, reduce to turbulence penetration speed if required, and request another altitude or route from ATC. From a safety perspective, it is better to avoid severe turbulence than to fly through it and react too late.",
+        "start": 19.7,
+        "end": 51.9
+      }
+    ]
+  },
+  {
+    "num": 6,
+    "title": "Aircraft involved in an accident",
+    "mp3": "06-aircraft-involved-in-an-accident.mp3",
+    "duration": 47.38,
+    "segments": [
+      {
+        "q": "ICAO Level 4 model answer",
+        "a": "The aircraft was involved in an accident during takeoff. It experienced heavy vibration and failed to climb normally. Some debris was sucked into the engine, and the aircraft was severely damaged. Fortunately, the crew managed to control the situation and reduce the risk for passengers.",
+        "start": 0.0,
+        "end": 17.1
+      },
+      {
+        "q": "ICAO Level 5 model answer",
+        "a": "The aircraft was involved in a serious takeoff accident. After rotation, the crew experienced heavy vibration and abnormal engine indications. It is possible that debris was sucked into the engine, which reduced performance and caused additional damage. Some passengers could have been severely injured if the aircraft had lost control. From a safety standpoint, the crew should follow emergency procedures, communicate clearly with ATC, and land as soon as safely possible.",
+        "start": 18.5,
+        "end": 47.38
+      }
+    ]
+  },
+  {
+    "num": 7,
+    "title": "Phrase patterns to memorize",
+    "mp3": "07-phrase-patterns-to-memorize.mp3",
+    "duration": 81.38,
+    "segments": [
+      {
+        "q": "It can be accompanied by",
+        "a": "Use this phrase when you describe symptoms, effects, or additional problems. For example: hypoxia can be accompanied by confusion and slow reaction. Explosive decompression can be accompanied by loud noise and fog in the cabin. Engine failure can be accompanied by vibration, smoke, and loss of power. Severe turbulence can be accompanied by sudden altitude changes. And fire on board can be accompanied by smoke, fumes, and electrical failures.",
+        "start": 0.0,
+        "end": 27.38
+      },
+      {
+        "q": "I am concerned about",
+        "a": "Use this when you want to sound professional and safety-focused. I am concerned about this parameter because the oil temperature is increasing. I am concerned about the vibration level. I am concerned about the cabin pressure indication. I am concerned about the aircraft's climb performance. I am concerned about the fuel quantity. I am concerned about the weather ahead. I am concerned about the runway condition. And I am concerned about the passenger's medical condition.",
+        "start": 28.78,
+        "end": 57.33
+      },
+      {
+        "q": "From a safety perspective",
+        "a": "Use this for strong ICAO conclusions. From a safety perspective, the crew should not continue the flight. From a safety perspective, the pilot should declare an emergency. From a safety perspective, it is better to divert. From a safety perspective, all passengers must fasten their seat belts. And from a safety perspective, the crew must identify the problem before making a final decision.",
+        "start": 58.73,
+        "end": 81.38
+      }
+    ]
+  },
+  {
+    "num": 8,
+    "title": "Drills, speaking task and common mistakes",
+    "mp3": "08-drills-speaking-task-and-common-mistakes.mp3",
+    "duration": 194.98,
+    "segments": [
+      {
+        "q": "Drill, build sentences",
+        "a": "Say these aloud. The pilot may suffer from hypoxia at high altitude. Hypoxia can be accompanied by confusion and slow reaction. The aircraft was involved in a serious incident. The crew should anticipate turbulence near thunderstorms. The pilot had to eject from the aircraft. The crew experienced heavy vibration after takeoff. The aircraft experienced explosive decompression at cruising altitude. Several passengers were severely injured. The crew had to don oxygen masks immediately. The cargo door was ripped off. Debris was sucked into the engine. And, I am concerned about this parameter.",
+        "start": 0.0,
+        "end": 37.6
+      },
+      {
+        "q": "Mini speaking task",
+        "a": "Here is a question. What should the crew do if the aircraft experiences explosive decompression? An exam-safe answer is this. If the aircraft experiences explosive decompression, the situation is very serious. It can be accompanied by a loud noise, fog in the cabin, falling temperature, and oxygen mask deployment. The crew must don oxygen masks immediately, maintain aircraft control, and start an emergency descent to a safe altitude. They should inform ATC, declare an emergency, and check if there is any structural damage. From a safety perspective, the main priorities are breathing, aircraft control, and a safe descent.",
+        "start": 39.0,
+        "end": 78.43
+      },
+      {
+        "q": "Repeat after me",
+        "a": "Repeat these lines. Hypoxia can be accompanied by confusion and poor decision-making. The crew must don oxygen masks immediately. Explosive decompression requires an emergency descent. Heavy vibration may indicate engine damage. Debris could have been sucked into the engine. I am concerned about this parameter because it is outside the normal range. From a safety perspective, the crew should not continue the flight. And the safest decision may be to return to the airport or divert.",
+        "start": 79.83,
+        "end": 110.03
+      },
+      {
+        "q": "Common mistakes to avoid",
+        "a": "Don't say \"he has hypoxia\"; say \"he is suffering from hypoxia\", which is more natural for a medical condition. Instead of \"it accompanied with smoke\", say \"it can be accompanied by smoke\". Instead of \"the plane was in an accident\", say \"the aircraft was involved in an accident\". Don't say \"the pilot put on an oxygen mask\"; say \"the pilot donned an oxygen mask\", which is more precise. Instead of \"the door was broken away\", say \"the cargo door was ripped off\". Instead of \"pieces went into the engine\", say \"debris was sucked into the engine\". Don't say \"I worry this parameter\"; say \"I am concerned about this parameter\". And instead of \"very hard vibration\", say \"heavy vibration\" or \"severe vibration\".",
+        "start": 111.43,
+        "end": 154.53
+      },
+      {
+        "q": "One strong universal answer",
+        "a": "You can use this template for many abnormal situations. The aircraft experienced an abnormal situation. It could have been caused by structural damage, engine malfunction, or a pressurization problem. The situation can be accompanied by heavy vibration, unusual noise, smoke, decompression, or abnormal engine parameters. I would be concerned about this parameter because it may indicate a serious failure. The crew should maintain control, follow the checklist, communicate with ATC, and land as soon as safely possible. From a safety perspective, continuing the flight without understanding the problem would be unsafe.",
+        "start": 155.93,
+        "end": 194.98
+      }
+    ]
+  }
+];
+
+const audio = document.getElementById('audio');
+const railEl = document.getElementById('rail');
+const transcriptEl = document.getElementById('transcript');
+const nowPlaying = document.getElementById('nowPlaying');
+const playBtn = document.getElementById('playBtn');
+const playIcon = document.getElementById('playIcon');
+const curTime = document.getElementById('curTime');
+const durTime = document.getElementById('durTime');
+const scrub = document.getElementById('scrub');
+const scrubFill = document.getElementById('scrubFill');
+const syncNote = document.getElementById('syncNote');
+
+const PLAY = 'M8 5v14l11-7z';
+const PAUSE = 'M6 5h4v14H6zM14 5h4v14h-4z';
+
+let current = -1;
+let segEls = [];
+let timings = [];
+let activeIdx = -1;
+
+function fmt(s) {
+  if (!isFinite(s)) return '00:00';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+function hasExactTimings(ch) {
+  return ch.segments.every(s => typeof s.start === 'number' && typeof s.end === 'number');
+}
+
+function buildRail() {
+  railEl.innerHTML = CHAPTERS.map((c, i) =>
+    `<button class="chap-btn" data-i="${i}"><span class="num">${c.num}</span>${c.title}</button>`
+  ).join('');
+  railEl.querySelectorAll('.chap-btn').forEach(btn =>
+    btn.addEventListener('click', () => loadChapter(+btn.dataset.i, true)));
+}
+
+function loadChapter(i, autoplay) {
+  if (i === current) { if (autoplay) togglePlay(); return; }
+  current = i;
+  const ch = CHAPTERS[i];
+  audio.src = DIR + ch.mp3;
+  audio.load();
+  nowPlaying.textContent = `Chapter ${ch.num} — ${ch.title}`;
+  syncNote.textContent = hasExactTimings(ch)
+    ? 'Sync is exact (sentence-level timing from the audio package).'
+    : 'Sync is approximate (estimated from text length).';
+  timings = [];
+  activeIdx = -1;
+  scrubFill.style.width = '0';
+  curTime.textContent = '00:00';
+  durTime.textContent = '00:00';
+
+  transcriptEl.innerHTML = ch.segments.map((s, idx) =>
+    `<div class="seg" data-idx="${idx}"><div class="seg-q">${s.q}</div><p class="seg-a">${s.a}</p></div>`
+  ).join('');
+  segEls = [...transcriptEl.querySelectorAll('.seg')];
+  segEls.forEach((el, idx) => el.addEventListener('click', () => seekToSeg(idx)));
+
+  railEl.querySelectorAll('.chap-btn').forEach((b, bi) => b.classList.toggle('active', bi === i));
+  if (autoplay) audio.play();
+}
+
+function computeTimings() {
+  const ch = CHAPTERS[current];
+  // Prefer exact per-segment timecodes shipped in the course package.
+  if (hasExactTimings(ch)) {
+    timings = ch.segments.map(s => ({ start: s.start, end: s.end }));
+    return;
+  }
+  // Fallback: split the duration proportionally to answer length.
+  const dur = audio.duration;
+  if (!dur || !isFinite(dur)) { timings = []; return; }
+  const lens = ch.segments.map(s => s.a.length);
+  const total = lens.reduce((a, b) => a + b, 0);
+  let acc = 0;
+  timings = lens.map(l => {
+    const start = (acc / total) * dur;
+    acc += l;
+    return { start, end: (acc / total) * dur };
+  });
+}
+
+function setActive(idx) {
+  if (idx === activeIdx) return;
+  activeIdx = idx;
+  segEls.forEach((el, i) => el.classList.toggle('active', i === idx));
+  if (idx >= 0 && segEls[idx]) segEls[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function seekToSeg(idx) {
+  if (!timings.length) computeTimings();
+  if (timings[idx]) {
+    audio.currentTime = timings[idx].start + 0.05;
+    audio.play();
+  }
+}
+
+function togglePlay() {
+  if (current === -1) { loadChapter(0, true); return; }
+  if (audio.paused) audio.play(); else audio.pause();
+}
+
+playBtn.addEventListener('click', togglePlay);
+audio.addEventListener('play', () => playIcon.setAttribute('d', PAUSE));
+audio.addEventListener('pause', () => playIcon.setAttribute('d', PLAY));
+audio.addEventListener('loadedmetadata', () => { computeTimings(); durTime.textContent = fmt(audio.duration); });
+audio.addEventListener('timeupdate', () => {
+  curTime.textContent = fmt(audio.currentTime);
+  const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+  scrubFill.style.width = pct + '%';
+  if (!timings.length) computeTimings();
+  if (!timings.length) return;
+  const t = audio.currentTime;
+  let idx = timings.findIndex(s => t >= s.start && t < s.end);
+  if (idx === -1 && timings.length && t >= timings[timings.length - 1].end - 0.25) idx = timings.length - 1;
+  setActive(idx);
+});
+
+scrub.addEventListener('click', (e) => {
+  if (!audio.duration) return;
+  const rect = scrub.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+});
+
+document.querySelectorAll('.speed-btn').forEach(btn =>
+  btn.addEventListener('click', () => {
+    audio.playbackRate = parseFloat(btn.dataset.rate);
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  })
+);
+
+// Theme
+const themeBtn = document.getElementById('themeBtn');
+const themeLabel = document.getElementById('themeLabel');
+function applyTheme(night) {
+  document.body.classList.toggle('night', night);
+  themeLabel.textContent = night ? 'Day mode' : 'Night mode';
+}
+applyTheme(localStorage.getItem('fa-theme') === 'night');
+themeBtn.addEventListener('click', () => {
+  const night = !document.body.classList.contains('night');
+  applyTheme(night);
+  localStorage.setItem('fa-theme', night ? 'night' : 'day');
+});
+
+buildRail();
+loadChapter(0, false);
+</script>
+</body>
+</html>
