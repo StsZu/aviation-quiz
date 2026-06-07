@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Useful Aviation Phrases — ICAO Level 4–5</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        theme: {
+                            main: 'var(--bg-main)',
+                            panel: 'var(--bg-panel)',
+                            card: 'var(--bg-card)',
+                            inner: 'var(--bg-inner)',
+                            border: 'var(--border-color)',
+                            text: 'var(--text-main)',
+                            muted: 'var(--text-muted)',
+                            highlight: 'var(--text-highlight)',
+                            accent: 'var(--accent)',
+                            accentHover: 'var(--accent-hover)',
+                            warning: '#f39c12',
+                            redAccent: '#ff6b6b'
+                        }
+                    },
+                    fontFamily: {
+                        mono: ['Courier New', 'Courier', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* CSS Variables Supporting Dark (Default) & Light Themes */
+        :root {
+            --bg-main: #0b1329;
+            --bg-panel: #1c2541;
+            --bg-card: rgba(28, 37, 65, 0.5);
+            --bg-inner: #0b1329;
+            --border-color: #3a506b;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --text-highlight: #6fffe9;
+            --accent: #5bc0be;
+            --accent-hover: #6fffe9;
+        }
+
+        .light-theme {
+            --bg-main: #f0f4f8;
+            --bg-panel: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.9);
+            --bg-inner: #e2e8f0;
+            --border-color: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #475569;
+            --text-highlight: #0284c7;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+        }
+
+        /* Custom animations and scrollbars */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--bg-main);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 6px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent);
+        }
+        .cockpit-glow {
+            box-shadow: 0 0 25px rgba(91, 192, 190, 0.25);
+        }
+        .light-theme .cockpit-glow {
+            box-shadow: 0 0 25px rgba(2, 132, 199, 0.15);
+        }
+        .radar-line {
+            animation: radar-sweep 4s linear infinite;
+        }
+        @keyframes radar-sweep {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased selection:bg-theme-accent selection:text-theme-main">
+
+    <a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:999px;background:rgba(15,23,42,0.85);color:#fff;font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;font-weight:600;text-decoration:none;box-shadow:0 2px 8px rgba(0,0,0,0.25);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);">&larr; All quizzes</a>
+
+    <!-- Top Status Bar (Cockpit Panel Theme) -->
+    <header class="sticky top-0 z-50 bg-theme-panel/90 backdrop-blur-md border-b border-theme-border cockpit-glow">
+        <div class="max-w-7xl mx-auto px-6 h-24 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <!-- Plane SVG Icon -->
+                <svg class="w-12 h-12 text-theme-highlight transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+                <div>
+                    <span class="font-mono text-base tracking-widest text-theme-highlight block font-bold">FLIGHT TRAINING PLATFORM</span>
+                    <h1 class="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-theme-text uppercase">ICAO Level 4–5 Aviation Phrases</h1>
+                </div>
+            </div>
+            
+            <!-- Day/Night Toggle & Dynamic Progress Tracker -->
+            <div class="flex items-center space-x-6">
+                <!-- Toggle Button -->
+                <button onclick="toggleTheme()" class="p-3 rounded-lg border border-theme-border hover:bg-theme-inner/80 transition-colors" title="Toggle Light/Dark Mode" aria-label="Toggle Theme">
+                    <!-- Sun Icon (Visible in dark mode, switch to light) -->
+                    <svg id="theme-icon-sun" class="w-8 h-8 text-yellow-400 block" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m12.728 0l-.707-.707M6.343 6.343l-.707-.707M12 8a4 4 0 100 8 4 4 0 000-8z"></path>
+                    </svg>
+                    <!-- Moon Icon (Visible in light mode, switch to dark) -->
+                    <svg id="theme-icon-moon" class="w-8 h-8 text-slate-700 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                </button>
+
+                <div class="hidden xl:flex items-center space-x-4">
+                    <div class="text-right">
+                        <span class="text-sm text-theme-muted uppercase block font-mono">Training Progress</span>
+                        <span class="text-base font-bold text-theme-highlight" id="progress-text">0% Completed</span>
+                    </div>
+                    <div class="w-40 bg-theme-inner h-4 rounded-full overflow-hidden border border-theme-border">
+                        <div class="bg-theme-accent h-full w-0 transition-all duration-500" id="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Custom Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col space-y-3 pointer-events-none"></div>
+
+    <main class="max-w-7xl mx-auto px-6 py-12 space-y-16">
+
+        <!-- 1. HERO SECTION -->
+        <section class="relative rounded-2xl overflow-hidden bg-gradient-to-br from-theme-panel via-theme-main to-slate-950 border border-theme-border p-10 sm:p-14 cockpit-glow">
+            <!-- Background Decorative Grid -->
+            <div class="absolute inset-0 bg-[linear-gradient(to_right,var(--border-color)_1px,transparent_1px),linear-gradient(to_bottom,var(--border-color)_1px,transparent_1px)] bg-[size:5rem_5rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-20"></div>
+            
+            <div class="relative grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+                <div class="lg:col-span-7 space-y-8">
+                    <h2 class="text-4xl sm:text-6xl font-black text-theme-text leading-tight">
+                        Master the Language of <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-theme-accent to-theme-highlight">Aviation Safety & Emergency</span>
+                    </h2>
+                    <p class="text-theme-muted text-xl sm:text-2xl max-w-2xl leading-relaxed">
+                        Transition seamlessly from basic descriptions to highly precise, safety-focused professional aviation communication. Perfect for pilots and air traffic controllers aiming for structural, lexical, and operational excellence.
+                    </p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4">
+                        <div class="flex items-start space-x-4 bg-theme-panel/40 p-4 rounded-xl border border-theme-border/60">
+                            <span class="text-theme-highlight text-2xl mt-1">✔</span>
+                            <div>
+                                <h4 class="text-base font-bold text-theme-text uppercase font-mono">Lexical Precision</h4>
+                                <p class="text-sm text-theme-muted">Adopt professional terminology like "donning" instead of "putting on".</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-4 bg-theme-panel/40 p-4 rounded-xl border border-theme-border/60">
+                            <span class="text-theme-highlight text-2xl mt-1">✔</span>
+                            <div>
+                                <h4 class="text-base font-bold text-theme-text uppercase font-mono">Safety-Minded Synthesis</h4>
+                                <p class="text-sm text-theme-muted">Synthesize operational context with professional checklists and outcomes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visual Radar Feature Graphic -->
+                <div class="lg:col-span-5 flex justify-center">
+                    <div class="relative w-80 h-80 sm:w-96 sm:h-96 rounded-full border-4 border-theme-panel flex items-center justify-center overflow-hidden cockpit-glow bg-slate-950/40">
+                        <!-- Radar Sweep Animation -->
+                        <div class="absolute inset-0 rounded-full border border-theme-border"></div>
+                        <div class="absolute w-full h-1 bg-gradient-to-r from-transparent via-theme-accent/40 to-theme-highlight radar-line origin-center top-1/2 left-0"></div>
+                        
+                        <!-- Radar concentric circles -->
+                        <div class="absolute w-3/4 h-3/4 rounded-full border border-theme-border/40"></div>
+                        <div class="absolute w-1/2 h-1/2 rounded-full border border-theme-border/20"></div>
+                        <div class="absolute w-1/4 h-1/4 rounded-full border border-theme-accent/15"></div>
+                        
+                        <!-- Center airplane -->
+                        <div class="relative z-10 text-center space-y-3">
+                            <svg class="w-20 h-20 text-theme-highlight mx-auto animate-bounce" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"></path>
+                            </svg>
+                            <span class="block font-mono text-sm text-theme-highlight animate-pulse tracking-widest font-bold">ALT: 32,000 FT</span>
+                            <span class="block font-mono text-sm text-theme-muted font-bold" id="radar-hdg">HDG: 284°</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 2. LEXICON EXPLORER (The 12 Crucial Phrases) -->
+        <section id="lexicon" class="space-y-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-theme-border pb-6">
+                <div>
+                    <span class="text-sm font-mono text-theme-highlight font-bold uppercase tracking-wider block">MODULE 01</span>
+                    <h3 class="text-3xl font-black text-theme-text uppercase">The Aviation Lexicon</h3>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button onclick="filterLexicon('all')" id="btn-filter-all" class="px-5 py-2.5 rounded-lg text-sm font-mono font-bold bg-theme-accent text-theme-main transition-colors">All Phrases</button>
+                    <button onclick="filterLexicon('verbs')" id="btn-filter-verbs" class="px-5 py-2.5 rounded-lg text-sm font-mono font-bold bg-theme-panel text-theme-text hover:bg-theme-inner transition-colors">Actions/Verbs</button>
+                    <button onclick="filterLexicon('states')" id="btn-filter-states" class="px-5 py-2.5 rounded-lg text-sm font-mono font-bold bg-theme-panel text-theme-text hover:bg-theme-inner transition-colors">States & Failures</button>
+                </div>
+            </div>
+
+            <!-- Speech Synthesis Availability Hint -->
+            <div class="bg-theme-panel/30 border border-theme-border rounded-xl p-5 text-base flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center space-x-3 text-theme-text">
+                    <span class="text-2xl">🔊</span>
+                    <span><strong>Interactive Pronunciation Engine:</strong> Click the speaker icon on any card to listen to correct aviation pronunciation. Try speaking along to drill!</span>
+                </div>
+                <div class="text-theme-highlight font-mono text-sm uppercase font-bold" id="tts-status">TTS Ready</div>
+            </div>
+
+            <!-- Interactive Grid of Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="lexicon-grid">
+                <!-- Javascript will render Lexicon cards here -->
+            </div>
+        </section>
+
+
+        <!-- 3. RESPONSE COMPARATOR (LEVEL 4 VS LEVEL 5) -->
+        <section id="comparator" class="space-y-8 bg-theme-panel/20 border border-theme-border rounded-2xl p-8 cockpit-glow">
+            <div class="border-b border-theme-border pb-6">
+                <span class="text-sm font-mono text-theme-highlight font-bold uppercase tracking-wider block">MODULE 02</span>
+                <h3 class="text-3xl font-black text-theme-text uppercase">ICAO Answer Architect</h3>
+                <p class="text-base text-theme-muted mt-2">Compare standard Level 4 replies with sophisticated, structurally complete Level 5 emergency briefs.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Topic Selector Navigation -->
+                <div class="lg:col-span-4 flex flex-col space-y-3" id="comparator-nav">
+                    <!-- Javascript will render topic buttons here -->
+                </div>
+
+                <!-- Dynamic Comparison Panel -->
+                <div class="lg:col-span-8 bg-theme-main/80 border border-theme-border rounded-2xl p-8 space-y-8" id="comparator-details">
+                    <!-- Javascript will render active comparisons here -->
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 4. PHRASE STRUCTURE PATTERNS -->
+        <section id="patterns" class="space-y-8">
+            <div class="border-b border-theme-border pb-6">
+                <span class="text-sm font-mono text-theme-highlight font-bold uppercase tracking-wider block">MODULE 03</span>
+                <h3 class="text-3xl font-black text-theme-text uppercase">High-Value Structure Blocks</h3>
+                <p class="text-base text-theme-muted mt-2">Memorize these syntactic anchors to format logical safety statements easily on demand.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Structure 1 -->
+                <div class="bg-gradient-to-br from-theme-panel to-slate-950 border border-theme-border rounded-2xl p-8 hover:border-theme-accent transition-all duration-300 space-y-4">
+                    <span class="text-xs font-mono text-theme-accent uppercase font-bold tracking-wider">SYMPTOMS & EFFECTS</span>
+                    <h4 class="text-2xl font-black text-theme-text">"It can be accompanied by..."</h4>
+                    <p class="text-sm text-theme-muted leading-relaxed">Perfect for demonstrating rich vocabulary by stacking compounding symptoms/effects.</p>
+                    <ul class="space-y-3 text-sm font-mono text-theme-text">
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...accompanied by <strong>confusion</strong>.</span>
+                        </li>
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...accompanied by <strong>loud noise</strong>.</span>
+                        </li>
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...accompanied by <strong>vibration & loss of power</strong>.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Structure 2 -->
+                <div class="bg-gradient-to-br from-theme-panel to-slate-950 border border-theme-border rounded-2xl p-8 hover:border-theme-accent transition-all duration-300 space-y-4">
+                    <span class="text-xs font-mono text-theme-accent uppercase font-bold tracking-wider">SAFETY SENSITIVITY</span>
+                    <h4 class="text-2xl font-black text-theme-text">"I am concerned about..."</h4>
+                    <p class="text-sm text-theme-muted leading-relaxed">Signals situational awareness and immediate focus on unstable variables in command.</p>
+                    <ul class="space-y-3 text-sm font-mono text-theme-text">
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...concerned about <strong>the oil temperature</strong>.</span>
+                        </li>
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...concerned about <strong>cabin pressure drop</strong>.</span>
+                        </li>
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...concerned about <strong>fuel quantities</strong>.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Structure 3 -->
+                <div class="bg-gradient-to-br from-theme-panel to-slate-950 border border-theme-border rounded-2xl p-8 hover:border-theme-accent transition-all duration-300 space-y-4">
+                    <span class="text-xs font-mono text-theme-accent uppercase font-bold tracking-wider">DEDUCTIVE SYNTHESIS</span>
+                    <h4 class="text-2xl font-black text-theme-text">"From a safety perspective..."</h4>
+                    <p class="text-sm text-theme-muted leading-relaxed">Formulate high-level conclusions and professional recommendations instantly.</p>
+                    <ul class="space-y-3 text-sm font-mono text-theme-text">
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...perspective, <strong>do not continue flight</strong>.</span>
+                        </li>
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...perspective, <strong>declare an emergency</strong>.</span>
+                        </li>
+                        <li class="flex items-center space-x-3 bg-theme-main/60 p-3 rounded-lg border border-theme-border/40">
+                            <span class="text-theme-highlight text-xl">•</span>
+                            <span>...perspective, <strong>identify the failure</strong>.</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 5. FLIGHT SIMULATOR PRACTICE (INTERACTIVE EXERCISES) -->
+        <section id="simulator" class="space-y-8">
+            <div class="border-b border-theme-border pb-6">
+                <span class="text-sm font-mono text-theme-highlight font-bold uppercase tracking-wider block">MODULE 04</span>
+                <h3 class="text-3xl font-black text-theme-text uppercase">Radio Transmission Practice Panel</h3>
+                <p class="text-base text-theme-muted mt-2">Evaluate your understanding. Provide professional input to navigate simulated flight scenarios.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Interactive Quiz Form -->
+                <div class="lg:col-span-7 bg-theme-panel/40 border border-theme-border rounded-2xl p-8 space-y-8">
+                    <div class="flex items-center justify-between border-b border-theme-border pb-4">
+                        <div class="flex items-center space-x-3">
+                            <span class="w-5 h-5 rounded-full bg-theme-warning animate-pulse"></span>
+                            <h4 class="text-lg font-bold text-theme-text font-mono uppercase">Scenario Simulator</h4>
+                        </div>
+                        <span class="text-base font-mono bg-theme-inner px-3 py-1.5 rounded-lg text-theme-muted" id="quiz-counter">Question 1 of 5</span>
+                    </div>
+
+                    <!-- Dynamic Quiz Container -->
+                    <div id="quiz-question-container" class="space-y-6 min-h-[300px]">
+                        <!-- Rendered by JS -->
+                    </div>
+
+                    <!-- Navigation Action Buttons -->
+                    <div class="flex justify-between items-center pt-6 border-t border-theme-border">
+                        <button id="btn-quiz-prev" onclick="changeQuestion(-1)" class="px-6 py-3 text-base font-bold text-theme-muted hover:text-theme-text transition-colors">&larr; Previous</button>
+                        <button id="btn-quiz-check" onclick="checkAnswer()" class="px-8 py-3.5 text-base font-bold bg-theme-accent text-theme-main rounded-xl hover:bg-theme-accentHover transition-colors">Check Answer</button>
+                        <button id="btn-quiz-next" onclick="changeQuestion(1)" class="px-6 py-3 text-base font-bold text-theme-muted hover:text-theme-text transition-colors">Next &rarr;</button>
+                    </div>
+                </div>
+
+                <!-- Interactive Mistake Radar -->
+                <div class="lg:col-span-5 bg-gradient-to-b from-theme-panel to-slate-950 border border-theme-border rounded-2xl p-8 space-y-8">
+                    <div class="border-b border-theme-border pb-4 flex items-center space-x-3">
+                        <svg class="w-8 h-8 text-theme-redAccent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                        </svg>
+                        <h4 class="text-lg font-bold text-theme-text font-mono uppercase">Mistakes Radar</h4>
+                    </div>
+
+                    <p class="text-base text-theme-muted">Identify colloquial language errors commonly found in Level 4 exams, and study their professional replacements.</p>
+
+                    <div class="space-y-4 max-h-[400px] overflow-y-auto pr-2" id="mistakes-list">
+                        <!-- Javascript will inject mistake pairs here -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 6. RADIO SPEECH BRIEFING GENERATOR -->
+        <section id="generator" class="space-y-8 bg-theme-panel/40 border border-theme-border rounded-2xl p-8 cockpit-glow">
+            <div class="border-b border-theme-border pb-6">
+                <span class="text-sm font-mono text-theme-highlight font-bold uppercase tracking-wider block">MODULE 05</span>
+                <h3 class="text-3xl font-black text-theme-text uppercase">Universal Emergency Briefing Generator</h3>
+                <p class="text-base text-theme-muted mt-2">Synthesize a custom safety brief. Select telemetry conditions and click compile to instantly assemble a Level 5-structured statement.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Selectors Configuration Panel -->
+                <div class="lg:col-span-5 space-y-6 font-mono">
+                    <div>
+                        <label class="block text-sm text-theme-muted uppercase font-bold mb-2">1. Primary Incident / Hazard</label>
+                        <select id="gen-incident" class="w-full bg-theme-inner border border-theme-border rounded-xl p-4 text-base text-theme-highlight focus:outline-none focus:border-theme-accent">
+                            <option value="decompression">Explosive Decompression at high altitude</option>
+                            <option value="vibration">Heavy vibration experienced after takeoff</option>
+                            <option value="hypoxia">In-cabin physiological hypoxia indications</option>
+                            <option value="turbulence">Severe unforecast structural turbulence</option>
+                            <option value="accident">Aircraft involved in a landing runway excursion</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-theme-muted uppercase font-bold mb-2">2. Immediate Cause Trigger</label>
+                        <select id="gen-cause" class="w-full bg-theme-inner border border-theme-border rounded-xl p-4 text-base text-theme-highlight focus:outline-none focus:border-theme-accent">
+                            <option value="cargo-door">A structural cargo door being ripped off</option>
+                            <option value="engine-debris">Debris sucked into the right-hand engine</option>
+                            <option value="pressurization">Pressurization system failure at high altitude</option>
+                            <option value="bird-strike">Severe bird strike impacting critical engine blades</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-theme-muted uppercase font-bold mb-2">3. Accompanying Symbology</label>
+                        <select id="gen-symp" class="w-full bg-theme-inner border border-theme-border rounded-xl p-4 text-base text-theme-highlight focus:outline-none focus:border-theme-accent">
+                            <option value="smoke">Unusual smoke, electrical haze, and cabin fogging</option>
+                            <option value="vibration">Heavy structural vibration and unstable parameters</option>
+                            <option value="hypoxia-symptoms">Dizziness, confusion, and delayed crew reaction times</option>
+                            <option value="altitude">Sudden altitude fluctuation and cabin objects flying</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-theme-muted uppercase font-bold mb-2">4. Critical Criticality Concern</label>
+                        <select id="gen-concern" class="w-full bg-theme-inner border border-theme-border rounded-xl p-4 text-base text-theme-highlight focus:outline-none focus:border-theme-accent">
+                            <option value="climb">Engine parameters and degrading climb performance</option>
+                            <option value="loss">Total loss of control and structural integrity issues</option>
+                            <option value="oxygen">Restoring oxygen and rapid cabin stabilization levels</option>
+                            <option value="fuel">Remaining fuel reserves and landing distance metrics</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-theme-muted uppercase font-bold mb-2">5. Direct Command Action</label>
+                        <select id="gen-action" class="w-full bg-theme-inner border border-theme-border rounded-xl p-4 text-base text-theme-highlight focus:outline-none focus:border-theme-accent">
+                            <option value="descent">Don oxygen masks and initiate immediate emergency descent</option>
+                            <option value="land">Perform emergency checklist and land as soon as safely possible</option>
+                            <option value="divert">Declare MAYDAY with ATC and plan an immediate precautionary divert</option>
+                        </select>
+                    </div>
+
+                    <button onclick="compileUniversalBrief()" class="w-full bg-theme-accent hover:bg-theme-accentHover text-theme-main font-bold py-4 px-6 rounded-xl text-base uppercase tracking-wider transition-colors">
+                        🛠 Compile Level 5 Answer
+                    </button>
+                </div>
+
+                <!-- Brief Output Panel -->
+                <div class="lg:col-span-7 flex flex-col justify-between bg-theme-inner border border-theme-border rounded-2xl p-8 relative">
+                    <div class="absolute top-4 right-4 flex space-x-2">
+                        <span class="w-3.5 h-3.5 rounded-full bg-red-500"></span>
+                        <span class="w-3.5 h-3.5 rounded-full bg-yellow-500"></span>
+                        <span class="w-3.5 h-3.5 rounded-full bg-green-500"></span>
+                    </div>
+
+                    <div class="space-y-6">
+                        <span class="text-sm font-mono text-theme-accent uppercase font-bold block">Compiled Radio Statement Outline</span>
+                        <div class="border border-theme-border bg-slate-950 p-6 rounded-xl min-h-[220px] flex items-center justify-center">
+                            <p id="generated-brief-text" class="text-lg sm:text-xl text-slate-300 font-mono leading-relaxed">
+                                Choose selections on the left, then click compile to synthesize your structured aviation report.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-4 mt-8">
+                        <button onclick="playVoiceBrief()" class="flex-1 px-6 py-4 rounded-xl border border-theme-accent/50 hover:bg-theme-accent hover:text-theme-main transition-all text-base font-bold text-theme-highlight flex items-center justify-center space-x-3">
+                            <span>🔊 Read Aloud (Listen Engine)</span>
+                        </button>
+                        <button onclick="copyBriefText()" class="px-6 py-4 rounded-xl border border-theme-border bg-theme-panel hover:bg-theme-inner text-base font-bold text-theme-text transition-colors flex items-center justify-center space-x-3">
+                            <span>📋 Copy Statement</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 7. DRILLS & SPEAKING PROMPTS -->
+        <section id="drills" class="space-y-8">
+            <div class="border-b border-theme-border pb-6">
+                <span class="text-sm font-mono text-theme-highlight font-bold uppercase tracking-wider block">MODULE 06</span>
+                <h3 class="text-3xl font-black text-theme-text uppercase">Self-Guided Speaking Drills</h3>
+                <p class="text-base text-theme-muted mt-2">Read the following prompt and generate an aviation statement aloud. Toggle to inspect the structure and improve.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Drill Card 1 -->
+                <div class="bg-theme-panel/20 border border-theme-border rounded-2xl p-8 space-y-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-mono font-bold text-theme-highlight">DRILL PROMPT 01</span>
+                        <span class="px-3 py-1 rounded-lg text-xs bg-red-500/10 text-red-400 border border-red-500/20 font-mono uppercase">Decompression</span>
+                    </div>
+                    <p class="text-xl text-theme-text font-bold leading-relaxed">
+                        "What should the crew do if the aircraft experiences explosive decompression?"
+                    </p>
+                    <div class="border-t border-theme-border/80 pt-4">
+                        <button onclick="toggleAnswer('drill-ans-1')" class="text-base font-bold text-theme-accent hover:text-theme-highlight transition-colors font-mono uppercase">
+                            View Model Answer &rarr;
+                        </button>
+                        <div id="drill-ans-1" class="hidden mt-4 text-sm sm:text-base text-theme-text leading-relaxed bg-theme-inner p-4 rounded-xl border border-theme-border/50 space-y-3">
+                            <p><strong>Standard Response:</strong> "If the aircraft experiences explosive decompression, the situation is very serious. It can be accompanied by loud noise, fog in the cabin, and oxygen mask deployment."</p>
+                            <p class="text-theme-highlight"><strong>Level 5 Addition:</strong> "The crew must don oxygen masks immediately, maintain aircraft control, and start an emergency descent to a safe altitude. From a safety perspective, the main priorities are breathing, aircraft control, and safe descent."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Drill Card 2 -->
+                <div class="bg-theme-panel/20 border border-theme-border rounded-2xl p-8 space-y-6">
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm font-mono font-bold text-theme-highlight">DRILL PROMPT 02</span>
+                        <span class="px-3 py-1 rounded-lg text-xs bg-orange-500/10 text-orange-400 border border-orange-500/20 font-mono uppercase">Abnormal Indication</span>
+                    </div>
+                    <p class="text-xl text-theme-text font-bold leading-relaxed">
+                        "Explain your actions when you see abnormal oil temperatures during a flight."
+                    </p>
+                    <div class="border-t border-theme-border/80 pt-4">
+                        <button onclick="toggleAnswer('drill-ans-2')" class="text-base font-bold text-theme-accent hover:text-theme-highlight transition-colors font-mono uppercase">
+                            View Model Answer &rarr;
+                        </button>
+                        <div id="drill-ans-2" class="hidden mt-4 text-sm sm:text-base text-theme-text leading-relaxed bg-theme-inner p-4 rounded-xl border border-theme-border/50 space-y-3">
+                            <p><strong>Standard Response:</strong> "I would check the gauges and tell the tower that the temperature is hot. I would think about changing where I land."</p>
+                            <p class="text-theme-highlight"><strong>Level 5 Addition:</strong> "I would be concerned about this parameter because rising oil temperature may indicate impending engine damage or lubrication failure. From a safety perspective, the crew should maintain control, analyze auxiliary indicators like oil pressure, and prepare for a precautionary landing or divert."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <!-- 8. REVISION SUMMARY -->
+        <section class="bg-gradient-to-r from-theme-panel to-slate-950 border border-theme-border rounded-2xl p-8 relative overflow-hidden">
+            <div class="absolute -right-24 -bottom-24 w-64 h-64 bg-theme-accent/10 rounded-full blur-3xl"></div>
+            
+            <div class="flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="space-y-3">
+                    <h3 class="text-2xl font-black text-theme-text uppercase">Final Review Summary</h3>
+                    <p class="text-base text-theme-muted max-w-3xl leading-relaxed">
+                        Remember: ICAO Level 5 requires precise vocabulary over slang ("don" vs "put on"), detailed technical causes ("debris sucked into engine"), structural linking ("can be accompanied by..."), and prioritizing immediate aviation safety commands.
+                    </p>
+                </div>
+                <button onclick="resetTrainingProgress()" class="px-6 py-3.5 text-sm font-bold text-theme-text hover:text-white border border-theme-border rounded-xl hover:bg-theme-inner transition-colors uppercase font-mono tracking-wider whitespace-nowrap">
+                    🔄 Reset Progress
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-theme-inner border-t border-theme-border py-12 text-center text-sm sm:text-base text-theme-muted font-mono">
+        <p>Aviation English Training Module • Designed for ICAO Operational Safety Competence</p>
+        <p class="mt-4"><a href="../index.html" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;">&larr; All quizzes</a></p>
+    </footer>
+
+
+    <!-- ================= JAVASCRIPT LOGIC ================= -->
+    <script>
+        // Data Store
+        const lexiconData = [
+            {
+                phrase: "suffer from hypoxia",
+                meaning: "to have a lack of oxygen in the body",
+                example: "At high altitude, passengers may suffer from hypoxia if the cabin is not pressurized.",
+                category: "states"
+            },
+            {
+                phrase: "it can be accompanied by",
+                meaning: "it can happen together with something",
+                example: "Hypoxia can be accompanied by confusion, dizziness, and slow reaction.",
+                category: "states"
+            },
+            {
+                phrase: "be involved in",
+                meaning: "to take part in or be part of an event",
+                example: "The aircraft was involved in a runway excursion.",
+                category: "verbs"
+            },
+            {
+                phrase: "to anticipate turbulence",
+                meaning: "to expect turbulence before it happens",
+                example: "The crew should anticipate turbulence near cumulonimbus clouds.",
+                category: "verbs"
+            },
+            {
+                phrase: "eject from the aircraft",
+                meaning: "to leave an aircraft using an ejection seat",
+                example: "The military pilot had to eject from the aircraft after engine failure.",
+                category: "verbs"
+            },
+            {
+                phrase: "to experience heavy vibration",
+                meaning: "to feel strong shaking",
+                example: "The crew experienced heavy vibration after takeoff.",
+                category: "states"
+            },
+            {
+                phrase: "to experience explosive decompression",
+                meaning: "to have a sudden and violent loss of cabin pressure",
+                example: "The aircraft experienced explosive decompression at cruising altitude.",
+                category: "states"
+            },
+            {
+                phrase: "to be severely injured",
+                meaning: "to be badly hurt",
+                example: "Several passengers were severely injured during the accident.",
+                category: "states"
+            },
+            {
+                phrase: "to don an oxygen mask",
+                meaning: "to put on an oxygen mask",
+                example: "The crew had to don oxygen masks immediately.",
+                category: "verbs"
+            },
+            {
+                phrase: "the cargo door was ripped off",
+                meaning: "the cargo door was violently torn away",
+                example: "During decompression, the cargo door was ripped off.",
+                category: "states"
+            },
+            {
+                phrase: "debris was sucked into the engine",
+                meaning: "loose pieces entered the engine by airflow",
+                example: "Debris was sucked into the engine and caused serious damage.",
+                category: "states"
+            },
+            {
+                phrase: "I am concerned about this parameter",
+                meaning: "I think this reading/data may be unsafe",
+                example: "I am concerned about this parameter because the oil temperature is rising.",
+                category: "verbs"
+            }
+        ];
+
+        const comparisons = [
+            {
+                id: "hypoxia",
+                title: "1. Hypoxia",
+                level4: "A pilot or passenger can suffer from hypoxia when there is not enough oxygen, especially at high altitude. It can be accompanied by dizziness, confusion, slow reaction, and poor decision-making. From a safety perspective, the crew should don oxygen masks and start an emergency descent if necessary. Hypoxia is dangerous because the person may not understand that something is wrong.",
+                level5: "Hypoxia is a serious physiological problem because the body and brain do not receive enough oxygen. It can be accompanied by headache, blurred vision, confusion, poor coordination, and delayed reactions. In aviation, this is especially dangerous because the pilot may lose situational awareness and make unsafe decisions. If hypoxia is suspected, the crew must don oxygen masks immediately, inform air traffic control, and descend to a safer altitude. From a safety perspective, quick recognition and immediate action are critical.",
+                highlights: ["physiological problem", "lose situational awareness", "delayed reactions", "suspected", "immediate action"]
+            },
+            {
+                id: "decompression",
+                title: "2. Explosive Decompression",
+                level4: "Explosive decompression is a sudden loss of cabin pressure. It can be accompanied by loud noise, fog in the cabin, falling temperature, and oxygen mask deployment. The crew should don oxygen masks, control the aircraft, and start an emergency descent. The main priority is to keep control and restore safe breathing conditions.",
+                level5: "Explosive decompression is one of the most dangerous cabin pressure failures. It can be accompanied by a loud bang, rapid fogging, flying objects, oxygen mask deployment, and possible structural damage. In some cases, a cargo door can be ripped off, and debris can be sucked into the engine. The crew must don oxygen masks immediately, maintain aircraft control, declare an emergency, and descend to a breathable altitude. From a safety standpoint, the first priority is always aircraft control and crew survival.",
+                highlights: ["most dangerous cabin pressure failures", "structural damage", "ripped off", "sucked into the engine", "declare an emergency", "breathable altitude", "safety standpoint", "crew survival"]
+            },
+            {
+                id: "vibration",
+                title: "3. Heavy Vibration After Takeoff",
+                level4: "If the crew experiences heavy vibration after takeoff, it may indicate engine damage, propeller damage, or a mechanical problem. Debris may have been sucked into the engine, or a component may have failed. The pilot should maintain control, check the instruments, reduce power if necessary, and inform ATC. A precautionary landing may be required.",
+                level5: "Heavy vibration after takeoff is a serious abnormal situation because it may indicate engine damage, bird strike, propeller imbalance, or structural failure. I would be concerned about engine parameters such as oil pressure, oil temperature, vibration level, and power output. If debris was sucked into the engine, the aircraft may lose thrust or experience further damage. The crew should maintain control, analyze the situation, declare PAN PAN or MAYDAY if necessary, and prepare for a return or emergency landing. From a safety perspective, the pilot should not continue the flight if the vibration is severe or increasing.",
+                highlights: ["serious abnormal situation", "propeller imbalance", "concerned about engine parameters", "lose thrust", "analyze the situation", "precautionary landing", "not continue the flight", "severe or increasing"]
+            },
+            {
+                id: "turbulence",
+                title: "4. Turbulence",
+                level4: "Pilots should anticipate turbulence when flying near thunderstorms, mountains, jet streams, or strong wind shear. Turbulence can be uncomfortable and sometimes dangerous. The crew should reduce speed, secure the cabin, and avoid dangerous weather if possible. Safety depends on preparation and early decision-making.",
+                level5: "A professional crew should anticipate turbulence by checking weather radar, forecasts, pilot reports, and cloud development. Turbulence can be accompanied by sudden altitude changes, speed fluctuations, and passenger injuries if people are not seated. The crew should turn on the seat belt sign, inform the cabin crew, reduce to turbulence penetration speed if required, and request another altitude or route from ATC. From a safety perspective, it is better to avoid severe turbulence than to fly through it and react too late.",
+                highlights: ["professional crew", "anticipate turbulence", "pilot reports", "cloud development", "sudden altitude changes", "turbulence penetration speed", "request another altitude", "react too late"]
+            },
+            {
+                id: "accident",
+                title: "5. Aircraft Involved in an Accident",
+                level4: "The aircraft was involved in an accident during takeoff. It experienced heavy vibration and failed to climb normally. Some debris was sucked into the engine, and the aircraft was severely damaged. Fortunately, the crew managed to control the situation and reduce the risk for passengers.",
+                level5: "The aircraft was involved in a serious takeoff accident. After rotation, the crew experienced heavy vibration and abnormal engine indications. It is possible that debris was sucked into the engine, which reduced performance and caused additional damage. Some passengers could have been severely injured if the aircraft had lost control. From a safety standpoint, the crew should follow emergency procedures, communicate clearly with ATC, and land as soon as safely possible.",
+                highlights: ["serious takeoff accident", "after rotation", "abnormal engine indications", "reduced performance", "severely injured", "lost control", "follow emergency procedures", "communicate clearly with ATC"]
+            }
+        ];
+
+        // Interactive quiz scenarios (Module 04)
+        const quizData = [
+            {
+                type: "mcq",
+                question: "Which sentence uses the most professional ICAO Level 5 vocabulary?",
+                options: [
+                    "The pilot put on the oxygen mask.",
+                    "The pilot donned the oxygen mask.",
+                    "The pilot took the oxygen mask."
+                ],
+                correct: 1,
+                explanation: "\"Donned\" is the precise aviation verb for putting on an oxygen mask."
+            },
+            {
+                type: "fill",
+                question: "Complete the linking structure: \"Hypoxia can be ____________ by confusion, dizziness, and slow reaction.\"",
+                answers: ["accompanied"],
+                explanation: "\"It can be accompanied by\" stacks compounding symptoms — a key Level 5 structure."
+            },
+            {
+                type: "mcq",
+                question: "What is the precise way to describe loose pieces entering the engine through airflow?",
+                options: [
+                    "Pieces went into the engine.",
+                    "Debris was sucked into the engine.",
+                    "Objects fell into the engine."
+                ],
+                correct: 1,
+                explanation: "\"Debris was sucked into the engine\" is the correct technical collocation."
+            },
+            {
+                type: "fill",
+                question: "Complete the professional concern phrase: \"I am ____________ about this parameter because the oil temperature is rising.\"",
+                answers: ["concerned"],
+                explanation: "\"I am concerned about...\" signals situational awareness and a clear safety focus."
+            },
+            {
+                type: "mcq",
+                question: "During explosive decompression, what should the crew do first?",
+                options: [
+                    "Continue and monitor the cabin pressure.",
+                    "Don oxygen masks immediately and begin an emergency descent.",
+                    "Increase cabin temperature to clear the fog."
+                ],
+                correct: 1,
+                explanation: "Breathing and aircraft control are the priorities: don oxygen masks immediately, maintain control, and begin an emergency descent."
+            }
+        ];
+
+        // Common Level 4 mistakes vs. professional ICAO replacements (Mistakes Radar)
+        const mistakesData = [
+            { wrong: "He has hypoxia.", right: "He is suffering from hypoxia.", why: "More natural phrasing for describing a physiological condition." },
+            { wrong: "It accompanied with smoke.", right: "It can be accompanied by smoke.", why: "Correct structure is \"accompanied by\", not \"accompanied with\"." },
+            { wrong: "The plane was in an accident.", right: "The aircraft was involved in an accident.", why: "More aviation-style and grammatically complete." },
+            { wrong: "The pilot put on the oxygen mask.", right: "The pilot donned an oxygen mask.", why: "\"Donned\" is the precise aviation verb." },
+            { wrong: "The door was broken away.", right: "The cargo door was ripped off.", why: "Natural, idiomatic phrase for violent separation." },
+            { wrong: "Pieces went into the engine.", right: "Debris was sucked into the engine.", why: "More precise technical collocation." },
+            { wrong: "I worry this parameter.", right: "I am concerned about this parameter.", why: "Professional, safety-focused phrasing." },
+            { wrong: "Very hard vibration.", right: "Heavy / severe vibration.", why: "Correct collocation for describing strong shaking." }
+        ];
+
+        // --- Mutable UI State ---
+        let activeComparatorId = "hypoxia";
+        let currentQuizIndex = 0;
+        let quizAnswersState = {};
+        let progressPercent = 0;
+
+        // --- Day/Night Toggle Engine ---
+        function toggleTheme() {
+            const body = document.body;
+            const sunIcon = document.getElementById('theme-icon-sun');
+            const moonIcon = document.getElementById('theme-icon-moon');
+            
+            if (body.classList.contains('light-theme')) {
+                body.classList.remove('light-theme');
+                sunIcon.classList.remove('hidden');
+                sunIcon.classList.add('block');
+                moonIcon.classList.remove('block');
+                moonIcon.classList.add('hidden');
+                showToast("🌙 Dark Theme Active", "Low-glare interface suited for flight deck conditions.");
+            } else {
+                body.classList.add('light-theme');
+                sunIcon.classList.remove('block');
+                sunIcon.classList.add('hidden');
+                moonIcon.classList.remove('hidden');
+                moonIcon.classList.add('block');
+                showToast("☀️ Light Theme Active", "High-visibility interface optimized for day operations.");
+            }
+        }
+
+        // --- Core UI Initializations ---
+        window.onload = function() {
+            renderLexicon();
+            renderComparatorNav();
+            renderComparatorDetails();
+            renderQuiz();
+            renderMistakes();
+            updateProgress();
+
+            // Setup Headings/Telemetry Simulation dynamically
+            setInterval(() => {
+                const randomHdg = Math.floor(Math.random() * 360);
+                const radarText = document.getElementById('radar-hdg');
+                if (radarText) {
+                    radarText.innerText = `HDG: ${String(randomHdg).padStart(3, '0')}°`;
+                }
+            }, 5000);
+        };
+
+        // --- Lexicon Renderer ---
+        function renderLexicon(filter = 'all') {
+            const container = document.getElementById('lexicon-grid');
+            if (!container) return;
+
+            container.innerHTML = '';
+            const filtered = lexiconData.filter(item => {
+                if (filter === 'all') return true;
+                return item.category === filter;
+            });
+
+            filtered.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = "bg-theme-panel/40 border border-theme-border rounded-2xl p-6 hover:border-theme-accent transition-all duration-300 relative group flex flex-col justify-between space-y-6";
+                
+                card.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-start">
+                            <span class="text-xs font-mono font-bold uppercase text-theme-highlight bg-theme-inner px-3 py-1 rounded-lg border border-theme-border">${item.category === 'verbs' ? 'Action / Verb' : 'State / Failure'}</span>
+                            <button onclick="speak('${item.phrase}. Example: ${item.example.replace(/'/g, "\\'")}')" class="text-base p-2.5 rounded-lg hover:bg-theme-inner text-theme-muted hover:text-theme-text transition-colors flex items-center justify-center border border-transparent hover:border-theme-border" title="Listen Pronunciation">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                            </button>
+                        </div>
+                        <div>
+                            <h4 class="text-2xl font-bold text-theme-text group-hover:text-theme-accent transition-colors">${item.phrase}</h4>
+                        </div>
+                        <div class="space-y-2">
+                            <span class="text-xs uppercase font-mono text-theme-muted font-bold block">Definition:</span>
+                            <p class="text-base text-theme-text leading-relaxed">${item.meaning}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-theme-border/80 pt-4 mt-auto">
+                        <span class="text-xs uppercase font-mono text-theme-muted font-bold block mb-1">Context Example:</span>
+                        <p class="text-sm sm:text-base text-theme-text italic font-mono leading-relaxed bg-theme-inner/80 p-3 rounded-lg border border-theme-border/40">${item.example}</p>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterLexicon(category) {
+            const buttons = ['all', 'verbs', 'states'];
+            buttons.forEach(btn => {
+                const el = document.getElementById(`btn-filter-${btn}`);
+                if (el) {
+                    if (btn === category) {
+                        el.className = "px-5 py-2.5 rounded-lg text-sm font-mono font-bold bg-theme-accent text-theme-main transition-colors";
+                    } else {
+                        el.className = "px-5 py-2.5 rounded-lg text-sm font-mono font-bold bg-theme-panel text-theme-text hover:bg-theme-inner transition-colors";
+                    }
+                }
+            });
+            renderLexicon(category);
+        }
+
+        // --- TTS Voice Engine ---
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                const voices = window.speechSynthesis.getVoices();
+                const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
+                if (englishVoice) {
+                    utterance.voice = englishVoice;
+                }
+                utterance.rate = 0.95;
+                window.speechSynthesis.speak(utterance);
+                showToast("🔊 Audio Stream Initiated", "Listen closely to structural speed and cadence.");
+            } else {
+                showToast("⚠️ Support Warning", "Speech Synthesis is unsupported in this browser environment.", "error");
+            }
+        }
+
+        // --- Response Comparator Navigation & Grid Details ---
+        function renderComparatorNav() {
+            const nav = document.getElementById('comparator-nav');
+            if (!nav) return;
+            nav.innerHTML = '';
+
+            comparisons.forEach(item => {
+                const isActive = item.id === activeComparatorId;
+                const button = document.createElement('button');
+                button.onclick = () => { selectComparator(item.id); };
+                button.className = `w-full text-left px-5 py-4 rounded-xl text-sm sm:text-base font-mono font-bold tracking-wide uppercase transition-all duration-200 border ${
+                    isActive 
+                    ? 'bg-theme-accent text-theme-main border-theme-accent cockpit-glow' 
+                    : 'bg-theme-inner/80 text-theme-text border-theme-border hover:bg-theme-panel'
+                }`;
+                button.innerHTML = `
+                    <div class="flex justify-between items-center">
+                        <span>${item.title}</span>
+                        <span>&rarr;</span>
+                    </div>
+                `;
+                nav.appendChild(button);
+            });
+        }
+
+        function renderComparatorDetails() {
+            const container = document.getElementById('comparator-details');
+            if (!container) return;
+
+            const current = comparisons.find(item => item.id === activeComparatorId);
+            if (!current) return;
+
+            // Mark Level 5 changes with highlighters
+            let highlightedLevel5 = current.level5;
+            current.highlights.forEach(phrase => {
+                const regex = new RegExp(`(${phrase})`, 'gi');
+                highlightedLevel5 = highlightedLevel5.replace(regex, `<span class="bg-theme-accent/10 border-b-2 border-theme-accent text-theme-text font-semibold">$1</span>`);
+            });
+
+            container.innerHTML = `
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-border pb-4">
+                        <h4 class="text-xl sm:text-2xl font-black text-theme-text uppercase tracking-wide">${current.title} Model Comparison</h4>
+                        <button onclick="speak('Level five answer: ${current.level5.replace(/'/g, "\\'")}')" class="text-sm px-4 py-2.5 rounded-lg bg-theme-inner border border-theme-border text-theme-highlight hover:text-white hover:border-theme-accent transition-colors flex items-center space-x-2">
+                            <span>🔊 Listen to Level 5</span>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <!-- Level 4 Block -->
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-3 py-1 rounded-lg text-xs bg-slate-800 text-slate-400 font-bold border border-slate-700 uppercase">Standard Level 4</span>
+                            </div>
+                            <div class="bg-theme-inner border border-theme-border/60 p-5 rounded-2xl text-base text-theme-muted leading-relaxed min-h-[220px]">
+                                ${current.level4}
+                            </div>
+                        </div>
+
+                        <!-- Level 5 Block -->
+                        <div class="space-y-3">
+                            <div class="flex items-center space-x-2">
+                                <span class="px-3 py-1 rounded-lg text-xs bg-theme-accent/10 text-theme-highlight font-bold border border-theme-accent/20 uppercase">Advanced Level 5</span>
+                            </div>
+                            <div class="bg-slate-950 border border-theme-border p-5 rounded-2xl text-base text-theme-text leading-relaxed min-h-[220px]">
+                                ${highlightedLevel5}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-theme-panel/30 border border-theme-border p-5 rounded-xl">
+                        <span class="text-xs font-mono uppercase text-theme-highlight font-bold block mb-2">L5 Structural Blueprint:</span>
+                        <p class="text-sm sm:text-base text-theme-muted leading-relaxed">
+                            Notice the inclusion of sophisticated phrases highlighted above. Level 5 prioritizes high-impact aviation terminology and clear safety imperatives instead of generic statements.
+                        </p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function selectComparator(id) {
+            activeComparatorId = id;
+            renderComparatorNav();
+            renderComparatorDetails();
+            updateProgress();
+        }
+
+        // --- Mistakes Radar Renderer ---
+        function renderMistakes() {
+            const container = document.getElementById('mistakes-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            mistakesData.forEach(item => {
+                const row = document.createElement('div');
+                row.className = "bg-theme-inner border border-theme-border/80 rounded-xl p-5 space-y-4";
+                row.innerHTML = `
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-base">
+                        <div class="text-theme-redAccent font-mono">
+                            <span class="text-xs uppercase tracking-wider block text-slate-500 font-bold mb-1">Weak / Colloquial:</span>
+                            ❌ ${item.wrong}
+                        </div>
+                        <div class="text-theme-highlight font-mono">
+                            <span class="text-xs uppercase tracking-wider block text-slate-500 font-bold mb-1">Better ICAO Version:</span>
+                            ✔ ${item.right}
+                        </div>
+                    </div>
+                    <p class="text-sm text-theme-muted font-sans border-t border-theme-border/40 pt-3">${item.why}</p>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        // --- Interactive Training Quiz Panel ---
+        function renderQuiz() {
+            const container = document.getElementById('quiz-question-container');
+            const counter = document.getElementById('quiz-counter');
+            if (!container || !counter) return;
+
+            const q = quizData[currentQuizIndex];
+            counter.innerText = `Question ${currentQuizIndex + 1} of ${quizData.length}`;
+
+            const state = quizAnswersState[currentQuizIndex];
+
+            if (q.type === 'mcq') {
+                let optionsHtml = '';
+                q.options.forEach((opt, idx) => {
+                    let btnClass = "w-full text-left p-4 rounded-xl text-sm sm:text-base font-mono border transition-all duration-150 ";
+                    
+                    if (state) {
+                        if (idx === q.correct) {
+                            btnClass += "bg-emerald-950/40 border-emerald-500 text-emerald-400";
+                        } else if (state.val === idx) {
+                            btnClass += "bg-red-950/40 border-red-500 text-red-400";
+                        } else {
+                            btnClass += "bg-theme-inner border-theme-border text-slate-400";
+                        }
+                    } else {
+                        btnClass += "bg-theme-inner border-theme-border text-theme-text hover:bg-theme-panel hover:border-slate-500";
+                    }
+
+                    optionsHtml += `
+                        <button onclick="selectMCQOption(${idx})" ${state ? 'disabled' : ''} class="${btnClass}">
+                            <div class="flex items-center space-x-4">
+                                <span class="px-3 py-1 rounded-lg bg-theme-panel text-theme-muted text-xs">${String.fromCharCode(65 + idx)}</span>
+                                <span>${opt}</span>
+                            </div>
+                        </button>
+                    `;
+                });
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <span class="text-xs font-mono text-theme-highlight uppercase font-bold tracking-wider">Deductive Multi-Choice Question</span>
+                        <h5 class="text-lg sm:text-xl font-bold text-theme-text leading-relaxed">${q.question}</h5>
+                        <div class="space-y-3 pt-2">
+                            ${optionsHtml}
+                        </div>
+                    </div>
+                `;
+            } else if (q.type === 'fill') {
+                const isCorrect = state ? state.correct : false;
+                let inputClass = "w-full bg-theme-inner border rounded-xl p-4 text-base text-theme-highlight focus:outline-none focus:border-theme-accent font-mono ";
+                if (state) {
+                    inputClass += isCorrect ? "border-emerald-500 bg-emerald-950/20 text-emerald-400" : "border-red-500 bg-red-950/20 text-red-400";
+                } else {
+                    inputClass += "border-theme-border";
+                }
+
+                container.innerHTML = `
+                    <div class="space-y-4">
+                        <span class="text-xs font-mono text-theme-highlight uppercase font-bold tracking-wider">Lexical Fill-in-the-Blank</span>
+                        <h5 class="text-lg sm:text-xl font-bold text-theme-text leading-relaxed">${q.question}</h5>
+                        <div class="pt-2">
+                            <input type="text" id="quiz-fill-input" value="${state ? state.val : ''}" ${state ? 'disabled' : ''} placeholder="Type missing phrase..." class="${inputClass}">
+                        </div>
+                    </div>
+                `;
+            }
+
+            if (state) {
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = `p-4 rounded-xl text-sm sm:text-base leading-relaxed mt-4 border ${state.correct ? 'bg-emerald-950/10 border-emerald-500/30 text-emerald-400' : 'bg-red-950/10 border-red-500/30 text-red-400'}`;
+                feedbackDiv.innerHTML = `
+                    <strong>${state.correct ? 'Correct Action!' : 'Incorrect Transmission:'}</strong> ${q.explanation}
+                `;
+                container.appendChild(feedbackDiv);
+                document.getElementById('btn-quiz-check').style.display = 'none';
+            } else {
+                document.getElementById('btn-quiz-check').style.display = 'block';
+            }
+        }
+
+        function selectMCQOption(idx) {
+            quizAnswersState[currentQuizIndex] = {
+                answered: false,
+                correct: idx === quizData[currentQuizIndex].correct,
+                val: idx
+            };
+            checkAnswer();
+        }
+
+        function checkAnswer() {
+            const q = quizData[currentQuizIndex];
+            let state = quizAnswersState[currentQuizIndex];
+
+            if (q.type === 'fill') {
+                const input = document.getElementById('quiz-fill-input');
+                if (!input || !input.value.trim()) {
+                    showToast("⚠️ Missing Answer", "Please fill in the input blank to analyze.", "error");
+                    return;
+                }
+                const cleanVal = input.value.trim().toLowerCase();
+                const isCorrect = q.answers.some(ans => cleanVal.includes(ans.toLowerCase()));
+                
+                state = {
+                    answered: true,
+                    correct: isCorrect,
+                    val: input.value
+                };
+                quizAnswersState[currentQuizIndex] = state;
+            } else {
+                if (state) {
+                    state.answered = true;
+                } else {
+                    showToast("⚠️ Selection Required", "Please click a radio transmission choice option.", "error");
+                    return;
+                }
+            }
+
+            if (state.correct) {
+                showToast("🚀 Clear Transmission!", "Excellent structure and parameter choice.");
+            } else {
+                showToast("🔴 Warning / Redundancy", "Weak collocations may lower ICAO scores.", "error");
+            }
+
+            renderQuiz();
+            updateProgress();
+        }
+
+        function changeQuestion(step) {
+            const targetIndex = currentQuizIndex + step;
+            if (targetIndex >= 0 && targetIndex < quizData.length) {
+                currentQuizIndex = targetIndex;
+                renderQuiz();
+            } else {
+                if (targetIndex >= quizData.length) {
+                    showToast("🏁 Flight Simulator Complete!", "You've gone through all active scenario evaluations.");
+                }
+            }
+        }
+
+        // --- Universal Briefing Generator Laboratory ---
+        const generatorDatabase = {
+            incident: {
+                decompression: "The aircraft experienced a sudden and violent explosive decompression at cruising altitude.",
+                vibration: "The flight deck crew experienced severe heavy vibration immediately after takeoff rotation.",
+                hypoxia: "There was a physiological threat on board as several passengers started to suffer from hypoxia.",
+                turbulence: "The aircraft was involved in severe unforecast environmental turbulence near the convective cells.",
+                accident: "The flight was involved in a serious runway excursion incident during landing phase operations."
+            },
+            cause: {
+                "cargo-door": "This emergency scenario was caused when the primary cargo door was ripped off due to latches failure.",
+                "engine-debris": "This catastrophic failure was triggered when critical foreign object debris was sucked into the engine.",
+                "pressurization": "This operational emergency originated when the main automated pressurization controls failed.",
+                "bird-strike": "This critical failure occurred as a result of a heavy bird strike damaging the primary turbine section."
+            },
+            symp: {
+                smoke: "The event was accompanied by severe toxic smoke and rapid condensation fogging within the cabin.",
+                vibration: "The failure was accompanied by heavy structural vibration and volatile instrumentation fluctuations.",
+                "hypoxia-symptoms": "The physiological hazard was accompanied by dizziness, cognitive confusion, and slow crew reaction rates.",
+                altitude: "This dynamic event was accompanied by immediate altitude deviation and passenger stabilization issues."
+            },
+            concern: {
+                climb: "I am concerned about this parameter because our remaining climb performance is insufficient to clear high terrain.",
+                loss: "I am concerned about this parameter because sudden loss of control is highly probable without direct corrections.",
+                oxygen: "I am concerned about this parameter because securing safe oxygen and breathing conditions for the crew is crucial.",
+                fuel: "I am concerned about this parameter because our safe fuel margins are rapidly depleting."
+            },
+            action: {
+                descent: "The crew must don oxygen masks immediately, stabilize the plane, and initiate a rapid emergency descent.",
+                land: "The pilot should analyze checklists, declare emergency status with ATC, and prepare to land as soon as safely possible.",
+                divert: "The crew needs to notify ATC, declare a PAN PAN emergency, and execute an immediate precautionary divert."
+            }
+        };
+
+        function compileUniversalBrief() {
+            const incVal = document.getElementById('gen-incident').value;
+            const causeVal = document.getElementById('gen-cause').value;
+            const sympVal = document.getElementById('gen-symp').value;
+            const concernVal = document.getElementById('gen-concern').value;
+            const actionVal = document.getElementById('gen-action').value;
+
+            const brief = `${generatorDatabase.incident[incVal]} ${generatorDatabase.cause[causeVal]} ${generatorDatabase.symp[sympVal]} ${generatorDatabase.concern[concernVal]} From a safety perspective, ${generatorDatabase.action[actionVal]}.`;
+            
+            const textBox = document.getElementById('generated-brief-text');
+            if (textBox) {
+                textBox.innerText = brief;
+                textBox.parentElement.classList.add('border-theme-accent');
+                setTimeout(() => {
+                    textBox.parentElement.classList.remove('border-theme-accent');
+                }, 1000);
+            }
+            showToast("🛠 Brief Compiled Successfully", "Ready to read aloud or export.");
+            updateProgress();
+        }
+
+        function playVoiceBrief() {
+            const textBox = document.getElementById('generated-brief-text');
+            if (textBox) {
+                const text = textBox.innerText;
+                if (text.includes("Choose selections on the left")) {
+                    showToast("⚠️ Engine Alert", "Please compile a statement brief first.", "error");
+                    return;
+                }
+                speak(text);
+            }
+        }
+
+        function copyBriefText() {
+            const textBox = document.getElementById('generated-brief-text');
+            if (textBox) {
+                const text = textBox.innerText;
+                if (text.includes("Choose selections on the left")) {
+                    showToast("⚠️ Export Error", "Nothing compiled to copy.", "error");
+                    return;
+                }
+                
+                const tempEl = document.createElement('textarea');
+                tempEl.value = text;
+                document.body.appendChild(tempEl);
+                tempEl.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempEl);
+
+                showToast("📋 Copy Success", "Aviation brief has been copied to your clipboard.");
+            }
+        }
+
+        // --- Custom Dynamic Training Progress Tracker ---
+        function updateProgress() {
+            let scores = 0;
+            const answeredQuizCount = Object.keys(quizAnswersState).length;
+            scores += (answeredQuizCount * 15);
+            
+            const textBox = document.getElementById('generated-brief-text');
+            if (textBox && !textBox.innerText.includes("Choose selections on the left")) {
+                scores += 15;
+            }
+
+            if (activeComparatorId !== 'hypoxia') {
+                scores += 10;
+            } else {
+                scores += 5;
+            }
+
+            progressPercent = Math.min(100, scores);
+
+            const progressBar = document.getElementById('progress-bar');
+            const progressText = document.getElementById('progress-text');
+            
+            if (progressBar && progressText) {
+                progressBar.style.width = `${progressPercent}%`;
+                progressText.innerText = `${progressPercent}% Completed`;
+            }
+        }
+
+        function resetTrainingProgress() {
+            quizAnswersState = {};
+            currentQuizIndex = 0;
+            activeComparatorId = "hypoxia";
+            const textBox = document.getElementById('generated-brief-text');
+            if (textBox) {
+                textBox.innerText = "Choose selections on the left, then click compile to synthesize your structured aviation report.";
+            }
+            renderQuiz();
+            renderComparatorNav();
+            renderComparatorDetails();
+            updateProgress();
+            showToast("🔄 Progress Reset", "Your training records have been cleared.");
+        }
+
+        function toggleAnswer(id) {
+            const el = document.getElementById(id);
+            if (el) {
+                if (el.classList.contains('hidden')) {
+                    el.classList.remove('hidden');
+                } else {
+                    el.classList.add('hidden');
+                }
+            }
+        }
+
+        // --- Toast Notifications System ---
+        function showToast(title, msg, type = 'success') {
+            const container = document.getElementById('toast-container');
+            if (!container) return;
+
+            const toast = document.createElement('div');
+            toast.className = `w-80 sm:w-96 p-5 rounded-2xl border pointer-events-auto shadow-2xl transition-all duration-300 transform translate-y-5 opacity-0 ${
+                type === 'success' 
+                ? 'bg-theme-panel border-theme-accent text-theme-text' 
+                : 'bg-slate-950 border-theme-redAccent text-theme-text'
+            }`;
+
+            const icon = type === 'success' 
+                ? '<span class="text-theme-highlight text-lg">⚡</span>' 
+                : '<span class="text-theme-redAccent text-lg">⚠️</span>';
+
+            toast.innerHTML = `
+                <div class="flex items-start space-x-3">
+                    <div class="mt-0.5">${icon}</div>
+                    <div class="flex-1">
+                        <h6 class="text-sm font-mono font-bold uppercase tracking-wide text-white">${title}</h6>
+                        <p class="text-xs text-slate-400 mt-1 leading-normal">${msg}</p>
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-5', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => {
+                    toast.remove();
+                }, 300);
+            }, 4000);
+        }
+    </script>
+</body>
+</html>
