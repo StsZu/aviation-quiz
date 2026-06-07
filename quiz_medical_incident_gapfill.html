@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Medical Incident Report — Gap-fill</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 760px;
+      padding: 32px 36px;
+    }
+    .backlink {
+      display: inline-block;
+      margin-bottom: 18px;
+      color: #7a6858;
+      text-decoration: none;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+    }
+    h1 {
+      font-size: 24px;
+      color: #2f2822;
+      margin-bottom: 4px;
+      line-height: 1.3;
+    }
+    .subtitle {
+      color: #7a6858;
+      font-size: 14px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      margin-bottom: 22px;
+    }
+    .instruction {
+      color: #4a3e34;
+      font-size: 15px;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .bank {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px;
+      background: rgba(255,251,244,0.6);
+      border: 1px solid #d4c7b3;
+      border-radius: 12px;
+      margin-bottom: 24px;
+    }
+    .chip {
+      background: #efe6d8;
+      border: 1px solid #d4c7b3;
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 15px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      color: #2f2822;
+      cursor: pointer;
+      transition: background 0.12s, opacity 0.12s;
+      user-select: none;
+    }
+    .chip:hover { background: #e3d6c2; }
+    .chip.used { opacity: 0.38; text-decoration: line-through; cursor: default; }
+    .report {
+      font-size: 17px;
+      color: #2f2822;
+      line-height: 2.1;
+    }
+    .report .report-title {
+      display: block;
+      text-align: center;
+      font-weight: bold;
+      line-height: 1.4;
+      margin-bottom: 16px;
+    }
+    .report p { margin-bottom: 14px; }
+    .blank {
+      width: 130px;
+      border: none;
+      border-bottom: 2px solid #b9a88f;
+      background: rgba(255,251,244,0.7);
+      font-family: Georgia, serif;
+      font-size: 16px;
+      color: #2f2822;
+      text-align: center;
+      padding: 2px 4px;
+      outline: none;
+      border-radius: 4px 4px 0 0;
+    }
+    .blank:focus { border-bottom-color: #4a3e34; background: #fff; }
+    .blank.correct { background: #c8f0c8; border-bottom-color: #4a9a4a; color: #1a5a1a; }
+    .blank.wrong   { background: #f0c8c8; border-bottom-color: #9a4a4a; color: #5a1a1a; }
+    .num {
+      font-size: 11px;
+      color: #b08968;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      vertical-align: super;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .score-label {
+      color: #7a6858;
+      font-size: 15px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+    }
+    .btn-row { display: flex; gap: 8px; }
+    .btn {
+      background: rgba(255,251,244,0.55);
+      border: 1px solid #d4c7b3;
+      border-radius: 10px;
+      padding: 9px 20px;
+      font-size: 14px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      color: #4a3e34;
+      cursor: pointer;
+      transition: background 0.12s;
+    }
+    .btn:hover:not(:disabled) { background: #efe6d8; }
+    .btn.primary { background: #4a3e34; color: #f8f3e9; border-color: #4a3e34; }
+    .btn.primary:hover { background: #5a4e44; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" class="backlink">&larr; All quizzes</a>
+    <h1>Report on a Medical Incident — Flight IC321</h1>
+    <div class="subtitle">Gap-fill · aviation medical English · Delhi to Colombo</div>
+    <p class="instruction">Fill each gap with a word from the bank. Click a word to drop it into the focused gap, or just type. Then press <strong>Check answers</strong>.</p>
+
+    <div class="bank" id="bank"></div>
+
+    <div class="report" id="report"></div>
+
+    <div class="footer">
+      <span class="score-label" id="score">Not checked yet</span>
+      <div class="btn-row">
+        <button class="btn" id="btn-show" onclick="showAnswers()">Show answers</button>
+        <button class="btn" id="btn-reset" onclick="resetAll()">Reset</button>
+        <button class="btn primary" id="btn-check" onclick="checkAnswers()">Check answers</button>
+      </div>
+    </div>
+  </div>
+
+  <footer style="text-align:center;padding:28px 16px;font-family:'SF Pro Text',Arial,sans-serif;">
+    <a href="index.html" style="color:#7a6858;font-size:15px;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;">&larr; All quizzes</a>
+  </footer>
+
+  <script>
+    const answers = [
+      "happened", "cardiac", "condition", "comfortable", "pulse",
+      "defibrillator", "first", "administer", "recommended", "aware",
+      "services", "until", "transferred", "resumed"
+    ];
+    const bankWords = [
+      "transferred", "pulse", "cardiac", "resumed", "first", "condition",
+      "comfortable", "services", "defibrillator", "recommended", "happened",
+      "administer", "aware", "until"
+    ];
+
+    // Report text with __N__ markers for each blank
+    const reportHTML =
+      '<span class="report-title">Report on Medical Incident on Flight IC321<br>from Delhi to Colombo</span>' +
+      '<p>The incident __1__ at 16.40, that is, two hours into the flight.</p>' +
+      '<p>A male passenger aged 63 suffered a __2__ arrest.</p>' +
+      '<p>Two flight attendants assisted the patient as soon as the alarm was raised and immediately checked the man&rsquo;s __3__, made him __4__, took his __5__, checked his medical history with his wife who was travelling with him, got the oxygen and a __6__ and informed the purser. The purser informed the captain. The flight attendants gave prompt __7__ aid and then began to __8__ CPR. Fortunately there was a doctor on board and he said the man had suffered a cardiac arrest and was in a serious condition. The doctor __9__ immediate hospitalization. The captain decided to land at Mumbai, the closest international airport. The captain made an announcement to make passengers __10__ of the situation. He also requested ATC to provide full medical emergency __11__ on arrival. The doctor remained with the patient __12__ landing.</p>' +
+      '<p>The plane landed at 17.01 and the emergency services took charge of the patient, who was __13__ to hospital. The flight __14__ at 18.10.</p>' +
+      '<p>It was later reported that the patient was in a stable condition in hospital in Mumbai.</p>';
+
+    let focusedInput = null;
+
+    function buildReport() {
+      let html = reportHTML;
+      for (let i = 1; i <= answers.length; i++) {
+        const field =
+          '<span class="num">' + i + '</span>' +
+          '<input class="blank" id="b' + i + '" data-idx="' + (i - 1) +
+          '" autocomplete="off" spellcheck="false">';
+        html = html.replace('__' + i + '__', field);
+      }
+      document.getElementById('report').innerHTML = html;
+      document.querySelectorAll('.blank').forEach(function (inp) {
+        inp.addEventListener('focus', function () { focusedInput = inp; });
+        inp.addEventListener('input', function () {
+          inp.classList.remove('correct', 'wrong');
+          refreshBank();
+        });
+      });
+    }
+
+    function buildBank() {
+      const bank = document.getElementById('bank');
+      bank.innerHTML = '';
+      bankWords.forEach(function (w) {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.textContent = w;
+        chip.dataset.word = w;
+        chip.onclick = function () { dropWord(w); };
+        bank.appendChild(chip);
+      });
+      refreshBank();
+    }
+
+    function dropWord(w) {
+      let target = focusedInput;
+      if (!target || target.value.trim()) {
+        target = Array.from(document.querySelectorAll('.blank'))
+          .find(function (inp) { return !inp.value.trim(); });
+      }
+      if (!target) return;
+      target.value = w;
+      target.classList.remove('correct', 'wrong');
+      focusedInput = target;
+      refreshBank();
+    }
+
+    function refreshBank() {
+      const used = Array.from(document.querySelectorAll('.blank'))
+        .map(function (inp) { return inp.value.trim().toLowerCase(); })
+        .filter(Boolean);
+      document.querySelectorAll('.chip').forEach(function (chip) {
+        const w = chip.dataset.word.toLowerCase();
+        const idx = used.indexOf(w);
+        if (idx !== -1) { chip.classList.add('used'); used.splice(idx, 1); }
+        else chip.classList.remove('used');
+      });
+    }
+
+    function checkAnswers() {
+      let correct = 0;
+      document.querySelectorAll('.blank').forEach(function (inp) {
+        const idx = +inp.dataset.idx;
+        const val = inp.value.trim().toLowerCase();
+        inp.classList.remove('correct', 'wrong');
+        if (!val) return;
+        if (val === answers[idx]) { inp.classList.add('correct'); correct++; }
+        else inp.classList.add('wrong');
+      });
+      document.getElementById('score').textContent =
+        'Score: ' + correct + '/' + answers.length;
+    }
+
+    function showAnswers() {
+      document.querySelectorAll('.blank').forEach(function (inp) {
+        const idx = +inp.dataset.idx;
+        inp.value = answers[idx];
+        inp.classList.remove('wrong');
+        inp.classList.add('correct');
+      });
+      refreshBank();
+      document.getElementById('score').textContent =
+        'Answers revealed: ' + answers.length + '/' + answers.length;
+    }
+
+    function resetAll() {
+      document.querySelectorAll('.blank').forEach(function (inp) {
+        inp.value = '';
+        inp.classList.remove('correct', 'wrong');
+      });
+      focusedInput = null;
+      refreshBank();
+      document.getElementById('score').textContent = 'Not checked yet';
+    }
+
+    buildReport();
+    buildBank();
+  </script>
+</body>
+</html>
