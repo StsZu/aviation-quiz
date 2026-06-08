@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runway Excursion into Water — Model Answer &amp; Quiz</title>
+  <style>
+    :root {
+      --bg-main: #e7dfd2;
+      --bg-panel: #f8f3e9;
+      --bg-panel-hover: #fffdf8;
+      --border-color: #d4c7b3;
+      --text-primary: #2f2822;
+      --text-secondary: #4a3e34;
+      --text-muted: #7a6858;
+      --accent-navy: #6b4f2e;
+      --accent-danger: #b3402f;
+      --accent-success: #5b7a4f;
+      --accent-caution: #b5821f;
+      --accent-hud: #8a6d3b;
+      --btn-bg: rgba(255, 251, 244, 0.8);
+      --btn-hover: #efe6d8;
+      --btn-border: #d4c7b3;
+      --shadow-md: 0 10px 25px -5px rgba(47, 40, 34, 0.12);
+      --font-serif: Georgia, "Palatino Linotype", serif;
+      --font-sans: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .night-ops {
+      --bg-main: #1c1611;
+      --bg-panel: #261e17;
+      --bg-panel-hover: #2e251c;
+      --border-color: #3d3226;
+      --text-primary: #efe6d8;
+      --text-secondary: #cdbfad;
+      --text-muted: #9a8a76;
+      --accent-navy: #d8a657;
+      --accent-danger: #e07a5f;
+      --accent-success: #8aa06a;
+      --accent-caution: #d8a657;
+      --accent-hud: #d8a657;
+      --btn-bg: #2e251c;
+      --btn-hover: #3d3226;
+      --btn-border: #4a3d2e;
+      --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 30px 15px 60px;
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 880px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .back-link {
+      color: var(--accent-hud);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .theme-switch {
+      background: var(--btn-bg);
+      color: var(--text-secondary);
+      border: 1px solid var(--btn-border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .theme-switch:hover { background: var(--btn-hover); }
+
+    .hero { display: flex; flex-direction: column; gap: 10px; }
+
+    .badge {
+      align-self: flex-start;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-hud);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 4px 12px;
+      background: var(--bg-panel);
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+
+    .hero p { color: var(--text-secondary); font-size: 16px; max-width: 60ch; }
+
+    .panel {
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .panel h2 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      color: var(--accent-navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel h2 .step {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--bg-panel);
+      background: var(--accent-hud);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .scene-img {
+      width: 100%;
+      border-radius: 14px;
+      border: 1px solid var(--border-color);
+      display: block;
+    }
+
+    .audio-player { width: 100%; margin-top: 4px; }
+    .audio-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .transcript p {
+      font-family: var(--font-serif);
+      font-size: 16.5px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+    .transcript p:last-child { margin-bottom: 0; }
+    .transcript .radio {
+      border-left: 3px solid var(--accent-hud);
+      padding-left: 14px;
+      font-style: italic;
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-hud);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+    .q-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .q-text {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+    }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      text-align: left;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font: inherit;
+      font-size: 15.5px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .option:hover:not(:disabled) { background: var(--btn-hover); }
+    .option:disabled { cursor: default; }
+    .option.correct {
+      border-color: var(--accent-success);
+      background: rgba(91, 122, 79, 0.16);
+      font-weight: 700;
+    }
+    .option.wrong {
+      border-color: var(--accent-danger);
+      background: rgba(179, 64, 47, 0.14);
+    }
+    .feedback {
+      margin-top: 16px;
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      border-left: 3px solid var(--accent-hud);
+      padding: 4px 0 4px 14px;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .quiz-nav { margin-top: 18px; display: flex; justify-content: flex-end; }
+    .quiz-btn {
+      background: var(--accent-hud);
+      color: var(--bg-panel);
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 24px;
+      font: inherit;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .quiz-btn:disabled { opacity: 0.4; cursor: default; }
+    .quiz-btn:hover:not(:disabled) { filter: brightness(1.06); }
+    .quiz-result { text-align: center; }
+    .quiz-result h3 {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      color: var(--accent-navy);
+      margin-bottom: 8px;
+    }
+    .quiz-result p { color: var(--text-secondary); margin-bottom: 18px; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 24px; }
+      .panel { padding: 20px; border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a class="back-link" href="index.html">&larr; All quizzes</a>
+      <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">Night ops</button>
+    </nav>
+
+    <header class="hero">
+      <span class="badge">ICAO Picture Description</span>
+      <h1>Runway Excursion into Water</h1>
+      <p>Study the scene, listen to a full Level 5 model answer, read the transcript, then test your comprehension with a 10-question quiz.</p>
+    </header>
+
+    <section class="panel">
+      <h2><span class="step">1</span> Study the picture</h2>
+      <img class="scene-img" src="img/runway-excursion-water.jpg" alt="A narrow-body aircraft partially submerged in water beside a runway, with deployed evacuation slides, an orange containment barrier, and emergency vehicles on the shoreline.">
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">2</span> Listen to the model answer</h2>
+      <audio class="audio-player" controls preload="none" src="audio/runway-excursion-model-description.mp3"></audio>
+      <p class="audio-note">A complete Level 5 picture description: observation, deduction, safety reasoning, and a sample radio call.</p>
+    </section>
+
+    <section class="panel transcript">
+      <h2><span class="step">3</span> Read the transcript</h2>
+      <p>In this photo, I can see a narrow-body aircraft, possibly a Boeing 737, partially submerged in water near the end of a runway. From the tire tracks leading from the runway to the water, it is clear that this must have been a runway excursion.</p>
+      <p>The aircraft appears to have overrun the runway and entered the water at relatively low speed. The fuselage looks mostly intact, and there are no obvious signs of major structural break-up. This may indicate that the impact forces were not extremely high. From a safety perspective, this is important because lower impact forces usually increase the chances of passenger survival.</p>
+      <p>The forward emergency exits are open, and the evacuation slides have been deployed. This suggests that the crew initiated an emergency evacuation after the aircraft came to a stop. One slide appears to be inflated, while the other one seems to be deflated. It could have been punctured during the evacuation, or it may not have inflated correctly.</p>
+      <p>There are several people standing on or near the right wing. They do not appear to be passengers or crew members, so they could have been accident investigators, airport officials, or emergency personnel. A yellow raft can be seen near the wing, so they may have used it to reach the aircraft from the shoreline.</p>
+      <p>Around the aircraft, there is an orange floating barrier. This was probably placed there to contain debris, fuel, oil, or hydraulic fluid. From an environmental safety perspective, this is a necessary measure because hazardous fluids could spread into the water and cause contamination.</p>
+      <p>In the background, I can see fire rescue vehicles, airport vehicles, and people wearing reflective clothing and hard hats. This means that the emergency services must have responded to the accident site. However, there is no clear sense of panic, so the photo was probably taken some time after the initial emergency.</p>
+      <p>There is also a floodlight in the upper right-hand corner of the photo. This may suggest that the accident occurred at night, or that the recovery operation continued into the night. The floodlight would help emergency crews and investigators work safely around the aircraft.</p>
+      <p>As for possible causes, there is usually no single reason for this type of accident. A possible contributing factor could have been poor braking action on a wet or contaminated runway. The aircraft could also have encountered wind shear, a tailwind, or strong crosswind during landing or rejected takeoff. These factors can increase stopping distance and reduce the safety margin.</p>
+      <p>Another possible factor could have been a malfunction of the braking system, speed brakes, or thrust reversers. In this photo, the engines are submerged, so it is difficult to say whether the thrust reversers were deployed. The speed brakes are not clearly deployed, but they may have been retracted after the aircraft stopped.</p>
+      <p>From a crew perspective, the first priority after the runway excursion would be to secure the aircraft, inform air traffic control, and start the evacuation if there was any risk of fire, smoke, fuel leakage, or sinking. The captain would need to advise air traffic control about the situation and report the number of souls on board.</p>
+      <p class="radio">A possible radio call could be: &ldquo;Tower, November one two three, we have gone off the runway and entered the water. The aircraft is partially submerged. We have one hundred fifty souls on board. Request immediate fire rescue assistance.&rdquo;</p>
+      <p>The flight crew would then run the evacuation checklist, shut down the engines, and make sure the aircraft was safe before passengers left the aircraft. The cabin crew would instruct passengers to release their seat belts, leave their baggage behind, and evacuate quickly.</p>
+      <p>From a safety perspective, passengers must move away from the aircraft as soon as possible because there may still be a risk of fire, fuel leakage, smoke, or structural failure. Taking baggage during an evacuation is extremely dangerous because it can slow down the evacuation and block other passengers.</p>
+      <p>For air traffic control, the priority would be to alert airport fire rescue, close the affected runway, stop departures, and instruct arriving aircraft to go around or divert if necessary. Good coordination between the pilots, cabin crew, air traffic control, and rescue services is essential in this type of emergency.</p>
+      <p>In my opinion, this situation shows how quickly a normal landing or takeoff can become a serious emergency. The main safety lesson is that runway condition, wind, braking performance, crew communication, and emergency preparedness are all critical. A well-coordinated evacuation and a fast emergency response can prevent injuries and save lives.</p>
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">4</span> Test your understanding</h2>
+      <div id="quiz">
+        <div class="quiz-meta">
+          <span id="qProgress">Question 1 of 10</span>
+          <span id="qScore">Score: 0</span>
+        </div>
+        <p class="q-title" id="qTitle"></p>
+        <p class="q-text" id="qText"></p>
+        <div class="options" id="qOptions"></div>
+        <div class="feedback" id="qFeedback"></div>
+        <div class="quiz-nav">
+          <button class="quiz-btn" id="qNext" disabled>Next</button>
+        </div>
+      </div>
+      <div id="quizResult" class="quiz-result" hidden>
+        <h3 id="resultScore"></h3>
+        <p id="resultMsg"></p>
+        <button class="quiz-btn" onclick="restartQuiz()">Try again</button>
+      </div>
+    </section>
+
+    <footer>Aviation English Practice &mdash; ICAO picture-description task</footer>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const night = document.body.classList.toggle('night-ops');
+      document.getElementById('themeBtn').textContent = night ? 'Day ops' : 'Night ops';
+    }
+
+    const QUESTIONS = [
+      { title: "Identifying the event", question: "What is the strongest reason for concluding that the event was a runway excursion?", options: ["The floodlight indicates that the aircraft was operating at night", "The tire tracks lead from the runway directly to the water", "The people on the wing appear to be investigators"], correct: 1, explanation: "The tire tracks connecting the runway to the water provide the clearest physical evidence that the aircraft left the runway surface and entered the water, which is consistent with a runway excursion." },
+      { title: "Structural damage assessment", question: "What does the mostly intact fuselage most strongly suggest about the accident sequence?", options: ["The aircraft likely entered the water at a relatively low speed", "The aircraft was manufactured with stronger-than-normal materials", "The crew had already completed the investigation before the photo was taken"], correct: 0, explanation: "A largely intact fuselage with no major structural break-up suggests that the impact forces were relatively low, which is consistent with a lower-speed overrun into the water." },
+      { title: "Evacuation evidence", question: "Why is it reasonable to infer that the crew initiated an emergency evacuation?", options: ["Because a yellow raft is visible near the wing", "Because the floodlight is illuminating the area", "Because the forward exits are open and the evacuation slides have been deployed"], correct: 2, explanation: "Open emergency exits and deployed slides are direct signs that an evacuation was carried out after the aircraft came to a stop." },
+      { title: "Deflated slide interpretation", question: "What is the best interpretation of one evacuation slide being deflated?", options: ["It could have been punctured or may not have inflated properly", "It proves that the evacuation was unnecessary", "It shows that the aircraft was still moving during the evacuation"], correct: 0, explanation: "A deflated slide may result from puncture damage or inflation failure. The image alone does not support stronger conclusions such as an unnecessary evacuation or movement during evacuation." },
+      { title: "Environmental protection", question: "What is the most likely purpose of the orange floating barrier around the aircraft?", options: ["To mark a passenger assembly area", "To contain debris and hazardous fluids such as fuel or hydraulic fluid", "To indicate the edge of the runway for investigators"], correct: 1, explanation: "Floating barriers are commonly used to limit the spread of pollutants and sometimes to help contain debris, especially when an aircraft is partially submerged." },
+      { title: "Timing of the photo", question: "Which observation best supports the idea that the photo was taken some time after the initial emergency?", options: ["There is no visible panic and no active emergency lighting from the rescue vehicles", "The aircraft is a narrow-body jet, possibly a Boeing 737", "The engines are submerged in the water"], correct: 0, explanation: "A calm scene without visible urgency or flashing emergency lights suggests that the immediate response phase had already passed by the time the photo was taken." },
+      { title: "Possible contributing factors", question: "Which factor would most directly increase stopping distance and reduce the safety margin during landing?", options: ["A wet or contaminated runway combined with tailwind conditions", "A floodlight positioned near the runway", "The presence of airport officials on the shoreline"], correct: 0, explanation: "Poor braking action on a wet or contaminated runway, especially when combined with a tailwind, directly increases landing distance and reduces available safety margins." },
+      { title: "Crew priorities", question: "According to the text, what should be the crew's first priority after the runway excursion?", options: ["Collect the maintenance logbook before speaking to anyone", "Secure the aircraft, inform air traffic control, and begin evacuation if necessary", "Wait for investigators before opening any exits"], correct: 1, explanation: "The text emphasizes immediate operational priorities: secure the aircraft, notify air traffic control, and start evacuation if there is any continuing danger such as fire, smoke, leakage, or sinking." },
+      { title: "Passenger safety action", question: "Why must passengers leave their baggage behind during an evacuation?", options: ["Because baggage is not allowed to get wet during emergency operations", "Because baggage can slow down the evacuation and obstruct other passengers", "Because investigators need all baggage to remain on board for legal reasons"], correct: 1, explanation: "The correct safety rationale is that baggage can delay evacuation and block movement, which increases risk for everyone during an emergency." },
+      { title: "Air traffic control response", question: "What is the most appropriate immediate action for air traffic control in this situation?", options: ["Continue normal operations until the captain confirms the extent of the damage", "Advise the aircraft to taxi clear if possible and keep the runway open for arrivals", "Alert airport fire rescue, close the affected runway, and manage arriving and departing traffic"], correct: 2, explanation: "Once an aircraft has left the runway and is partially submerged, air traffic control must prioritize emergency response, runway closure, and traffic management to protect the aircraft involved and all other traffic." }
+    ];
+
+    let current = 0, score = 0, answered = false;
+    const $ = id => document.getElementById(id);
+
+    function renderQuestion() {
+      answered = false;
+      const q = QUESTIONS[current];
+      $('qProgress').textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+      $('qScore').textContent = `Score: ${score}`;
+      $('qTitle').textContent = q.title;
+      $('qText').textContent = q.question;
+      const opts = $('qOptions');
+      opts.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.className = 'option';
+        b.textContent = opt;
+        b.onclick = () => selectOption(i);
+        opts.appendChild(b);
+      });
+      const fb = $('qFeedback');
+      fb.className = 'feedback';
+      fb.textContent = '';
+      $('qNext').disabled = true;
+      $('qNext').textContent = current === QUESTIONS.length - 1 ? 'See result' : 'Next';
+    }
+
+    function selectOption(i) {
+      if (answered) return;
+      answered = true;
+      const q = QUESTIONS[current];
+      const buttons = $('qOptions').querySelectorAll('.option');
+      buttons.forEach((b, idx) => {
+        b.disabled = true;
+        if (idx === q.correct) b.classList.add('correct');
+        else if (idx === i) b.classList.add('wrong');
+      });
+      if (i === q.correct) { score++; $('qScore').textContent = `Score: ${score}`; }
+      const fb = $('qFeedback');
+      fb.textContent = q.explanation;
+      fb.classList.add('show');
+      $('qNext').disabled = false;
+    }
+
+    $('qNext').onclick = () => {
+      if (current < QUESTIONS.length - 1) { current++; renderQuestion(); }
+      else showResult();
+    };
+
+    function showResult() {
+      $('quiz').hidden = true;
+      $('quizResult').hidden = false;
+      $('resultScore').textContent = `${score} / ${QUESTIONS.length}`;
+      const pct = score / QUESTIONS.length;
+      $('resultMsg').textContent = pct === 1 ? 'Perfect — Level 5 comprehension.'
+        : pct >= 0.7 ? 'Strong work. Review the feedback on any you missed.'
+        : 'Re-watch the description and try again.';
+    }
+
+    function restartQuiz() {
+      current = 0; score = 0;
+      $('quizResult').hidden = true;
+      $('quiz').hidden = false;
+      renderQuestion();
+    }
+
+    renderQuestion();
+  </script>
+</body>
+</html>
