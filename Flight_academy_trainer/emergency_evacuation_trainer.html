@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aircraft Emergency Evacuation — Picture Description Practice — listen &amp; read</title>
+<style>
+  :root {
+    --bg-main: #f1f5f9;
+    --bg-panel: #ffffff;
+    --bg-panel-2: #f8fafc;
+    --border: #cbd5e1;
+    --text: #0f172a;
+    --text-2: #334155;
+    --muted: #64748b;
+    --accent: #0f4c81;
+    --accent-2: #0284c7;
+    --active-bg: rgba(2, 132, 199, 0.12);
+    --active-border: #0284c7;
+    --shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08);
+    --font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+  body.night {
+    --bg-main: #06090e;
+    --bg-panel: #0d121c;
+    --bg-panel-2: #131a29;
+    --border: #1e293b;
+    --text: #f8fafc;
+    --text-2: #cbd5e1;
+    --muted: #64748b;
+    --accent: #10b981;
+    --accent-2: #10b981;
+    --active-bg: rgba(16, 185, 129, 0.14);
+    --active-border: #10b981;
+    --shadow: 0 12px 30px rgba(0, 0, 0, 0.7);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg-main);
+    color: var(--text);
+    font-family: var(--font);
+    line-height: 1.6;
+    padding: 24px 16px 64px;
+    transition: background-color .3s ease, color .3s ease;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+  header {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+  }
+  .back-link { color: var(--accent-2); text-decoration: none; font-weight: 600; font-size: 14px; }
+  .back-link:hover { text-decoration: underline; }
+  .theme-switch {
+    background: var(--bg-panel); color: var(--text-2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 600;
+    cursor: pointer; display: inline-flex; gap: 8px; align-items: center;
+  }
+  .theme-switch:hover { background: var(--bg-panel-2); }
+
+  .hero { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 24px; box-shadow: var(--shadow); }
+  .kicker { color: var(--accent-2); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  .hero h1 { font-size: clamp(22px, 4vw, 30px); margin: 6px 0 8px; }
+  .hero p { color: var(--muted); max-width: 70ch; font-size: 15px; }
+
+  /* Chapter rail */
+  .rail { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+  .chap-btn {
+    flex: 0 0 auto; background: var(--bg-panel); border: 1px solid var(--border);
+    border-radius: 10px; padding: 10px 14px; cursor: pointer; font: inherit; color: var(--text-2);
+    display: flex; gap: 8px; align-items: center; transition: all .15s ease; white-space: nowrap;
+  }
+  .chap-btn:hover { background: var(--bg-panel-2); }
+  .chap-btn.active { border-color: var(--active-border); background: var(--active-bg); color: var(--text); font-weight: 600; }
+  .chap-btn .num {
+    width: 22px; height: 22px; border-radius: 6px; background: var(--accent); color: #fff;
+    display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700;
+  }
+
+  /* Player */
+  .player { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 16px; padding: 18px 20px; box-shadow: var(--shadow); position: sticky; top: 12px; z-index: 5; }
+  .player-title { font-size: 13px; color: var(--muted); font-weight: 600; margin-bottom: 12px; }
+  .controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .play-btn {
+    width: 52px; height: 52px; border-radius: 50%; border: none; cursor: pointer;
+    background: var(--accent); color: #fff; flex: 0 0 auto;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .play-btn svg { width: 22px; height: 22px; }
+  .timeline { flex: 1 1 240px; display: flex; align-items: center; gap: 10px; min-width: 200px; }
+  .time { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--muted); flex: 0 0 auto; }
+  .scrub { flex: 1; height: 8px; background: var(--border); border-radius: 99px; cursor: pointer; position: relative; }
+  .scrub-fill { height: 100%; background: var(--accent-2); border-radius: 99px; width: 0; }
+  .speeds { display: flex; gap: 4px; flex: 0 0 auto; }
+  .speed-btn { background: var(--bg-panel-2); border: 1px solid var(--border); border-radius: 6px; padding: 5px 9px; font: inherit; font-size: 12px; cursor: pointer; color: var(--text-2); }
+  .speed-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 600; }
+  .sync-note { margin-top: 10px; font-size: 12px; color: var(--muted); }
+
+  /* Transcript */
+  .transcript { display: flex; flex-direction: column; gap: 12px; }
+  .seg {
+    background: var(--bg-panel); border: 1px solid var(--border); border-left: 4px solid transparent;
+    border-radius: 12px; padding: 14px 18px; cursor: pointer; transition: all .15s ease;
+  }
+  .seg:hover { background: var(--bg-panel-2); }
+  .seg.active { border-left-color: var(--active-border); background: var(--active-bg); }
+  .seg-q { font-size: 13px; font-weight: 700; color: var(--accent-2); margin-bottom: 6px; }
+  .seg-a { color: var(--text-2); font-size: 15.5px; }
+  .seg.active .seg-a { color: var(--text); }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 8px; }
+  footer a { color: inherit; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="back-link" href="../index.html">&larr; All quizzes</a>
+    <button class="theme-switch" id="themeBtn"><span id="themeLabel">Night mode</span></button>
+  </header>
+
+  <section class="hero">
+    <p class="kicker">Picture Description — Listen &amp; Read</p>
+    <h1>Aircraft Emergency Evacuation — Picture Description Practice</h1>
+    <p>A British Airways aircraft after an emergency: listen to four model answers describing the same picture — from a detailed account to short simple sentences, a formal register, and a generic template — and follow the transcript in sync. Tap any answer to replay it, and slow the audio down for shadowing practice.</p>
+  </section>
+
+  <nav class="rail" id="rail" aria-label="Chapters"></nav>
+
+  <section class="player">
+    <div class="player-title" id="nowPlaying">Aircraft Emergency Evacuation — Picture Description Practice</div>
+    <div class="controls">
+      <button class="play-btn" id="playBtn" aria-label="Play / pause">
+        <svg id="playIcon" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+      <div class="timeline">
+        <span class="time" id="curTime">00:00</span>
+        <div class="scrub" id="scrub"><div class="scrub-fill" id="scrubFill"></div></div>
+        <span class="time" id="durTime">00:00</span>
+      </div>
+      <div class="speeds">
+        <button class="speed-btn" data-rate="0.75">0.75x</button>
+        <button class="speed-btn active" data-rate="1">1x</button>
+        <button class="speed-btn" data-rate="1.25">1.25x</button>
+        <button class="speed-btn" data-rate="1.5">1.5x</button>
+      </div>
+    </div>
+    <p class="sync-note">Sync is approximate (estimated from text length). Exact sentence-level timing comes with the forced-alignment step.</p>
+    <audio id="audio" preload="none"></audio>
+  </section>
+
+  <div class="transcript" id="transcript"></div>
+
+  <footer><a href="../index.html">&larr; All quizzes</a></footer>
+</div>
+
+<script>
+const DIR = 'Emergency_Evacuation/';
+const CHAPTERS = [
+  { num: 1, title: "Picture description — model answers", mp3: "01-aircraft-emergency-evacuation-picture-description-practice.mp3", segments: [
+    { q: "Model answer — detailed description", a: "This picture shows a British Airways aircraft after an emergency. The aircraft has suffered an engine fire. The passengers have evacuated via the emergency chutes. They are now calmly moving away from the aircraft. This is very important because after an engine fire there may still be smoke, fire, fuel leakage, or a risk of explosion. In this situation, passengers should follow crew instructions. They should leave their baggage behind. They should evacuate quickly and move to a safe distance. The cabin crew should control the evacuation and help passengers leave the aircraft safely. Emergency services should approach the aircraft and deal with the fire. The main risk is that the fire may spread or the smoke may become dangerous. That is why passengers must not stay close to the aircraft. They should move upwind if possible and wait in a safe area. The safest action is to evacuate quickly, remain calm, and move away from the aircraft. Safety depends on fast evacuation, clear crew instructions, and good coordination with emergency services." },
+    { q: "Model answer — short, simple sentences", a: "This picture shows an aircraft after an emergency. The aircraft has suffered an engine fire. The passengers have evacuated. They used the emergency chutes. Now they are moving away from the aircraft. They are calm. This is very important. There may still be smoke. There may still be fire. There may be fuel leakage. There may also be a risk of explosion. Passengers should follow crew instructions. They should leave their baggage behind. They should move to a safe distance. The crew should control the evacuation. Emergency services should deal with the fire. The main safety lesson is clear. Evacuation must be fast. Passengers must stay calm. Everybody must move away from the aircraft. Safety depends on clear instructions and good coordination." },
+    { q: "Model answer — formal register", a: "This picture depicts a British Airways aircraft after an emergency evacuation. It appears that the aircraft has suffered an engine fire. The passengers have evacuated via the emergency chutes and are now calmly distancing themselves from the aircraft. This is the correct action because after an engine fire there may still be smoke, fuel leakage, fire, or even a risk of explosion. In this situation, passengers should follow cabin crew instructions, leave all baggage behind, and move to a safe distance as quickly as possible. The crew should manage the evacuation, keep passengers calm, and coordinate with emergency services. The main priority is to protect people and prevent injuries after evacuation. In my opinion, this situation shows that a fast, calm, and well-organized evacuation is essential for flight safety." },
+    { q: "Model answer — generic template", a: "This picture shows an aircraft after an emergency. It appears that the aircraft has suffered a technical problem. The passengers or crew are taking safety actions. The main risks may include fire, smoke, fuel leakage, injuries, or further damage. In this situation, people should stay calm, follow crew instructions, and move to a safe area. Safety depends on quick decisions, clear communication, and good coordination." }
+  ]}
+];
+
+const audio = document.getElementById('audio');
+const railEl = document.getElementById('rail');
+const transcriptEl = document.getElementById('transcript');
+const nowPlaying = document.getElementById('nowPlaying');
+const playBtn = document.getElementById('playBtn');
+const playIcon = document.getElementById('playIcon');
+const curTime = document.getElementById('curTime');
+const durTime = document.getElementById('durTime');
+const scrub = document.getElementById('scrub');
+const scrubFill = document.getElementById('scrubFill');
+
+const PLAY = 'M8 5v14l11-7z';
+const PAUSE = 'M6 5h4v14H6zM14 5h4v14h-4z';
+
+let current = -1;
+let segEls = [];
+let timings = [];
+let activeIdx = -1;
+
+function fmt(s) {
+  if (!isFinite(s)) return '00:00';
+  const m = Math.floor(s / 60), sec = Math.floor(s % 60);
+  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+}
+
+function buildRail() {
+  railEl.innerHTML = CHAPTERS.map((c, i) =>
+    `<button class="chap-btn" data-i="${i}"><span class="num">${c.num}</span>${c.title}</button>`
+  ).join('');
+  railEl.querySelectorAll('.chap-btn').forEach(btn =>
+    btn.addEventListener('click', () => loadChapter(+btn.dataset.i, true)));
+}
+
+function loadChapter(i, autoplay) {
+  if (i === current) { if (autoplay) togglePlay(); return; }
+  current = i;
+  const ch = CHAPTERS[i];
+  audio.src = DIR + ch.mp3;
+  audio.load();
+  nowPlaying.textContent = `${ch.title}`;
+  timings = [];
+  activeIdx = -1;
+  scrubFill.style.width = '0';
+  curTime.textContent = '00:00';
+  durTime.textContent = '00:00';
+
+  transcriptEl.innerHTML = ch.segments.map((s, idx) =>
+    `<div class="seg" data-idx="${idx}"><div class="seg-q">${s.q}</div><p class="seg-a">${s.a}</p></div>`
+  ).join('');
+  segEls = [...transcriptEl.querySelectorAll('.seg')];
+  segEls.forEach((el, idx) => el.addEventListener('click', () => seekToSeg(idx)));
+
+  railEl.querySelectorAll('.chap-btn').forEach((b, bi) => b.classList.toggle('active', bi === i));
+  if (autoplay) audio.play();
+}
+
+function computeTimings() {
+  const ch = CHAPTERS[current];
+  const dur = audio.duration;
+  if (!dur || !isFinite(dur)) { timings = []; return; }
+  const lens = ch.segments.map(s => s.a.length);
+  const total = lens.reduce((a, b) => a + b, 0);
+  let acc = 0;
+  timings = lens.map(l => {
+    const start = (acc / total) * dur;
+    acc += l;
+    return { start, end: (acc / total) * dur };
+  });
+}
+
+function setActive(idx) {
+  if (idx === activeIdx) return;
+  activeIdx = idx;
+  segEls.forEach((el, i) => el.classList.toggle('active', i === idx));
+  if (idx >= 0 && segEls[idx]) segEls[idx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function seekToSeg(idx) {
+  if (!timings.length) computeTimings();
+  if (timings[idx]) {
+    audio.currentTime = timings[idx].start + 0.05;
+    audio.play();
+  }
+}
+
+function togglePlay() {
+  if (current === -1) { loadChapter(0, true); return; }
+  if (audio.paused) audio.play(); else audio.pause();
+}
+
+playBtn.addEventListener('click', togglePlay);
+audio.addEventListener('play', () => playIcon.setAttribute('d', PAUSE));
+audio.addEventListener('pause', () => playIcon.setAttribute('d', PLAY));
+audio.addEventListener('loadedmetadata', () => { computeTimings(); durTime.textContent = fmt(audio.duration); });
+audio.addEventListener('timeupdate', () => {
+  curTime.textContent = fmt(audio.currentTime);
+  const pct = audio.duration ? (audio.currentTime / audio.duration) * 100 : 0;
+  scrubFill.style.width = pct + '%';
+  if (!timings.length) computeTimings();
+  if (!timings.length) return;
+  const t = audio.currentTime;
+  let idx = timings.findIndex(s => t >= s.start && t < s.end);
+  if (idx === -1 && timings.length && t >= timings[timings.length - 1].end - 0.25) idx = timings.length - 1;
+  setActive(idx);
+});
+
+scrub.addEventListener('click', (e) => {
+  if (!audio.duration) return;
+  const rect = scrub.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - rect.left) / rect.width) * audio.duration;
+});
+
+document.querySelectorAll('.speed-btn').forEach(btn =>
+  btn.addEventListener('click', () => {
+    audio.playbackRate = parseFloat(btn.dataset.rate);
+    document.querySelectorAll('.speed-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  })
+);
+
+// Theme
+const themeBtn = document.getElementById('themeBtn');
+const themeLabel = document.getElementById('themeLabel');
+function applyTheme(night) {
+  document.body.classList.toggle('night', night);
+  themeLabel.textContent = night ? 'Day mode' : 'Night mode';
+}
+applyTheme(localStorage.getItem('fa-theme') === 'night');
+themeBtn.addEventListener('click', () => {
+  const night = !document.body.classList.contains('night');
+  applyTheme(night);
+  localStorage.setItem('fa-theme', night ? 'night' : 'day');
+});
+
+buildRail();
+loadChapter(0, false);
+</script>
+</body>
+</html>
