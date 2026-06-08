@@ -216,6 +216,86 @@
       margin-top: 10px;
     }
 
+    .quiz-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--accent-hud);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 14px;
+    }
+    .q-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+    .q-text {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      color: var(--text-primary);
+      margin-bottom: 18px;
+    }
+    .options { display: flex; flex-direction: column; gap: 10px; }
+    .option {
+      text-align: left;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font: inherit;
+      font-size: 15.5px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .option:hover:not(:disabled) { background: var(--btn-hover); }
+    .option:disabled { cursor: default; }
+    .option.correct {
+      border-color: var(--accent-success);
+      background: rgba(91, 122, 79, 0.16);
+      font-weight: 700;
+    }
+    .option.wrong {
+      border-color: var(--accent-danger);
+      background: rgba(179, 64, 47, 0.14);
+    }
+    .feedback {
+      margin-top: 16px;
+      font-size: 14.5px;
+      color: var(--text-secondary);
+      border-left: 3px solid var(--accent-hud);
+      padding: 4px 0 4px 14px;
+      display: none;
+    }
+    .feedback.show { display: block; }
+    .quiz-nav { margin-top: 18px; display: flex; justify-content: flex-end; }
+    .quiz-btn {
+      background: var(--accent-hud);
+      color: var(--bg-panel);
+      border: 0;
+      border-radius: 10px;
+      padding: 11px 24px;
+      font: inherit;
+      font-weight: 800;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .quiz-btn:disabled { opacity: 0.4; cursor: default; }
+    .quiz-btn:hover:not(:disabled) { filter: brightness(1.06); }
+    .quiz-result { text-align: center; }
+    .quiz-result h3 {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      color: var(--accent-navy);
+      margin-bottom: 8px;
+    }
+    .quiz-result p { color: var(--text-secondary); margin-bottom: 18px; }
+
     @media (max-width: 600px) {
       h1 { font-size: 24px; }
       .panel { padding: 20px; border-radius: 16px; }
@@ -262,20 +342,25 @@
     </section>
 
     <section class="panel">
-      <h2><span class="step">3</span> Let&rsquo;s discuss these questions</h2>
-      <ol class="questions">
-        <li><span class="num">1</span> What usually causes serious accidents in transportation?</li>
-        <li><span class="num">2</span> How should investigators find out what caused an accident?</li>
-        <li><span class="num">3</span> What can be done to prevent accidents from happening again?</li>
-        <li><span class="num">4</span> How does bad weather affect the safety of transportation?</li>
-        <li><span class="num">5</span> What role does human error play in most major accidents?</li>
-        <li><span class="num">6</span> How should the public be informed after a serious accident occurs?</li>
-        <li><span class="num">7</span> What happens to passengers when an emergency evacuation is needed?</li>
-        <li><span class="num">8</span> How do accident investigations help improve safety in the future?</li>
-        <li><span class="num">9</span> What makes some transportation accidents harder to investigate than others?</li>
-        <li><span class="num">10</span> How should governments respond when a serious transportation accident happens?</li>
-      </ol>
-      <p class="tip">Speaking tip: answer each prompt in 2&ndash;3 full sentences. Use the deductive language from the transcript &mdash; <em>it looks like&hellip;, they may have&hellip;, this is most likely&hellip;, it&rsquo;s possible that&hellip;</em> &mdash; to hedge what you cannot confirm.</p>
+      <h2><span class="step">3</span> Test your understanding</h2>
+      <div id="quiz">
+        <div class="quiz-meta">
+          <span id="qProgress">Question 1 of 10</span>
+          <span id="qScore">Score: 0</span>
+        </div>
+        <p class="q-title" id="qTitle"></p>
+        <p class="q-text" id="qText"></p>
+        <div class="options" id="qOptions"></div>
+        <div class="feedback" id="qFeedback"></div>
+        <div class="quiz-nav">
+          <button class="quiz-btn" id="qNext" disabled>Next</button>
+        </div>
+      </div>
+      <div id="quizResult" class="quiz-result" hidden>
+        <h3 id="resultScore"></h3>
+        <p id="resultMsg"></p>
+        <button class="quiz-btn" onclick="restartQuiz()">Try again</button>
+      </div>
     </section>
 
     <footer>Aviation English Practice &mdash; ICAO picture-description task</footer>
@@ -286,6 +371,86 @@
       const night = document.body.classList.toggle('night-ops');
       document.getElementById('themeBtn').textContent = night ? 'Day ops' : 'Night ops';
     }
+
+    const QUESTIONS = [
+      { title: "Causes of serious accidents", question: "What is the most accurate explanation of why serious transportation accidents usually happen?", options: ["They are usually caused by one obvious technical failure.", "They usually result from a chain of contributing factors.", "They are almost always caused by bad weather alone."], correct: 1, explanation: "Serious accidents are rarely caused by one single factor. They usually result from a combination of human, technical, environmental, and organizational factors." },
+      { title: "Accident investigation process", question: "What should investigators do before deciding what caused an accident?", options: ["Collect and analyze evidence from many different sources.", "Focus only on the pilots' actions.", "Wait for public opinion before making conclusions."], correct: 0, explanation: "Investigators should examine evidence such as flight data, voice recordings, weather reports, maintenance records, witness statements, and physical evidence before reaching any conclusion." },
+      { title: "Preventing future accidents", question: "Which action is most useful for preventing similar accidents in the future?", options: ["Blaming one person quickly so the case can be closed.", "Keeping investigation results confidential.", "Improving procedures, training, equipment, and safety recommendations."], correct: 2, explanation: "The purpose of an accident investigation is not only to find causes but also to improve safety through better training, procedures, equipment, regulations, and operational practices." },
+      { title: "Weather and safety", question: "How can bad weather increase the risk of a runway excursion?", options: ["It can improve braking performance on the runway.", "It can reduce visibility and increase stopping distance.", "It can make aircraft lighter during landing."], correct: 1, explanation: "Bad weather such as heavy rain, windshear, strong crosswinds, or tailwind can reduce visibility, decrease braking performance, and increase the stopping distance required." },
+      { title: "Human error", question: "What is the best way to understand human error in a major accident?", options: ["Human error should be seen as part of a wider system of contributing factors.", "Human error always means the crew was careless.", "Human error is not important if the weather was bad."], correct: 0, explanation: "Human error is often part of a larger chain of events. Investigators should also examine workload, training, procedures, communication, pressure, and system design." },
+      { title: "Public communication", question: "How should officials communicate with the public after a serious accident?", options: ["They should provide confirmed facts and avoid speculation.", "They should immediately announce the most likely cause.", "They should avoid giving updates until the final report is ready."], correct: 0, explanation: "After a serious accident, officials should communicate clearly and calmly, share confirmed facts, avoid speculation, and provide updates as more reliable information becomes available." },
+      { title: "Emergency evacuation", question: "What should passengers do during an emergency evacuation?", options: ["Take personal baggage if there is enough time.", "Wait near the aircraft until investigators arrive.", "Follow crew instructions, leave baggage behind, and move away from the aircraft."], correct: 2, explanation: "During an emergency evacuation, passengers must follow crew instructions, leave baggage behind, use the nearest safe exit, and move to a safe distance from the aircraft." },
+      { title: "Safety lessons", question: "How do accident investigations improve future safety?", options: ["They identify what went wrong and lead to safety improvements.", "They only determine who should be punished.", "They mainly provide information for news reports."], correct: 0, explanation: "Accident investigations help identify technical, human, environmental, and organizational weaknesses. These findings can lead to better training, improved design, new procedures, and safer operations." },
+      { title: "Difficult investigations", question: "What can make a transportation accident harder to investigate?", options: ["The accident site is easy to access and all data is complete.", "Evidence is damaged, underwater, incomplete, or affected by many factors.", "The weather was normal and there were many clear witnesses."], correct: 1, explanation: "Investigations become more difficult when evidence is damaged, submerged, incomplete, or when the accident involves many technical, human, and environmental factors at the same time." },
+      { title: "Government response", question: "What should governments do after a serious transportation accident?", options: ["Support rescue operations, protect the site, start an independent investigation, and assist victims.", "Immediately blame the operator to calm the public.", "Delay the investigation until media attention decreases."], correct: 0, explanation: "Governments should support emergency response, protect the accident site, ensure an independent investigation, communicate responsibly, assist victims and families, and help implement safety recommendations." }
+    ];
+
+    let current = 0, score = 0, answered = false;
+    const $ = id => document.getElementById(id);
+
+    function renderQuestion() {
+      answered = false;
+      const q = QUESTIONS[current];
+      $('qProgress').textContent = `Question ${current + 1} of ${QUESTIONS.length}`;
+      $('qScore').textContent = `Score: ${score}`;
+      $('qTitle').textContent = q.title;
+      $('qText').textContent = q.question;
+      const opts = $('qOptions');
+      opts.innerHTML = '';
+      q.options.forEach((opt, i) => {
+        const b = document.createElement('button');
+        b.className = 'option';
+        b.textContent = opt;
+        b.onclick = () => selectOption(i);
+        opts.appendChild(b);
+      });
+      const fb = $('qFeedback');
+      fb.className = 'feedback';
+      fb.textContent = '';
+      $('qNext').disabled = true;
+      $('qNext').textContent = current === QUESTIONS.length - 1 ? 'See result' : 'Next';
+    }
+
+    function selectOption(i) {
+      if (answered) return;
+      answered = true;
+      const q = QUESTIONS[current];
+      const buttons = $('qOptions').querySelectorAll('.option');
+      buttons.forEach((b, idx) => {
+        b.disabled = true;
+        if (idx === q.correct) b.classList.add('correct');
+        else if (idx === i) b.classList.add('wrong');
+      });
+      if (i === q.correct) { score++; $('qScore').textContent = `Score: ${score}`; }
+      const fb = $('qFeedback');
+      fb.textContent = q.explanation;
+      fb.classList.add('show');
+      $('qNext').disabled = false;
+    }
+
+    $('qNext').onclick = () => {
+      if (current < QUESTIONS.length - 1) { current++; renderQuestion(); }
+      else showResult();
+    };
+
+    function showResult() {
+      $('quiz').hidden = true;
+      $('quizResult').hidden = false;
+      $('resultScore').textContent = `${score} / ${QUESTIONS.length}`;
+      const pct = score / QUESTIONS.length;
+      $('resultMsg').textContent = pct === 1 ? 'Perfect — Level 5 comprehension.'
+        : pct >= 0.7 ? 'Strong work. Review the feedback on any you missed.'
+        : 'Re-watch the description and try again.';
+    }
+
+    function restartQuiz() {
+      current = 0; score = 0;
+      $('quizResult').hidden = true;
+      $('quiz').hidden = false;
+      renderQuestion();
+    }
+
+    renderQuestion();
   </script>
 </body>
 </html>
