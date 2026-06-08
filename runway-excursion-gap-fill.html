@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50 text-slate-800">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Runway Excursion — Connector Gap-fill</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        aviation: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            200: '#bae0fd',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                            800: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbars for a clean look */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-full lg:h-full flex flex-col font-sans antialiased bg-slate-50">
+
+    <!-- Top Navigation Header (Light Theme) -->
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between shrink-0 gap-4 shadow-sm">
+        <div class="flex items-center space-x-3">
+            <a href="index.html" class="text-xs font-semibold text-aviation-700 hover:text-aviation-600 hover:underline shrink-0">&larr; All quizzes</a>
+            <div class="bg-aviation-600 text-white p-2 rounded-lg flex items-center justify-center shadow-md shadow-aviation-500/10">
+                <svg class="w-6 h-6 transform -rotate-45" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-lg font-bold text-slate-950 flex items-center gap-2">
+                    Runway Excursion — Connector Gap-fill
+                    <span class="text-xs bg-aviation-100 text-aviation-700 border border-aviation-200 px-2.5 py-0.5 rounded-full font-semibold">ICAO Level 4/5</span>
+                </h1>
+                <p class="text-xs text-slate-500">Place the cause-and-effect connectors into the incident description</p>
+            </div>
+        </div>
+        
+        <!-- Score and Reset controls in header -->
+        <div class="flex items-center space-x-3">
+            <div class="bg-slate-100 border border-slate-200 rounded-lg px-3 py-1.5 flex items-center space-x-2">
+                <span class="text-xs text-slate-500 font-medium">Exercise Progress:</span>
+                <span id="progress-badge" class="font-mono text-sm font-bold text-slate-700">0/15</span>
+            </div>
+            <div class="bg-emerald-50 border border-emerald-100 rounded-lg px-3 py-1.5 flex items-center space-x-2">
+                <span class="text-xs text-emerald-600 font-medium">Correct:</span>
+                <span id="score-badge" class="font-mono text-sm font-bold text-emerald-700">0%</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Workspace -->
+    <main class="flex-1 flex flex-col lg:flex-row lg:overflow-hidden bg-slate-50">
+        
+        <!-- Left Panel: Reference Media and Word Pool -->
+        <section class="w-full lg:w-5/12 flex flex-col border-r border-slate-200 lg:overflow-y-auto p-4 lg:p-6 space-y-6 bg-white">
+            
+            <!-- Contextual Information Card -->
+            <div class="bg-aviation-50 border border-aviation-100 rounded-xl p-4 space-y-2">
+                <h2 class="text-sm font-bold text-aviation-800 flex items-center gap-2">
+                    <svg class="w-4 h-4 text-aviation-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    ICAO Level 4/5 Narrative Practice
+                </h2>
+                <p class="text-xs text-slate-600 leading-relaxed">
+                    Aviation English ratings require candidates to describe complex emergencies and express cause-and-effect sequences.
+                    Fill each gap with the connector that best bridges the facts with technical speculation.
+                </p>
+            </div>
+
+            <!-- Reference Photo Card -->
+            <div class="border border-slate-200 rounded-xl overflow-hidden shadow-sm bg-slate-50">
+                <div class="bg-slate-100 px-4 py-2 border-b border-slate-200 flex items-center justify-between">
+                    <span class="text-xs font-semibold text-slate-700 font-mono">Reference photo</span>
+                    <span class="text-[10px] bg-slate-200 text-slate-600 px-2 py-0.5 rounded font-bold uppercase">Evidence Photo</span>
+                </div>
+                <div class="p-3">
+                    <img src="img/runway-excursion-water.jpg" alt="Boeing 737 partially submerged after a runway excursion" id="accident-image" class="w-full h-auto object-cover rounded-lg border border-slate-200 shadow-inner">
+                    <p class="text-[11px] text-slate-500 mt-2 italic text-center">
+                        Boeing 737 partially submerged following a runway overrun. Note the tire marks, deployed slides, and water-containment booms.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Vocabulary Word Pool Card -->
+            <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+                <div class="flex items-center justify-between border-b border-slate-200 pb-2">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600">Vocabulary & Connectors Deck</h3>
+                    <span class="text-[10px] text-slate-400">Click a card, then click a gap</span>
+                </div>
+                
+                <!-- Dynamic Word Pool -->
+                <div id="phrases-pool" class="flex flex-wrap gap-2">
+                    <!-- Dynamic buttons will be loaded here -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Right Panel: Interactive Narrative Paper -->
+        <section class="w-full lg:w-7/12 flex flex-col lg:overflow-hidden">
+            
+            <!-- Interactive Action Bar -->
+            <div class="bg-white border-b border-slate-200 px-6 py-3 flex items-center justify-between shrink-0">
+                <div class="flex items-center space-x-1">
+                    <span class="text-xs text-slate-500 font-medium">Task:</span>
+                    <span class="text-xs font-mono font-bold text-aviation-700 bg-aviation-50 px-2 py-0.5 rounded">Incident description</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="toggleValidationMode()" id="val-mode-btn" class="text-xs border border-aviation-300 bg-aviation-50 text-aviation-700 hover:bg-aviation-100 px-2.5 py-1.5 rounded-lg transition font-semibold">
+                        Check: On Submit
+                    </button>
+                    <button onclick="showAllSolutions()" class="text-xs border border-slate-200 bg-white text-slate-500 hover:text-slate-800 px-2.5 py-1.5 rounded-lg transition font-medium">
+                        Reveal Answers
+                    </button>
+                </div>
+            </div>
+
+            <!-- Document Sheet Container -->
+            <div class="flex-1 lg:overflow-y-auto p-6 md:p-8 bg-slate-100">
+                <div class="max-w-3xl mx-auto bg-white border border-slate-200 rounded-2xl shadow-sm p-6 md:p-8 space-y-6">
+                    <h2 class="text-base font-bold text-slate-900 border-b border-slate-100 pb-3 flex items-center gap-2">
+                        <svg class="w-5 h-5 text-aviation-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        Incident Summary & Safety Excursion Report
+                    </h2>
+                    
+                    <!-- Dynamic Text Flow container -->
+                    <div id="narrative-container" class="space-y-5">
+                        <!-- Content paragraphs with input slots will be injected here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer Action Panel -->
+            <div class="bg-white border-t border-slate-200 p-4 shrink-0 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="flex items-center space-x-2">
+                    <button onclick="evaluateTotalExercises()" class="bg-aviation-600 hover:bg-aviation-500 active:bg-aviation-700 text-white font-bold text-xs px-5 py-2.5 rounded-lg shadow-sm focus:outline-none transition">
+                        Submit and Verify
+                    </button>
+                    <button onclick="resetTrainingBoard()" class="bg-white hover:bg-slate-50 active:bg-slate-100 text-slate-700 font-semibold text-xs px-4 py-2.5 rounded-lg border border-slate-200 focus:outline-none transition">
+                        Reset Exercise
+                    </button>
+                </div>
+                <div id="exercise-tip" class="text-xs text-slate-400 font-medium">
+                    Click any unfilled bracket [ Gap ] to choose an answer from the list instantly.
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- Custom Notification Popup / Modal -->
+    <div id="modal-wrapper" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white border border-slate-200 rounded-xl p-6 max-w-md w-full shadow-xl mx-4 space-y-4">
+            <div class="flex items-start justify-between">
+                <div class="flex items-center space-x-3">
+                    <div id="modal-icon" class="p-2 rounded-lg bg-aviation-50 text-aviation-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 id="modal-title" class="text-base font-bold text-slate-900">Evaluation Finished</h4>
+                        <p class="text-xs text-slate-500">ICAO Scoring Criteria Metrics</p>
+                    </div>
+                </div>
+                <button onclick="closeActiveModal()" class="text-slate-400 hover:text-slate-600 transition focus:outline-none">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="bg-slate-50 rounded-lg p-4 border border-slate-100 flex flex-col items-center justify-center space-y-1">
+                <span class="text-xs text-slate-500 uppercase font-semibold">Total Performance Grade</span>
+                <span id="modal-percentage" class="text-3xl font-mono font-bold text-aviation-600">0%</span>
+                <span id="modal-ratio" class="text-xs text-slate-600 font-semibold">0 / 15 correct hits</span>
+            </div>
+
+            <p id="modal-message" class="text-xs text-slate-600 leading-relaxed">
+                Keep going to fine-tune your command of functional English!
+            </p>
+
+            <div class="flex justify-end pt-2">
+                <button onclick="closeActiveModal()" class="bg-aviation-600 hover:bg-aviation-500 text-white font-bold text-xs px-4 py-2 rounded-lg transition focus:outline-none">
+                    Back to Study Guide
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Interactive Logic -->
+    <script>
+        // Core state configurations
+        let exerciseEvaluated = false;
+        let selectedPhraseText = null;
+        let validateOnSelection = false; // Default: commit all answers, then check on Submit. Toggle for instant feedback.
+
+        // Verified Answers mapping key (Matches gaps index 1 to 15)
+        const verifyAnswersKey = {
+            1: "This may indicate that…",
+            2: "From a safety perspective…",
+            3: "This suggests that…",
+            4: "A possible contributing factor could have been…",
+            5: "The aircraft could have encountered…",
+            6: "reduce the safety margin",
+            7: "Another possible factor could have been…",
+            8: "it is difficult to say whether…",
+            9: "the first priority",
+            10: "secure the aircraft",
+            11: "inform air traffic control",
+            12: "start the evacuation",
+            13: "From a safety perspective…",
+            14: "there may still be a risk of…",
+            15: "alert airport fire rescue"
+        };
+
+        // Static sentence layout blocks for the runway-excursion incident description
+        const storySegments = [
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "In this photo, I can see a narrow-body aircraft, possibly a Boeing 737, partially submerged in water near the end of a runway. From the tire tracks leading from the runway to the water, it is clear that this must have been a runway excursion.<br><br>The aircraft appears to have overrun the runway and entered the water at relatively low speed. The fuselage looks mostly intact, and there are no obvious signs of major structural break-up. " },
+                    { type: 'gap', id: 1 },
+                    { type: 'text', content: " the impact forces were not extremely high. " },
+                    { type: 'gap', id: 2 },
+                    { type: 'text', content: ", this is important because lower impact forces usually increase the chances of passenger survival." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "The forward emergency exits are open, and the evacuation slides have been deployed. " },
+                    { type: 'gap', id: 3 },
+                    { type: 'text', content: " the crew initiated an emergency evacuation after the aircraft came to a stop. One slide appears to be inflated, while the other one seems to be deflated. It could have been punctured during the evacuation, or it may not have inflated correctly." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "There are several people standing on or near the right wing. They do not appear to be passengers or crew members, so they could have been accident investigators, airport officials, or emergency personnel. A yellow raft can be seen near the wing, so they may have used it to reach the aircraft from the shoreline." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "Around the aircraft, there is an orange floating barrier. This was probably placed there to contain debris, fuel, oil, or hydraulic fluid. From an environmental safety perspective, this is a necessary measure because hazardous fluids could spread into the water and cause contamination." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "In the background, I can see fire rescue vehicles, airport vehicles, and people wearing reflective clothing and hard hats. This means that the emergency services must have responded to the accident site. However, there is no clear sense of panic, so the photo was probably taken some time after the initial emergency." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "There is also a floodlight in the upper right-hand corner of the photo. This may suggest that the accident occurred at night, or that the recovery operation continued into the night. The floodlight would help emergency crews and investigators work safely around the aircraft." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "As for possible causes, there is usually no single reason for this type of accident. " },
+                    { type: 'gap', id: 4 },
+                    { type: 'text', content: " poor braking action on a wet or contaminated runway. " },
+                    { type: 'gap', id: 5 },
+                    { type: 'text', content: " wind shear, a tailwind, or strong crosswind during landing or rejected takeoff. These factors can increase stopping distance and " },
+                    { type: 'gap', id: 6 },
+                    { type: 'text', content: "." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'gap', id: 7 },
+                    { type: 'text', content: " a malfunction of the braking system, speed brakes, or thrust reversers. In this photo, the engines are submerged, so " },
+                    { type: 'gap', id: 8 },
+                    { type: 'text', content: " the thrust reversers were deployed. The speed brakes are not clearly deployed, but they may have been retracted after the aircraft stopped." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "From a crew perspective, " },
+                    { type: 'gap', id: 9 },
+                    { type: 'text', content: " after the runway excursion would be to " },
+                    { type: 'gap', id: 10 },
+                    { type: 'text', content: ", " },
+                    { type: 'gap', id: 11 },
+                    { type: 'text', content: ", and " },
+                    { type: 'gap', id: 12 },
+                    { type: 'text', content: " if there was any risk of fire, smoke, fuel leakage, or sinking. The captain would need to advise air traffic control about the situation and report the number of souls on board." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: `<div class="my-4 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                        <span class="text-[10px] font-mono text-aviation-600 bg-aviation-100/60 px-2 py-0.5 rounded border border-aviation-200 uppercase font-bold">Recommended Emergency Radio Phraseology</span>
+                        <p class="text-xs md:text-sm font-mono text-slate-700 italic pl-3 border-l-2 border-aviation-500 leading-relaxed mt-2">
+                            “Tower, November one two three, we have gone off the runway and entered the water. The aircraft is partially submerged. We have one hundred fifty souls on board. Request immediate fire rescue assistance.”
+                        </p>
+                    </div>` }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "The flight crew would then run the evacuation checklist, shut down the engines, and make sure the aircraft was safe before passengers left the aircraft. The cabin crew would instruct passengers to release their seat belts, leave their baggage behind, and evacuate quickly." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'gap', id: 13 },
+                    { type: 'text', content: ", passengers must move away from the aircraft as soon as possible because " },
+                    { type: 'gap', id: 14 },
+                    { type: 'text', content: " fire, fuel leakage, smoke, or structural failure. Taking baggage during an evacuation is extremely dangerous because it can slow down the evacuation and block other passengers." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "For air traffic control, the priority would be to " },
+                    { type: 'gap', id: 15 },
+                    { type: 'text', content: ", close the affected runway, stop departures, and instruct arriving aircraft to go around or divert if necessary. Good coordination between the pilots, cabin crew, air traffic control, and rescue services is essential in this type of emergency." }
+                ]
+            },
+            {
+                type: 'paragraph',
+                elements: [
+                    { type: 'text', content: "In my opinion, this situation shows how quickly a normal landing or takeoff can become a serious emergency. The main safety lesson is that runway condition, wind, braking performance, crew communication, and emergency preparedness are all critical. A well-coordinated evacuation and a fast emergency response can prevent injuries and save lives." }
+                ]
+            }
+        ];
+
+        // Unique word list options for matching cards
+        const uniqueConnectors = [
+            "This may indicate that…",
+            "From a safety perspective…",
+            "This suggests that…",
+            "A possible contributing factor could have been…",
+            "The aircraft could have encountered…",
+            "reduce the safety margin",
+            "Another possible factor could have been…",
+            "it is difficult to say whether…",
+            "the first priority",
+            "secure the aircraft",
+            "inform air traffic control",
+            "start the evacuation",
+            "there may still be a risk of…",
+            "alert airport fire rescue"
+        ];
+
+        // Active state of placed solutions
+        let placedGaps = {}; // map ID -> selected phrase string
+
+        window.addEventListener('DOMContentLoaded', () => {
+            renderWordPool();
+            renderStoryPassage();
+            refreshEvaluationScore();
+        });
+
+        // Render option badges
+        function renderWordPool() {
+            const pool = document.getElementById('phrases-pool');
+            pool.innerHTML = '';
+
+            uniqueConnectors.forEach((phrase) => {
+                const countOfPhraseUsed = Object.values(placedGaps).filter(val => val === phrase).length;
+                // Allow "From a safety perspective…" to be selected up to twice, others once
+                const maxPermissible = (phrase === "From a safety perspective…") ? 2 : 1;
+                const remainingAllocations = maxPermissible - countOfPhraseUsed;
+
+                const card = document.createElement('button');
+                
+                if (remainingAllocations <= 0) {
+                    // Disabled styling
+                    card.className = "bg-slate-100 text-slate-300 border border-slate-200 px-3 py-1.5 rounded-lg text-xs font-medium cursor-not-allowed select-none transition flex items-center gap-1.5";
+                    card.disabled = true;
+                } else {
+                    const isCurrentlySelected = selectedPhraseText === phrase;
+                    card.className = `px-3 py-1.5 rounded-lg text-xs font-medium border transition flex items-center gap-1.5 active:scale-95 ${
+                        isCurrentlySelected 
+                            ? "bg-aviation-600 text-white border-aviation-700 shadow-sm" 
+                            : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100 hover:text-slate-900"
+                    }`;
+                    card.onclick = () => selectWordFromPool(phrase);
+                }
+
+                const occurrenceLabel = maxPermissible > 1 
+                    ? `<span class="bg-aviation-50 text-aviation-700 font-mono text-[9px] px-1 py-0.5 rounded border border-aviation-100">${remainingAllocations} left</span>` 
+                    : '';
+
+                card.innerHTML = `<span>${phrase}</span> ${occurrenceLabel}`;
+                pool.appendChild(card);
+            });
+        }
+
+        // Selection trigger of a card
+        function selectWordFromPool(phrase) {
+            if (selectedPhraseText === phrase) {
+                selectedPhraseText = null; // Toggle off selection
+            } else {
+                selectedPhraseText = phrase;
+            }
+            renderWordPool();
+        }
+
+        // Populate the interactive text sheet with target gaps
+        function renderStoryPassage() {
+            const container = document.getElementById('narrative-container');
+            container.innerHTML = '';
+
+            storySegments.forEach((segment) => {
+                const blockElement = document.createElement('p');
+                blockElement.className = "text-slate-700 text-sm md:text-base leading-relaxed tracking-wide text-justify select-none";
+
+                segment.elements.forEach((el) => {
+                    if (el.type === 'text') {
+                        const wordSpan = document.createElement('span');
+                        wordSpan.innerHTML = el.content;
+                        blockElement.appendChild(wordSpan);
+                    } else if (el.type === 'gap') {
+                        const gapIndex = el.id;
+                        const allocatedText = placedGaps[gapIndex];
+
+                        const slotButton = document.createElement('button');
+                        slotButton.id = `gap-id-${gapIndex}`;
+                        
+                        if (allocatedText) {
+                            // Style slot according to its verification state
+                            const matchesTruth = isWordCorrect(gapIndex, allocatedText);
+                            const dynamicStyle = exerciseEvaluated || validateOnSelection
+                                ? (matchesTruth 
+                                    ? "bg-emerald-50 text-emerald-700 border-emerald-300 hover:bg-emerald-100" 
+                                    : "bg-red-50 text-red-700 border-red-300 hover:bg-red-100")
+                                : "bg-aviation-50 text-aviation-800 border-aviation-200 hover:bg-aviation-100";
+
+                            slotButton.className = `inline-flex items-center gap-1.5 px-3 py-1 my-0.5 mx-1 font-semibold rounded-lg border text-sm transition focus:outline-none ${dynamicStyle}`;
+                            
+                            // Delete button triggers clearance of specific slot
+                            const deleteNode = `<span class="hover:text-red-500 text-slate-400 font-bold ml-1 transition text-[13px]" onclick="event.stopPropagation(); removePlacedGap(${gapIndex})">&times;</span>`;
+                            slotButton.innerHTML = `<span>${allocatedText}</span> ${deleteNode}`;
+                        } else {
+                            // Blank state of a gap
+                            slotButton.className = "inline-flex items-center justify-center min-w-[90px] px-2.5 py-1 my-0.5 mx-1 font-bold bg-slate-50 hover:bg-aviation-50 text-slate-400 hover:text-aviation-600 border border-dashed border-slate-300 hover:border-aviation-300 rounded-lg text-xs transition focus:outline-none";
+                            slotButton.innerHTML = `<span>[ Gap ${gapIndex} ]</span>`;
+                        }
+
+                        slotButton.onclick = () => processGapAction(gapIndex);
+                        blockElement.appendChild(slotButton);
+                    }
+                });
+
+                container.appendChild(blockElement);
+            });
+        }
+
+        // Validate choice matches expected truth template
+        function isWordCorrect(gapId, selectionValue) {
+            if (selectionValue === "From a safety perspective…") {
+                return gapId === 2 || gapId === 13;
+            }
+            return verifyAnswersKey[gapId] === selectionValue;
+        }
+
+        // Action when a gap slot is selected
+        function processGapAction(gapId) {
+            if (selectedPhraseText) {
+                placedGaps[gapId] = selectedPhraseText;
+                selectedPhraseText = null; // Reset selection stack
+                renderWordPool();
+                renderStoryPassage();
+                refreshEvaluationScore();
+            } else {
+                openQuickSelector(gapId);
+            }
+        }
+
+        // Quick drop select tool inside gaps
+        function openQuickSelector(gapId) {
+            const buttonElement = document.getElementById(`gap-id-${gapId}`);
+            if (!buttonElement) return;
+
+            const dropdown = document.createElement('div');
+            dropdown.className = "fixed bg-white border border-slate-200 rounded-xl shadow-lg p-2 z-50 max-w-[280px] flex flex-col space-y-1 text-xs";
+            
+            const position = buttonElement.getBoundingClientRect();
+            dropdown.style.top = `${Math.min(position.bottom + window.scrollY + 4, window.innerHeight - 240)}px`;
+            dropdown.style.left = `${Math.min(position.left + window.scrollX, window.innerWidth - 300)}px`;
+
+            // Click-away backdrop overlay
+            const backDrop = document.createElement('div');
+            backDrop.className = "fixed inset-0 z-40 bg-transparent";
+            backDrop.onclick = () => {
+                dropdown.remove();
+                backDrop.remove();
+            };
+            document.body.appendChild(backDrop);
+
+            // Populate unused matching phrases
+            uniqueConnectors.forEach((phrase) => {
+                const countUsed = Object.values(placedGaps).filter(val => val === phrase).length;
+                const maxPermissible = (phrase === "From a safety perspective…") ? 2 : 1;
+                const remaining = maxPermissible - countUsed;
+
+                if (remaining > 0) {
+                    const rowOption = document.createElement('button');
+                    rowOption.className = "w-full text-left px-2 py-1.5 rounded-lg hover:bg-slate-100 text-slate-700 transition focus:outline-none";
+                    rowOption.innerText = phrase;
+                    rowOption.onclick = () => {
+                        placedGaps[gapId] = phrase;
+                        dropdown.remove();
+                        backDrop.remove();
+                        renderWordPool();
+                        renderStoryPassage();
+                        refreshEvaluationScore();
+                    };
+                    dropdown.appendChild(rowOption);
+                }
+            });
+
+            if (dropdown.children.length === 0) {
+                const noMoreTip = document.createElement('p');
+                noMoreTip.className = "p-2 italic text-slate-400 text-[11px]";
+                noMoreTip.innerText = "All phrases are currently in use. Clear another gap to free cards up.";
+                dropdown.appendChild(noMoreTip);
+            }
+
+            document.body.appendChild(dropdown);
+        }
+
+        // Clear slot data
+        function removePlacedGap(gapId) {
+            delete placedGaps[gapId];
+            exerciseEvaluated = false; // Reset complete evaluation flag on adjustment
+            renderWordPool();
+            renderStoryPassage();
+            refreshEvaluationScore();
+        }
+
+        // Calculate and refresh metrics
+        function refreshEvaluationScore() {
+            const countTotal = Object.keys(verifyAnswersKey).length;
+            const countPlaced = Object.keys(placedGaps).length;
+
+            document.getElementById('progress-badge').innerText = `${countPlaced}/${countTotal}`;
+
+            let correctHits = 0;
+            Object.entries(placedGaps).forEach(([id, selection]) => {
+                if (isWordCorrect(parseInt(id), selection)) {
+                    correctHits++;
+                }
+            });
+
+            const overallPct = countTotal > 0 ? Math.round((correctHits / countTotal) * 100) : 0;
+            document.getElementById('score-badge').innerText = `${overallPct}%`;
+        }
+
+        // Submit answers for final comprehensive evaluation
+        function evaluateTotalExercises() {
+            exerciseEvaluated = true;
+            renderStoryPassage();
+
+            const countTotal = Object.keys(verifyAnswersKey).length;
+            let correctHits = 0;
+
+            Object.entries(placedGaps).forEach(([id, value]) => {
+                if (isWordCorrect(parseInt(id), value)) {
+                    correctHits++;
+                }
+            });
+
+            const overallPct = Math.round((correctHits / countTotal) * 100);
+
+            // Pop open scoring validation dialog
+            const wrapper = document.getElementById('modal-wrapper');
+            const percentNode = document.getElementById('modal-percentage');
+            const ratioNode = document.getElementById('modal-ratio');
+            const messageNode = document.getElementById('modal-message');
+
+            percentNode.innerText = `${overallPct}%`;
+            ratioNode.innerText = `${correctHits} of ${countTotal} slots filled accurately`;
+
+            if (overallPct >= 90) {
+                messageNode.innerText = "Excellent capability! Your command over structural sentence parameters and conditional connectors exceeds functional standard ICAO Level 5.";
+            } else if (overallPct >= 60) {
+                messageNode.innerText = "Good standard. Your descriptive connectors are functional for operational levels. Review incorrect entries to elevate safety and logic coherence.";
+            } else {
+                messageNode.innerText = "Keep practicing. Clear terminology and structural bridges are essential to avoid operational ambiguity in incident reports. Try resetting the card board.";
+            }
+
+            wrapper.classList.remove('hidden');
+        }
+
+        // Clear board state
+        function resetTrainingBoard() {
+            placedGaps = {};
+            exerciseEvaluated = false;
+            selectedPhraseText = null;
+            renderWordPool();
+            renderStoryPassage();
+            refreshEvaluationScore();
+        }
+
+        // Auto-fill all expected values immediately
+        function showAllSolutions() {
+            placedGaps = { ...verifyAnswersKey };
+            exerciseEvaluated = true;
+            renderWordPool();
+            renderStoryPassage();
+            refreshEvaluationScore();
+        }
+
+        // Toggle immediate selection checking
+        function toggleValidationMode() {
+            validateOnSelection = !validateOnSelection;
+            const btn = document.getElementById('val-mode-btn');
+            if (btn) {
+                btn.innerText = validateOnSelection ? "Check: Instant" : "Check: On Submit";
+                btn.className = validateOnSelection
+                    ? "text-xs border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 px-2.5 py-1.5 rounded-lg transition font-medium"
+                    : "text-xs border border-aviation-300 bg-aviation-50 text-aviation-700 hover:bg-aviation-100 px-2.5 py-1.5 rounded-lg transition font-semibold";
+            }
+            renderStoryPassage();
+        }
+
+        // Close evaluation dialog popup
+        function closeActiveModal() {
+            document.getElementById('modal-wrapper').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
