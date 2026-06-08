@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runway Excursion &amp; Emergency Evacuation — Picture Description</title>
+  <style>
+    :root {
+      --bg-main: #e7dfd2;
+      --bg-panel: #f8f3e9;
+      --bg-panel-hover: #fffdf8;
+      --border-color: #d4c7b3;
+      --text-primary: #2f2822;
+      --text-secondary: #4a3e34;
+      --text-muted: #7a6858;
+      --accent-navy: #6b4f2e;
+      --accent-danger: #b3402f;
+      --accent-success: #5b7a4f;
+      --accent-caution: #b5821f;
+      --accent-hud: #8a6d3b;
+      --btn-bg: rgba(255, 251, 244, 0.8);
+      --btn-hover: #efe6d8;
+      --btn-border: #d4c7b3;
+      --shadow-md: 0 10px 25px -5px rgba(47, 40, 34, 0.12);
+      --font-serif: Georgia, "Palatino Linotype", serif;
+      --font-sans: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+
+    .night-ops {
+      --bg-main: #1c1611;
+      --bg-panel: #261e17;
+      --bg-panel-hover: #2e251c;
+      --border-color: #3d3226;
+      --text-primary: #efe6d8;
+      --text-secondary: #cdbfad;
+      --text-muted: #9a8a76;
+      --accent-navy: #d8a657;
+      --accent-danger: #e07a5f;
+      --accent-success: #8aa06a;
+      --accent-caution: #d8a657;
+      --accent-hud: #d8a657;
+      --btn-bg: #2e251c;
+      --btn-hover: #3d3226;
+      --btn-border: #4a3d2e;
+      --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 30px 15px 60px;
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 880px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border-color);
+    }
+
+    .back-link {
+      color: var(--accent-hud);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .back-link:hover { text-decoration: underline; }
+
+    .theme-switch {
+      background: var(--btn-bg);
+      color: var(--text-secondary);
+      border: 1px solid var(--btn-border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .theme-switch:hover { background: var(--btn-hover); }
+
+    .hero { display: flex; flex-direction: column; gap: 10px; }
+
+    .badge {
+      align-self: flex-start;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent-hud);
+      border: 1px solid var(--border-color);
+      border-radius: 999px;
+      padding: 4px 12px;
+      background: var(--bg-panel);
+    }
+
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 30px;
+      line-height: 1.2;
+      color: var(--text-primary);
+    }
+
+    .hero p { color: var(--text-secondary); font-size: 16px; max-width: 60ch; }
+
+    .panel {
+      background-color: var(--bg-panel);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 26px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .panel h2 {
+      font-family: var(--font-serif);
+      font-size: 22px;
+      color: var(--accent-navy);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .panel h2 .step {
+      font-family: var(--font-sans);
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--bg-panel);
+      background: var(--accent-hud);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .video-frame {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border-color);
+    }
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-note {
+      margin-top: 12px;
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+    .video-note a { color: var(--accent-hud); }
+
+    .transcript p {
+      font-family: var(--font-serif);
+      font-size: 16.5px;
+      color: var(--text-secondary);
+      margin-bottom: 14px;
+    }
+    .transcript p:last-child { margin-bottom: 0; }
+
+    .questions { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .questions li {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--bg-main);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: 15.5px;
+      color: var(--text-primary);
+    }
+    .questions li .num {
+      flex-shrink: 0;
+      font-weight: 800;
+      color: var(--accent-hud);
+      font-size: 14px;
+      min-width: 22px;
+    }
+
+    .tip {
+      font-size: 13.5px;
+      color: var(--text-muted);
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border-color);
+    }
+
+    footer {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 10px;
+    }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 24px; }
+      .panel { padding: 20px; border-radius: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a class="back-link" href="index.html">&larr; All quizzes</a>
+      <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">Night ops</button>
+    </nav>
+
+    <header class="hero">
+      <span class="badge">ICAO Picture Description</span>
+      <h1>Runway Excursion &amp; Emergency Evacuation</h1>
+      <p>Watch a Level 5 model description of a runway-excursion scene, study the transcript, then build your own answer using the discussion prompts.</p>
+    </header>
+
+    <section class="panel">
+      <h2><span class="step">1</span> Watch the model description</h2>
+      <div class="video-frame">
+        <iframe
+          src="https://www.youtube.com/embed/rcQU23JKqs0?modestbranding=1&start=251&end=406"
+          title="Runway excursion picture description"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen></iframe>
+      </div>
+      <p class="video-note">Clip: 4:11&ndash;6:46. Full video on <a href="https://youtu.be/rcQU23JKqs0?start=251&end=406" target="_blank" rel="noopener">YouTube</a>.</p>
+    </section>
+
+    <section class="panel transcript">
+      <h2><span class="step">2</span> Let&rsquo;s go through the transcript</h2>
+      <p>Alright, so in this photo I see a narrow body aircraft, possibly a Boeing 737 that is partially submerged in the water. This is clearly the result of a runway excursion since I can see part of the runway in the background and the tire tracks leading to the water.</p>
+      <p>It looks like the airplane was safely evacuated because I can see at least two emergency evacuation slides that were deployed. There&rsquo;s an orange line surrounding this airplane which is most likely there to prevent environmental damage by containing any debris or hazardous fluids from the aircraft.</p>
+      <p>I see three or four people, possibly accident investigators standing on the right wing of the aircraft and it looks like one of them is stepping out of the emergency exit door. They probably traveled from the shoreline to the aircraft using that yellow raft that&rsquo;s sitting just below the leading edge of the wing.</p>
+      <p>Standing on the shoreline behind the aircraft are a few more people. Some of them are wearing hard hats and reflective clothing so they may be accident investigators or news reporters. There are also a few trucks and vehicles parked on the grass and on the runway including two fire rescue vehicles on the upper left side of the photo.</p>
+      <p>I don&rsquo;t really see a sense of urgency among the individuals near and around the airplane so I think this runway excursion happened well before this photo was taken. It also probably took a decent amount of time to set up those orange cones around the runway edge and to remove that radome from the fuselage.</p>
+      <p>The flood light at the upper right hand corner of this photo makes me believe this event occurred at night.</p>
+      <p>So, what could&rsquo;ve caused this accident? Well, like many accidents there&rsquo;s usually no single cause but rather a number of contributing factors. I can&rsquo;t tell if this occurred during takeoff or landing but the aircraft may have encountered some type of windshear or convective activity.</p>
+      <p>If so, the pilots may have encountered stiff crosswinds or a tailwind which would&rsquo;ve greatly increased the stopping distance on the runway. If storms were over the airfield, then the water on the runway from the rain would&rsquo;ve certainly decreased the braking performance of the aircraft.</p>
+      <p>And speaking of braking performance, it&rsquo;s also possible that one of the braking mechanisms malfunctioned, such as the wheel brakes, speed brakes or thrust reversers. We can&rsquo;t see if the thrust reversers were deployed in this photo since the engines are submerged but it&rsquo;s clear that the speed brakes are not deployed.</p>
+      <p>But they may have been retracted before the aircraft was evacuated.</p>
+    </section>
+
+    <section class="panel">
+      <h2><span class="step">3</span> Let&rsquo;s discuss these questions</h2>
+      <ol class="questions">
+        <li><span class="num">1</span> What usually causes serious accidents in transportation?</li>
+        <li><span class="num">2</span> How should investigators find out what caused an accident?</li>
+        <li><span class="num">3</span> What can be done to prevent accidents from happening again?</li>
+        <li><span class="num">4</span> How does bad weather affect the safety of transportation?</li>
+        <li><span class="num">5</span> What role does human error play in most major accidents?</li>
+        <li><span class="num">6</span> How should the public be informed after a serious accident occurs?</li>
+        <li><span class="num">7</span> What happens to passengers when an emergency evacuation is needed?</li>
+        <li><span class="num">8</span> How do accident investigations help improve safety in the future?</li>
+        <li><span class="num">9</span> What makes some transportation accidents harder to investigate than others?</li>
+        <li><span class="num">10</span> How should governments respond when a serious transportation accident happens?</li>
+      </ol>
+      <p class="tip">Speaking tip: answer each prompt in 2&ndash;3 full sentences. Use the deductive language from the transcript &mdash; <em>it looks like&hellip;, they may have&hellip;, this is most likely&hellip;, it&rsquo;s possible that&hellip;</em> &mdash; to hedge what you cannot confirm.</p>
+    </section>
+
+    <footer>Aviation English Practice &mdash; ICAO picture-description task</footer>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const night = document.body.classList.toggle('night-ops');
+      document.getElementById('themeBtn').textContent = night ? 'Day ops' : 'Night ops';
+    }
+  </script>
+</body>
+</html>
