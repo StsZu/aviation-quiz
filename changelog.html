@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>What's New — Aviation English</title>
+  <style>
+    :root {
+      --bg-main: #e7dfd2;
+      --bg-panel: #f8f3e9;
+      --border-color: #d4c7b3;
+      --text-primary: #2f2822;
+      --text-secondary: #4a3e34;
+      --text-muted: #7a6858;
+      --accent-hud: #8a6d3b;
+      --accent-navy: #6b4f2e;
+      --accent-new: #b3402f;
+      --btn-bg: rgba(255, 251, 244, 0.8);
+      --btn-hover: #efe6d8;
+      --btn-border: #d4c7b3;
+      --shadow-md: 0 10px 25px -5px rgba(47, 40, 34, 0.12);
+      --font-serif: Georgia, "Palatino Linotype", serif;
+      --font-sans: "SF Pro Text", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+    }
+    .night-ops {
+      --bg-main: #1c1611;
+      --bg-panel: #261e17;
+      --border-color: #3d3226;
+      --text-primary: #efe6d8;
+      --text-secondary: #cdbfad;
+      --text-muted: #9a8a76;
+      --accent-hud: #d8a657;
+      --accent-navy: #d8a657;
+      --accent-new: #e07a5f;
+      --btn-bg: #2e251c;
+      --btn-hover: #3d3226;
+      --btn-border: #4a3d2e;
+      --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.7);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding: 30px 15px 60px;
+      line-height: 1.6;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .container { width: 100%; max-width: 760px; margin: 0 auto; display: flex; flex-direction: column; gap: 22px; }
+
+    .top-nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-bottom: 12px; border-bottom: 2px solid var(--border-color);
+    }
+    .back-link { color: var(--accent-hud); text-decoration: none; font-weight: 700; font-size: 14px; }
+    .back-link:hover { text-decoration: underline; }
+    .theme-switch {
+      background: var(--btn-bg); color: var(--text-secondary); border: 1px solid var(--btn-border);
+      border-radius: 8px; padding: 8px 14px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .theme-switch:hover { background: var(--btn-hover); }
+
+    .hero { display: flex; flex-direction: column; gap: 10px; }
+    .badge {
+      align-self: flex-start; font-size: 12px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--accent-hud); border: 1px solid var(--border-color);
+      border-radius: 999px; padding: 4px 12px; background: var(--bg-panel);
+    }
+    h1 { font-family: var(--font-serif); font-size: 30px; line-height: 1.2; }
+    .hero p { color: var(--text-secondary); font-size: 16px; max-width: 60ch; }
+    .hero .count { color: var(--text-muted); font-size: 14px; }
+
+    .day-group { display: flex; flex-direction: column; gap: 10px; }
+    .day-heading {
+      font-family: var(--font-serif); font-size: 18px; color: var(--accent-navy);
+      padding: 6px 0 2px; border-bottom: 1px solid var(--border-color); margin-top: 8px;
+    }
+
+    .entry {
+      display: flex; align-items: center; gap: 14px;
+      background: var(--bg-panel); border: 1px solid var(--border-color);
+      border-radius: 14px; padding: 12px 16px; box-shadow: var(--shadow-md);
+      color: var(--text-primary); text-decoration: none;
+      transition: border-color 0.12s, transform 0.12s;
+    }
+    .entry:hover { border-color: var(--accent-hud); transform: translateY(-1px); }
+
+    .type {
+      flex-shrink: 0; font-size: 11px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.05em; color: var(--bg-panel); background: var(--accent-hud);
+      border-radius: 7px; padding: 4px 9px; min-width: 92px; text-align: center;
+    }
+    .type[data-t="Quiz"]            { background: #6b4f2e; }
+    .type[data-t="Gap-fill"]        { background: #8a6d3b; }
+    .type[data-t="Crossword"]       { background: #5b7a4f; }
+    .type[data-t="Infographic"]     { background: #b5821f; }
+    .type[data-t="Song"]            { background: #9a5a3b; }
+    .type[data-t="Listen & Read"]   { background: #4f6b7a; }
+    .type[data-t="Cockpit Class"]   { background: #3d5a4a; }
+    .type[data-t="Describe Picture"]{ background: #7a5b4f; }
+
+    .entry .title { flex: 1; font-size: 15.5px; font-weight: 600; }
+    .entry .new {
+      flex-shrink: 0; font-size: 10px; font-weight: 800; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--bg-panel); background: var(--accent-new);
+      border-radius: 999px; padding: 3px 8px;
+    }
+    .entry .open { flex-shrink: 0; color: var(--accent-hud); font-weight: 800; font-size: 18px; }
+
+    footer { text-align: center; font-size: 12px; color: var(--text-muted); margin-top: 10px; }
+
+    @media (max-width: 600px) {
+      h1 { font-size: 24px; }
+      .entry { flex-wrap: wrap; gap: 8px 12px; padding: 12px 14px; }
+      .entry .title { flex-basis: 100%; order: 3; }
+      .type { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <nav class="top-nav">
+      <a class="back-link" href="index.html">&larr; All quizzes</a>
+      <button class="theme-switch" onclick="toggleTheme()" id="themeBtn">Night ops</button>
+    </nav>
+
+    <header class="hero">
+      <span class="badge">What's New</span>
+      <h1>Changelog</h1>
+      <p>Every practice material that has been added, newest first. Tap an entry to open it.</p>
+      <span class="count" id="count"></span>
+    </header>
+
+    <main id="log"></main>
+
+    <footer>Aviation English Practice &mdash; ICAO exam prep</footer>
+  </div>
+
+  <script src="changelog-data.js"></script>
+  <script>
+    function toggleTheme() {
+      const night = document.body.classList.toggle('night-ops');
+      document.getElementById('themeBtn').textContent = night ? 'Day ops' : 'Night ops';
+    }
+
+    const DATA = window.CHANGELOG || [];
+
+    // "New" = added on the most recent date present in the data, so only the
+    // latest batch is highlighted (stays meaningful as content grows, and is
+    // independent of the wall clock).
+    const maxDate = DATA.reduce((m, e) => e.date > m ? e.date : m, '0000-00-00');
+    const isNew = e => e.date === maxDate;
+
+    function fmtDate(iso) {
+      const [y, m, d] = iso.split('-').map(Number);
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      return `${months[m - 1]} ${d}, ${y}`;
+    }
+
+    function render() {
+      document.getElementById('count').textContent = `${DATA.length} materials`;
+      const log = document.getElementById('log');
+
+      // group by date, preserving the array's newest-first order
+      const groups = [];
+      const byDate = {};
+      DATA.forEach(e => {
+        if (!byDate[e.date]) { byDate[e.date] = []; groups.push(e.date); }
+        byDate[e.date].push(e);
+      });
+
+      log.innerHTML = groups.map(date => `
+        <section class="day-group">
+          <h2 class="day-heading">${fmtDate(date)}</h2>
+          ${byDate[date].map(e => `
+            <a class="entry" href="${e.href}">
+              <span class="type" data-t="${e.type}">${e.type}</span>
+              <span class="title">${e.title}</span>
+              ${isNew(e) ? '<span class="new">New</span>' : ''}
+              <span class="open" aria-hidden="true">&rsaquo;</span>
+            </a>
+          `).join('')}
+        </section>
+      `).join('');
+    }
+
+    render();
+  </script>
+</body>
+</html>

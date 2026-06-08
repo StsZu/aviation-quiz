@@ -390,6 +390,19 @@
       letter-spacing: 0.1em;
     }
 
+    .card-top-left { display: flex; align-items: center; gap: 8px; }
+
+    .module-new {
+      font-size: 9px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #fff;
+      background: var(--accent-danger);
+      border-radius: 999px;
+      padding: 2px 7px;
+    }
+
     /* Interactive Logbook Checkbox */
     .logbook-checkbox {
       appearance: none;
@@ -809,8 +822,9 @@
 
   </main>
 
+  <script src="changelog-data.js"></script>
   <script>
-    
+
     // Theme Engine
     const themeToggle = document.getElementById('themeToggle');
     const themeLabel = document.getElementById('themeLabel');
@@ -878,11 +892,20 @@
       { cat: "interactive", tag: "Listen & Read",    title: "Aircraft Emergency Evacuation — Picture Description", desc: "Describe a British Airways aircraft after an emergency: four model answers for the same picture — detailed, simple sentences, formal register, and a generic template — with the transcript highlighting in sync.", href: "Flight_academy_trainer/emergency_evacuation_trainer.html", cta: "Open Trainer" },
       { cat: "interactive", tag: "Describe Picture",  title: "Runway Excursion & Emergency Evacuation — Picture Description", desc: "Watch a Level 5 model description of a runway-excursion scene (737 in the water), study the full transcript, and test comprehension with a 10-question quiz on accident investigation and evacuation.", href: "runway-excursion-picture-description.html", cta: "Open Practice" },
       { cat: "interactive", tag: "Describe Picture",  title: "Runway Excursion into Water — Model Answer & Quiz", desc: "Study the scene photo, listen to a complete Level 5 audio model answer, read the transcript, and check comprehension with a 10-question quiz on the runway-excursion-into-water case.", href: "runway-excursion-model-answer.html", cta: "Open Practice" },
-      { cat: "grammar",     tag: "Gap-fill",         title: "Runway Excursion — Connector Gap-fill", desc: "Drag-free word-pool gap-fill: place the cause-and-effect connectors and safety phrases into the runway-excursion description. Choose instant or on-submit checking and reveal the model answers.", href: "runway-excursion-gap-fill.html", cta: "Start Gap-fill" }
+      { cat: "grammar",     tag: "Gap-fill",         title: "Runway Excursion — Connector Gap-fill", desc: "Drag-free word-pool gap-fill: place the cause-and-effect connectors and safety phrases into the runway-excursion description. Choose instant or on-submit checking and reveal the model answers.", href: "runway-excursion-gap-fill.html", cta: "Start Gap-fill" },
+      { cat: "interactive", tag: "What's New",        title: "Changelog — What's New", desc: "A dated journal of every practice material added to the site, newest first. Open it to see what's recent and jump straight to the latest additions.", href: "changelog.html", cta: "Open Changelog" }
     ];
 
     const totalModules = MODULES.length;
     const ARROW_SVG = '<svg class="btn-arrow" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>';
+
+    // NEW badge = materials published on the most recent changelog date.
+    const RECENT_HREFS = (() => {
+      const data = window.CHANGELOG || [];
+      if (!data.length) return new Set();
+      const maxDate = data.reduce((m, e) => e.date > m ? e.date : m, '0000-00-00');
+      return new Set(data.filter(e => e.date === maxDate).map(e => e.href));
+    })();
 
     function renderModules() {
       const grid = document.getElementById('moduleGrid');
@@ -892,7 +915,10 @@
         return `
       <article class="module-card" data-category="${m.cat}">
         <div class="card-top">
-          <span class="module-index">Module ${n}</span>
+          <span class="card-top-left">
+            <span class="module-index">Module ${n}</span>
+            ${RECENT_HREFS.has(m.href) ? '<span class="module-new">New</span>' : ''}
+          </span>
           <input type="checkbox" id="${id}" class="logbook-checkbox" onchange="toggleSignoff('${id}')">
         </div>
         <span class="module-tag tag-${m.cat}">${m.tag}</span>
