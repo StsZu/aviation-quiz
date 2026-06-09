@@ -14,6 +14,9 @@ window.CHANGELOG_TYPES = [
 ];
 
 window.CHANGELOG = [
+  // 2026-06-09
+  { date: "2026-06-09", type: "Describe Picture",title: "Picture Description — Listen & Describe Gallery",       href: "picture-description.html" },
+
   // 2026-06-08
   { date: "2026-06-08", type: "Gap-fill",        title: "Runway Excursion — Connector Gap-fill",                 href: "runway-excursion-gap-fill.html" },
   { date: "2026-06-08", type: "Infographic",     title: "Serious Accident Discussion Practice",                  href: "infographics.html" },

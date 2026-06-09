@@ -1,0 +1,1599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aviation English — Picture Description</title>
+  <script>try { if (localStorage.getItem("theme") === "night") document.documentElement.classList.add("night-ops"); } catch (e) {}</script>
+  <style>
+    :root {
+      /* Daylight (site warm parchment theme) */
+      --bg: #e7dfd2;
+      --panel: #f8f3e9;
+      --sheet-bg: #f4ede0;
+      --border: #d4c7b3;
+      --border-hover: #b8a891;
+      --text: #2f2822;
+      --text2: #4a3e34;
+      --muted: #7a6858;
+      --accent: #b07d3a;
+      --btn-bg: #fffbf4;
+      --btn-hover: #efe6d8;
+      --cover-bg: #ffffff;
+      --hr: #e2d6c2;
+      --card-shadow: 0 8px 22px rgba(80, 60, 40, 0.14);
+    }
+
+    .night-ops {
+      /* Night (warm espresso, same brand as index) */
+      --bg: #1c1611;
+      --panel: #261e17;
+      --sheet-bg: #2e251c;
+      --border: #3d3226;
+      --border-hover: #4a3d2e;
+      --text: #efe6d8;
+      --text2: #cdbfad;
+      --muted: #9a8a76;
+      --accent: #d8a657;
+      --btn-bg: #2e251c;
+      --btn-hover: #3d3226;
+      --cover-bg: #1c1611;
+      --hr: #3d3226;
+      --card-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 40px 20px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .module { width: 100%; max-width: 1040px; margin: 0 auto; }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 18px;
+      z-index: 60;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: 30px;
+      padding: 8px 14px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .theme-toggle:hover { background: var(--btn-hover); border-color: var(--border-hover); }
+    .theme-toggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    .back {
+      display: inline-block;
+      margin-bottom: 14px;
+      color: var(--muted);
+      text-decoration: none;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+    }
+
+    .header {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 34px 38px;
+      margin-bottom: 18px;
+    }
+
+    .title { font-size: 32px; line-height: 1.2; margin-bottom: 8px; }
+    .subtitle { font-size: 17px; color: var(--muted); line-height: 1.5; }
+
+    /* Card grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      padding: 0;
+      transition: border-color 0.12s, transform 0.12s, box-shadow 0.12s;
+    }
+    .card:hover, .card:focus {
+      border-color: var(--border-hover);
+      transform: translateY(-3px);
+      box-shadow: var(--card-shadow);
+      outline: none;
+    }
+
+    .card-cover {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: var(--cover-bg);
+    }
+    .card-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .card-play {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: rgba(34, 26, 18, 0.78);
+      color: #f8f3e9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      padding-left: 3px;
+    }
+
+    .card-body { padding: 16px 18px 20px; }
+    .card-body h2 { font-size: 19px; line-height: 1.3; margin-bottom: 6px; }
+    .card-body p {
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 13.5px;
+      line-height: 1.45;
+      color: var(--muted);
+    }
+
+    /* Detail overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 16, 12, 0.55);
+      backdrop-filter: blur(3px);
+      display: none;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+      overflow-y: auto;
+      z-index: 50;
+    }
+    .overlay.is-open { display: flex; }
+
+    .sheet {
+      background: var(--sheet-bg);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      width: 100%;
+      max-width: 760px;
+      padding: 28px 32px 32px;
+      position: relative;
+    }
+
+    .sheet-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--text2);
+      font-size: 22px;
+      line-height: 1;
+      cursor: pointer;
+    }
+    .sheet-close:hover { background: var(--btn-hover); }
+
+    .sheet-head {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-right: 40px;
+    }
+    .sheet-cover {
+      width: 110px;
+      height: 110px;
+      border-radius: 14px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .sheet-meta h2 { font-size: 24px; line-height: 1.25; margin-bottom: 4px; }
+    .sheet-meta .artist {
+      color: var(--muted);
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 14px;
+      margin-bottom: 6px;
+    }
+    .sheet-meta .topic { color: var(--text2); font-size: 15px; line-height: 1.45; }
+    .sheet-meta .topic a { color: var(--accent); }
+
+    .sheet audio { width: 100%; margin-bottom: 4px; }
+
+    .lyrics {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--hr);
+      font-size: 17px;
+      line-height: 1.5;
+    }
+    .lyrics .section {
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--accent);
+      margin: 18px 0 6px;
+    }
+    .lyrics .section:first-child { margin-top: 0; }
+    .lyrics .line { color: var(--text); }
+    .lyrics .blank { height: 8px; }
+
+    /* Songs on this scene */
+    .songs { margin-top: 22px; }
+    .songs-head {
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muted);
+      padding-top: 18px;
+      border-top: 1px solid var(--hr);
+      margin-bottom: 12px;
+    }
+    .song-block {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px 18px 18px;
+      margin-bottom: 14px;
+    }
+    .song-block summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .song-block summary::-webkit-details-marker { display: none; }
+    .song-block .song-art {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .song-block .song-title {
+      font-size: 19px;
+      font-weight: 600;
+      flex: 1;
+    }
+    .song-block .song-note {
+      font-family: "SF Pro Text", Arial, sans-serif;
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .song-block .song-caret {
+      color: var(--accent);
+      font-size: 13px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      transition: transform 0.15s;
+    }
+    .song-block[open] .song-caret { transform: rotate(180deg); }
+    .song-block audio { width: 100%; margin: 14px 0 4px; }
+    .song-block .lyrics { margin-top: 8px; border-top: none; padding-top: 8px; font-size: 16px; }
+
+    @media (max-width: 860px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 560px) {
+      body { padding: 24px 12px; }
+      .header { padding: 26px 22px; }
+      .title { font-size: 27px; }
+      .grid { grid-template-columns: 1fr; }
+      .sheet { padding: 24px 22px 26px; }
+      .sheet-head { flex-direction: column; align-items: flex-start; }
+      .sheet-cover { width: 100%; height: auto; max-width: 220px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Toggle day/night theme">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.36-6.36l-.7.7M6.34 17.66l-.7.7m0-12.72l.7.7m11.32 11.32l.7.7M12 8a4 4 0 110 8 4 4 0 010-8z"/></svg>
+    <span id="theme-label">Night</span>
+  </button>
+
+  <main class="module">
+    <a href="index.html" class="back">&larr; All quizzes</a>
+
+    <header class="header">
+      <h1 class="title">Aviation English — Picture Description</h1>
+      <p class="subtitle">Describe-the-picture speaking drills. Tap a picture to play the narration and read along: key words, simple, stronger, and full exam-version model answers &mdash; plus a matching song for each scene.</p>
+    </header>
+
+    <section class="grid" id="grid" aria-label="Picture description drills"></section>
+  </main>
+
+  <div class="overlay" id="overlay">
+    <div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title">
+      <button class="sheet-close" id="sheet-close" aria-label="Close">&times;</button>
+      <div class="sheet-head">
+        <img class="sheet-cover" id="sheet-cover" src="" alt="">
+        <div class="sheet-meta">
+          <h2 id="sheet-title"></h2>
+          <p class="artist" id="sheet-artist"></p>
+          <p class="topic" id="sheet-topic"></p>
+        </div>
+      </div>
+      <audio id="sheet-audio" controls preload="none"></audio>
+      <div class="lyrics" id="sheet-lyrics"></div>
+      <div class="songs" id="sheet-songs"></div>
+    </div>
+  </div>
+
+  <script>
+    const items = [
+      {
+        file: "runway-incursion",
+        songs: [
+          { title: "Hazardous Proximity", file: "hazardous-proximity", lyrics: `[Spoken Intro]
+Runway incursion.
+Short final.
+Active runway.
+Hazardous proximity.
+Say it clearly.
+Say it step by step.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+A runway incursion.
+There are two aircraft
+In a dangerous situation.
+
+One is on short final,
+Coming down to land.
+The other is positioned
+On the active runway ahead.
+
+[Chorus]
+This picture depicts
+A critical runway incursion.
+Two commercial aircraft,
+Too close to each other.
+
+One on short final,
+One on the active runway.
+Hazardous proximity,
+Dangerous all the way.
+
+[Spoken-Sung Verse 2]
+It involves
+Two commercial airliner jets.
+One aircraft appears to be
+On short final approach.
+
+The other aircraft is
+On the active runway.
+This situation looks dangerous
+Because they are too close.
+
+[Chorus]
+This picture depicts
+A critical runway incursion.
+Two commercial aircraft,
+Too close to each other.
+
+One on short final,
+One on the active runway.
+Hazardous proximity,
+Dangerous all the way.
+
+[Bridge]
+Say what you see.
+Say what happened.
+Name the risk.
+Keep it clear.
+
+Runway incursion.
+Short final approach.
+Active runway.
+Hazardous proximity.
+
+[Final Chorus]
+This picture depicts
+A critical runway incursion incident
+Involving two commercial airliner jets
+In hazardous proximity.
+
+A twin-engine aircraft
+On short final approach
+Appears to be flying directly above
+A widebody aircraft on the runway.
+
+[Spoken Outro]
+Exam-safe answer:
+This picture depicts a critical runway incursion incident involving two commercial aircraft.
+One aircraft appears to be on short final approach,
+while another aircraft is positioned on the active runway.
+This creates a dangerous situation because the aircraft are in hazardous proximity.` }
+        ],
+        title: "Runway Incursion",
+        artist: "Describe-the-picture drill",
+        topic: "Two commercial aircraft in hazardous proximity — one on short final, one on the active runway.",
+        lyrics: `[Key words]
+Runway incursion.
+Short final.
+Active runway.
+Hazardous proximity.
+
+[Listen and repeat]
+This picture depicts a runway incursion.
+There are two commercial aircraft.
+One aircraft is on short final approach.
+The other aircraft is on the active runway.
+This is dangerous because they are too close to each other.
+
+[Stronger version]
+This picture depicts a critical runway incursion incident involving two commercial aircraft.
+One aircraft appears to be on short final approach.
+Another aircraft is positioned on the active runway.
+This creates a dangerous situation because the aircraft are in hazardous proximity.
+
+[Full exam version]
+This picture depicts a critical runway incursion incident involving two commercial airliner jets.
+A twin-engine aircraft on short final approach appears to be flying in hazardous proximity directly above a widebody aircraft positioned on the active runway.
+
+[Say it yourself]
+Runway incursion.
+Two commercial aircraft.
+Short final approach.
+Active runway.
+Hazardous proximity.
+Dangerous situation.
+
+[Final model answer]
+This picture depicts a critical runway incursion incident involving two commercial aircraft.
+One aircraft appears to be on short final approach, while another aircraft is positioned on the active runway.
+This creates a dangerous situation because the aircraft are in hazardous proximity.`
+      },
+      {
+        file: "crosswind-landing",
+        songs: [
+          { title: "Abnormal Landing", file: "abnormal-landing", lyrics: `[Spoken Intro]
+Abnormal landing.
+Large jet aircraft.
+Heavily banked aircraft.
+Sparks and smoke.
+Potential emergency situation.
+Now listen and repeat.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+An abnormal landing.
+I can see
+A large jet aircraft.
+
+It is on a runway,
+Low near the ground.
+The aircraft is heavily banked,
+Something is wrong now.
+
+[Chorus]
+Abnormal landing,
+Large jet aircraft.
+Heavily banked,
+On the runway path.
+
+Sparks and smoke,
+Near the ground.
+Potential emergency,
+Say it clear and loud.
+
+[Spoken-Sung Verse 2]
+This picture depicts
+A large jet aircraft
+Executing an abnormal landing
+On a runway.
+
+The aircraft is heavily banked.
+The situation looks dangerous.
+There are sparks and smoke
+Near the ground.
+
+[Chorus]
+Abnormal landing,
+Large jet aircraft.
+Heavily banked,
+On the runway path.
+
+Sparks and smoke,
+Near the ground.
+Potential emergency,
+Say it clear and loud.
+
+[Bridge]
+Say what you see.
+Say what is happening.
+Describe the danger.
+Keep it simple.
+
+Abnormal landing.
+Heavily banked.
+Sparks and smoke.
+Potential emergency situation.
+
+[Final Chorus]
+This picture depicts
+A large jet aircraft
+Executing an abnormal landing
+On a runway.
+
+The aircraft is heavily banked,
+Resulting in what looks like
+A potential emergency situation
+Due to sparks and smoke near the ground.
+
+[Spoken Outro]
+Final exam version:
+This picture depicts an abnormal landing involving a large jet aircraft.
+The aircraft appears to be heavily banked while landing on the runway.
+This looks like a potential emergency situation because there are sparks and smoke near the ground.` },
+          { title: "Sparks Near the Ground", file: "sparks-near-the-ground", lyrics: `[Spoken Intro]
+Abnormal landing.
+Large jet aircraft.
+Heavily banked.
+Runway.
+Sparks and smoke.
+Potential emergency situation.
+
+Now listen and repeat.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+An abnormal landing.
+I can see
+A large jet aircraft.
+
+It is on a runway,
+Low above the ground.
+The aircraft is heavily banked,
+Danger all around.
+
+[Chorus]
+Sparks and smoke,
+Near the ground.
+Heavily banked,
+Coming down.
+
+Abnormal landing,
+Emergency sign.
+Say it step by step,
+One clear line at a time.
+
+[Spoken-Sung Verse 2]
+This picture depicts
+A large jet aircraft
+Executing an abnormal landing
+On a runway.
+
+The aircraft is heavily banked.
+The situation looks dangerous.
+There are sparks and smoke
+Near the ground.
+
+[Chorus]
+Sparks and smoke,
+Near the ground.
+Heavily banked,
+Coming down.
+
+Abnormal landing,
+Emergency sign.
+Say it step by step,
+One clear line at a time.
+
+[Bridge]
+What can I see?
+A large jet aircraft.
+What is happening?
+An abnormal landing.
+
+What is the risk?
+Sparks and smoke.
+What is the conclusion?
+Potential emergency situation.
+
+[Final Chorus]
+This picture depicts
+A large jet aircraft
+Executing an abnormal landing
+On a runway.
+
+The aircraft is heavily banked,
+Resulting in what looks like
+A potential emergency situation
+Due to sparks and smoke near the ground.
+
+[Spoken Outro]
+Final exam version:
+
+This picture depicts an abnormal landing involving a large jet aircraft.
+The aircraft appears to be heavily banked while landing on the runway.
+This looks like a potential emergency situation because there are sparks and smoke near the ground.` }
+        ],
+        title: "Crosswind / Abnormal Landing",
+        artist: "Describe-the-picture drill",
+        topic: "A large jet heavily banked on the runway, with sparks and smoke — a potential emergency.",
+        lyrics: `[Key words]
+Abnormal landing.
+Large jet aircraft.
+Heavily banked aircraft.
+Sparks and smoke.
+Potential emergency situation.
+
+[Listen and repeat]
+This picture depicts an abnormal landing.
+I can see a large jet aircraft on a runway.
+The aircraft is heavily banked.
+There are sparks and smoke near the ground.
+This looks like a potential emergency situation.
+
+[Stronger version]
+This picture depicts a large jet aircraft executing an abnormal landing on a runway.
+The aircraft is heavily banked.
+This creates a dangerous situation because there are sparks and smoke near the ground.
+
+[Full exam version]
+This picture depicts a large jet aircraft executing an abnormal landing on a runway.
+The aircraft is heavily banked, resulting in what looks like a potential emergency situation due to sparks and smoke near the ground.
+
+[Say it yourself]
+Abnormal landing.
+Large jet aircraft.
+Heavily banked.
+Runway.
+Sparks and smoke.
+Potential emergency situation.
+
+[Final model answer]
+This picture depicts an abnormal landing involving a large jet aircraft.
+The aircraft appears to be heavily banked while landing on the runway.
+This looks like a potential emergency situation because there are sparks and smoke near the ground.`
+      },
+      {
+        file: "engine-ground-collision",
+        songs: [
+          { title: "Ground Collision", file: "ground-collision", lyrics: `[Spoken Intro]
+Ground collision.
+Jet engine.
+Ground support vehicle.
+Wet airfield pavement.
+Engine nacelle damage.
+White tug or pushback vehicle.
+
+Now listen and repeat.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+A ground collision.
+I can see
+A commercial aircraft.
+
+Its jet engine appears
+To have collided
+With a ground support vehicle
+During ground operations.
+
+[Chorus]
+Ground collision,
+Serious ground incident.
+Jet engine damage,
+Visible impact.
+
+Wet pavement,
+White tug nearby.
+Check the engine nacelle,
+And explain what you see.
+
+[Spoken-Sung Verse 2]
+The pavement looks wet.
+The engine nacelle is damaged.
+This suggests
+A significant impact.
+
+The vehicle involved
+Seems to be
+A white tug
+Or pushback vehicle.
+
+[Chorus]
+Ground collision,
+Serious ground incident.
+Jet engine damage,
+Visible impact.
+
+Wet pavement,
+White tug nearby.
+Check the engine nacelle,
+And explain what you see.
+
+[Bridge]
+What can I see?
+A commercial aircraft.
+What happened?
+A ground collision.
+
+What is damaged?
+The engine nacelle.
+What was involved?
+A ground support vehicle.
+
+[Final Chorus]
+This picture depicts
+The aftermath of
+A severe ground collision
+Between a commercial aircraft
+And a ground support vehicle.
+
+Visible damage
+To the engine nacelle
+Suggests a significant impact
+During ground operations.
+
+[Spoken Outro]
+This picture depicts the aftermath of a serious ground collision involving a commercial aircraft and a ground support vehicle.
+The aircraft's engine nacelle appears to be damaged, which suggests a significant impact during ground operations.
+The pavement looks wet, and the vehicle involved seems to be a white tug or pushback vehicle.` }
+        ],
+        title: "Engine Ground Collision",
+        artist: "Describe-the-picture drill",
+        topic: "A jet engine collided with a ground support vehicle on wet pavement — engine nacelle damage.",
+        lyrics: `[Key words]
+Ground collision.
+Jet engine.
+Ground support vehicle.
+Wet airfield pavement.
+Engine nacelle damage.
+White tug or pushback vehicle.
+
+[Listen and repeat]
+This picture depicts a ground collision.
+I can see a commercial aircraft on the ground.
+Its jet engine appears to have collided with a ground support vehicle.
+The pavement looks wet.
+There is visible damage to the engine nacelle.
+This looks like a serious ground incident.
+
+[Stronger version]
+This picture depicts the aftermath of a severe ground collision between a commercial aircraft and a ground support vehicle.
+The engine nacelle is visibly damaged.
+This suggests that a significant impact occurred during ground operations.
+
+[Full exam version]
+This picture depicts the aftermath of a severe ground collision between a commercial airliner's jet engine and a ground support vehicle on a wet airfield pavement.
+Visible damage to the engine nacelle suggests a significant impact occurred during ground operations, clearly involving a white tug or pushback vehicle.
+
+[Say it yourself]
+Ground collision.
+Commercial aircraft.
+Jet engine.
+Ground support vehicle.
+Wet pavement.
+Engine nacelle damage.
+Ground operations.
+White tug or pushback vehicle.
+
+[Final model answer]
+This picture depicts the aftermath of a serious ground collision involving a commercial aircraft and a ground support vehicle.
+The aircraft's engine nacelle appears to be damaged, which suggests a significant impact during ground operations.
+The pavement looks wet, and the vehicle involved seems to be a white tug or pushback vehicle.`
+      },
+      {
+        file: "highway-forced-landing",
+        songs: [
+          { title: "Off-Field Emergency Landing", file: "off-field-emergency-landing", lyrics: `[Spoken Intro]
+Off-field emergency landing.
+Light propeller aircraft.
+Elevated roadway.
+Visible airframe damage.
+Blocking traffic.
+Emergency personnel.
+Securing the area.
+
+Now listen and repeat.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+An emergency landing.
+I can see
+A light propeller aircraft.
+
+It is on a roadway,
+Not on a runway.
+The aircraft is damaged,
+After landing the hard way.
+
+[Chorus]
+Off-field landing,
+Emergency scene.
+Light propeller aircraft,
+Damage can be seen.
+
+Blocking traffic,
+On the roadway.
+Emergency personnel
+Are securing the area.
+
+[Spoken-Sung Verse 2]
+This picture depicts
+The aftermath
+Of an apparent
+Off-field emergency landing.
+
+It involves
+A light propeller aircraft
+On an elevated roadway,
+With visible airframe damage.
+
+[Chorus]
+Off-field landing,
+Emergency scene.
+Light propeller aircraft,
+Damage can be seen.
+
+Blocking traffic,
+On the roadway.
+Emergency personnel
+Are securing the area.
+
+[Bridge]
+What can I see?
+A light aircraft.
+Where is it?
+On an elevated roadway.
+
+What happened?
+An emergency landing.
+What are the risks?
+Traffic and damage.
+
+What should happen now?
+Secure the area.
+Keep people away.
+Support emergency crews.
+
+[Final Chorus]
+This picture depicts
+The aftermath of
+An apparent off-field
+Emergency landing.
+
+The airframe has sustained
+Visible damage.
+It is blocking traffic,
+While emergency personnel
+Are securing the area.
+
+[Spoken Outro]
+This picture depicts the aftermath of an off-field emergency landing involving a light propeller aircraft.
+The aircraft appears to have landed on an elevated roadway and has sustained visible damage.
+It is blocking traffic, while emergency personnel are securing the area.` }
+        ],
+        title: "Highway Forced Landing",
+        artist: "Describe-the-picture drill",
+        topic: "A light propeller aircraft after an off-field landing on an elevated roadway, blocking traffic.",
+        lyrics: `[Key words]
+Off-field emergency landing.
+Light propeller aircraft.
+Elevated roadway.
+Visible airframe damage.
+Blocking traffic.
+Emergency personnel.
+Securing the area.
+
+[Listen and repeat]
+This picture depicts an off-field emergency landing.
+I can see a light propeller aircraft on an elevated roadway.
+The aircraft appears to be damaged.
+It is blocking traffic.
+Emergency personnel are securing the area.
+This looks like a serious emergency situation.
+
+[Stronger version]
+This picture depicts the aftermath of an apparent off-field emergency landing.
+It involves a light propeller aircraft on an elevated roadway.
+The airframe has sustained visible damage.
+The aircraft is blocking traffic, while emergency personnel are securing the area.
+
+[Full exam version]
+This picture depicts the aftermath of an apparent off-field emergency landing involving a light propeller aircraft on an elevated roadway.
+The airframe has sustained visible damage and is blocking traffic, while emergency personnel are securing the area.
+
+[Say it yourself]
+Off-field emergency landing.
+Light propeller aircraft.
+Elevated roadway.
+Visible damage.
+Blocking traffic.
+Emergency personnel.
+Securing the area.
+
+[Final model answer]
+This picture depicts the aftermath of an off-field emergency landing involving a light propeller aircraft.
+The aircraft appears to have landed on an elevated roadway and has sustained visible damage.
+It is blocking traffic, while emergency personnel are securing the area.`
+      },
+      {
+        file: "military-tanker-landing",
+        songs: [
+          { title: "High-Speed Roll After Touchdown", file: "high-speed-roll", lyrics: `[Spoken Intro]
+Wide-body military transport aircraft.
+High-speed roll after touchdown.
+Runway deceleration.
+Engine thrust reversers.
+Wing spoilers.
+Fully deployed.
+
+Now listen and repeat.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+A military transport aircraft
+After landing
+On the runway.
+
+I can see
+A wide-body aircraft.
+It is rolling fast
+After touchdown.
+
+[Chorus]
+High-speed roll,
+After touchdown.
+Runway deceleration,
+Slowing down.
+
+Thrust reversers deployed,
+Wing spoilers too.
+This is a normal landing roll,
+Clear aviation view.
+
+[Spoken-Sung Verse 2]
+The aircraft appears to be
+In the high-speed rolling phase
+After touchdown,
+Still on the runway.
+
+It looks like
+Standard deceleration.
+The aircraft is slowing down
+After landing.
+
+[Chorus]
+High-speed roll,
+After touchdown.
+Runway deceleration,
+Slowing down.
+
+Thrust reversers deployed,
+Wing spoilers too.
+This is a normal landing roll,
+Clear aviation view.
+
+[Bridge]
+What can I see?
+A wide-body aircraft.
+What happened?
+It has landed.
+
+What phase is this?
+High-speed rolling phase.
+What is the action?
+Runway deceleration.
+
+What is deployed?
+Thrust reversers.
+What else is deployed?
+Wing spoilers.
+
+[Final Chorus]
+This picture depicts
+A wide-body military transport aircraft
+During the high-speed rolling phase
+Of flight after touchdown.
+
+The situation looks like
+A standard high-energy deceleration
+On the runway,
+With engine thrust reversers
+And wing spoilers fully deployed.
+
+[Spoken Outro]
+This picture depicts a wide-body military transport aircraft after landing.
+The aircraft appears to be in the high-speed rolling phase on the runway after touchdown.
+It looks like a normal deceleration, with thrust reversers and wing spoilers fully deployed.` }
+        ],
+        title: "Military Tanker Landing Roll",
+        artist: "Describe-the-picture drill",
+        topic: "A wide-body military transport in the high-speed roll after touchdown — thrust reversers and spoilers deployed.",
+        lyrics: `[Key words]
+Wide-body military transport aircraft.
+High-speed roll after touchdown.
+Runway deceleration.
+Engine thrust reversers.
+Wing spoilers.
+Fully deployed.
+
+[Listen and repeat]
+This picture depicts a military transport aircraft after landing.
+I can see a wide-body aircraft on the runway.
+The aircraft appears to be in the high-speed rolling phase after touchdown.
+It looks like the aircraft is decelerating on the runway.
+The thrust reversers and wing spoilers are deployed.
+This looks like a normal landing roll.
+
+[Stronger version]
+This picture depicts a wide-body military transport aircraft during the high-speed rolling phase of flight after touchdown.
+The situation looks like a standard deceleration on the runway.
+Both engine thrust reversers and wing spoilers appear to be fully deployed.
+
+[Full exam version]
+This picture depicts a wide-body military transport aircraft during the high-speed rolling phase of flight after touchdown.
+The situation looks like a standard high-energy deceleration on the runway, with both engine thrust reversers and wing spoilers fully deployed.
+
+[Say it yourself]
+Wide-body military transport aircraft.
+High-speed rolling phase.
+After touchdown.
+Runway.
+High-energy deceleration.
+Engine thrust reversers.
+Wing spoilers.
+Fully deployed.
+
+[Final model answer]
+This picture depicts a wide-body military transport aircraft after landing.
+The aircraft appears to be in the high-speed rolling phase on the runway after touchdown.
+It looks like a normal deceleration, with thrust reversers and wing spoilers fully deployed.`
+      },
+      {
+        file: "gibraltar-apron",
+        songs: [
+          { title: "Normal Airport Operation", file: "normal-airport-operation", lyrics: `[Spoken Intro]
+Standard airport operation.
+Commercial aircraft.
+Parked on the apron.
+Passenger boarding.
+Maintenance.
+Normal operation.
+Mountain ridge.
+Airfield background.
+
+Now listen and repeat.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+A normal airport operation.
+I can see
+A commercial aircraft.
+
+It is parked
+On the apron.
+The situation looks calm,
+Safe, and controlled.
+
+[Chorus]
+Parked on the apron,
+Normal operation.
+Passenger boarding,
+Or maintenance preparation.
+
+Commercial aircraft,
+Airfield background.
+A mountain ridge
+Can be seen around.
+
+[Spoken-Sung Verse 2]
+The aircraft may be prepared
+For passenger boarding.
+It may also be
+Undergoing maintenance.
+
+The operation seems
+Completely normal.
+A prominent mountain ridge
+Is visible behind the airfield.
+
+[Chorus]
+Parked on the apron,
+Normal operation.
+Passenger boarding,
+Or maintenance preparation.
+
+Commercial aircraft,
+Airfield background.
+A mountain ridge
+Can be seen around.
+
+[Bridge]
+What can I see?
+A commercial aircraft.
+Where is it parked?
+On the apron.
+
+What is happening?
+A standard operation.
+What is the background?
+A mountain ridge.
+
+Is it dangerous?
+No, it looks normal.
+The situation appears
+Well controlled.
+
+[Final Chorus]
+This appears to be
+A standard operational scenario
+Where a commercial aircraft
+Is parked on the apron.
+
+For passenger boarding
+Or maintenance,
+The operation seems normal,
+With a mountain ridge behind the airfield.
+
+[Spoken Outro]
+This picture depicts a normal airport operation involving a commercial aircraft.
+The aircraft appears to be parked on the apron, possibly for passenger boarding or maintenance.
+The situation looks normal and well controlled, with a prominent mountain ridge visible behind the airfield.` }
+        ],
+        title: "Apron — Normal Operation",
+        artist: "Describe-the-picture drill",
+        topic: "A commercial aircraft parked on the apron for boarding or maintenance, with a mountain ridge behind the airfield.",
+        lyrics: `[Key words]
+Standard airport operation.
+Commercial aircraft.
+Parked on the apron.
+Passenger boarding.
+Maintenance.
+Normal operation.
+Mountain ridge.
+Airfield background.
+
+[Listen and repeat]
+This picture depicts a normal airport operation.
+I can see a commercial aircraft parked on the apron.
+The aircraft may be prepared for passenger boarding.
+It may also be undergoing maintenance.
+The operation seems completely normal.
+A prominent mountain ridge is visible behind the airfield.
+
+[Stronger version]
+This appears to be a standard operational scenario.
+A commercial aircraft is parked on the apron.
+It may be there for passenger boarding or maintenance.
+The situation looks normal and well controlled.
+A mountain ridge is visible directly behind the airfield.
+
+[Full exam version]
+This appears to be a standard operational scenario where a commercial aircraft is parked on the apron for passenger boarding or maintenance.
+The operation seems completely normal, and a prominent mountain ridge is visible directly behind the airfield.
+
+[Say it yourself]
+Standard operational scenario.
+Commercial aircraft.
+Parked on the apron.
+Passenger boarding.
+Maintenance.
+Normal operation.
+Mountain ridge.
+Behind the airfield.
+
+[Final model answer]
+This picture depicts a normal airport operation involving a commercial aircraft.
+The aircraft appears to be parked on the apron, possibly for passenger boarding or maintenance.
+The situation looks normal and well controlled, with a prominent mountain ridge visible behind the airfield.`
+      },
+      {
+        file: "aircraft-in-water",
+        songs: [
+          { title: "Nose-First in the Water", file: "nose-first-in-the-water", lyrics: `[Spoken Intro]
+Severe incident.
+Forced water landing.
+Runway excursion.
+Lake.
+Light single-engine aircraft.
+Partially submerged.
+Nose-first.
+Nose-over position.
+
+Now listen and repeat.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+A serious incident.
+I can see
+A light aircraft in the water.
+
+It is partially submerged,
+Nose-first in the lake.
+The situation looks serious,
+With possible airframe damage.
+
+[Chorus]
+Nose-first in the water,
+Partially submerged.
+Light single-engine aircraft,
+After a serious event.
+
+Forced water landing,
+Or runway excursion.
+Say it clearly,
+Severe incident.
+
+[Spoken-Sung Verse 2]
+This picture depicts
+The aftermath
+Of a severe incident
+Involving a light aircraft.
+
+It may have been
+A forced water landing.
+It could also have been
+A runway excursion into a lake.
+
+[Chorus]
+Nose-first in the water,
+Partially submerged.
+Light single-engine aircraft,
+After a serious event.
+
+Forced water landing,
+Or runway excursion.
+Say it clearly,
+Severe incident.
+
+[Bridge]
+What can I see?
+A light single-engine aircraft.
+Where is it?
+In the water.
+
+What happened?
+Possibly a forced water landing.
+Or maybe
+A runway excursion into a lake.
+
+What is the position?
+Nose-first.
+What does it show?
+A nose-over position.
+
+[Final Chorus]
+This picture depicts
+The aftermath
+Of a severe incident,
+Possibly a forced water landing
+Or a runway excursion into a lake.
+
+A light single-engine aircraft
+Is partially submerged nose-first,
+With its airframe showing
+A clear sign
+Of a nose-over position.
+
+[Spoken Outro]
+This picture depicts the aftermath of a serious incident involving a light single-engine aircraft.
+The aircraft appears to be partially submerged nose-first in the water.
+This may have been a forced water landing or a runway excursion into a lake.` }
+        ],
+        title: "Aircraft in Water",
+        artist: "Describe-the-picture drill",
+        topic: "A light single-engine aircraft partially submerged nose-first — a forced water landing or runway excursion into a lake.",
+        link: { href: "runway-excursion-picture-description.html", label: "Runway Excursion practice" },
+        lyrics: `[Key words]
+Severe incident.
+Forced water landing.
+Runway excursion.
+Lake.
+Light single-engine aircraft.
+Partially submerged.
+Nose-first.
+Nose-over position.
+
+[Listen and repeat]
+This picture depicts a severe incident.
+I can see a light single-engine aircraft in the water.
+The aircraft is partially submerged nose-first.
+It appears to be in a nose-over position.
+This may have been a forced water landing.
+It could also have been a runway excursion into a lake.
+
+[Stronger version]
+This picture depicts the aftermath of a severe incident.
+It may have been a forced water landing or a runway excursion into a lake.
+A light single-engine aircraft is partially submerged nose-first.
+The airframe shows a clear sign of a nose-over position.
+
+[Full exam version]
+This picture depicts the aftermath of a severe incident, possibly a forced water landing or a runway excursion into a lake.
+A light single-engine aircraft is partially submerged nose-first, with its airframe showing a clear sign of a nose-over position.
+
+[Say it yourself]
+Severe incident.
+Forced water landing.
+Runway excursion.
+Lake.
+Light single-engine aircraft.
+Partially submerged.
+Nose-first.
+Nose-over position.
+
+[Final model answer]
+This picture depicts the aftermath of a serious incident involving a light single-engine aircraft.
+The aircraft appears to be partially submerged nose-first in the water.
+This may have been a forced water landing or a runway excursion into a lake.`
+      },
+      {
+        file: "nose-gear-collapse",
+        songs: [
+          { title: "Nose Gear Failure", file: "nose-gear-failure", lyrics: `[Spoken Intro]
+Landing incident.
+Regional turboprop airliner.
+Low-visibility conditions.
+Nose gear failure.
+Forward fuselage.
+Runway surface.
+Direct contact with the runway.
+
+Now listen and repeat.
+
+[Spoken-Sung Verse 1]
+This picture depicts
+A landing incident.
+I can see
+A regional turboprop airliner.
+
+It is on the runway,
+In low visibility.
+The aircraft seems to have suffered
+A nose gear failure.
+
+[Chorus]
+Nose gear failure,
+Landing incident.
+Forward fuselage,
+Touching the pavement.
+
+Low visibility,
+Runway surface.
+Direct contact,
+Serious situation.
+
+[Spoken-Sung Verse 2]
+The visibility appears
+To be low.
+The aircraft is still
+On the runway.
+
+As a result,
+The forward fuselage
+Is making direct contact
+With the runway surface.
+
+[Chorus]
+Nose gear failure,
+Landing incident.
+Forward fuselage,
+Touching the pavement.
+
+Low visibility,
+Runway surface.
+Direct contact,
+Serious situation.
+
+[Bridge]
+What can I see?
+A regional turboprop airliner.
+What happened?
+A landing incident.
+
+What failed?
+The nose gear.
+What is touching the runway?
+The forward fuselage.
+
+What are the conditions?
+Low visibility.
+What is the conclusion?
+A serious landing incident.
+
+[Final Chorus]
+This picture depicts
+A landing incident
+Involving a regional
+Turboprop airliner
+Under low-visibility conditions.
+
+The aircraft seems to have suffered
+A nose gear failure,
+Causing the forward fuselage
+To make direct contact
+With the runway surface.
+
+[Spoken Outro]
+This picture depicts a landing incident involving a regional turboprop airliner.
+The visibility appears to be low, and the aircraft seems to have suffered a nose gear failure.
+As a result, the forward fuselage is in direct contact with the runway surface.` }
+        ],
+        title: "Collapsed Nose Gear",
+        artist: "Describe-the-picture drill",
+        topic: "A regional turboprop after a nose gear failure in low visibility — forward fuselage in contact with the runway.",
+        lyrics: `[Key words]
+Landing incident.
+Regional turboprop airliner.
+Low-visibility conditions.
+Nose gear failure.
+Forward fuselage.
+Runway surface.
+Direct contact with the runway.
+
+[Listen and repeat]
+This picture depicts a landing incident.
+I can see a regional turboprop airliner on the runway.
+The visibility appears to be low.
+The aircraft seems to have suffered a nose gear failure.
+The forward fuselage is in direct contact with the runway surface.
+This looks like a serious landing incident.
+
+[Stronger version]
+This picture depicts a landing incident involving a regional turboprop airliner.
+The aircraft appears to be operating under low-visibility conditions.
+It seems to have suffered a nose gear failure.
+As a result, the forward fuselage is making direct contact with the runway surface.
+
+[Full exam version]
+This picture depicts a landing incident involving a regional turboprop airliner under low-visibility conditions.
+The aircraft seems to have suffered a nose gear failure, causing the forward fuselage to make direct contact with the runway surface.
+
+[Say it yourself]
+Landing incident.
+Regional turboprop airliner.
+Low visibility.
+Nose gear failure.
+Forward fuselage.
+Runway surface.
+Direct contact.
+
+[Final model answer]
+This picture depicts a landing incident involving a regional turboprop airliner.
+The visibility appears to be low, and the aircraft seems to have suffered a nose gear failure.
+As a result, the forward fuselage is in direct contact with the runway surface.`
+      }
+    ];
+
+    // Day/night theme — shares the "theme" key with index.html (choice persists across pages)
+    const themeLabel = document.getElementById("theme-label");
+    function syncThemeLabel() {
+      themeLabel.textContent = document.documentElement.classList.contains("night-ops") ? "Day" : "Night";
+    }
+    syncThemeLabel();
+    document.getElementById("theme-toggle").addEventListener("click", () => {
+      const night = document.documentElement.classList.toggle("night-ops");
+      try { localStorage.setItem("theme", night ? "night" : "day"); } catch (e) {}
+      syncThemeLabel();
+    });
+
+    const grid = document.getElementById("grid");
+    const overlay = document.getElementById("overlay");
+    const sheetCover = document.getElementById("sheet-cover");
+    const sheetTitle = document.getElementById("sheet-title");
+    const sheetArtist = document.getElementById("sheet-artist");
+    const sheetTopic = document.getElementById("sheet-topic");
+    const sheetAudio = document.getElementById("sheet-audio");
+    const sheetLyrics = document.getElementById("sheet-lyrics");
+    const sheetSongs = document.getElementById("sheet-songs");
+
+    function renderLyrics(text) {
+      return text.split("\n").map(line => {
+        const t = line.trim();
+        if (t === "") return '<div class="blank"></div>';
+        if (/^\[.*\]$/.test(t)) return `<div class="section">${t.slice(1, -1)}</div>`;
+        return `<div class="line">${t.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</div>`;
+      }).join("");
+    }
+
+    items.forEach((item, i) => {
+      const card = document.createElement("button");
+      card.className = "card";
+      card.type = "button";
+      card.innerHTML = `
+        <div class="card-cover">
+          <img src="img/picture-description/${item.file}.jpg" alt="${item.title} picture" loading="lazy">
+          <span class="card-play" aria-hidden="true">&#9654;</span>
+        </div>
+        <div class="card-body">
+          <h2>${item.title}</h2>
+          <p>${item.topic}</p>
+          ${item.songs && item.songs.length ? `<p style="color:var(--accent);margin-top:6px;">&#9834; ${item.songs.length} song${item.songs.length > 1 ? "s" : ""} on this scene</p>` : ""}
+        </div>
+      `;
+      card.addEventListener("click", () => openItem(i));
+      grid.appendChild(card);
+    });
+
+    function openItem(i) {
+      const item = items[i];
+      sheetCover.src = `img/picture-description/${item.file}.jpg`;
+      sheetCover.alt = `${item.title} picture`;
+      sheetTitle.textContent = item.title;
+      sheetArtist.textContent = item.artist;
+      const links = item.links || (item.link ? [item.link] : []);
+      sheetTopic.innerHTML = links.length
+        ? `${item.topic} ${links.map(l => `&middot; <a href="${l.href}">${l.label} &rarr;</a>`).join(" ")}`
+        : item.topic;
+      sheetAudio.src = `audio/picture-description/${item.file}.mp3`;
+      sheetLyrics.innerHTML = renderLyrics(item.lyrics);
+      const songs = item.songs || [];
+      sheetSongs.innerHTML = songs.length
+        ? `<div class="songs-head">&#9834; Songs on this scene</div>` + songs.map(s => `
+          <details class="song-block">
+            <summary>
+              <img class="song-art" src="img/picture-description/songs/${s.file}.jpg" alt="" loading="lazy">
+              <span class="song-title">${s.title}</span>
+              <span class="song-note">tap to open</span>
+              <span class="song-caret">&#9660;</span>
+            </summary>
+            <audio controls preload="none" src="audio/picture-description/songs/${s.file}.mp3"></audio>
+            <div class="lyrics">${renderLyrics(s.lyrics)}</div>
+          </details>`).join("")
+        : "";
+      overlay.classList.add("is-open");
+      document.body.style.overflow = "hidden";
+      overlay.scrollTop = 0;
+    }
+
+    function closeItem() {
+      overlay.classList.remove("is-open");
+      sheetAudio.pause();
+      sheetAudio.removeAttribute("src");
+      sheetSongs.querySelectorAll("audio").forEach(a => a.pause());
+      sheetSongs.innerHTML = "";
+      document.body.style.overflow = "";
+    }
+
+    document.getElementById("sheet-close").addEventListener("click", closeItem);
+    overlay.addEventListener("click", (e) => { if (e.target === overlay) closeItem(); });
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeItem(); });
+
+    function openFromHash() {
+      const file = decodeURIComponent(location.hash.slice(1));
+      const i = items.findIndex(s => s.file === file);
+      if (i >= 0) openItem(i);
+    }
+    window.addEventListener("hashchange", openFromHash);
+    openFromHash();
+  </script>
+  <footer style="text-align:center;padding:28px 16px;font-family:'SF Pro Text',Arial,sans-serif;"><a href="index.html" style="color:#7a6858;font-size:15px;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;">&larr; All quizzes</a></footer>
+</body>
+</html>
