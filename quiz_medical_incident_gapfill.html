@@ -136,6 +136,13 @@
     .btn:hover:not(:disabled) { background: #efe6d8; }
     .btn.primary { background: #4a3e34; color: #f8f3e9; border-color: #4a3e34; }
     .btn.primary:hover { background: #5a4e44; }
+    .audio-player { width: 100%; margin-bottom: 6px; }
+    .audio-note {
+      color: #7a6858;
+      font-size: 13px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      margin-bottom: 24px;
+    }
   </style>
 </head>
 <body>
@@ -144,6 +151,9 @@
     <h1>Report on a Medical Incident — Flight IC321</h1>
     <div class="subtitle">Gap-fill · aviation medical English · Delhi to Colombo</div>
     <p class="instruction">Fill each gap with a word from the bank. Click a word to drop it into the focused gap, or just type. Then press <strong>Check answers</strong>.</p>
+
+    <audio class="audio-player" controls preload="none" src="audio/medical-incident-report-gapfill.mp3"></audio>
+    <p class="audio-note">Listen to the full report read aloud while you fill the gaps.</p>
 
     <div class="bank" id="bank"></div>
 
