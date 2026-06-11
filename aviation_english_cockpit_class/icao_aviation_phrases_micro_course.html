@@ -798,7 +798,7 @@
                     <div class="space-y-4">
                         <div class="flex justify-between items-start">
                             <span class="text-xs font-mono font-bold uppercase text-theme-highlight bg-theme-inner px-3 py-1 rounded-lg border border-theme-border">${item.category === 'verbs' ? 'Action / Verb' : 'State / Failure'}</span>
-                            <button onclick="speak('${item.phrase}. Example: ${item.example.replace(/'/g, "\\'")}')" class="text-base p-2.5 rounded-lg hover:bg-theme-inner text-theme-muted hover:text-theme-text transition-colors flex items-center justify-center border border-transparent hover:border-theme-border" title="Listen Pronunciation">
+                            <button onclick="playClip('lex-${index}.mp3')" class="text-base p-2.5 rounded-lg hover:bg-theme-inner text-theme-muted hover:text-theme-text transition-colors flex items-center justify-center border border-transparent hover:border-theme-border" title="Listen Pronunciation">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                             </button>
                         </div>
@@ -835,23 +835,26 @@
             renderLexicon(category);
         }
 
-        // --- TTS Voice Engine ---
-        function speak(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                const voices = window.speechSynthesis.getVoices();
-                const englishVoice = voices.find(voice => voice.lang.startsWith('en-'));
-                if (englishVoice) {
-                    utterance.voice = englishVoice;
-                }
-                utterance.rate = 0.95;
-                window.speechSynthesis.speak(utterance);
-                showToast("🔊 Audio Stream Initiated", "Listen closely to structural speed and cadence.");
-            } else {
-                showToast("⚠️ Support Warning", "Speech Synthesis is unsupported in this browser environment.", "error");
+        // --- Audio Engine (pre-rendered premium voice clips) ---
+        const AUDIO_BASE = '../audio/icao-phrases-micro-course/';
+        const _audio = new Audio();
+        let _queue = [];
+        _audio.addEventListener('ended', () => {
+            if (_queue.length) {
+                _audio.src = _queue.shift();
+                _audio.play().catch(() => {});
             }
+        });
+        function _playFiles(files) {
+            _audio.pause();
+            _queue = files.slice(1).map(f => AUDIO_BASE + f);
+            _audio.src = AUDIO_BASE + files[0];
+            _audio.play()
+                .then(() => showToast("🔊 Audio Stream Initiated", "Premium voice — listen to the cadence."))
+                .catch(() => showToast("⚠️ Audio Error", "Could not play the recording.", "error"));
         }
+        function playClip(file) { _playFiles([file]); }
+        function playQueue(files) { _playFiles(files); }
 
         // --- Response Comparator Navigation & Grid Details ---
         function renderComparatorNav() {
@@ -896,7 +899,7 @@
                 <div class="space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-theme-border pb-4">
                         <h4 class="text-xl sm:text-2xl font-black text-theme-text uppercase tracking-wide">${current.title} Model Comparison</h4>
-                        <button onclick="speak('Level five answer: ${current.level5.replace(/'/g, "\\'")}')" class="text-sm px-4 py-2.5 rounded-lg bg-theme-inner border border-theme-border text-theme-highlight hover:text-white hover:border-theme-accent transition-colors flex items-center space-x-2">
+                        <button onclick="playClip('level5-${current.id}.mp3')" class="text-sm px-4 py-2.5 rounded-lg bg-theme-inner border border-theme-border text-theme-highlight hover:text-white hover:border-theme-accent transition-colors flex items-center space-x-2">
                             <span>🔊 Listen to Level 5</span>
                         </button>
                     </div>
@@ -1162,14 +1165,22 @@
 
         function playVoiceBrief() {
             const textBox = document.getElementById('generated-brief-text');
-            if (textBox) {
-                const text = textBox.innerText;
-                if (text.includes("Choose selections on the left")) {
-                    showToast("⚠️ Engine Alert", "Please compile a statement brief first.", "error");
-                    return;
-                }
-                speak(text);
+            if (!textBox || textBox.innerText.includes("Choose selections on the left")) {
+                showToast("⚠️ Engine Alert", "Please compile a statement brief first.", "error");
+                return;
             }
+            const inc = document.getElementById('gen-incident').value;
+            const cause = document.getElementById('gen-cause').value;
+            const symp = document.getElementById('gen-symp').value;
+            const concern = document.getElementById('gen-concern').value;
+            const action = document.getElementById('gen-action').value;
+            playQueue([
+                `gen-incident-${inc}.mp3`,
+                `gen-cause-${cause}.mp3`,
+                `gen-symp-${symp}.mp3`,
+                `gen-concern-${concern}.mp3`,
+                `gen-action-${action}.mp3`,
+            ]);
         }
 
         function copyBriefText() {
