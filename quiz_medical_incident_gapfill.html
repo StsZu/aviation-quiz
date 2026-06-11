@@ -166,6 +166,12 @@
       margin-bottom: 24px;
     }
     .video-note a { color: #4a3e34; }
+    .video-heading {
+      font-size: 18px;
+      color: #2f2822;
+      margin: 30px 0 12px;
+      line-height: 1.3;
+    }
   </style>
 </head>
 <body>
@@ -177,17 +183,6 @@
 
     <audio class="audio-player" controls preload="none" src="audio/medical-incident-report-gapfill.mp3"></audio>
     <p class="audio-note">Listen to the full report read aloud while you fill the gaps.</p>
-
-    <div class="video-frame">
-      <iframe
-        src="https://www.youtube.com/embed/QnKU1iEdTxc?modestbranding=1&start=180&end=195"
-        title="Medical incident — video clip (3:00–3:15)"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
-    </div>
-    <p class="video-note">Clip: 3:00&ndash;3:15. Full video on
-      <a href="https://youtu.be/QnKU1iEdTxc?t=180" target="_blank" rel="noopener">YouTube</a>.
-    </p>
 
     <div class="bank" id="bank"></div>
 
@@ -201,6 +196,18 @@
         <button class="btn primary" id="btn-check" onclick="checkAnswers()">Check answers</button>
       </div>
     </div>
+
+    <h2 class="video-heading">What does CPR stand for?</h2>
+    <div class="video-frame">
+      <iframe
+        src="https://www.youtube.com/embed/QnKU1iEdTxc?modestbranding=1&start=180&end=195"
+        title="Medical incident — video clip (3:00–3:15)"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+    <p class="video-note">Clip: 3:00&ndash;3:15. Full video on
+      <a href="https://youtu.be/QnKU1iEdTxc?t=180" target="_blank" rel="noopener">YouTube</a>.
+    </p>
   </div>
 
   <footer style="text-align:center;padding:28px 16px;font-family:'SF Pro Text',Arial,sans-serif;">
