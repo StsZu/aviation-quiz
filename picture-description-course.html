@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Picture Description: From Zero to ICAO Level 5</title>
+  <script>try { if (localStorage.getItem("theme") === "night") document.documentElement.classList.add("night-ops"); } catch (e) {}</script>
+  <style>
+    :root {
+      --bg: #e7dfd2; --panel: #f8f3e9; --sheet-bg: #f4ede0; --border: #d4c7b3; --border-hover: #b8a891;
+      --text: #2f2822; --text2: #4a3e34; --muted: #7a6858; --accent: #b07d3a; --accent2: #8a5a2a;
+      --good: #4f7a3a; --danger: #a8472f; --mark: #f6e08a; --btn-bg: #fffbf4; --btn-hover: #efe6d8;
+      --cover-bg: #ffffff; --hr: #e2d6c2; --card-shadow: 0 8px 22px rgba(80,60,40,.14);
+    }
+    .night-ops {
+      --bg: #1c1611; --panel: #261e17; --sheet-bg: #2e251c; --border: #3d3226; --border-hover: #4a3d2e;
+      --text: #efe6d8; --text2: #cdbfad; --muted: #9a8a76; --accent: #d8a657; --accent2: #e6bb73;
+      --good: #8fb56f; --danger: #d68a72; --mark: #6a5520; --btn-bg: #2e251c; --btn-hover: #3d3226;
+      --cover-bg: #1c1611; --hr: #3d3226; --card-shadow: 0 10px 28px rgba(0,0,0,.5);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Georgia, "Palatino Linotype", serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 36px 18px 64px; transition: background-color .3s, color .3s; }
+    .module-wrap { width: 100%; max-width: 1000px; margin: 0 auto; }
+    .ui { font-family: "SF Pro Text", Arial, sans-serif; }
+
+    .theme-toggle { position: fixed; top: 16px; right: 18px; z-index: 80; display: inline-flex; align-items: center; gap: 7px; background: var(--panel); border: 1px solid var(--border); color: var(--text); border-radius: 30px; padding: 8px 14px; font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; }
+    .theme-toggle:hover { background: var(--btn-hover); border-color: var(--border-hover); }
+    .theme-toggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    .back { display: inline-block; margin-bottom: 14px; color: var(--muted); text-decoration: none; font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; }
+    .back:hover { color: var(--accent); }
+
+    .hero { background: var(--panel); border: 1px solid var(--border); border-radius: 22px; padding: 32px 34px; margin-bottom: 18px; }
+    .hero h1 { font-size: 31px; line-height: 1.2; margin-bottom: 10px; }
+    .hero p { font-size: 16px; color: var(--text2); line-height: 1.55; max-width: 760px; }
+    .roadmap { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+    .roadmap span { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; color: var(--text2); }
+    .roadmap b { color: var(--accent2); }
+
+    /* Stepper */
+    .stepper { position: sticky; top: 0; z-index: 50; background: var(--bg); padding: 10px 0 12px; margin-bottom: 8px; }
+    .stepper-inner { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+    .step-chip { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; font-weight: 600; text-decoration: none; color: var(--text2); background: var(--panel); border: 1px solid var(--border); border-radius: 30px; padding: 7px 13px; display: inline-flex; align-items: center; gap: 6px; }
+    .step-chip:hover { border-color: var(--border-hover); background: var(--btn-hover); }
+    .step-chip .tick { color: var(--good); font-weight: 800; display: none; }
+    .step-chip.done .tick { display: inline; }
+    .step-chip.done { border-color: var(--good); }
+    .stepper .bar { flex: 1 1 120px; height: 8px; min-width: 100px; background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+    .stepper .bar > i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .3s; }
+
+    .module { background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 26px 28px; margin-bottom: 18px; scroll-margin-top: 64px; }
+    .m-tag { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .7px; color: var(--accent); }
+    .m-title { font-size: 24px; margin: 4px 0 6px; }
+    .m-intro { color: var(--text2); font-size: 15px; line-height: 1.55; margin-bottom: 16px; }
+    .m-foot { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hr); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+    .m-foot p { font-family: "SF Pro Text", Arial, sans-serif; color: var(--muted); font-size: 14px; }
+
+    /* Buttons */
+    .btn { font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; font-weight: 600; background: var(--btn-bg); color: var(--text); border: 1px solid var(--border); border-radius: 12px; padding: 10px 16px; cursor: pointer; transition: background .12s, border-color .12s; }
+    .btn:hover:not(:disabled) { background: var(--btn-hover); border-color: var(--border-hover); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-primary:hover:not(:disabled) { background: var(--accent2); border-color: var(--accent2); }
+    .btn-good { background: var(--good); color: #fff; border-color: var(--good); }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+    /* Accordions (Module 1) */
+    .acc { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 12px; background: var(--sheet-bg); }
+    .acc-head { width: 100%; text-align: left; background: none; border: none; cursor: pointer; padding: 16px 18px; font-family: Georgia, serif; color: var(--text); display: flex; align-items: baseline; gap: 10px; }
+    .acc-head:hover { background: var(--btn-hover); }
+    .acc-step { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; font-weight: 800; color: #fff; background: var(--accent); border-radius: 8px; padding: 3px 9px; letter-spacing: .5px; }
+    .acc-name { font-size: 18px; }
+    .acc-caret { margin-left: auto; color: var(--muted); transition: transform .2s; }
+    .acc.open .acc-caret { transform: rotate(90deg); }
+    .acc-body { display: none; padding: 0 18px 18px; }
+    .acc.open .acc-body { display: block; }
+    .acc-body p.exp { color: var(--text2); font-size: 15px; line-height: 1.6; margin-bottom: 14px; }
+    .lang-h { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--accent); margin: 10px 0 8px; }
+    .lang-group { margin-bottom: 10px; }
+    .lang-label { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; font-weight: 700; color: var(--text2); margin-bottom: 6px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; background: var(--panel); border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px; color: var(--text2); }
+    .lines { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+    .lines li { font-style: italic; color: var(--text2); font-size: 14.5px; line-height: 1.5; padding-left: 14px; border-left: 3px solid var(--border); }
+    .example { margin-top: 14px; background: var(--panel); border: 1px solid var(--border); border-left: 4px solid var(--accent); border-radius: 12px; padding: 14px 16px; font-style: italic; color: var(--text); line-height: 1.6; font-size: 15px; }
+    .example::before { content: "Example"; display: block; font-style: normal; font-family: "SF Pro Text", Arial, sans-serif; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--accent); margin-bottom: 6px; }
+
+    /* Worked example (Module 2) */
+    .photo { width: 100%; border: 1px solid var(--border); border-radius: 14px; background: var(--cover-bg); display: block; }
+    .photo-wrap { margin-bottom: 16px; }
+    .ma-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 4px 0 16px; }
+    .toggle { display: inline-flex; align-items: center; gap: 8px; font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; cursor: pointer; user-select: none; }
+    .toggle input { display: none; }
+    .toggle .sw { width: 40px; height: 22px; background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 20px; position: relative; transition: background .15s; }
+    .toggle .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--muted); transition: transform .15s, background .15s; }
+    .toggle input:checked + .sw { background: var(--accent); }
+    .toggle input:checked + .sw::after { transform: translateX(18px); background: #fff; }
+    .ma-legend { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; color: var(--muted); }
+    .ma-sec { border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-bottom: 10px; background: var(--sheet-bg); }
+    .ma-badge { display: inline-block; font-family: "SF Pro Text", Arial, sans-serif; font-size: 11px; font-weight: 700; letter-spacing: .4px; color: #fff; border-radius: 8px; padding: 3px 9px; margin-bottom: 8px; }
+    .b-step1 { background: #5a8f3c; } .b-step2 { background: #b07d3a; } .b-step3 { background: #c08a2a; } .b-step4 { background: #7a8aa0; }
+    .b-causes { background: #a8472f; } .b-crew { background: #8a5a2a; } .b-radio { background: #6a5aa0; } .b-atc { background: #2f7a7a; } .b-conclusion { background: #555; }
+    .ma-sec p { font-size: 15.5px; line-height: 1.62; color: var(--text); }
+    mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 2px; }
+    body:not(.show-l5) mark { background: transparent; padding: 0; }
+
+    /* Quiz (Module 3) */
+    .quiz-q { font-size: 18px; line-height: 1.5; margin-bottom: 4px; }
+    .quiz-title { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--accent); margin-bottom: 8px; }
+    .quiz-count { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+    .opt { display: block; width: 100%; text-align: left; font-family: "SF Pro Text", Arial, sans-serif; font-size: 15px; background: var(--btn-bg); border: 1px solid var(--border); border-radius: 12px; padding: 13px 16px; margin-bottom: 10px; cursor: pointer; color: var(--text); transition: background .12s, border-color .12s; }
+    .opt:hover:not(:disabled) { background: var(--btn-hover); border-color: var(--border-hover); }
+    .opt:disabled { cursor: default; }
+    .opt.correct { border-color: var(--good); background: rgba(79,122,58,.14); }
+    .opt.wrong { border-color: var(--danger); background: rgba(168,71,47,.14); }
+    .feedback { font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; line-height: 1.5; color: var(--text2); background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 12px; padding: 13px 15px; margin: 6px 0 14px; }
+    .quiz-final { text-align: center; padding: 10px 0; }
+    .quiz-score { font-size: 40px; font-weight: 800; color: var(--accent); font-family: "SF Pro Text", Arial, sans-serif; }
+
+    /* Practice (Module 4) */
+    .timer-pick { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+    .timer { font-family: "SF Pro Text", Arial, sans-serif; font-size: 44px; font-weight: 800; color: var(--accent); text-align: center; margin: 8px 0; }
+    .timer.low { color: var(--danger); }
+    .skeleton { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 8px 0 4px; }
+    .skel { background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; }
+    .skel h5 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: var(--accent2); margin-bottom: 6px; }
+    .skel ul { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+    .skel li { font-size: 13.5px; color: var(--text2); font-style: italic; line-height: 1.4; }
+    .selfcheck { display: flex; flex-direction: column; gap: 8px; margin: 6px 0 12px; }
+    .selfcheck label { display: flex; align-items: flex-start; gap: 10px; font-family: "SF Pro Text", Arial, sans-serif; font-size: 14.5px; color: var(--text2); cursor: pointer; line-height: 1.4; }
+    .selfcheck input { margin-top: 3px; width: 17px; height: 17px; accent-color: var(--accent); flex-shrink: 0; }
+    .cover-summary { font-family: "SF Pro Text", Arial, sans-serif; font-size: 15px; font-weight: 700; color: var(--accent2); margin: 4px 0 12px; }
+
+    .footer-links { margin-top: 30px; background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 20px 24px; display: flex; flex-wrap: wrap; gap: 12px 24px; align-items: center; }
+    .footer-links a { font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; color: var(--accent2); text-decoration: none; font-weight: 600; }
+    .footer-links a:hover { text-decoration: underline; }
+    .footer-links span { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: var(--muted); }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 680px) {
+      body { padding: 22px 12px 48px; }
+      .hero h1 { font-size: 24px; }
+      .module { padding: 20px 18px; }
+      .skeleton { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle ui" onclick="toggleTheme()" aria-label="Toggle theme">
+    <svg id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"></path></svg>
+    <svg id="ic-moon" class="hidden" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"></path></svg>
+    <span id="theme-label">Night</span>
+  </button>
+
+  <div class="module-wrap">
+    <a class="back" href="index.html">← All quizzes</a>
+
+    <div class="hero">
+      <h1>Picture Description: From Zero to ICAO Level 5</h1>
+      <p>In the ICAO Speaking test you are shown an aviation photo and asked to describe it. This course takes you from zero to a Level&nbsp;5 answer on one real accident photo: first the <b>method</b>, then a <b>worked model answer</b>, then a <b>comprehension check</b>, and finally your own <b>timed practice</b>.</p>
+      <div class="roadmap ui">
+        <span><b>1.</b> The 5-Step Method</span>
+        <span><b>2.</b> Worked Example</span>
+        <span><b>3.</b> Comprehension Quiz</span>
+        <span><b>4.</b> Your Turn</span>
+      </div>
+    </div>
+
+    <div class="stepper ui">
+      <div class="stepper-inner" id="stepper"></div>
+    </div>
+
+    <!-- Module 1 -->
+    <section class="module" id="m1">
+      <div class="m-tag">Module 1 of 4</div>
+      <h2 class="m-title">The 5-Step Method</h2>
+      <p class="m-intro">A reliable order for describing any aviation photo. Work through the five steps — read the idea, study the useful language, then see the example.</p>
+      <div id="steps"></div>
+      <div class="m-foot">
+        <p>You now know the method. Let's see it applied to a real accident photo →</p>
+        <button class="btn btn-good" onclick="completeModule(1, this)">I've learned the method ✓</button>
+      </div>
+    </section>
+
+    <!-- Module 2 -->
+    <section class="module" id="m2">
+      <div class="m-tag">Module 2 of 4</div>
+      <h2 class="m-title">Worked Example — Runway Excursion into Water</h2>
+      <p class="m-intro">A Boeing 737 that overran the runway and entered the water at Jacksonville. Below is a full ICAO Level&nbsp;5 model answer, split by method step and by topic.</p>
+      <div class="photo-wrap">
+        <img class="photo" src="img/runway-excursion-water.jpg" alt="Boeing 737 partially submerged in water after a runway excursion, with emergency slides deployed and a containment boom around it">
+      </div>
+      <div class="ma-toolbar">
+        <label class="toggle"><input type="checkbox" id="l5toggle" onchange="toggleL5(this)"><span class="sw"></span> Show Level 5 language</label>
+        <span class="ma-legend">Highlights deduction modals, hedging, and safety-perspective phrases.</span>
+      </div>
+      <div id="model"></div>
+      <div class="m-foot">
+        <p>That is what a complete Level 5 answer sounds like. Now test your understanding →</p>
+        <button class="btn btn-good" onclick="completeModule(2, this)">Worked example reviewed ✓</button>
+      </div>
+    </section>
+
+    <!-- Module 3 -->
+    <section class="module" id="m3">
+      <div class="m-tag">Module 3 of 4</div>
+      <h2 class="m-title">Comprehension Quiz</h2>
+      <p class="m-intro">Ten questions on the photo and the model answer. Pick an option to get instant feedback.</p>
+      <div id="quiz"></div>
+    </section>
+
+    <!-- Module 4 -->
+    <section class="module" id="m4">
+      <div class="m-tag">Module 4 of 4</div>
+      <h2 class="m-title">Your Turn</h2>
+      <p class="m-intro">Describe the same photo yourself, out loud, against the clock. The model answer stays hidden until you choose to compare.</p>
+      <div class="photo-wrap">
+        <img class="photo" src="img/runway-excursion-water.jpg" alt="Boeing 737 partially submerged in water after a runway excursion">
+      </div>
+
+      <div id="practice-setup">
+        <div class="timer-pick ui">
+          <span style="font-family:'SF Pro Text',Arial,sans-serif;font-size:14px;color:var(--muted)">Speaking time:</span>
+          <button class="btn pick" data-sec="60" onclick="pickTime(this,60)">60s</button>
+          <button class="btn pick btn-primary" data-sec="90" onclick="pickTime(this,90)">90s</button>
+          <button class="btn pick" data-sec="120" onclick="pickTime(this,120)">120s</button>
+          <button class="btn btn-primary" onclick="startPractice()">Start practice ▸</button>
+        </div>
+      </div>
+
+      <div id="practice-run" class="hidden">
+        <div class="timer" id="ptimer">90</div>
+        <div class="btn-row" style="justify-content:center;margin-bottom:14px">
+          <button class="btn" onclick="finishPractice()">Finish early</button>
+        </div>
+        <div class="skeleton" id="skeleton"></div>
+      </div>
+
+      <div id="practice-check" class="hidden">
+        <h4 style="font-size:18px;margin-bottom:10px">Self-assessment</h4>
+        <div class="selfcheck" id="selfcheck"></div>
+        <div class="cover-summary" id="cover-summary"></div>
+        <div class="btn-row">
+          <button class="btn btn-good" onclick="submitSelfCheck()">Save result</button>
+          <button class="btn" onclick="toggleCompare()">Compare with the model answer</button>
+          <button class="btn" onclick="resetPractice()">Try again</button>
+        </div>
+        <div id="compare" class="hidden" style="margin-top:16px"></div>
+      </div>
+    </section>
+
+    <div class="footer-links ui">
+      <span>Keep practising:</span>
+      <a href="picture-description-trainer.html">Drill Step 1 — Topic Statement →</a>
+      <a href="picture-description-trainer-step-2.html">Drill Step 2 — Detailed Description →</a>
+      <a href="runway-excursion-model-answer.html">More on this accident →</a>
+    </div>
+  </div>
+
+  <script>
+    /* ===== Theme ===== */
+    function toggleTheme() {
+      const night = document.documentElement.classList.toggle("night-ops");
+      document.getElementById("ic-sun").classList.toggle("hidden", night);
+      document.getElementById("ic-moon").classList.toggle("hidden", !night);
+      document.getElementById("theme-label").textContent = night ? "Day" : "Night";
+      try { localStorage.setItem("theme", night ? "night" : "day"); } catch (e) {}
+    }
+    (function () {
+      const night = document.documentElement.classList.contains("night-ops");
+      document.getElementById("ic-sun").classList.toggle("hidden", night);
+      document.getElementById("ic-moon").classList.toggle("hidden", !night);
+      document.getElementById("theme-label").textContent = night ? "Day" : "Night";
+    })();
+
+    /* ===== Data: 5-step method (verbatim) ===== */
+    const STEPS = [
+      {
+        num: 1, title: "Make a Topic Statement",
+        explanation: "Start by offering a brief overview of the image, which will provide a general understanding of the situation in the scene. One or two sentences are enough!",
+        language: [{ items: ["The incident involves …", "This is a …", "I can see …", "There is / are …", "The picture shows …", "The picture depicts …", "This picture illustrates …", "The image portrays …"] }],
+        example: "This picture depicts a British Airways aircraft that has suffered an engine fire. Passengers can be seen calmly distancing themselves from the aircraft having evacuated via the emergency chutes."
+      },
+      {
+        num: 2, title: "Describe the Aircraft",
+        explanation: "This is a great chance to show off your aviation vocabulary! Go ahead and talk about the TYPE of aircraft, any interesting FEATURES that it may have, and what CONDITION it is in, especially if your photograph shows an accident aircraft.",
+        language: [
+          { label: "Type", items: ["Boeing", "Airbus", "seaplane", "general aviation", "commercial", "firefighting", "military"] },
+          { label: "Features", items: ["swept wing", "t-tail", "delta wing", "high / low wing", "retractable landing gear", "distinctive livery", "wide / narrow body", "twin engine", "single piston engine"] },
+          { label: "Damage", items: ["ripped off", "buckled", "cracked", "shattered", "collapsed", "punctured", "folded back", "bent", "twisted", "snapped"] }
+        ],
+        example: "What looks like a Boeing 737 has left the runway and slid down a steep bank. The right engine has been ripped off and the landing gear has probably collapsed. The emergency slides have been deployed and the rear and over-wing doors are open. Apart from some damage to the right wing, the fuselage looks to be mostly intact. The left engine has dug into the soft ground and this may have helped prevent the aircraft from sliding further down the hill."
+      },
+      {
+        num: 3, title: "Hypothesise",
+        explanation: "Make guesses about what you can't see in the picture. What happened before the picture was taken? How are the people feeling now? What do you think will happen next?",
+        language: [
+          { label: "Second / Third conditionals", kind: "lines", items: ["If I were a passenger on this plane, I would feel shaken up.", "If the aircraft had been going faster, it would have ended up in the water."] },
+          { label: "Modal verbs for possibility / certainty", kind: "lines", items: ["The people in the background might be local residents who have come to have a look."] },
+          { label: "Look / seem / appear", kind: "lines", items: ["The aircraft seems to be balancing delicately on the edge of the river bank and it looks like it could fall in at any moment."] },
+          { label: "Adverbials of probability", items: ["maybe", "perhaps", "certainly", "definitely", "probably", "obviously", "clearly"] }
+        ],
+        example: "Although the runway is not visible, this looks like a runway overshoot. The weather conditions may have been a contributory factor to the incident; it is currently quite overcast, but when the incident happened there could have been heavy rain or standing water on the runway which caused the aircraft to skid. The over-wing door is open so I guess the passengers all managed to evacuate, although it's possible some of them sustained some minor injuries. This must have been a very scary experience for the passengers."
+      },
+      {
+        num: 4, title: "Background",
+        explanation: "Look at the background of the photo. What other things do you see? Think about the terrain, airport layout, ground personnel, vehicles, equipment, airport signs, markings and lighting.",
+        language: [
+          { label: "Ground support vehicles / equipment", items: ["fuel truck", "ground power unit (GPU)", "passenger / apron buses", "container loader", "belt loader", "snow plough", "de-icing vehicle", "air stairs", "jet bridge", "pushback tug", "firefighting trucks", "ambulance", "follow me car", "baggage carts"] },
+          { label: "People", items: ["marshaller", "baggage handler / ramp agent", "fire fighter", "paramedic", "falconer", "maintenance engineer", "cabin crew", "air traffic controller"] },
+          { label: "Terrain", items: ["snow-capped mountains", "steep slopes", "wide grasslands", "harvested fields", "winding river", "murky lake", "rolling hills", "sparse vegetation", "sandy dunes", "dense forest", "lush greenery", "built up area", "cityscape", "skyscrapers", "rural village"] }
+        ],
+        example: "This airfield seems to be located in a very dry, arid area. It is surrounded by flat terrain and looks particularly sandy and stony. In the distance, some rocky mountains are visible on the horizon. The terrain seems to be completely devoid of vegetation indicating that there is probably very little rainfall in this area. In the foreground, an aircraft is connected to the jet bridge and several ground crew in high-vis clothing can be seen next to the baggage cart. A belt loader is sitting idle at the bottom of the image."
+      },
+      {
+        num: 5, title: "Weather",
+        explanation: "Finally, don't forget to mention the weather conditions, particularly if they have an impact on what is happening in the photo.",
+        language: [
+          { label: "Snow", items: ["glistening snow", "pristine", "blizzard", "flurries of snow", "snowdrift", "frosty conditions", "heavy snowfall", "blanketed in snow"] },
+          { label: "Sunny weather", items: ["clear blue skies", "fair weather", "bright and sunny", "unobstructed view", "glare", "CAVOK"] },
+          { label: "Wind", items: ["light breeze", "wind shear", "blustery conditions", "turbulence", "crosswind", "gusts", "gales"] },
+          { label: "Rain", items: ["heavy downpour", "light drizzle", "drenched", "cloudburst", "flooding", "bucketing down", "driving rain", "torrential rain"] },
+          { label: "Cloud", items: ["overcast", "TCU (towering cumulus)", "isolated / embedded CB clouds", "scattered / broken clouds", "wispy cirrus clouds", "gloomy", "anvil clouds", "mammatus clouds"] },
+          { label: "Fog", items: ["patches of fog", "low / reduced visibility", "misty", "engulfed in fog", "dense fog"] }
+        ],
+        example: "Although it is not snowing at the moment, there is a thick layer of snow covering the ground indicating a recent heavy snowfall. The airport is at risk of becoming snowbound and the weather conditions must be disrupting the usual flow of traffic. De-icing activities are in full swing, with ground crews busy ensuring that the aircraft wings and fuselage are clear of ice in these frigid temperatures."
+      }
+    ];
+
+    /* ===== Data: model answer sections (verbatim) ===== */
+    const MODEL_SECTIONS = [
+      { badge: "Step 1 · Topic Statement", kind: "step1", text: "In this photo, I can see a narrow-body aircraft, possibly a Boeing 737, partially submerged in water near the end of a runway. From the tire tracks leading from the runway to the water, it is clear that this must have been a runway excursion." },
+      { badge: "Step 2 · Aircraft & Condition", kind: "step2", text: "The aircraft appears to have overrun the runway and entered the water at relatively low speed. The fuselage looks mostly intact, and there are no obvious signs of major structural break-up. This may indicate that the impact forces were not extremely high. From a safety perspective, this is important because lower impact forces usually increase the chances of passenger survival." },
+      { badge: "Step 3 · Hypothesise — Exits & Slides", kind: "step3", text: "The forward emergency exits are open, and the evacuation slides have been deployed. This suggests that the crew initiated an emergency evacuation after the aircraft came to a stop. One slide appears to be inflated, while the other one seems to be deflated. It could have been punctured during the evacuation, or it may not have inflated correctly." },
+      { badge: "Step 4 · Background — People", kind: "step4", text: "There are several people standing on or near the right wing. They do not appear to be passengers or crew members, so they could have been accident investigators, airport officials, or emergency personnel. A yellow raft can be seen near the wing, so they may have used it to reach the aircraft from the shoreline." },
+      { badge: "Step 4 · Background — Containment", kind: "step4", text: "Around the aircraft, there is an orange floating barrier. This was probably placed there to contain debris, fuel, oil, or hydraulic fluid. From an environmental safety perspective, this is a necessary measure because hazardous fluids could spread into the water and cause contamination." },
+      { badge: "Step 4 · Background — Emergency Services", kind: "step4", text: "In the background, I can see fire rescue vehicles, airport vehicles, and people wearing reflective clothing and hard hats. This means that the emergency services must have responded to the accident site. However, there is no clear sense of panic, so the photo was probably taken some time after the initial emergency." },
+      { badge: "Step 4 · Background — Lighting", kind: "step4", text: "There is also a floodlight in the upper right-hand corner of the photo. This may suggest that the accident occurred at night, or that the recovery operation continued into the night. The floodlight would help emergency crews and investigators work safely around the aircraft." },
+      { badge: "Causes", kind: "causes", text: "As for possible causes, there is usually no single reason for this type of accident. A possible contributing factor could have been poor braking action on a wet or contaminated runway. The aircraft could also have encountered wind shear, a tailwind, or strong crosswind during landing or rejected takeoff. These factors can increase stopping distance and reduce the safety margin." },
+      { badge: "Causes", kind: "causes", text: "Another possible factor could have been a malfunction of the braking system, speed brakes, or thrust reversers. In this photo, the engines are submerged, so it is difficult to say whether the thrust reversers were deployed. The speed brakes are not clearly deployed, but they may have been retracted after the aircraft stopped." },
+      { badge: "Crew Actions", kind: "crew", text: "From a crew perspective, the first priority after the runway excursion would be to secure the aircraft, inform air traffic control, and start the evacuation if there was any risk of fire, smoke, fuel leakage, or sinking. The captain would need to advise air traffic control about the situation and report the number of souls on board." },
+      { badge: "Radio Call", kind: "radio", text: "A possible radio call could be: “Tower, November one two three, we have gone off the runway and entered the water. The aircraft is partially submerged. We have one hundred fifty souls on board. Request immediate fire rescue assistance.”" },
+      { badge: "Crew Actions", kind: "crew", text: "The flight crew would then run the evacuation checklist, shut down the engines, and make sure the aircraft was safe before passengers left the aircraft. The cabin crew would instruct passengers to release their seat belts, leave their baggage behind, and evacuate quickly." },
+      { badge: "Crew Actions — Passenger Safety", kind: "crew", text: "From a safety perspective, passengers must move away from the aircraft as soon as possible because there may still be a risk of fire, fuel leakage, smoke, or structural failure. Taking baggage during an evacuation is extremely dangerous because it can slow down the evacuation and block other passengers." },
+      { badge: "ATC Actions", kind: "atc", text: "For air traffic control, the priority would be to alert airport fire rescue, close the affected runway, stop departures, and instruct arriving aircraft to go around or divert if necessary. Good coordination between the pilots, cabin crew, air traffic control, and rescue services is essential in this type of emergency." },
+      { badge: "Conclusion", kind: "conclusion", text: "In my opinion, this situation shows how quickly a normal landing or takeoff can become a serious emergency. The main safety lesson is that runway condition, wind, braking performance, crew communication, and emergency preparedness are all critical. A well-coordinated evacuation and a fast emergency response can prevent injuries and save lives." }
+    ];
+
+    /* Level-5 markers (longest first so multi-word phrases win) */
+    const L5_MARKERS = [
+      "from an environmental safety perspective", "from a safety perspective", "from a crew perspective",
+      "it is difficult to say", "there are no obvious signs", "this may indicate", "may indicate",
+      "this suggests", "this may suggest", "may not have", "could have been", "may have been",
+      "must have been", "could also have", "would need", "could have", "must have", "may have",
+      "might be", "appears to", "appear to", "seems to", "seem to", "looks like", "look like",
+      "this means", "probably", "possibly", "usually"
+    ].sort((a, b) => b.length - a.length);
+
+    const QUESTIONS = [
+      { title: "Identifying the event", question: "What is the strongest reason for concluding that the event was a runway excursion?", options: ["The floodlight indicates that the aircraft was operating at night", "The tire tracks lead from the runway directly to the water", "The people on the wing appear to be investigators"], correct: 1, feedback: "The tire tracks connecting the runway to the water provide the clearest physical evidence that the aircraft left the runway surface and entered the water, which is consistent with a runway excursion." },
+      { title: "Structural damage assessment", question: "What does the mostly intact fuselage most strongly suggest about the accident sequence?", options: ["The aircraft likely entered the water at a relatively low speed", "The aircraft was manufactured with stronger-than-normal materials", "The crew had already completed the investigation before the photo was taken"], correct: 0, feedback: "A largely intact fuselage with no major structural break-up suggests that the impact forces were relatively low, which is consistent with a lower-speed overrun into the water." },
+      { title: "Evacuation evidence", question: "Why is it reasonable to infer that the crew initiated an emergency evacuation?", options: ["Because a yellow raft is visible near the wing", "Because the floodlight is illuminating the area", "Because the forward exits are open and the evacuation slides have been deployed"], correct: 2, feedback: "Open emergency exits and deployed slides are direct signs that an evacuation was carried out after the aircraft came to a stop." },
+      { title: "Deflated slide interpretation", question: "What is the best interpretation of one evacuation slide being deflated?", options: ["It could have been punctured or may not have inflated properly", "It proves that the evacuation was unnecessary", "It shows that the aircraft was still moving during the evacuation"], correct: 0, feedback: "A deflated slide may result from puncture damage or inflation failure. The image alone does not support stronger conclusions such as an unnecessary evacuation or movement during evacuation." },
+      { title: "Environmental protection", question: "What is the most likely purpose of the orange floating barrier around the aircraft?", options: ["To mark a passenger assembly area", "To contain debris and hazardous fluids such as fuel or hydraulic fluid", "To indicate the edge of the runway for investigators"], correct: 1, feedback: "Floating barriers are commonly used to limit the spread of pollutants and sometimes to help contain debris, especially when an aircraft is partially submerged." },
+      { title: "Timing of the photo", question: "Which observation best supports the idea that the photo was taken some time after the initial emergency?", options: ["There is no visible panic and no active emergency lighting from the rescue vehicles", "The aircraft is a narrow-body jet, possibly a Boeing 737", "The engines are submerged in the water"], correct: 0, feedback: "A calm scene without visible urgency or flashing emergency lights suggests that the immediate response phase had already passed by the time the photo was taken." },
+      { title: "Possible contributing factors", question: "Which factor would most directly increase stopping distance and reduce the safety margin during landing?", options: ["A wet or contaminated runway combined with tailwind conditions", "A floodlight positioned near the runway", "The presence of airport officials on the shoreline"], correct: 0, feedback: "Poor braking action on a wet or contaminated runway, especially when combined with a tailwind, directly increases landing distance and reduces available safety margins." },
+      { title: "Crew priorities", question: "According to the text, what should be the crew's first priority after the runway excursion?", options: ["Collect the maintenance logbook before speaking to anyone", "Secure the aircraft, inform air traffic control, and begin evacuation if necessary", "Wait for investigators before opening any exits"], correct: 1, feedback: "The text emphasizes immediate operational priorities: secure the aircraft, notify air traffic control, and start evacuation if there is any continuing danger such as fire, smoke, leakage, or sinking." },
+      { title: "Passenger safety action", question: "Why must passengers leave their baggage behind during an evacuation?", options: ["Because baggage is not allowed to get wet during emergency operations", "Because baggage can slow down the evacuation and obstruct other passengers", "Because investigators need all baggage to remain on board for legal reasons"], correct: 1, feedback: "The correct safety rationale is that baggage can delay evacuation and block movement, which increases risk for everyone during an emergency." },
+      { title: "Air traffic control response", question: "What is the most appropriate immediate action for air traffic control in this situation?", options: ["Continue normal operations until the captain confirms the extent of the damage", "Advise the aircraft to taxi clear if possible and keep the runway open for arrivals", "Alert airport fire rescue, close the affected runway, and manage arriving and departing traffic"], correct: 2, feedback: "Once an aircraft has left the runway and is partially submerged, air traffic control must prioritize emergency response, runway closure, and traffic management to protect the aircraft involved and all other traffic." }
+    ];
+
+    const PRACTICE_STEPS = [
+      { title: "Step 1 · Topic Statement", starters: ["The picture depicts …", "I can see …", "The incident involves …"] },
+      { title: "Step 2 · Aircraft", starters: ["What looks like a Boeing 737 …", "The … has been ripped off / has collapsed …", "The fuselage looks mostly intact …"] },
+      { title: "Step 3 · Hypothesise", starters: ["This looks like a runway excursion …", "The weather may have been a contributory factor …", "It could have been caused by …"] },
+      { title: "Step 4 · Background", starters: ["In the background, I can see …", "In the foreground …", "Several people in high-vis clothing …"] },
+      { title: "Step 5 · Weather", starters: ["Although it is not … at the moment …", "The weather conditions must be …"] }
+    ];
+
+    const CHECKLIST = [
+      "make a topic statement?",
+      "describe the aircraft type & damage?",
+      "hypothesise with modal verbs?",
+      "describe the background?",
+      "mention the weather?",
+      "use Level-5 deduction language?",
+      "add a safety perspective?"
+    ];
+
+    /* ===== Helpers ===== */
+    function esc(s) { return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+    function escRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+    const L5_RE = new RegExp("(" + L5_MARKERS.map(escRe).join("|") + ")", "gi");
+    function highlightL5(text) { return esc(text).replace(L5_RE, "<mark>$1</mark>"); }
+
+    /* ===== Render Module 1 ===== */
+    function renderSteps() {
+      document.getElementById("steps").innerHTML = STEPS.map((s, i) => {
+        const lang = s.language.map(g => {
+          const label = g.label ? `<div class="lang-label">${g.label}</div>` : "";
+          const body = g.kind === "lines"
+            ? `<ul class="lines">${g.items.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`
+            : `<div class="chips">${g.items.map(x => `<span class="chip">${esc(x)}</span>`).join("")}</div>`;
+          return `<div class="lang-group">${label}${body}</div>`;
+        }).join("");
+        return `
+        <div class="acc" id="acc-${i}">
+          <button class="acc-head" onclick="toggleAcc(${i})">
+            <span class="acc-step">STEP ${s.num}</span>
+            <span class="acc-name">${s.title}</span>
+            <span class="acc-caret">▸</span>
+          </button>
+          <div class="acc-body">
+            <p class="exp">${esc(s.explanation)}</p>
+            <div class="lang-h">Useful language</div>
+            ${lang}
+            <div class="example">${esc(s.example)}</div>
+          </div>
+        </div>`;
+      }).join("");
+    }
+    function toggleAcc(i) { document.getElementById("acc-" + i).classList.toggle("open"); }
+
+    /* ===== Render Module 2 ===== */
+    function renderModel() {
+      document.getElementById("model").innerHTML = MODEL_SECTIONS.map(s =>
+        `<div class="ma-sec"><span class="ma-badge b-${s.kind}">${esc(s.badge)}</span><p>${highlightL5(s.text)}</p></div>`
+      ).join("");
+    }
+    function toggleL5(cb) { document.body.classList.toggle("show-l5", cb.checked); if (cb.checked) completeModule(2); }
+
+    /* ===== Render Module 3: quiz ===== */
+    let qi = 0, score = 0, answered = false;
+    function renderQuiz() { qi = 0; score = 0; answered = false; renderQuestion(); }
+    function renderQuestion() {
+      const q = QUESTIONS[qi];
+      const el = document.getElementById("quiz");
+      el.innerHTML = `
+        <div class="quiz-count">Question ${qi + 1} of ${QUESTIONS.length} · Score ${score}</div>
+        <div class="quiz-title">${esc(q.title)}</div>
+        <div class="quiz-q">${esc(q.question)}</div>
+        <div style="margin-top:14px" id="opts">${q.options.map((o, i) => `<button class="opt" onclick="answer(${i})">${esc(o)}</button>`).join("")}</div>
+        <div id="fb"></div>`;
+      answered = false;
+    }
+    function answer(i) {
+      if (answered) return;
+      answered = true;
+      const q = QUESTIONS[qi];
+      const opts = document.querySelectorAll("#opts .opt");
+      opts.forEach((b, idx) => { b.disabled = true; if (idx === q.correct) b.classList.add("correct"); });
+      if (i === q.correct) { score++; } else { opts[i].classList.add("wrong"); }
+      const last = qi === QUESTIONS.length - 1;
+      document.getElementById("fb").innerHTML =
+        `<div class="feedback">${esc(q.feedback)}</div>
+         <button class="btn btn-primary" onclick="nextQuestion()">${last ? "See result" : "Next question →"}</button>`;
+    }
+    function nextQuestion() {
+      if (qi === QUESTIONS.length - 1) { renderFinal(); return; }
+      qi++; renderQuestion();
+    }
+    function renderFinal() {
+      const p = loadProgress();
+      if (score > (p.bestScore || 0)) { p.bestScore = score; saveProgress(p); }
+      completeModule(3);
+      document.getElementById("quiz").innerHTML = `
+        <div class="quiz-final">
+          <div class="quiz-score">${score} / ${QUESTIONS.length}</div>
+          <p style="font-family:'SF Pro Text',Arial,sans-serif;color:var(--muted);margin:8px 0 16px">Best score: ${loadProgress().bestScore} / ${QUESTIONS.length}</p>
+          <button class="btn btn-primary" onclick="renderQuiz()">Restart quiz</button>
+        </div>`;
+    }
+
+    /* ===== Module 4: practice ===== */
+    let pSec = 90, pTimer = null, pLeft = 90;
+    function pickTime(btn, sec) {
+      pSec = sec;
+      document.querySelectorAll(".pick").forEach(b => b.classList.toggle("btn-primary", b === btn));
+    }
+    function startPractice() {
+      document.getElementById("practice-setup").classList.add("hidden");
+      document.getElementById("practice-check").classList.add("hidden");
+      document.getElementById("practice-run").classList.remove("hidden");
+      document.getElementById("skeleton").innerHTML = PRACTICE_STEPS.map(s =>
+        `<div class="skel"><h5>${esc(s.title)}</h5><ul>${s.starters.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`).join("");
+      pLeft = pSec; updatePTimer();
+      clearInterval(pTimer);
+      pTimer = setInterval(() => { pLeft--; updatePTimer(); if (pLeft <= 0) finishPractice(); }, 1000);
+    }
+    function updatePTimer() {
+      const t = document.getElementById("ptimer");
+      t.textContent = pLeft;
+      t.classList.toggle("low", pLeft <= 10);
+    }
+    function finishPractice() {
+      clearInterval(pTimer);
+      document.getElementById("practice-run").classList.add("hidden");
+      document.getElementById("selfcheck").innerHTML = CHECKLIST.map((c, i) =>
+        `<label><input type="checkbox" onchange="updateCover()" id="sc-${i}"> Did you… ${esc(c)}</label>`).join("");
+      document.getElementById("cover-summary").textContent = "";
+      document.getElementById("compare").classList.add("hidden");
+      document.getElementById("compare").innerHTML = "";
+      document.getElementById("practice-check").classList.remove("hidden");
+      document.getElementById("practice-check").scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+    function updateCover() {
+      const n = CHECKLIST.filter((_, i) => document.getElementById("sc-" + i).checked).length;
+      document.getElementById("cover-summary").textContent = `You covered ${n} of ${CHECKLIST.length}.`;
+    }
+    function submitSelfCheck() {
+      updateCover();
+      const p = loadProgress();
+      p.practices = (p.practices || 0) + 1;
+      saveProgress(p);
+      completeModule(4);
+      const btn = event.target; btn.textContent = "Result saved ✓"; btn.disabled = true;
+    }
+    function toggleCompare() {
+      const el = document.getElementById("compare");
+      if (el.classList.contains("hidden")) {
+        if (!el.innerHTML) el.innerHTML = `<div class="lang-h">Model answer</div>` + MODEL_SECTIONS.map(s =>
+          `<div class="ma-sec"><span class="ma-badge b-${s.kind}">${esc(s.badge)}</span><p>${esc(s.text)}</p></div>`).join("");
+        el.classList.remove("hidden");
+      } else { el.classList.add("hidden"); }
+    }
+    function resetPractice() {
+      document.getElementById("practice-check").classList.add("hidden");
+      document.getElementById("practice-setup").classList.remove("hidden");
+    }
+
+    /* ===== Progress ===== */
+    const PKEY = "pdcourse1.progress";
+    function loadProgress() { try { return JSON.parse(localStorage.getItem(PKEY)) || { modules: {} }; } catch (e) { return { modules: {} }; } }
+    function saveProgress(p) { try { localStorage.setItem(PKEY, JSON.stringify(p)); } catch (e) {} }
+    function completeModule(n, btn) {
+      const p = loadProgress();
+      p.modules = p.modules || {};
+      p.modules[n] = true;
+      saveProgress(p);
+      if (btn) { btn.textContent = "Completed ✓"; btn.disabled = true; }
+      renderStepper();
+    }
+    function renderStepper() {
+      const p = loadProgress();
+      const names = ["The Method", "Worked Example", "Quiz", "Your Turn"];
+      const done = [1, 2, 3, 4].filter(n => p.modules && p.modules[n]).length;
+      document.getElementById("stepper").innerHTML =
+        names.map((nm, i) => `<a class="step-chip ${p.modules && p.modules[i + 1] ? "done" : ""}" href="#m${i + 1}"><span class="tick">✓</span> ${i + 1}. ${nm}</a>`).join("")
+        + `<div class="bar"><i style="width:${done / 4 * 100}%"></i></div>`;
+      // reflect completed buttons
+      const p2 = loadProgress();
+      [1, 2].forEach(n => {
+        if (p2.modules && p2.modules[n]) {
+          const b = document.querySelector(`#m${n} .m-foot .btn-good`);
+          if (b) { b.textContent = "Completed ✓"; b.disabled = true; }
+        }
+      });
+    }
+
+    /* ===== Init ===== */
+    renderSteps();
+    renderModel();
+    renderQuiz();
+    renderStepper();
+  </script>
+</body>
+</html>
