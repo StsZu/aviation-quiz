@@ -143,6 +143,29 @@
       font-family: "SF Pro Text", Arial, sans-serif;
       margin-bottom: 24px;
     }
+    .video-frame {
+      position: relative;
+      width: 100%;
+      padding-top: 56.25%;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid #d4c7b3;
+      margin-bottom: 6px;
+    }
+    .video-frame iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+    .video-note {
+      color: #7a6858;
+      font-size: 13px;
+      font-family: "SF Pro Text", Arial, sans-serif;
+      margin-bottom: 24px;
+    }
+    .video-note a { color: #4a3e34; }
   </style>
 </head>
 <body>
@@ -154,6 +177,17 @@
 
     <audio class="audio-player" controls preload="none" src="audio/medical-incident-report-gapfill.mp3"></audio>
     <p class="audio-note">Listen to the full report read aloud while you fill the gaps.</p>
+
+    <div class="video-frame">
+      <iframe
+        src="https://www.youtube.com/embed/QnKU1iEdTxc?modestbranding=1&start=180&end=195"
+        title="Medical incident — video clip (3:00–3:15)"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen></iframe>
+    </div>
+    <p class="video-note">Clip: 3:00&ndash;3:15. Full video on
+      <a href="https://youtu.be/QnKU1iEdTxc?t=180" target="_blank" rel="noopener">YouTube</a>.
+    </p>
 
     <div class="bank" id="bank"></div>
 
