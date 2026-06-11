@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Runway Excursion — Picture Description Gap-fill</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: #e7dfd2;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .card {
+      background: #f8f3e9;
+      border: 1px solid #d4c7b3;
+      border-radius: 22px;
+      width: 100%;
+      max-width: 760px;
+      padding: 32px 36px;
+    }
+    .backlink { display: inline-block; margin-bottom: 18px; color: #7a6858; text-decoration: none;
+      font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; }
+    h1 { font-size: 24px; color: #2f2822; margin-bottom: 4px; line-height: 1.3; }
+    .subtitle { color: #7a6858; font-size: 14px; font-family: "SF Pro Text", Arial, sans-serif; margin-bottom: 22px; }
+    .instruction { color: #4a3e34; font-size: 15px; line-height: 1.5; margin-bottom: 18px; }
+    .bank { display: flex; flex-wrap: wrap; gap: 8px; padding: 14px; background: rgba(255,251,244,0.6);
+      border: 1px solid #d4c7b3; border-radius: 12px; margin-bottom: 24px; }
+    .chip { background: #efe6d8; border: 1px solid #d4c7b3; border-radius: 8px; padding: 6px 12px; font-size: 15px;
+      font-family: "SF Pro Text", Arial, sans-serif; color: #2f2822; cursor: pointer;
+      transition: background 0.12s, opacity 0.12s; user-select: none; }
+    .chip:hover { background: #e3d6c2; }
+    .chip.used { opacity: 0.38; text-decoration: line-through; cursor: default; }
+    .report { font-size: 17px; color: #2f2822; line-height: 2.2; }
+    .report .report-title { display: block; text-align: center; font-weight: bold; line-height: 1.4; margin-bottom: 16px; }
+    .report p { margin-bottom: 14px; }
+    .blank { min-width: 60px; border: none; border-bottom: 2px solid #b9a88f; background: rgba(255,251,244,0.7);
+      font-family: Georgia, serif; font-size: 16px; color: #2f2822; text-align: center; padding: 2px 4px;
+      outline: none; border-radius: 4px 4px 0 0; }
+    .blank:focus { border-bottom-color: #4a3e34; background: #fff; }
+    .blank.correct { background: #c8f0c8; border-bottom-color: #4a9a4a; color: #1a5a1a; }
+    .blank.wrong   { background: #f0c8c8; border-bottom-color: #9a4a4a; color: #5a1a1a; }
+    .num { font-size: 11px; color: #b08968; font-family: "SF Pro Text", Arial, sans-serif; vertical-align: super; }
+    .footer { display: flex; align-items: center; justify-content: space-between; margin-top: 28px; flex-wrap: wrap; gap: 12px; }
+    .score-label { color: #7a6858; font-size: 15px; font-family: "SF Pro Text", Arial, sans-serif; }
+    .btn-row { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { background: rgba(255,251,244,0.55); border: 1px solid #d4c7b3; border-radius: 10px; padding: 9px 20px;
+      font-size: 14px; font-family: "SF Pro Text", Arial, sans-serif; color: #4a3e34; cursor: pointer; transition: background 0.12s; }
+    .btn:hover:not(:disabled) { background: #efe6d8; }
+    .btn.primary { background: #4a3e34; color: #f8f3e9; border-color: #4a3e34; }
+    .btn.primary:hover { background: #5a4e44; }
+    .drill { margin-top: 28px; padding: 20px; background: rgba(255,251,244,0.6); border: 1px solid #d4c7b3; border-radius: 14px; }
+    .drill-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-family: "SF Pro Text", Arial, sans-serif; }
+    .drill-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #7a6858; }
+    .drill-counter { font-size: 13px; color: #7a6858; font-family: "SF Pro Text", Arial, sans-serif; }
+    .drill-task { font-size: 17px; color: #2f2822; line-height: 1.5; min-height: 3em; margin-bottom: 14px; }
+    .drill-target { font-size: 20px; font-weight: bold; text-align: center; padding: 12px; border-radius: 10px;
+      background: #c8f0c8; color: #1a5a1a; margin-bottom: 14px; }
+    .drill-target[hidden] { display: none; }
+    .drill-controls { display: flex; gap: 8px; flex-wrap: wrap; }
+    .drill-hint { margin-top: 10px; font-size: 12px; color: #7a6858; font-family: "SF Pro Text", Arial, sans-serif; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <a href="index.html" class="backlink">&larr; All quizzes</a>
+    <h1>Runway Excursion — Picture Description</h1>
+    <div class="subtitle">Gap-fill · aviation English · Level 5 model-description vocabulary</div>
+    <p class="instruction">Fill each gap with an expression from the bank. Click a word to drop it into the focused gap, or just type. Then press <strong>Check answers</strong>.</p>
+
+    <div class="bank" id="bank"></div>
+
+    <div class="report" id="report"></div>
+
+    <div class="footer">
+      <span class="score-label" id="score">Not checked yet</span>
+      <div class="btn-row">
+        <button class="btn" id="btn-show" onclick="showAnswers()">Show answers</button>
+        <button class="btn" id="btn-reset" onclick="resetAll()">Reset</button>
+        <button class="btn primary" id="btn-check" onclick="checkAnswers()">Check answers</button>
+      </div>
+    </div>
+
+    <section class="drill" aria-label="Active recall speaking drill">
+      <div class="drill-head">
+        <span class="drill-title">Speaking drill · say it out loud</span>
+        <span class="drill-counter" id="drillCounter">Card 0 / 0</span>
+      </div>
+      <p class="drill-task" id="drillTask">Read the description, say the expression out loud, then check yourself.</p>
+      <div class="drill-target" id="drillTarget" hidden>&raquo; <span id="drillTargetText"></span> &laquo;</div>
+      <div class="drill-controls">
+        <button class="btn" id="drillShow" disabled onclick="drillShowAnswer()">Show answer (Space)</button>
+        <button class="btn primary" id="drillNext" onclick="drillNextCard()">Next drill (Enter)</button>
+      </div>
+      <p class="drill-hint">Keys: Space — show answer · Enter / &rarr; — next drill</p>
+    </section>
+  </div>
+
+  <footer style="text-align:center;padding:28px 16px;font-family:'SF Pro Text',Arial,sans-serif;">
+    <a href="index.html" style="color:#7a6858;font-size:15px;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:2px;">&larr; All quizzes</a>
+  </footer>
+
+  <script>
+    const answers = ["runway excursion", "tire tracks", "safely evacuated", "emergency evacuation slides", "environmental damage", "hazardous fluids", "accident investigators", "emergency exit door", "leading edge", "hard hats", "fire rescue vehicles", "sense of urgency", "contributing factors", "stiff crosswinds", "stopping distance", "braking performance", "speed brakes", "thrust reversers"];
+    const bankWords = ["leading edge", "hazardous fluids", "runway excursion", "hard hats", "stopping distance", "accident investigators", "speed brakes", "tire tracks", "contributing factors", "emergency exit door", "braking performance", "safely evacuated", "fire rescue vehicles", "thrust reversers", "environmental damage", "sense of urgency", "stiff crosswinds", "emergency evacuation slides"];
+    const reportHTML = "<span class=\"report-title\">Runway Excursion &mdash; Model Picture Description</span><p>Alright, so in this photo I see a narrow body aircraft, possibly a Boeing 737 that is partially submerged in the water. This is clearly the result of a __1__ since I can see part of the runway in the background and the __2__ leading to the water.</p><p>It looks like the airplane was __3__ because I can see at least two __4__ that were deployed. There&rsquo;s an orange line surrounding this airplane which is most likely there to prevent __5__ by containing any debris or __6__ from the aircraft.</p><p>I see three or four people, possibly __7__ standing on the right wing of the aircraft and it looks like one of them is stepping out of the __8__. They probably traveled from the shoreline to the aircraft using that yellow raft that&rsquo;s sitting just below the __9__ of the wing.</p><p>Standing on the shoreline behind the aircraft are a few more people. Some of them are wearing __10__ and reflective clothing so they may be accident investigators or news reporters. There are also a few trucks and vehicles parked on the grass and on the runway including two __11__ on the upper left side of the photo.</p><p>I don&rsquo;t really see a __12__ among the individuals near and around the airplane so I think this runway excursion happened well before this photo was taken. It also probably took a decent amount of time to set up those orange cones around the runway edge and to remove that radome from the fuselage.</p><p>The flood light at the upper right hand corner of this photo makes me believe this event occurred at night.</p><p>So, what could&rsquo;ve caused this accident? Well, like many accidents there&rsquo;s usually no single cause but rather a number of __13__. I can&rsquo;t tell if this occurred during takeoff or landing but the aircraft may have encountered some type of windshear or convective activity.</p><p>If so, the pilots may have encountered __14__ or a tailwind which would&rsquo;ve greatly increased the __15__ on the runway. If storms were over the airfield, then the water on the runway from the rain would&rsquo;ve certainly decreased the __16__ of the aircraft.</p><p>And speaking of braking performance, it&rsquo;s also possible that one of the braking mechanisms malfunctioned, such as the wheel brakes, __17__ or __18__. We can&rsquo;t see if the thrust reversers were deployed in this photo since the engines are submerged but it&rsquo;s clear that the speed brakes are not deployed.</p><p>But they may have been retracted before the aircraft was evacuated.</p>";
+
+    let focusedInput = null;
+
+    function buildReport() {
+      let html = reportHTML;
+      for (let i = 1; i <= answers.length; i++) {
+        const w = (answers[i - 1].length + 1);
+        const field =
+          '<span class="num">' + i + '</span>' +
+          '<input class="blank" id="b' + i + '" data-idx="' + (i - 1) +
+          '" style="width:' + w + 'ch" autocomplete="off" spellcheck="false">';
+        html = html.replace('__' + i + '__', field);
+      }
+      document.getElementById('report').innerHTML = html;
+      document.querySelectorAll('.blank').forEach(function (inp) {
+        inp.addEventListener('focus', function () { focusedInput = inp; });
+        inp.addEventListener('input', function () { inp.classList.remove('correct', 'wrong'); refreshBank(); });
+      });
+    }
+
+    function buildBank() {
+      const bank = document.getElementById('bank');
+      bank.innerHTML = '';
+      bankWords.forEach(function (w) {
+        const chip = document.createElement('span');
+        chip.className = 'chip';
+        chip.textContent = w;
+        chip.dataset.word = w;
+        chip.onclick = function () { dropWord(w); };
+        bank.appendChild(chip);
+      });
+      refreshBank();
+    }
+
+    function dropWord(w) {
+      let target = focusedInput;
+      if (!target || target.value.trim()) {
+        target = Array.from(document.querySelectorAll('.blank')).find(function (inp) { return !inp.value.trim(); });
+      }
+      if (!target) return;
+      target.value = w;
+      target.classList.remove('correct', 'wrong');
+      focusedInput = target;
+      refreshBank();
+    }
+
+    function refreshBank() {
+      const used = Array.from(document.querySelectorAll('.blank'))
+        .map(function (inp) { return inp.value.trim().toLowerCase(); }).filter(Boolean);
+      document.querySelectorAll('.chip').forEach(function (chip) {
+        const w = chip.dataset.word.toLowerCase();
+        const idx = used.indexOf(w);
+        if (idx !== -1) { chip.classList.add('used'); used.splice(idx, 1); }
+        else chip.classList.remove('used');
+      });
+    }
+
+    function checkAnswers() {
+      let correct = 0;
+      document.querySelectorAll('.blank').forEach(function (inp) {
+        const idx = +inp.dataset.idx;
+        const val = inp.value.trim().toLowerCase();
+        inp.classList.remove('correct', 'wrong');
+        if (!val) return;
+        if (val === answers[idx].toLowerCase()) { inp.classList.add('correct'); correct++; }
+        else inp.classList.add('wrong');
+      });
+      document.getElementById('score').textContent = 'Score: ' + correct + '/' + answers.length;
+    }
+
+    function showAnswers() {
+      document.querySelectorAll('.blank').forEach(function (inp) {
+        const idx = +inp.dataset.idx;
+        inp.value = answers[idx];
+        inp.classList.remove('wrong');
+        inp.classList.add('correct');
+      });
+      refreshBank();
+      document.getElementById('score').textContent = 'Answers revealed: ' + answers.length + '/' + answers.length;
+    }
+
+    function resetAll() {
+      document.querySelectorAll('.blank').forEach(function (inp) {
+        inp.value = '';
+        inp.classList.remove('correct', 'wrong');
+      });
+      focusedInput = null;
+      refreshBank();
+      document.getElementById('score').textContent = 'Not checked yet';
+    }
+
+    buildReport();
+    buildBank();
+
+    /* ---- Active-recall speaking drill (clue -> expression) ---- */
+    const DRILLS = [["The event when an aircraft veers off or overruns the paved landing surface.", "runway excursion"], ["The marks left on the ground by a vehicle's rolling wheels.", "tire tracks"], ["Describes everyone being moved out of the aircraft without injury.", "safely evacuated"], ["The inflatable ramps deployed so people can leave the aircraft quickly.", "emergency evacuation slides"], ["Harm caused to nature, water, and the surroundings.", "environmental damage"], ["Dangerous liquids such as fuel or oil that can leak from the aircraft.", "hazardous fluids"], ["The experts who examine the scene to determine the cause of a crash.", "accident investigators"], ["The special opening used to leave the aircraft when in danger.", "emergency exit door"], ["The front border of an aircraft wing.", "leading edge"], ["Protective helmets worn on a hazardous worksite.", "hard hats"], ["The trucks crewed to put out blazes and help at the accident scene.", "fire rescue vehicles"], ["A feeling that something must be dealt with immediately.", "sense of urgency"], ["The several causes that together lead to an event.", "contributing factors"], ["Strong air currents blowing across the runway from the side.", "stiff crosswinds"], ["The length of runway needed to bring a moving aircraft to a halt.", "stopping distance"], ["How effectively an aircraft can slow down and come to rest.", "braking performance"], ["The panels that rise from the wing to increase drag and slow the aircraft.", "speed brakes"], ["The system that redirects engine power forward to help slow the aircraft.", "thrust reversers"]];
+    let drillHistory = [];
+    let drillIndex = -1;
+    let drillRevealed = false;
+
+    function drillNextCard() {
+      if (!DRILLS.length) return;
+      if (drillHistory.length >= DRILLS.length) drillHistory = [];
+      let pool = DRILLS.map(function (_, i) { return i; })
+        .filter(function (i) { return drillHistory.indexOf(i) === -1 && i !== drillIndex; });
+      if (!pool.length) pool = [0];
+      drillIndex = pool[Math.floor(Math.random() * pool.length)];
+      drillHistory.push(drillIndex);
+      drillRevealed = false;
+      document.getElementById('drillTask').textContent = DRILLS[drillIndex][0];
+      document.getElementById('drillTargetText').textContent = DRILLS[drillIndex][1];
+      document.getElementById('drillTarget').hidden = true;
+      document.getElementById('drillCounter').textContent = 'Card ' + drillHistory.length + ' / ' + DRILLS.length;
+      document.getElementById('drillShow').disabled = false;
+    }
+
+    function drillShowAnswer() {
+      if (drillIndex === -1 || drillRevealed) return;
+      document.getElementById('drillTarget').hidden = false;
+      document.getElementById('drillShow').disabled = true;
+      drillRevealed = true;
+    }
+
+    document.addEventListener('keydown', function (e) {
+      const tag = (document.activeElement && document.activeElement.tagName) || '';
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if (e.code === 'Space' || e.key === ' ') {
+        if (drillIndex === -1) return;
+        e.preventDefault();
+        drillShowAnswer();
+      } else if (e.key === 'Enter' || e.key === 'ArrowRight') {
+        e.preventDefault();
+        drillNextCard();
+      }
+    });
+  </script>
+</body>
+</html>
