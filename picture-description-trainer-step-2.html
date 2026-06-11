@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICAO Picture Description Trainer — Step 2</title>
+  <script>try { if (localStorage.getItem("theme") === "night") document.documentElement.classList.add("night-ops"); } catch (e) {}</script>
+  <style>
+    :root {
+      --bg: #e7dfd2;
+      --panel: #f8f3e9;
+      --sheet-bg: #f4ede0;
+      --border: #d4c7b3;
+      --border-hover: #b8a891;
+      --text: #2f2822;
+      --text2: #4a3e34;
+      --muted: #7a6858;
+      --accent: #b07d3a;
+      --accent2: #8a5a2a;
+      --good: #4f7a3a;
+      --danger: #a8472f;
+      --btn-bg: #fffbf4;
+      --btn-hover: #efe6d8;
+      --cover-bg: #ffffff;
+      --hr: #e2d6c2;
+      --hi-bg: #f0e2c4;
+      --card-shadow: 0 8px 22px rgba(80, 60, 40, 0.14);
+    }
+    .night-ops {
+      --bg: #1c1611;
+      --panel: #261e17;
+      --sheet-bg: #2e251c;
+      --border: #3d3226;
+      --border-hover: #4a3d2e;
+      --text: #efe6d8;
+      --text2: #cdbfad;
+      --muted: #9a8a76;
+      --accent: #d8a657;
+      --accent2: #e6bb73;
+      --good: #8fb56f;
+      --danger: #d68a72;
+      --btn-bg: #2e251c;
+      --btn-hover: #3d3226;
+      --cover-bg: #1c1611;
+      --hr: #3d3226;
+      --hi-bg: #44371f;
+      --card-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Georgia, "Palatino Linotype", serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 36px 18px 64px;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .module { width: 100%; max-width: 1040px; margin: 0 auto; }
+
+    .ui { font-family: "SF Pro Text", Arial, sans-serif; }
+
+    .theme-toggle {
+      position: fixed; top: 16px; right: 18px; z-index: 80;
+      display: inline-flex; align-items: center; gap: 7px;
+      background: var(--panel); border: 1px solid var(--border);
+      color: var(--text); border-radius: 30px; padding: 8px 14px;
+      font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; font-weight: 700; cursor: pointer;
+    }
+    .theme-toggle:hover { background: var(--btn-hover); border-color: var(--border-hover); }
+    .theme-toggle svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    .back {
+      display: inline-block; margin-bottom: 14px; color: var(--muted);
+      text-decoration: none; font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px;
+    }
+    .back:hover { color: var(--accent); }
+
+    .header {
+      background: var(--panel); border: 1px solid var(--border);
+      border-radius: 22px; padding: 32px 34px; margin-bottom: 18px;
+    }
+    .step-tag { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--accent); margin-bottom: 8px; }
+    .title { font-size: 31px; line-height: 1.2; margin-bottom: 10px; }
+    .subtitle { font-size: 16px; color: var(--text2); line-height: 1.55; }
+    .skill-list { margin: 14px 0 0; padding-left: 20px; color: var(--text2); font-size: 15px; line-height: 1.7; }
+    .note-ua { margin-top: 12px; font-size: 14px; color: var(--muted); font-style: italic; }
+
+    .section { margin-top: 26px; }
+    .section-head { font-size: 22px; margin-bottom: 4px; }
+    .section-sub { color: var(--muted); font-size: 14px; margin-bottom: 14px; font-family: "SF Pro Text", Arial, sans-serif; }
+
+    /* Progress */
+    .progress-card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 18px;
+      padding: 18px 22px; display: flex; flex-wrap: wrap; align-items: center; gap: 14px 26px;
+    }
+    .progress-stat { font-family: "SF Pro Text", Arial, sans-serif; }
+    .progress-stat b { font-size: 22px; color: var(--accent); }
+    .progress-stat span { display: block; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; }
+    .progress-bar { flex: 1 1 200px; height: 10px; background: var(--sheet-bg); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); min-width: 160px; }
+    .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width .3s; }
+
+    /* Card grid */
+    .grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+    .card {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 16px;
+      overflow: hidden; cursor: pointer; display: flex; flex-direction: column; text-align: left;
+      padding: 0; transition: border-color .12s, transform .12s, box-shadow .12s; position: relative;
+    }
+    .card:hover, .card:focus { border-color: var(--border-hover); transform: translateY(-3px); box-shadow: var(--card-shadow); outline: none; }
+    .card-cover { position: relative; width: 100%; aspect-ratio: 4 / 3; background: var(--cover-bg); }
+    .card-cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .card-num {
+      position: absolute; top: 8px; left: 8px; background: rgba(0,0,0,.55); color: #fff;
+      font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; font-weight: 700;
+      padding: 3px 8px; border-radius: 20px;
+    }
+    .card-done {
+      position: absolute; top: 8px; right: 8px; background: var(--good); color: #fff;
+      font-family: "SF Pro Text", Arial, sans-serif; font-size: 11px; font-weight: 700;
+      padding: 3px 8px; border-radius: 20px; display: none;
+    }
+    .card.is-done .card-done { display: inline-block; }
+    .card-body { padding: 12px 14px 14px; }
+    .card-title { font-size: 16px; line-height: 1.25; margin-bottom: 4px; }
+    .card-topic { font-size: 12.5px; color: var(--muted); font-family: "SF Pro Text", Arial, sans-serif; line-height: 1.4; }
+
+    /* Buttons */
+    .btn {
+      font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; font-weight: 600;
+      background: var(--btn-bg); color: var(--text); border: 1px solid var(--border);
+      border-radius: 12px; padding: 10px 16px; cursor: pointer; transition: background .12s, border-color .12s;
+    }
+    .btn:hover:not(:disabled) { background: var(--btn-hover); border-color: var(--border-hover); }
+    .btn:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-primary { background: var(--accent); color: #fff; border-color: var(--accent); }
+    .btn-primary:hover:not(:disabled) { background: var(--accent2); border-color: var(--accent2); }
+    .btn-good { background: var(--good); color: #fff; border-color: var(--good); }
+    .btn-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .btn-sm { padding: 7px 12px; font-size: 13px; }
+
+    /* Overlay */
+    .overlay {
+      position: fixed; inset: 0; z-index: 70; background: rgba(20, 14, 8, .55);
+      display: none; align-items: flex-start; justify-content: center; padding: 24px 14px; overflow-y: auto;
+    }
+    .overlay.open { display: flex; }
+    .sheet {
+      background: var(--panel); border: 1px solid var(--border); border-radius: 20px;
+      width: 100%; max-width: 760px; padding: 22px 24px 26px; box-shadow: var(--card-shadow); margin: auto;
+    }
+    .sheet-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; margin-bottom: 12px; }
+    .sheet-title { font-size: 23px; line-height: 1.2; }
+    .x-btn { background: none; border: none; color: var(--muted); font-size: 26px; cursor: pointer; line-height: 1; padding: 0 4px; }
+    .x-btn:hover { color: var(--accent); }
+
+    .lesson-img { width: 100%; max-height: 320px; object-fit: contain; background: var(--cover-bg); border: 1px solid var(--border); border-radius: 14px; margin-bottom: 14px; }
+
+    .dots { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+    .dot { width: 24px; height: 6px; border-radius: 4px; background: var(--sheet-bg); border: 1px solid var(--border); }
+    .dot.active { background: var(--accent); border-color: var(--accent); }
+    .dot.past { background: var(--border-hover); border-color: var(--border-hover); }
+
+    .stage-label { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--accent); margin-bottom: 6px; }
+    .stage-h { font-size: 19px; margin-bottom: 10px; }
+    .stage-instr { font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+    .answer-text { font-size: 16.5px; line-height: 1.62; color: var(--text); background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+    .answer-text.desc { border-left: 4px solid var(--good); }
+    .answer-text.level5 { border-left: 4px solid var(--accent); }
+    .answer-text.exam { border-left: 4px solid var(--danger); }
+    .answer-text .hl { background: var(--hi-bg); border-radius: 4px; padding: 0 3px; font-weight: 600; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 4px 0 4px; }
+    .chip { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13.5px; background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 20px; padding: 6px 13px; color: var(--text2); }
+
+    .play-row { display: flex; align-items: center; gap: 10px; margin: 10px 0 4px; }
+    .play-line { display: flex; align-items: flex-start; gap: 10px; margin: 8px 0; }
+    .play-line .repeat-text { font-size: 16px; line-height: 1.5; flex: 1; }
+    .play-btn { background: var(--btn-bg); border: 1px solid var(--border); border-radius: 50%; width: 38px; height: 38px; min-width: 38px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: var(--accent); }
+    .play-btn:hover:not(:disabled) { background: var(--btn-hover); }
+    .play-btn:disabled { opacity: .4; cursor: not-allowed; }
+    .play-btn svg { width: 18px; height: 18px; fill: currentColor; }
+    .play-btn.lg { width: 44px; height: 44px; min-width: 44px; }
+    .play-btn.lg svg { width: 22px; height: 22px; }
+
+    /* hide-and-recall reconstruction */
+    .recall-sentences { display: flex; flex-direction: column; gap: 8px; }
+    .recall-s {
+      font-size: 16px; line-height: 1.55; background: var(--sheet-bg); border: 1px solid var(--border);
+      border-radius: 10px; padding: 10px 14px; cursor: pointer; color: var(--muted);
+    }
+    .recall-s.revealed { color: var(--text); cursor: default; }
+    .recall-s .mask { letter-spacing: 1px; }
+
+    .stage-nav { display: flex; justify-content: space-between; gap: 10px; margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--hr); }
+
+    .hidden { display: none !important; }
+
+    /* Templates */
+    .tpl-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .tpl { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 16px 18px; }
+    .tpl h4 { font-size: 16px; margin-bottom: 8px; color: var(--accent2); }
+    .tpl p { font-size: 15px; line-height: 1.55; color: var(--text2); }
+    .tpl .hl { background: var(--hi-bg); border-radius: 4px; padding: 0 3px; font-weight: 600; }
+
+    /* Daily mode */
+    .daily { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 20px 24px; }
+    .daily ol { margin: 10px 0 0 18px; font-size: 15px; line-height: 1.8; color: var(--text2); }
+
+    /* Random practice */
+    .random-launch { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 22px 24px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; }
+    .random-launch p { font-family: "SF Pro Text", Arial, sans-serif; color: var(--muted); font-size: 14px; max-width: 460px; line-height: 1.5; }
+    .timer { font-family: "SF Pro Text", Arial, sans-serif; font-size: 40px; font-weight: 800; color: var(--accent); text-align: center; margin: 6px 0 10px; }
+    .timer.low { color: var(--danger); }
+
+    /* Drill */
+    .drill { background: var(--panel); border: 1px solid var(--border); border-radius: 18px; padding: 22px 24px; }
+    .drill-counter { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .6px; color: var(--muted); text-align: center; margin-bottom: 14px; }
+    .drill-task { font-size: 18px; line-height: 1.5; text-align: center; min-height: 64px; display: flex; align-items: center; justify-content: center; padding: 6px 8px; }
+    .drill-target-wrap { text-align: center; margin: 14px 0 6px; min-height: 52px; }
+    .drill-target {
+      display: inline-flex; align-items: center; gap: 12px; font-size: 21px; font-weight: 700; color: var(--accent2);
+      background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 14px; padding: 10px 18px; max-width: 100%;
+      opacity: 0; transform: translateY(6px); transition: opacity .25s, transform .25s;
+    }
+    .drill-target.show { opacity: 1; transform: none; }
+    .drill-controls { display: flex; justify-content: center; gap: 12px; margin-top: 16px; }
+    .keyhints { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; color: var(--muted); text-align: center; margin-top: 14px; }
+    .keyhints kbd { background: var(--sheet-bg); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; font-family: inherit; font-size: 11px; }
+
+    .footer { margin-top: 36px; text-align: center; color: var(--muted); font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; }
+
+    @media (max-width: 900px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 680px) {
+      body { padding: 24px 12px 48px; }
+      .title { font-size: 25px; }
+      .grid { grid-template-columns: repeat(2, 1fr); }
+      .tpl-grid { grid-template-columns: 1fr; }
+      .header { padding: 24px 22px; }
+      .sheet { padding: 18px 16px 22px; }
+    }
+  </style>
+</head>
+<body>
+  <button class="theme-toggle ui" onclick="toggleTheme()" aria-label="Toggle theme">
+    <svg id="ic-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19"></path></svg>
+    <svg id="ic-moon" class="hidden" viewBox="0 0 24 24"><path d="M21 12.8A9 9 0 1111.2 3 7 7 0 0021 12.8z"></path></svg>
+    <span id="theme-label">Night</span>
+  </button>
+
+  <div class="module">
+    <a class="back" href="index.html">← All quizzes</a>
+
+    <div class="header">
+      <div class="step-tag ui">Step 2 of the picture-description method</div>
+      <h1 class="title">ICAO Picture Description Trainer — Step 2: Detailed Description</h1>
+      <p class="subtitle">After your opening topic statement (Step 1), the examiner expects a <b>full detailed description</b> of the scene. This trainer teaches you to study, shadow and reproduce the model descriptions over ten new aviation incidents — moving from a clear Level&nbsp;4 description to a Level&nbsp;5 upgrade with possibility, deduction and safety language.</p>
+      <ul class="skill-list">
+        <li>describe what is happening with <b>present continuous / present perfect</b>;</li>
+        <li>use precise aviation vocabulary and <b>cause-and-effect</b> links;</li>
+        <li>upgrade to <b>Level 5 deduction</b> — <i>it must have been…</i>, <i>could have been caused by…</i>, <i>may indicate…</i>;</li>
+        <li>add <b>safety framing</b> — <i>from a safety perspective…</i>, <i>the main risk is…</i>;</li>
+        <li>reproduce the whole description <b>from memory</b> and answer an examiner question.</li>
+      </ul>
+      <p class="note-ua ui">Інструкції — українською для зручності; усі описи й відповіді вимовляйте <b>англійською</b> (ICAO Level 4–5).</p>
+    </div>
+
+    <!-- Progress -->
+    <div class="section">
+      <div class="progress-card ui">
+        <div class="progress-stat"><b id="p-practiced">0</b><span>of 10 scenes practiced</span></div>
+        <div class="progress-stat"><b id="p-attempts">0</b><span>total attempts</span></div>
+        <div class="progress-stat"><b id="p-last">—</b><span>last practiced</span></div>
+        <div class="progress-bar"><div class="progress-fill" id="p-fill"></div></div>
+        <button class="btn" onclick="resetProgress()">Reset</button>
+      </div>
+    </div>
+
+    <!-- Scenes -->
+    <div class="section">
+      <h2 class="section-head">Scenes</h2>
+      <p class="section-sub">Tap a picture to study the description: look → read → listen &amp; shadow → Level 5 → repeat → reconstruct from memory → mini speaking task → self-check.</p>
+      <div class="grid" id="lesson-grid"></div>
+    </div>
+
+    <!-- Random practice -->
+    <div class="section">
+      <h2 class="section-head">Random Picture Practice</h2>
+      <p class="section-sub">Speak under time pressure — one random scene, keywords only, 90 seconds, then reveal the full detailed description.</p>
+      <div class="random-launch ui">
+        <p>You will see one random scene and its keywords. Give the full detailed description aloud before the timer ends, then check yourself against the model.</p>
+        <button class="btn btn-primary" onclick="startRandom()">Random Picture Practice ▸</button>
+      </div>
+    </div>
+
+    <!-- Daily mode -->
+    <div class="section">
+      <h2 class="section-head">Daily Training Mode</h2>
+      <p class="section-sub">A simple 20-minute routine built around reproducing the texts.</p>
+      <div class="daily">
+        <ol>
+          <li><b>5 minutes</b> — read one detailed description and listen to its audio.</li>
+          <li><b>5 minutes</b> — shadow the audio: repeat in sync, copying rhythm and stress.</li>
+          <li><b>5 minutes</b> — reconstruct the description from the keywords only, without reading.</li>
+          <li><b>5 minutes</b> — answer the mini speaking task and add the Level 5 deduction line.</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Deduction drill -->
+    <div class="section">
+      <h2 class="section-head">Active Recall — Deduction Drill</h2>
+      <p class="section-sub">Read the prompt, say the model phrase aloud, then check yourself. Drills the 40 Repeat-After-Me deduction lines plus the mini speaking questions. Keyboard-driven.</p>
+      <div class="drill ui">
+        <div class="drill-counter" id="drill-counter">Card — of <span id="drill-total">0</span></div>
+        <div class="drill-task" id="drill-task">Click “Next Drill” to start practicing.</div>
+        <div class="drill-target-wrap">
+          <span class="drill-target" id="drill-target">
+            <span id="drill-target-text"></span>
+            <button class="play-btn" id="drill-play" onclick="replayDrill()" disabled aria-label="Play audio">
+              <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg>
+            </button>
+          </span>
+        </div>
+        <div class="drill-controls">
+          <button class="btn" id="drill-show" onclick="showDrillAnswer()" disabled>Show Answer</button>
+          <button class="btn btn-primary" id="drill-next" onclick="nextDrill()">Next Drill</button>
+        </div>
+        <div class="keyhints"><kbd>Space</kbd> show · <kbd>Enter</kbd>/<kbd>→</kbd> next · <kbd>R</kbd> replay audio</div>
+      </div>
+    </div>
+
+    <!-- Templates -->
+    <div class="section">
+      <h2 class="section-head">Level 5 Speaking Templates</h2>
+      <p class="section-sub">Reusable deduction + safety frames drawn from the recurring phrases in these scenes. Slot your own cause and risk into the blanks.</p>
+      <div class="tpl-grid">
+        <div class="tpl"><h4>1 — Deduction of cause</h4><p><span class="hl">It must have been</span> a <b>[type of incident]</b>. <span class="hl">It could have been caused by</span> <b>[cause A]</b>, or <span class="hl">it might have been caused by</span> <b>[cause B]</b>.</p></div>
+        <div class="tpl"><h4>2 — Reading the evidence</h4><p>The <b>[visible damage]</b> <span class="hl">may indicate</span> <b>[hidden problem]</b>. The position of the <b>[object]</b> <span class="hl">may indicate</span> that <b>[what probably happened]</b>.</p></div>
+        <div class="tpl"><h4>3 — Safety framing</h4><p><span class="hl">From a safety perspective</span>, the main risk is <b>[risk]</b>, because <b>[hazard]</b> <span class="hl">could have led to</span> <b>[worse outcome]</b>.</p></div>
+        <div class="tpl"><h4>4 — Safest decision</h4><p>So the <span class="hl">safest decision would be</span> to <b>[action]</b> — for example, to evacuate the passengers, go around, or inspect the aircraft before further flight.</p></div>
+      </div>
+    </div>
+
+    <div class="footer ui">ICAO Picture Description Trainer · Step 2: Detailed Description · static, offline-ready</div>
+  </div>
+
+  <!-- Study overlay -->
+  <div class="overlay" id="lesson-overlay">
+    <div class="sheet">
+      <div class="sheet-top">
+        <h3 class="sheet-title" id="ls-title"></h3>
+        <button class="x-btn" onclick="closeLesson()" aria-label="Close">×</button>
+      </div>
+      <img class="lesson-img" id="ls-img" alt="">
+      <div class="dots" id="ls-dots"></div>
+      <div id="ls-stage"></div>
+      <div class="stage-nav">
+        <button class="btn" id="ls-back" onclick="lessonStep(-1)">← Back</button>
+        <button class="btn btn-primary" id="ls-next" onclick="lessonStep(1)">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Random overlay -->
+  <div class="overlay" id="random-overlay">
+    <div class="sheet">
+      <div class="sheet-top">
+        <h3 class="sheet-title">Random Picture Practice</h3>
+        <button class="x-btn" onclick="closeRandom()" aria-label="Close">×</button>
+      </div>
+      <img class="lesson-img" id="rnd-img" alt="">
+      <div class="timer" id="rnd-timer">90</div>
+      <div class="stage-label">Keywords — describe aloud in full</div>
+      <div class="chips" id="rnd-chips"></div>
+      <div id="rnd-answer" class="hidden">
+        <div class="stage-label" style="margin-top:14px">Model detailed description</div>
+        <div class="answer-text desc" id="rnd-answer-text"></div>
+      </div>
+      <div class="stage-nav">
+        <button class="btn" onclick="startRandom()">↻ Another picture</button>
+        <button class="btn btn-primary" id="rnd-reveal" onclick="revealRandom()">Reveal description</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ===== Data (verbatim from source .md) ===== */
+    const LESSONS2 = [
+      {
+        slug: "01-no-landing-gear", num: "01", title: "No Landing Gear / Engine Ripped Off",
+        topic: "A twin-engine turboprop has overrun the runway; gear collapsed and an engine torn off.",
+        cardText: ["AC without landing gear", "bogged down", "ripped of engine"],
+        description: "In this picture I can see a twin-engine turboprop aircraft that has overrun the runway. The aircraft has come to rest off the paved surface, with its nose down on a rocky bank beside a stretch of water. The landing gear has collapsed, so the fuselage is resting directly on the ground, and one of the engines has been ripped off the wing on impact. It looks like the crew either landed gear-up or the gear failed during a runway excursion. Emergency responders and several people are standing around the wreckage. Fortunately the aircraft is intact and there is no fire, so the passengers were probably evacuated safely.",
+        level5: "Looking at the damage, it must have been a runway excursion after a high-speed landing. It could have been caused by a landing-gear failure, or it might have been caused by the crew touching down too far along the runway. The loss of an engine may indicate a very heavy impact with the rocks. From a safety perspective, the priority is to evacuate the passengers and shut down the fuel system, because a ruptured tank could have led to a post-crash fire.",
+        repeat: [
+          "It must have been a runway excursion after landing.",
+          "It might have been caused by a landing-gear failure.",
+          "From a safety perspective, the crew should evacuate immediately.",
+          "A ruptured fuel tank could have led to a fire."
+        ],
+        task: {
+          question: "What do you think caused this accident, and what is the main risk now?",
+          answer: "It could have been a gear-up landing or a runway overrun. The aircraft has lost an engine and the landing gear has collapsed. From a safety perspective, the main risk is a fuel fire, so the safest decision would be to evacuate the passengers and let the fire service secure the aircraft."
+        }
+      },
+      {
+        slug: "02-vehicle-on-runway", num: "02", title: "Airport Vehicle on the Runway",
+        topic: "A vehicle crosses the runway while a jet is on short final, right in the touchdown zone.",
+        cardText: ["airport vehicle", "RW", "approaching AC"],
+        description: "This picture shows a serious runway incursion. A light green airport vehicle is crossing the runway while a passenger jet is on short final, only a few metres above the threshold and about to touch down. The vehicle is right in the touchdown zone, directly in the path of the landing aircraft. This is a very dangerous situation that could lead to a collision. Most likely the driver entered the runway without clearance, or there was a loss of communication with the tower. The controller should instruct the aircraft to go around immediately and order the vehicle to vacate the runway.",
+        level5: "It must have been a runway incursion. It could have been caused by the driver entering the runway without clearance, or it may have been caused by a misunderstanding of the controller's instruction. The position of the vehicle in the touchdown zone may indicate that the driver was not aware of the landing traffic. From a safety standpoint, this could have led to a catastrophic collision, so the safest decision would be to send the aircraft around without delay.",
+        repeat: [
+          "It must have been a runway incursion.",
+          "It could have been caused by entering the runway without clearance.",
+          "This could have led to a collision on the runway.",
+          "From a safety standpoint, the aircraft should go around immediately."
+        ],
+        task: {
+          question: "How serious is this situation, and what action would you take?",
+          answer: "This is extremely serious — a vehicle is on the runway while the aircraft is about to land. The main risk is a collision in the touchdown zone. For safety reasons, the controller should order an immediate go-around and instruct the vehicle to vacate the runway at once."
+        }
+      },
+      {
+        slug: "03-vehicle-hit-aircraft", num: "03", title: "Vehicle Hit the Aircraft on the Ground",
+        topic: "A ground service vehicle has collided with the nose of a parked aircraft on the apron.",
+        cardText: ["airport vehicle", "hit", "AC on the ground"],
+        description: "In this picture a ground service vehicle — it looks like a fuel or utility truck — has collided with a parked aircraft on the apron. The truck has struck the nose section near the radome and the forward fuselage, and you can see damage on the lower part of the nose. The aircraft was stationary at the stand when the impact happened. This kind of ground-handling accident usually occurs when the driver is manoeuvring too close to the aircraft or fails to keep a safe distance. The aircraft will have to be inspected for structural damage before it can return to service.",
+        level5: "It must have been a ground-handling accident on the apron. It could have been caused by the driver manoeuvring too fast, or it might have been caused by poor visibility or a lack of a marshaller. The damage to the radome may indicate a hidden crack in the nose structure. From a safety perspective, the aircraft cannot be released until it is fully inspected, because undetected damage could have led to a structural failure in flight.",
+        repeat: [
+          "It must have been a ground-handling accident.",
+          "It might have been caused by the driver manoeuvring too close.",
+          "The damage may indicate a hidden crack in the nose.",
+          "From a safety perspective, the aircraft must be inspected before flight."
+        ],
+        task: {
+          question: "What probably happened here, and can the aircraft fly afterwards?",
+          answer: "A service truck must have hit the nose of the parked aircraft on the apron. It may have been caused by the driver getting too close. In terms of flight safety, the defect cannot be ignored, so the aircraft has to be inspected for structural damage before it can return to service."
+        }
+      },
+      {
+        slug: "04-foam-covered", num: "04", title: "Crippled Aircraft Covered with Foam",
+        topic: "The aftermath of an emergency landing; a crippled jet sprayed with fire-fighting foam.",
+        cardText: ["AC on the ground", "crippled", "covered with foam"],
+        description: "This picture shows the aftermath of an emergency landing. A passenger aircraft is sitting on the ground and it is crippled — the fuselage is broken and the aircraft has been badly damaged. Airport fire crews are spraying it with fire-fighting foam to prevent a fuel fire, and the aircraft and the apron around it are covered with white foam. Firefighters and rescue vehicles are working around the wreck. It looks like the aircraft suffered a gear failure or a hard landing and the crew evacuated the passengers. The quick response of the fire service has prevented the fire from spreading.",
+        level5: "It must have been an emergency landing. It could have been caused by a landing-gear malfunction, or it may have been caused by a hard touchdown that broke the fuselage. The amount of foam may indicate that the crew were worried about a fuel leak and a possible fire. From a safety standpoint, covering the aircraft with foam was the right action, because spilled fuel could have led to a major blaze.",
+        repeat: [
+          "It must have been an emergency landing.",
+          "It could have been caused by a landing-gear failure.",
+          "The foam may indicate a risk of a fuel fire.",
+          "From a safety standpoint, the foam prevents the fuel from igniting."
+        ],
+        task: {
+          question: "Why is the aircraft covered with foam, and was it the right decision?",
+          answer: "The aircraft is crippled after what must have been an emergency landing, and the fire crews have covered it with foam. The main risk is a fuel fire. For safety reasons, foaming the aircraft was the safest decision, because leaking fuel could have led to a serious blaze."
+        }
+      },
+      {
+        slug: "05-lightning-strike", num: "05", title: "Big Hole in the Nose / Lightning Strike",
+        topic: "A regional jet with a hole punched in the radome, typical of a lightning or bird strike.",
+        cardText: ["AC", "big hole", "lightning strike"],
+        description: "In this picture I can see the nose of a regional jet that has been damaged in flight. There is a big hole punched in the radome, just above the cockpit windows, and the skin around it is torn and dented. This kind of damage is typical of a lightning strike or a bird strike during climb or descent. The crew most likely felt an impact and noticed the damage after landing. Even though the hole looks dramatic, the aircraft managed to land safely. The radome and the nose structure will have to be repaired and the systems checked before the next flight.",
+        level5: "It must have been a strike that damaged the nose in flight. It could have been a lightning strike, or it may have been a bird strike during climb or descent. The hole in the radome may indicate damage to the weather radar behind it. From a safety perspective, the crew were right to land as soon as possible, because a weakened nose structure could have led to further damage at high speed.",
+        repeat: [
+          "It could have been a lightning strike.",
+          "It may have been a bird strike during the descent.",
+          "The hole may indicate damage to the weather radar.",
+          "From a safety perspective, the crew should land as soon as possible."
+        ],
+        task: {
+          question: "What could have made this hole, and how dangerous is it?",
+          answer: "It could have been a lightning strike or a bird strike that punched a hole in the radome. It may indicate damage to the radar and the nose structure. From a safety standpoint, the defect cannot be ignored, so the nose must be repaired and the systems checked before the next flight."
+        }
+      },
+      {
+        slug: "06-bird-strike", num: "06", title: "Flock of Birds Approaching a Jet",
+        topic: "A bird-strike hazard on take-off; a flock crosses the climb path of a passenger jet.",
+        cardText: ["flock of birds", "approach", "jet aircraft"],
+        description: "This picture shows a bird-strike hazard during take-off. A passenger jet is climbing away from the runway, and at the same time a flock of birds is flying across its path, with one large bird of prey very close to the aircraft. There is a high risk that the birds will be ingested into the engines or hit the windshield. A bird strike at this low altitude is extremely dangerous because it can cause engine failure right after lift-off. The crew should be ready to report a bird strike and, if an engine is damaged, declare an emergency and return for landing.",
+        level5: "This must have been a serious bird-strike hazard during the initial climb. If a bird is ingested, it could have led to an engine failure right after take-off. The flock crossing the runway may indicate poor bird control or wildlife near the airfield. From a safety perspective, the main risk is losing thrust at low altitude, so the crew must have been ready to declare an emergency and return for landing.",
+        repeat: [
+          "This must have been a serious bird-strike hazard.",
+          "A bird in the engine could have led to an engine failure.",
+          "The flock may indicate poor wildlife control at the airport.",
+          "From a safety perspective, the crew should be ready to return and land."
+        ],
+        task: {
+          question: "Why is this situation dangerous, and what should the crew do?",
+          answer: "A flock of birds is crossing the path of a jet just after take-off. The main risk is a bird strike that could have led to an engine failure at low altitude. For safety reasons, if an engine is damaged, the safest decision would be to declare an emergency and return for landing."
+        }
+      },
+      {
+        slug: "07-blaze-of-fire", num: "07", title: "Blaze of Fire / Aircraft on the Ground",
+        topic: "A passenger jet on fire after an emergency landing; flames over the rear fuselage.",
+        cardText: ["blaze of fire", "AC on the ground"],
+        description: "This is a very dramatic picture of an aircraft on fire on the ground. A passenger jet has made an emergency landing and a huge blaze of fire has broken out over the rear of the fuselage, with thick black smoke rising into the sky. The flames are spreading along the top of the aircraft. A situation like this usually follows a hard landing with a fuel leak, where the fuel has ignited. The crew must evacuate the passengers as fast as possible using the front slides, away from the flames, while the fire service fights the fire. Every second counts in this kind of emergency.",
+        level5: "It must have been a serious fire after landing. It could have been caused by a fuel leak that ignited, or it might have been caused by an engine fire that spread to the fuselage. The thick black smoke may indicate that fuel or cabin materials are burning. From a safety perspective, the main risk is that the fire could have led to a full loss of the aircraft, so an immediate evacuation is essential.",
+        repeat: [
+          "It must have been a fire after landing.",
+          "It could have been caused by a fuel leak that ignited.",
+          "The black smoke may indicate burning fuel.",
+          "From a safety perspective, the crew must evacuate immediately."
+        ],
+        task: {
+          question: "What is happening here, and what is the crew's priority?",
+          answer: "There is a huge blaze of fire on the aircraft after what must have been an emergency landing. The main risk is that the fire spreads to the whole fuselage. For safety reasons, the crew's priority is to evacuate all passengers immediately using the slides away from the flames."
+        }
+      },
+      {
+        slug: "08-bus-collision-wing", num: "08", title: "Passenger Bus Collision with the Wing",
+        topic: "An airport passenger bus has driven into the right wing of a parked turboprop on the apron.",
+        cardText: ["passenger bus", "collision", "right wing"],
+        description: "In this picture there has been a collision on the apron between an airport passenger bus and a parked turboprop aircraft. The bus has driven into the right wing of the aircraft, and the front of the bus is crushed against the wing. Both the bus and the wing are damaged. The accident happened while the bus was transporting passengers to or from the terminal. This type of ground collision is usually caused by the driver misjudging the distance or not following the marked apron routes. The aircraft wing will need a full inspection for structural damage before it can fly again.",
+        level5: "It must have been a collision on the apron. It could have been caused by the bus driver misjudging the distance, or it might have been caused by not following the marked apron routes. The damage to the right wing may indicate harm to the leading edge or the internal structure. From a safety standpoint, the wing cannot be ignored, because hidden damage could have led to a structural failure in flight.",
+        repeat: [
+          "It must have been a collision on the apron.",
+          "It might have been caused by the driver misjudging the distance.",
+          "The damage may indicate harm to the wing structure.",
+          "From a safety standpoint, the wing must be inspected before flight."
+        ],
+        task: {
+          question: "What happened on the apron, and what must be done before the aircraft flies?",
+          answer: "A passenger bus must have collided with the right wing of the parked aircraft. It may have been caused by the driver getting too close. In terms of flight safety, the defect cannot be ignored, so the wing needs a full inspection for structural damage before the aircraft can fly again."
+        }
+      },
+      {
+        slug: "09-service-door-ripped", num: "09", title: "Service Door Ripped Off / Gaping Hole",
+        topic: "A service door has been ripped off, leaving a large gaping hole in the fuselage.",
+        cardText: ["service door", "ripped off", "gaping hole"],
+        description: "This picture shows an aircraft fuselage with serious structural damage. A service door, near the front of the cabin, has been ripped off, leaving a large gaping hole in the side of the aircraft. The skin around the opening is torn and bent outwards. Damage like this can be caused by a sudden decompression, an explosion, or the door failing in flight. If this happened at altitude, it would cause a rapid loss of cabin pressure, and the crew would have to descend immediately and put on oxygen. The aircraft is now on the ground and the damaged area will require major repair.",
+        level5: "It must have been a structural failure of the service door. It could have been caused by a sudden decompression, or it might have been caused by a faulty door latch or an explosion. The torn skin around the opening may indicate that the door blew out under pressure. From a safety perspective, if this happened at altitude it could have led to a rapid decompression, so the crew would have to descend and use oxygen immediately.",
+        repeat: [
+          "It must have been a structural failure of the door.",
+          "It could have been caused by a sudden decompression.",
+          "The torn skin may indicate the door blew out under pressure.",
+          "From a safety perspective, the crew must descend and use oxygen."
+        ],
+        task: {
+          question: "What could have caused this damage, and what would happen in flight?",
+          answer: "The service door must have been ripped off, leaving a gaping hole in the fuselage. It could have been caused by a faulty latch or a sudden decompression. If it happened at altitude, it could have led to a rapid loss of cabin pressure, so the safest decision would be an emergency descent with oxygen."
+        }
+      },
+      {
+        slug: "10-tail-strike", num: "10", title: "Tail Strike",
+        topic: "A four-engine regional jet pitched up very high, its tail about to scrape the runway.",
+        cardText: ["AC", "tail strike"],
+        description: "In this picture I can see a four-engine regional jet during take-off or landing, and it is having a tail strike. The nose is pitched up very high and the tail of the aircraft is dropping down towards the runway, so the rear fuselage is about to scrape the ground. A tail strike usually happens when the aircraft is rotated too quickly or at too high a pitch angle, often because of an incorrect speed or weight calculation. It can damage the lower rear fuselage and, in serious cases, the pressure bulkhead. After this kind of event the aircraft must be inspected before further flight.",
+        level5: "It must have been a tail strike during rotation. It could have been caused by over-rotation, or it might have been caused by an incorrect speed or weight calculation. The very high pitch angle may indicate that the crew rotated too early or too fast. From a safety perspective, a tail strike could have led to damage to the pressure bulkhead, so the aircraft must be inspected before further flight.",
+        repeat: [
+          "It must have been a tail strike during rotation.",
+          "It might have been caused by an incorrect speed calculation.",
+          "A tail strike could have led to damage to the pressure bulkhead.",
+          "From a safety perspective, the aircraft must be inspected before flight."
+        ],
+        task: {
+          question: "What is happening to this aircraft, and why is it a concern?",
+          answer: "The aircraft is pitched up too high and its tail is about to scrape the runway, so it must have been a tail strike. It may have been caused by over-rotation. The main risk is damage to the rear fuselage and the pressure bulkhead, so for safety reasons the aircraft must be inspected before further flight."
+        }
+      }
+    ];
+
+    const IMG_BASE = "img/picture-description-2/";
+    const AUDIO_BASE = "audio/picture-description-2/";
+    const DRILL_AUDIO = "audio/picture-description-2-drills/";
+
+    /* drill audio id: slug-repeat-N for repeat lines, slug-task for mini tasks */
+    const DRILLS2 = [];
+    LESSONS2.forEach(l => {
+      l.repeat.forEach((phrase, i) => {
+        DRILLS2.push({ task: "Say the model deduction / safety line for: " + l.title + ".", target: phrase, audio_id: l.slug + "-repeat-" + (i + 1) });
+      });
+      DRILLS2.push({ task: l.task.question, target: l.task.answer, audio_id: l.slug + "-answer" });
+    });
+
+    /* Level 5 phrases to highlight in the upgrade stage */
+    const HL_PHRASES = [
+      "it must have been", "must have been", "could have been caused by", "might have been caused by",
+      "may have been caused by", "may indicate", "from a safety perspective", "from a safety standpoint",
+      "the main risk is", "could have led to", "the safest decision would be", "could have been"
+    ];
+    function highlight(text) {
+      let out = text;
+      HL_PHRASES.forEach(p => {
+        const re = new RegExp("\\b(" + p.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&") + ")\\b", "gi");
+        out = out.replace(re, m => "\u0001" + m + "\u0002");
+      });
+      out = out.replace(/\u0001/g, '\'<span class="hl">\'').replace(/\u0002/g, "</span>");
+      return out;
+    }
+
+    /* ===== Theme ===== */
+    function toggleTheme() {
+      const night = document.documentElement.classList.toggle("night-ops");
+      document.getElementById("ic-sun").classList.toggle("hidden", night);
+      document.getElementById("ic-moon").classList.toggle("hidden", !night);
+      document.getElementById("theme-label").textContent = night ? "Day" : "Night";
+      try { localStorage.setItem("theme", night ? "night" : "day"); } catch (e) {}
+    }
+    (function initThemeLabel() {
+      const night = document.documentElement.classList.contains("night-ops");
+      document.getElementById("ic-sun").classList.toggle("hidden", night);
+      document.getElementById("ic-moon").classList.toggle("hidden", !night);
+      document.getElementById("theme-label").textContent = night ? "Day" : "Night";
+    })();
+
+    /* ===== Progress (localStorage, separate key) ===== */
+    const PKEY = "pdtrainer2.progress";
+    function loadProgress() {
+      try { return JSON.parse(localStorage.getItem(PKEY)) || {}; } catch (e) { return {}; }
+    }
+    function saveProgress(p) { try { localStorage.setItem(PKEY, JSON.stringify(p)); } catch (e) {} }
+    function markPracticed(slug) {
+      const p = loadProgress();
+      const rec = p[slug] || { practiced: false, attempts: 0, lastDate: null };
+      rec.practiced = true;
+      rec.attempts += 1;
+      rec.lastDate = new Date().toISOString().slice(0, 10);
+      p[slug] = rec;
+      saveProgress(p);
+      renderProgress();
+      renderCardsDone();
+    }
+    function resetProgress() {
+      if (!confirm("Reset all progress?")) return;
+      saveProgress({});
+      renderProgress();
+      renderCardsDone();
+    }
+    function renderProgress() {
+      const p = loadProgress();
+      const slugs = Object.keys(p);
+      const practiced = slugs.filter(s => p[s].practiced).length;
+      const attempts = slugs.reduce((a, s) => a + (p[s].attempts || 0), 0);
+      const dates = slugs.map(s => p[s].lastDate).filter(Boolean).sort();
+      document.getElementById("p-practiced").textContent = practiced;
+      document.getElementById("p-attempts").textContent = attempts;
+      document.getElementById("p-last").textContent = dates.length ? dates[dates.length - 1] : "—";
+      document.getElementById("p-fill").style.width = (practiced / LESSONS2.length * 100) + "%";
+    }
+    function renderCardsDone() {
+      const p = loadProgress();
+      document.querySelectorAll(".card").forEach(c => {
+        const slug = c.dataset.slug;
+        c.classList.toggle("is-done", !!(p[slug] && p[slug].practiced));
+      });
+    }
+
+    /* ===== Render scene cards ===== */
+    function renderCards() {
+      const grid = document.getElementById("lesson-grid");
+      grid.innerHTML = LESSONS2.map((l, i) => `
+        <button class="card" data-slug="${l.slug}" onclick="openLesson(${i})">
+          <div class="card-cover">
+            <img src="${IMG_BASE}${l.slug}.jpg" alt="${l.title}" loading="lazy">
+            <span class="card-num ui">${l.num}</span>
+            <span class="card-done ui">✓ Practiced</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">${l.title}</div>
+            <div class="card-topic">${l.topic}</div>
+          </div>
+        </button>`).join("");
+    }
+
+    /* ===== Study overlay flow ===== */
+    let curLesson = -1, curStage = 0, answerRevealed = false;
+    const STAGES = [
+      { key: "look",        label: "Stage 1 — Look at the scene" },
+      { key: "read",        label: "Stage 2 — Read the detailed description" },
+      { key: "shadow",      label: "Stage 3 — Listen and shadow" },
+      { key: "level5",      label: "Stage 4 — Level 5 upgrade" },
+      { key: "repeat",      label: "Stage 5 — Repeat after me" },
+      { key: "reconstruct", label: "Stage 6 — Reconstruct from memory" },
+      { key: "task",        label: "Stage 7 — Mini speaking task" },
+      { key: "check",       label: "Stage 8 — Self-check" }
+    ];
+
+    function openLesson(i) {
+      curLesson = i; curStage = 0; answerRevealed = false;
+      const l = LESSONS2[i];
+      document.getElementById("ls-title").textContent = l.num + " · " + l.title;
+      document.getElementById("ls-img").src = IMG_BASE + l.slug + ".jpg";
+      document.getElementById("ls-img").alt = l.title;
+      renderStage();
+      document.getElementById("lesson-overlay").classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+    function closeLesson() {
+      document.getElementById("lesson-overlay").classList.remove("open");
+      document.body.style.overflow = "";
+      stopAudio();
+    }
+    function lessonStep(d) {
+      const next = curStage + d;
+      if (next < 0 || next >= STAGES.length) return;
+      curStage = next; answerRevealed = false;
+      stopAudio();
+      renderStage();
+    }
+    function chipsHTML(arr) { return `<div class="chips">${arr.map(k => `<span class="chip">${k}</span>`).join("")}</div>`; }
+    function playBtn(id, label) {
+      return `<button class="play-btn lg" onclick="playClip('${id}')" aria-label="${label || "Play audio"}">
+        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"></path></svg></button>`;
+    }
+
+    function splitSentences(text) {
+      return text.match(/[^.!?]+[.!?]+(\s|$)/g) || [text];
+    }
+
+    function renderStage() {
+      const l = LESSONS2[curLesson];
+      const st = STAGES[curStage];
+      document.getElementById("ls-dots").innerHTML = STAGES.map((_, i) =>
+        `<span class="dot ${i === curStage ? "active" : (i < curStage ? "past" : "")}"></span>`).join("");
+      let body = `<div class="stage-label">${st.label}</div>`;
+      switch (st.key) {
+        case "look":
+          body += `<h4 class="stage-h">Look at the image.</h4>
+            <p class="stage-instr">Do not speak yet. Note the aircraft, the damage, the people and vehicles, and the setting. What is happening, and what most likely caused it?</p>`;
+          break;
+        case "read":
+          body += `<h4 class="stage-h">Read the full detailed description (ICAO Level 4)</h4>
+            <p class="stage-instr">Read it aloud once. Notice the present continuous / present perfect verbs and the aviation vocabulary.</p>
+            <div class="answer-text desc">${l.description}</div>
+            <div class="play-row">${playBtn(l.slug + "-description", "Play description")}<span class="stage-instr" style="margin:0">Play the narration.</span></div>`;
+          break;
+        case "shadow":
+          body += `<h4 class="stage-h">Listen and shadow</h4>
+            <p class="stage-instr">Play the audio and repeat in sync, copying the rhythm, pauses and stress. Try not to fall behind.</p>
+            <div class="play-row">${playBtn(l.slug + "-description", "Play description")}<span class="stage-instr" style="margin:0">Shadow the speaker — speak along, then read aloud once more.</span></div>
+            <div class="answer-text desc">${l.description}</div>`;
+          break;
+        case "level5":
+          body += `<h4 class="stage-h">Level 5 upgrade — deduction &amp; safety</h4>
+            <p class="stage-instr">The same scene with possibility, deduction and safety language. The <span class="hl">highlighted</span> phrases are reusable across any picture.</p>
+            <div class="answer-text level5">${highlight(l.level5)}</div>
+            <div class="play-row">${playBtn(l.slug + "-level5", "Play Level 5")}<span class="stage-instr" style="margin:0">Play the Level 5 version and repeat.</span></div>`;
+          break;
+        case "repeat":
+          body += `<h4 class="stage-h">Repeat after me</h4>
+            <p class="stage-instr">Four short model lines. Play each one and repeat it aloud until it feels automatic.</p>
+            ${l.repeat.map((r, i) => `<div class="play-line">${playBtn(l.slug + "-repeat-" + (i + 1), "Play phrase")}<span class="repeat-text">${r}</span></div>`).join("")}`;
+          break;
+        case "reconstruct":
+          body += `<h4 class="stage-h">Reconstruct from memory</h4>
+            <p class="stage-instr">Using only these keywords, rebuild the full description aloud. The description is hidden below — tap a line to reveal it one sentence at a time and check yourself.</p>
+            ${chipsHTML(l.cardText)}
+            <div class="recall-sentences" style="margin-top:12px">
+              ${splitSentences(l.description).map((s, i) => {
+                const t = s.trim();
+                const masked = t.replace(/\S/g, "·");
+                return `<div class="recall-s" id="recall-${i}" onclick="revealRecall(${i})" data-full="${t.replace(/"/g, "&quot;")}"><span class="mask">${masked}</span></div>`;
+              }).join("")}
+            </div>
+            <div class="btn-row" style="margin-top:12px"><button class="btn btn-sm" onclick="revealAllRecall()">Reveal all</button></div>`;
+          break;
+        case "task":
+          body += `<h4 class="stage-h">Mini speaking task</h4>
+            <p class="stage-instr">Answer the examiner's question aloud first. Then reveal the exam-safe answer and compare.</p>
+            <div class="answer-text" style="border-left:4px solid var(--muted)"><b>Examiner:</b> ${l.task.question}</div>
+            <div id="task-answer" class="answer-text exam ${answerRevealed ? "" : "hidden"}" style="margin-top:12px">${l.task.answer}</div>
+            <div class="play-row" style="margin-top:12px">
+              <button class="btn btn-sm" onclick="toggleTask(true)">Show answer</button>
+              <button class="btn btn-sm" onclick="toggleTask(false)">Hide answer</button>
+              ${playBtn(l.slug + "-answer", "Play answer")}
+            </div>`;
+          break;
+        case "check":
+          body += `<h4 class="stage-h">Self-check</h4>
+            <p class="stage-instr">Reveal the full description and the Level 5 upgrade, compare with what you said, then mark the scene practiced.</p>
+            <div id="check-answer" class="${answerRevealed ? "" : "hidden"}">
+              <div class="answer-text desc">${l.description}</div>
+              <div class="answer-text level5" style="margin-top:12px">${highlight(l.level5)}</div>
+            </div>
+            <div class="btn-row" style="margin-top:14px">
+              <button class="btn" onclick="toggleCheck(true)">Show answer</button>
+              <button class="btn" onclick="toggleCheck(false)">Hide answer</button>
+              <button class="btn btn-good" onclick="markPracticed('${l.slug}')">✓ Mark as practiced</button>
+            </div>`;
+          break;
+      }
+      document.getElementById("ls-stage").innerHTML = body;
+      document.getElementById("ls-back").disabled = curStage === 0;
+      document.getElementById("ls-next").disabled = curStage === STAGES.length - 1;
+    }
+    function toggleTask(show) {
+      answerRevealed = show;
+      const el = document.getElementById("task-answer");
+      if (el) el.classList.toggle("hidden", !show);
+    }
+    function toggleCheck(show) {
+      answerRevealed = show;
+      const el = document.getElementById("check-answer");
+      if (el) el.classList.toggle("hidden", !show);
+    }
+    function revealRecall(i) {
+      const el = document.getElementById("recall-" + i);
+      if (!el || el.classList.contains("revealed")) return;
+      el.classList.add("revealed");
+      el.innerHTML = el.dataset.full;
+    }
+    function revealAllRecall() {
+      document.querySelectorAll(".recall-s").forEach((el, i) => revealRecall(i));
+    }
+
+    /* ===== Random practice ===== */
+    let rndTimer = null, rndLeft = 90;
+    function startRandom() {
+      const l = LESSONS2[Math.floor(Math.random() * LESSONS2.length)];
+      document.getElementById("rnd-img").src = IMG_BASE + l.slug + ".jpg";
+      document.getElementById("rnd-img").alt = l.title;
+      document.getElementById("rnd-chips").innerHTML = l.cardText.map(k => `<span class="chip">${k}</span>`).join("");
+      document.getElementById("rnd-answer-text").textContent = l.description;
+      document.getElementById("rnd-answer").classList.add("hidden");
+      document.getElementById("rnd-reveal").disabled = false;
+      document.getElementById("random-overlay").classList.add("open");
+      document.body.style.overflow = "hidden";
+      rndLeft = 90;
+      updateTimer();
+      clearInterval(rndTimer);
+      rndTimer = setInterval(() => {
+        rndLeft--; updateTimer();
+        if (rndLeft <= 0) { clearInterval(rndTimer); }
+      }, 1000);
+    }
+    function updateTimer() {
+      const t = document.getElementById("rnd-timer");
+      t.textContent = rndLeft;
+      t.classList.toggle("low", rndLeft <= 15);
+    }
+    function revealRandom() {
+      document.getElementById("rnd-answer").classList.remove("hidden");
+      document.getElementById("rnd-reveal").disabled = true;
+      clearInterval(rndTimer);
+    }
+    function closeRandom() {
+      document.getElementById("random-overlay").classList.remove("open");
+      document.body.style.overflow = "";
+      clearInterval(rndTimer);
+    }
+
+    /* ===== Audio engine (premium clips + TTS fallback) ===== */
+    const _audio = new Audio();
+    function stopAudio() { try { _audio.pause(); } catch (e) {} window.speechSynthesis && window.speechSynthesis.cancel(); }
+    function speakFallback(text) {
+      if (!("speechSynthesis" in window)) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      const v = window.speechSynthesis.getVoices().find(x => x.lang && x.lang.startsWith("en"));
+      if (v) u.voice = v;
+      u.rate = 0.92;
+      window.speechSynthesis.speak(u);
+    }
+    /* lookup verbatim text for a clip id so the fallback speaks the same words */
+    function clipText(id) {
+      for (const l of LESSONS2) {
+        if (id === l.slug + "-description") return l.description;
+        if (id === l.slug + "-level5") return l.level5;
+        if (id === l.slug + "-answer") return l.task.answer;
+        const m = id.match(new RegExp("^" + l.slug + "-repeat-(\\d)$"));
+        if (m) return l.repeat[+m[1] - 1];
+      }
+      return "";
+    }
+    function playClip(id) {
+      stopAudio();
+      _audio.src = AUDIO_BASE + id + ".mp3";
+      _audio.play().catch(() => speakFallback(clipText(id)));
+    }
+    function playDrillAudio(d) {
+      stopAudio();
+      _audio.src = DRILL_AUDIO + d.audio_id + ".mp3";
+      _audio.play().catch(() => speakFallback(d.target));
+    }
+
+    /* ===== Active Recall drill ===== */
+    let drillItems = DRILLS2.slice();
+    let drillHistory = [], drillIndex = -1, drillRevealed = false;
+    document.getElementById("drill-total").textContent = drillItems.length;
+
+    function nextDrill() {
+      if (!drillItems.length) return;
+      if (drillHistory.length >= drillItems.length) drillHistory = [];
+      let pool = [];
+      for (let i = 0; i < drillItems.length; i++) {
+        if (drillHistory.indexOf(i) === -1 && i !== drillIndex) pool.push(i);
+      }
+      if (!pool.length) pool = [0];
+      drillIndex = pool[Math.floor(Math.random() * pool.length)];
+      drillHistory.push(drillIndex);
+      drillRevealed = false;
+      const d = drillItems[drillIndex];
+      document.getElementById("drill-counter").innerHTML = "Card " + drillHistory.length + " of <span id='drill-total'>" + drillItems.length + "</span>";
+      document.getElementById("drill-task").textContent = d.task;
+      document.getElementById("drill-target-text").textContent = d.target;
+      document.getElementById("drill-target").classList.remove("show");
+      document.getElementById("drill-show").disabled = false;
+      document.getElementById("drill-play").disabled = true;
+    }
+    function showDrillAnswer() {
+      if (drillIndex < 0 || drillRevealed) return;
+      drillRevealed = true;
+      document.getElementById("drill-target").classList.add("show");
+      document.getElementById("drill-show").disabled = true;
+      document.getElementById("drill-play").disabled = false;
+      playDrillAudio(drillItems[drillIndex]);
+    }
+    function replayDrill() {
+      if (drillIndex >= 0 && drillRevealed) playDrillAudio(drillItems[drillIndex]);
+    }
+
+    /* ===== Keyboard (drill) ===== */
+    document.addEventListener("keydown", (e) => {
+      const overlayOpen = document.querySelector(".overlay.open");
+      if (overlayOpen) { if (e.key === "Escape") { closeLesson(); closeRandom(); } return; }
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+      if (e.code === "Space") { e.preventDefault(); if (!document.getElementById("drill-show").disabled) showDrillAnswer(); }
+      else if (e.key === "Enter" || e.key === "ArrowRight") { e.preventDefault(); nextDrill(); }
+      else if (e.key === "r" || e.key === "R") { replayDrill(); }
+    });
+
+    /* ===== Init ===== */
+    renderCards();
+    renderProgress();
+    renderCardsDone();
+    if (window.speechSynthesis) window.speechSynthesis.onvoiceschanged = () => {};
+  </script>
+</body>
+</html>

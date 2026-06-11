@@ -15,6 +15,7 @@ window.CHANGELOG_TYPES = [
 
 window.CHANGELOG = [
   // 2026-06-11
+  { date: "2026-06-11", type: "Describe Picture",title: "Picture Description Trainer — Step 2: Detailed Description", href: "picture-description-trainer-step-2.html" },
   { date: "2026-06-11", type: "Describe Picture",title: "Picture Description Trainer — Step 1: Topic Statement", href: "picture-description-trainer.html" },
   { date: "2026-06-11", type: "Gap-fill",        title: "Runway Excursion — Picture Description Gap-fill",       href: "runway-excursion-picture-gap-fill.html" },
 
