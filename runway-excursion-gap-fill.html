@@ -43,7 +43,7 @@
         }
     </style>
 </head>
-<body class="min-h-full lg:h-full flex flex-col font-sans antialiased bg-slate-50">
+<body class="min-h-full flex flex-col font-sans antialiased bg-slate-50">
 
     <!-- Top Navigation Header (Light Theme) -->
     <header class="bg-white border-b border-slate-200 px-6 py-4 flex flex-col sm:flex-row items-center justify-between shrink-0 gap-4 shadow-sm">
@@ -77,7 +77,7 @@
     </header>
 
     <!-- Main Workspace -->
-    <main class="flex-1 flex flex-col lg:flex-row lg:overflow-hidden bg-slate-50">
+    <main class="flex flex-col lg:flex-row lg:overflow-hidden bg-slate-50 lg:h-[calc(100vh-73px)]">
         
         <!-- Left Panel: Reference Media and Word Pool -->
         <section class="w-full lg:w-5/12 flex flex-col border-r border-slate-200 lg:overflow-y-auto p-4 lg:p-6 space-y-6 bg-white">
@@ -100,7 +100,7 @@
             <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
                 <div class="flex items-center justify-between border-b border-slate-200 pb-2">
                     <h3 class="text-xs font-bold uppercase tracking-wider text-slate-600">Vocabulary & Connectors Deck</h3>
-                    <span class="text-[10px] text-slate-400">Click a card, then click a gap</span>
+                    <button onclick="toggleDeckOrder()" id="deck-order-btn" class="text-[10px] border border-slate-200 bg-white text-slate-600 hover:bg-slate-100 px-2 py-1 rounded-md transition font-semibold" title="Toggle card order">Order: Random</button>
                 </div>
                 
                 <!-- Dynamic Word Pool -->
@@ -165,6 +165,47 @@
         </section>
 
     </main>
+
+    <!-- Extra practice blocks (scroll below the workspace) -->
+    <div class="max-w-5xl mx-auto w-full px-4 lg:px-6 py-10 space-y-10">
+
+      <!-- Speaking drill -->
+      <section aria-label="Active recall speaking drill" class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-aviation-700">Speaking drill · say it out loud</h2>
+          <span id="drillCounter" class="text-xs font-mono text-slate-500">Card 0 / 0</span>
+        </div>
+        <p id="drillTask" class="text-slate-800 text-base leading-relaxed min-h-[3em] mb-4">Read the description, say the connector out loud, then check yourself.</p>
+        <div id="drillTarget" hidden class="text-center text-lg font-bold text-emerald-800 bg-emerald-50 border border-emerald-100 rounded-xl py-3 px-4 mb-4">&raquo; <span id="drillTargetText"></span> &laquo;</div>
+        <div class="flex flex-wrap gap-2">
+          <button id="drillShow" disabled onclick="drillShowAnswer()" class="text-xs font-semibold border border-slate-200 bg-white text-slate-700 hover:bg-slate-100 disabled:opacity-40 disabled:cursor-not-allowed px-4 py-2 rounded-lg transition">Show answer (Space)</button>
+          <button id="drillNext" onclick="drillNextCard()" class="text-xs font-bold bg-aviation-600 hover:bg-aviation-500 text-white px-4 py-2 rounded-lg transition">Next drill (Enter)</button>
+        </div>
+        <p class="mt-3 text-xs text-slate-400">Keys: Space — show answer · Enter / &rarr; — next drill</p>
+      </section>
+
+      <!-- Crossword (generated from the Level 5 model answer vocabulary) -->
+      <section aria-label="Runway excursion crossword" class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-aviation-700">Runway Excursion Crossword</h2>
+          <a href="Crosswords/runway-excursion.html" target="_blank" rel="noopener" class="text-xs font-semibold text-aviation-700 hover:underline">Open full screen &nearr;</a>
+        </div>
+        <p class="text-xs text-slate-500 mb-3">Key vocabulary from the Level 5 model answer — solve it to lock in the words.</p>
+        <iframe src="Crosswords/runway-excursion.html" title="Runway excursion crossword" loading="lazy" class="w-full rounded-xl border border-slate-200 bg-slate-50" style="height:760px"></iframe>
+      </section>
+
+      <!-- YouTube model description -->
+      <section aria-label="Model description video" class="bg-white border border-slate-200 rounded-2xl shadow-sm p-6">
+        <div class="flex items-center justify-between mb-3 flex-wrap gap-2">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-aviation-700">Watch: model description</h2>
+          <a href="https://youtu.be/rcQU23JKqs0?t=252" target="_blank" rel="noopener" class="text-xs font-semibold text-aviation-700 hover:underline">Full video on YouTube &nearr;</a>
+        </div>
+        <div class="relative w-full rounded-xl overflow-hidden border border-slate-200" style="padding-top:56.25%">
+          <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/rcQU23JKqs0?modestbranding=1&start=252" title="Runway excursion model description" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </section>
+
+    </div>
 
     <!-- Custom Notification Popup / Modal -->
     <div id="modal-wrapper" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden">
@@ -371,6 +412,63 @@
             "alert airport fire rescue"
         ];
 
+        // --- Deck order: random by default, toggle to sequential ---
+        let deckMode = 'random';
+        function shuffleArr(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+        let deckDisplayOrder = shuffleArr(uniqueConnectors);
+        function toggleDeckOrder() {
+            deckMode = (deckMode === 'random') ? 'sequential' : 'random';
+            deckDisplayOrder = (deckMode === 'sequential') ? uniqueConnectors.slice() : shuffleArr(uniqueConnectors);
+            const btn = document.getElementById('deck-order-btn');
+            if (btn) btn.textContent = (deckMode === 'random') ? 'Order: Random' : 'Order: Sequential';
+            renderWordPool();
+        }
+
+        // --- Active-recall speaking drill (connector clue -> phrase) ---
+        const DRILLS = [
+            ["Introduce a cautious interpretation of the evidence you see.", "This may indicate that…"],
+            ["Frame your point in terms of risk and the protection of people.", "From a safety perspective…"],
+            ["Draw a tentative conclusion from what is visible.", "This suggests that…"],
+            ["Propose one of several possible causes, tentatively.", "A possible contributing factor could have been…"],
+            ["Speculate about the conditions the plane met in flight.", "The aircraft could have encountered…"],
+            ["Say that conditions made the protective buffer smaller.", "reduce the safety margin"],
+            ["Add a further possible cause to the ones already given.", "Another possible factor could have been…"],
+            ["Express uncertainty between two options.", "it is difficult to say whether…"],
+            ["Name the single most urgent action to take.", "the first priority"],
+            ["Make the plane stable and out of danger after it stops.", "secure the aircraft"],
+            ["Notify ATC about the situation.", "inform air traffic control"],
+            ["Begin getting people off the plane.", "start the evacuation"],
+            ["Warn that a danger could remain.", "there may still be a risk of…"],
+            ["Call the airfield emergency response teams.", "alert airport fire rescue"]
+        ];
+        let drillHistory = [], drillIndex = -1, drillRevealed = false;
+        function drillNextCard() {
+            if (!DRILLS.length) return;
+            if (drillHistory.length >= DRILLS.length) drillHistory = [];
+            let pool = DRILLS.map(function (_, i) { return i; }).filter(function (i) { return drillHistory.indexOf(i) === -1 && i !== drillIndex; });
+            if (!pool.length) pool = [0];
+            drillIndex = pool[Math.floor(Math.random() * pool.length)];
+            drillHistory.push(drillIndex);
+            drillRevealed = false;
+            document.getElementById('drillTask').textContent = DRILLS[drillIndex][0];
+            document.getElementById('drillTargetText').textContent = DRILLS[drillIndex][1];
+            document.getElementById('drillTarget').hidden = true;
+            document.getElementById('drillCounter').textContent = 'Card ' + drillHistory.length + ' / ' + DRILLS.length;
+            document.getElementById('drillShow').disabled = false;
+        }
+        function drillShowAnswer() {
+            if (drillIndex === -1 || drillRevealed) return;
+            document.getElementById('drillTarget').hidden = false;
+            document.getElementById('drillShow').disabled = true;
+            drillRevealed = true;
+        }
+        document.addEventListener('keydown', function (e) {
+            const tag = (document.activeElement && document.activeElement.tagName) || '';
+            if (['INPUT', 'TEXTAREA', 'BUTTON', 'A', 'SELECT'].indexOf(tag) !== -1) return;
+            if (e.code === 'Space' || e.key === ' ') { if (drillIndex === -1) return; e.preventDefault(); drillShowAnswer(); }
+            else if (e.key === 'Enter' || e.key === 'ArrowRight') { e.preventDefault(); drillNextCard(); }
+        });
+
         // Active state of placed solutions
         let placedGaps = {}; // map ID -> selected phrase string
 
@@ -385,7 +483,7 @@
             const pool = document.getElementById('phrases-pool');
             pool.innerHTML = '';
 
-            uniqueConnectors.forEach((phrase) => {
+            deckDisplayOrder.forEach((phrase) => {
                 const countOfPhraseUsed = Object.values(placedGaps).filter(val => val === phrase).length;
                 // Allow "From a safety perspective…" to be selected up to twice, others once
                 const maxPermissible = (phrase === "From a safety perspective…") ? 2 : 1;
