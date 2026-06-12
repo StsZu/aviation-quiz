@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCAN Method — The Pilot's Picture Scan</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #e7dfd2;
+    color: #2f2822;
+    min-height: 100vh;
+    padding: 24px 16px 90px;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  .back-link {
+    display: inline-block;
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    color: #7a6858;
+    text-decoration: none;
+    margin-bottom: 18px;
+    padding: 6px 14px;
+    background: #f8f3e9;
+    border: 1px solid #d4c7b3;
+    border-radius: 20px;
+  }
+  .back-link:hover { color: #2f2822; }
+
+  h1 { font-size: 30px; margin-bottom: 6px; }
+  .subtitle { color: #7a6858; font-style: italic; margin-bottom: 24px; font-size: 17px; }
+
+  .card {
+    background: #f8f3e9;
+    border: 1px solid #d4c7b3;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+
+  .card h2 { font-size: 21px; margin-bottom: 14px; }
+  .card p { line-height: 1.55; margin-bottom: 10px; }
+  .muted { color: #7a6858; }
+
+  /* ---- intro: SCAN cycle ---- */
+  .scan-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0; }
+  .scan-step {
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 14px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .scan-step .letter { font-size: 26px; font-weight: bold; }
+  .scan-step .word { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; color: #7a6858; text-transform: uppercase; margin: 2px 0 6px; }
+  .scan-step .q { font-size: 14px; font-style: italic; }
+
+  .zone-chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0 4px; }
+  .chip {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 16px;
+    border: 2px solid;
+    background: #fffdf8;
+  }
+
+  .traffic { margin-top: 14px; }
+  .traffic-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; position: relative; top: 1px; }
+
+  /* ---- trainer ---- */
+  .mode-toggle { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+  .mode-btn {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    padding: 8px 20px;
+    border-radius: 18px;
+    border: 1px solid #d4c7b3;
+    background: #fffdf8;
+    color: #7a6858;
+    cursor: pointer;
+  }
+  .mode-btn.active { background: #2f2822; color: #f8f3e9; border-color: #2f2822; }
+
+  .pic-frame { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid #d4c7b3; }
+  .pic-frame img { display: block; width: 100%; height: auto; }
+  .pic-frame svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .zone-poly {
+    fill: transparent;
+    stroke: transparent;
+    stroke-width: 0.6;
+    cursor: pointer;
+    transition: fill .2s, stroke .2s;
+  }
+  .zone-poly.active { fill-opacity: 0.18; stroke-opacity: 0.95; }
+
+  .zone-btns, .step-btns { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .zone-btn {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 18px;
+    border: 2px solid;
+    background: #fffdf8;
+    cursor: pointer;
+  }
+  .zone-btn.active { color: #fffdf8 !important; }
+
+  .step-btn {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    padding: 10px 0;
+    flex: 1 1 0;
+    min-width: 90px;
+    border-radius: 14px;
+    border: 1px solid #d4c7b3;
+    background: #fffdf8;
+    color: #2f2822;
+    cursor: pointer;
+  }
+  .step-btn b { display: block; font-size: 17px; }
+  .step-btn span { font-size: 11px; color: #7a6858; }
+  .step-btn.active { background: #2f2822; color: #f8f3e9; border-color: #2f2822; }
+  .step-btn.active span { color: #cdbfa9; }
+  .step-btn.done::after { content: " ✓"; color: #5a8a4a; }
+  .step-btn.active.done::after { color: #9fd08a; }
+
+  .phrase-panel {
+    margin-top: 16px;
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 14px;
+    padding: 18px;
+  }
+  .phrase-panel .zone-tag {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    font-weight: bold;
+  }
+  .phrase-panel .ask { font-style: italic; color: #7a6858; margin: 6px 0 12px; }
+  .starters { margin-bottom: 12px; }
+  .starter {
+    display: inline-block;
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    background: #efe7d8;
+    border: 1px solid #d4c7b3;
+    border-radius: 10px;
+    padding: 5px 12px;
+    margin: 0 6px 6px 0;
+  }
+  .model { font-size: 17px; line-height: 1.55; }
+  .model.hidden-model { filter: blur(6px); user-select: none; }
+
+  .panel-actions { margin-top: 14px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .action-btn {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 18px;
+    border: 1px solid #d4c7b3;
+    background: #f8f3e9;
+    color: #2f2822;
+    cursor: pointer;
+  }
+  .action-btn:hover { background: #efe7d8; }
+  .action-btn.primary { background: #2f2822; color: #f8f3e9; border-color: #2f2822; }
+  .action-btn:disabled { opacity: .45; cursor: default; }
+
+  /* progress */
+  .progress-line { margin-top: 16px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+  .progress-grid { display: grid; grid-template-columns: repeat(8, 16px); gap: 4px; }
+  .pcell { width: 16px; height: 16px; border-radius: 4px; border: 1px solid #d4c7b3; background: #fffdf8; }
+  .pcell.on { border-color: transparent; }
+  .progress-text { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: #7a6858; }
+  .reset-link { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; color: #7a6858; background: none; border: none; cursor: pointer; text-decoration: underline; }
+
+  /* ---- evidence drill ---- */
+  .fact-card {
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 14px;
+    padding: 18px;
+    margin-top: 14px;
+  }
+  .fact-label { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #7a6858; font-weight: bold; }
+  .fact-text { font-size: 18px; margin: 8px 0 4px; }
+  .fact-hint { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: #7a6858; font-style: italic; }
+  .fact-dots { display: flex; gap: 6px; margin-top: 14px; }
+  .fdot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #d4c7b3; background: #fffdf8; cursor: pointer; }
+  .fdot.current { border-color: #2f2822; }
+  .fdot.done { background: #5a8a4a; border-color: #5a8a4a; }
+
+  /* ---- levels ---- */
+  .level-item { border: 1px solid #d4c7b3; border-radius: 14px; margin-bottom: 10px; background: #fffdf8; overflow: hidden; }
+  .level-head {
+    width: 100%;
+    text-align: left;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    padding: 14px 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #2f2822;
+  }
+  .level-head .lv-tag { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; color: #7a6858; }
+  .level-body { display: none; padding: 0 18px 16px; }
+  .level-item.open .level-body { display: block; }
+  .level-body p { font-size: 16px; line-height: 1.6; margin-bottom: 10px; }
+  .level-body pre { font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; line-height: 1.7; white-space: pre-wrap; color: #2f2822; }
+
+  /* ---- speak mode ---- */
+  .speak-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+  .rec-dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #b5483a; display: none;
+    animation: blink 1s infinite;
+  }
+  .rec-dot.on { display: inline-block; }
+  @keyframes blink { 50% { opacity: .2; } }
+  .speak-timer { font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; color: #7a6858; min-width: 48px; }
+
+  .transcript-box {
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 14px;
+    padding: 16px;
+    min-height: 70px;
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 12px;
+  }
+  .transcript-box .interim { color: #a09080; }
+  .transcript-placeholder { color: #a09080; font-style: italic; font-size: 14px; }
+
+  .metric-table { width: 100%; border-collapse: collapse; font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; margin: 10px 0; }
+  .metric-table td, .metric-table th { padding: 7px 10px; border-bottom: 1px solid #e6dcc9; text-align: left; }
+  .metric-table th { color: #7a6858; font-weight: normal; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  .metric-ok { color: #5a8a4a; font-weight: bold; }
+  .metric-low { color: #b5483a; }
+
+  .history-line { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: #7a6858; margin-top: 8px; }
+
+  /* ---- AI feedback ---- */
+  .ai-box {
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 14px;
+    padding: 16px;
+    margin-top: 12px;
+  }
+  .ai-box h3 { font-size: 16px; margin-bottom: 8px; }
+  .ai-output { white-space: pre-wrap; font-size: 15px; line-height: 1.6; margin-top: 10px; }
+  .key-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 8px 0; }
+  .key-row input {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 13px;
+    padding: 8px 12px;
+    border: 1px solid #d4c7b3;
+    border-radius: 10px;
+    background: #fff;
+    flex: 1 1 220px;
+  }
+  .small-note { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; color: #7a6858; }
+  .ai-status { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: #7a6858; font-style: italic; }
+
+  /* ---- SOS ---- */
+  .sos-btn {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 50;
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 14px 22px;
+    border-radius: 30px;
+    border: none;
+    background: #b5483a;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 4px 14px rgba(47,40,34,.3);
+  }
+  .sos-panel {
+    display: none;
+    position: fixed;
+    right: 20px;
+    bottom: 78px;
+    z-index: 50;
+    width: min(340px, calc(100vw - 40px));
+    background: #f8f3e9;
+    border: 1px solid #d4c7b3;
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 6px 20px rgba(47,40,34,.25);
+  }
+  .sos-panel.open { display: block; }
+  .sos-panel h3 { font-size: 16px; margin-bottom: 4px; }
+  .sos-panel .muted { font-size: 13px; margin-bottom: 10px; }
+  .sos-phrase {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 10px;
+    padding: 8px 10px;
+    margin-bottom: 6px;
+    font-size: 14px;
+  }
+  .sos-phrase button {
+    font-size: 13px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #7a6858;
+    flex-shrink: 0;
+  }
+
+  footer { text-align: center; color: #7a6858; font-size: 13px; font-family: "SF Pro Text", Arial, sans-serif; margin-top: 30px; }
+
+  @media (max-width: 640px) {
+    .scan-row { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a class="back-link" href="index.html">← All quizzes</a>
+
+  <h1>SCAN Method</h1>
+  <p class="subtitle">The Pilot's Picture Scan — describe any aviation picture with one small loop.</p>
+
+  <!-- ============ INTRO ============ -->
+  <div class="card">
+    <h2>One loop. Four zones. Full answer.</h2>
+    <p>A pilot doesn't memorise the instruments — he <strong>scans</strong> them in a loop. You don't memorise a description structure — you scan the picture with one loop of four steps:</p>
+
+    <div class="scan-row">
+      <div class="scan-step"><div class="letter">S</div><div class="word">See</div><div class="q">What can I see?<br>“I can see…”</div></div>
+      <div class="scan-step"><div class="letter">C</div><div class="word">Call</div><div class="q">What is it called?<br>“It looks like a…”</div></div>
+      <div class="scan-step"><div class="letter">A</div><div class="word">Assume</div><div class="q">What may have happened?<br>“It may have…”</div></div>
+      <div class="scan-step"><div class="letter">N</div><div class="word">Next</div><div class="q">What happens next?<br>“The crew would…”</div></div>
+    </div>
+
+    <p>Run this loop over <strong>four zones</strong> of the picture. Four zones × four sentences = a full ICAO-style answer, but your memory only holds one small loop.</p>
+
+    <div class="zone-chips" id="introChips"></div>
+
+    <div class="traffic">
+      <p><strong>The Assume step uses a “traffic light” of certainty:</strong></p>
+      <div class="traffic-row"><span class="dot" style="background:#5a8a4a"></span><span><em>might have / may have</em> — a weak guess</span></div>
+      <div class="traffic-row"><span class="dot" style="background:#d8a13a"></span><span><em>could have / probably</em> — a medium guess</span></div>
+      <div class="traffic-row"><span class="dot" style="background:#b5483a"></span><span><em>must have… because I can see…</em> — a strong guess with evidence</span></div>
+    </div>
+
+    <p style="margin-top:14px;"><strong>Stuck? Press the red SOS button.</strong> Rescue phrases are not a weakness — paraphrasing a forgotten word is a scored ICAO vocabulary skill.</p>
+  </div>
+
+  <!-- ============ TRAINER ============ -->
+  <div class="card">
+    <h2>Trainer — Runway Excursion</h2>
+    <p class="muted">Pick a zone (tap the picture or a button), then walk the S-C-A-N loop. <strong>Learn</strong> mode shows the model sentence. <strong>Drill</strong> mode hides it — say your own sentence first, then check.</p>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="modeLearn">Learn</button>
+      <button class="mode-btn" id="modeDrill">Drill</button>
+    </div>
+
+    <div class="pic-frame">
+      <img src="img/runway-excursion-water.jpg" alt="A narrow-body aircraft partially submerged in water after a runway excursion">
+      <svg viewBox="0 0 100 100" preserveAspectRatio="none" id="zoneSvg"></svg>
+    </div>
+
+    <div class="zone-btns" id="zoneBtns"></div>
+    <div class="step-btns" id="stepBtns"></div>
+
+    <div class="phrase-panel" id="phrasePanel"></div>
+
+    <div class="progress-line">
+      <div class="progress-grid" id="progressGrid"></div>
+      <span class="progress-text" id="progressText"></span>
+      <button class="reset-link" id="resetBtn">reset</button>
+    </div>
+  </div>
+
+  <!-- ============ EVIDENCE DRILL ============ -->
+  <div class="card">
+    <h2>Evidence drill — fact → guess</h2>
+    <p class="muted">Modal verbs are not grammar — they are bricks. Read the visible fact, then say a guess with the modal shown. Strong guesses add evidence: <em>…because I can see…</em></p>
+
+    <div class="fact-card" id="factCard"></div>
+    <div class="fact-dots" id="factDots"></div>
+  </div>
+
+  <!-- ============ SPEAK ============ -->
+  <div class="card">
+    <h2>Speak — record your full answer</h2>
+    <p class="muted">Look at the picture above, press <strong>Start</strong> and describe it aloud (aim for 60–90 seconds, all four zones). The trainer records you, transcribes your speech and measures your ICAO metrics automatically.</p>
+
+    <div class="speak-controls">
+      <button class="action-btn primary" id="speakStartBtn">● Start</button>
+      <button class="action-btn" id="speakStopBtn" disabled>■ Stop</button>
+      <span class="rec-dot" id="recDot"></span>
+      <span class="speak-timer" id="speakTimer">0:00</span>
+    </div>
+
+    <div class="transcript-box" id="transcriptBox">
+      <span class="transcript-placeholder">Your transcript will appear here while you speak…</span>
+    </div>
+
+    <div id="speakResults"></div>
+    <div class="history-line" id="speakHistory"></div>
+    <p class="small-note" id="asrNote"></p>
+
+    <!-- AI feedback -->
+    <div class="ai-box" id="aiBox">
+      <h3>AI coach feedback (optional)</h3>
+      <p class="small-note">Uses the Anthropic API directly from your browser. Your API key is stored only in this browser (localStorage) and sent only to api.anthropic.com. Do not enter your key on a shared computer.</p>
+      <div class="key-row">
+        <input type="password" id="apiKeyInput" placeholder="Anthropic API key (sk-ant-…)" autocomplete="off">
+        <button class="action-btn" id="saveKeyBtn">Save key</button>
+        <button class="action-btn" id="clearKeyBtn">Clear</button>
+      </div>
+      <button class="action-btn primary" id="aiFeedbackBtn" disabled>Get AI feedback on my answer</button>
+      <div class="ai-status" id="aiStatus"></div>
+      <div class="ai-output" id="aiOutput"></div>
+    </div>
+  </div>
+
+  <!-- ============ LEVELS ============ -->
+  <div class="card">
+    <h2>From 4 sentences to examiner level</h2>
+    <p class="muted">The same loop, more passes. Open a level, listen, then shadow it aloud.</p>
+    <div id="levels"></div>
+  </div>
+
+  <!-- ============ SKELETON ============ -->
+  <div class="card">
+    <h2>Universal skeleton — works on any picture</h2>
+    <p class="muted">Use this as a printed support in weeks 4–5, then turn it over. Final chant: <em>I see → I name → I prove → I guess → I act → I conclude.</em></p>
+    <div class="level-item" id="skeletonItem">
+      <button class="level-head"><span>Open the skeleton</span><span class="lv-tag">open ▾</span></button>
+      <div class="level-body">
+        <pre>This picture shows an aviation incident.
+
+I can see a [type of aircraft] near / on / above / beside [place].
+
+The main problem seems to be [problem].
+I can see this because [visible evidence].
+
+In the background, there are [people / vehicles / equipment].
+
+The incident may have been caused by [weather / technical problem /
+human factor / runway condition].
+
+The crew would need to [action].
+ATC would need to [action].
+
+From a safety perspective, the main risk is [risk].
+
+In my opinion, this situation shows that [safety lesson].</pre>
+      </div>
+    </div>
+  </div>
+
+  <footer>SCAN Method · See — Call — Assume — Next · Plane / People / Place / Panorama</footer>
+</div>
+
+<!-- SOS -->
+<button class="sos-btn" id="sosBtn">SOS</button>
+<div class="sos-panel" id="sosPanel">
+  <h3>Rescue phrases</h3>
+  <p class="muted">Say one of these and keep going. Recovering well is a skill the examiner rewards.</p>
+  <div id="sosList"></div>
+</div>
+
+<script>
+// ---------------- DATA ----------------
+const STEPS = {
+  see:    { letter: "S", word: "See",    q: "What can I see?" },
+  call:   { letter: "C", word: "Call",   q: "What is it called?" },
+  assume: { letter: "A", word: "Assume", q: "What may have happened? Why do I think so?" },
+  next:   { letter: "N", word: "Next",   q: "What happens next? Who acts? What is the risk?" }
+};
+const STEP_ORDER = ["see", "call", "assume", "next"];
+
+const ZONES = {
+  plane: {
+    name: "Plane", color: "#4a7fb5",
+    polys: [[[55,9],[60,22],[63,38],[74,50],[91,60],[91,89],[57,94],[34,74],[30,55],[49,41],[52,22]]],
+    steps: {
+      see: {
+        starters: ["I can see…", "There is…"],
+        model: "I can see a narrow-body aircraft partially submerged in water, near the end of a runway."
+      },
+      call: {
+        starters: ["It looks like a…", "The aircraft appears to be…"],
+        model: "It looks like a Boeing 737. The forward exits are open and the evacuation slides have been deployed."
+      },
+      assume: {
+        starters: ["It must have… because…", "It may have…"],
+        model: "It must have overrun the runway, because the tire tracks lead straight from the runway to the water."
+      },
+      next: {
+        starters: ["There is a risk of…", "The crew would…"],
+        model: "There is a risk of fuel leaking into the water, so the crew would evacuate everyone and secure the aircraft."
+      }
+    }
+  },
+  people: {
+    name: "People", color: "#d2691e",
+    polys: [
+      [[52,53],[68,53],[68,69],[52,69]],
+      [[24,27],[44,27],[44,41],[24,41]]
+    ],
+    steps: {
+      see: {
+        starters: ["I can see several people…", "There are people…"],
+        model: "I can see several people standing on the right wing, and more people on the shoreline behind the aircraft."
+      },
+      call: {
+        starters: ["They look like…", "Some of them are wearing…"],
+        model: "Some of them are wearing hard hats and reflective vests, so they look like investigators or airport rescue staff."
+      },
+      assume: {
+        starters: ["They may have…", "They could be…"],
+        model: "They may have used the yellow raft to reach the aircraft from the shore."
+      },
+      next: {
+        starters: ["They would…", "ATC would need to…"],
+        model: "The investigators would inspect the aircraft, and ATC would keep the runway closed during the operation."
+      }
+    }
+  },
+  place: {
+    name: "Place", color: "#5a8a4a",
+    polys: [
+      [[0,0],[100,0],[100,9],[55,9],[20,26],[0,26]],
+      [[0,55],[24,58],[44,76],[40,96],[0,96]]
+    ],
+    steps: {
+      see: {
+        starters: ["In the background I can see…", "Around the aircraft there is…"],
+        model: "In the background I can see fire trucks, airport vehicles and orange cones on the grass near the runway."
+      },
+      call: {
+        starters: ["It is called a…", "I'm not sure what it's called, but…"],
+        model: "There is an orange floating barrier around the aircraft — it is called a containment boom."
+      },
+      assume: {
+        starters: ["It was probably placed there to…", "It could be used to…"],
+        model: "It was probably placed there to contain fuel, oil or debris from the aircraft."
+      },
+      next: {
+        starters: ["From a safety perspective…", "This would prevent…"],
+        model: "From a safety perspective, this prevents hazardous fluids from spreading and polluting the water."
+      }
+    }
+  },
+  panorama: {
+    name: "Panorama", color: "#8a8a8a",
+    polys: [
+      [[68,9],[80,9],[80,25],[68,25]],
+      [[91,35],[100,35],[100,96],[91,96]]
+    ],
+    steps: {
+      see: {
+        starters: ["The scene looks…", "There is no…"],
+        model: "The scene looks calm — there is no smoke, no fire and no sense of panic."
+      },
+      call: {
+        starters: ["The bright light is a…", "This is called a…"],
+        model: "The bright light on the right is a floodlight, used to illuminate the area at night."
+      },
+      assume: {
+        starters: ["The accident may have happened…", "The runway might have been…"],
+        model: "The accident may have happened at night, and the runway might have been wet during the landing."
+      },
+      next: {
+        starters: ["In my opinion…", "The main lesson is…"],
+        model: "In my opinion, everyone was very lucky — a quick evacuation and a fast emergency response can save lives."
+      }
+    }
+  }
+};
+const ZONE_ORDER = ["plane", "people", "place", "panorama"];
+
+const RESCUE = [
+  "I'm not sure what it's called, but it looks like a…",
+  "Let me look at another part of the picture.",
+  "It's difficult to say from this photo, but…",
+  "So, as I said, the aircraft is in the water."
+];
+
+const FACTS = [
+  { fact: "I can see tire tracks leading from the runway to the water.",
+    hint: "Make a strong guess with “must have… because…”",
+    model: "The aircraft must have left the runway, because the tracks lead straight into the water." },
+  { fact: "The fuselage looks mostly intact.",
+    hint: "Make a weak guess with “may have”",
+    model: "The aircraft may have entered the water at a relatively low speed." },
+  { fact: "The evacuation slides are deployed at the forward doors.",
+    hint: "Make a strong guess with “must have”",
+    model: "The crew must have initiated an emergency evacuation." },
+  { fact: "The runway looks wet.",
+    hint: "Make a medium guess with “could have”",
+    model: "Poor braking action could have increased the stopping distance." },
+  { fact: "The engines are under the water.",
+    hint: "Sometimes the honest answer is: it's difficult to say…",
+    model: "It is difficult to say whether the thrust reversers were deployed." },
+  { fact: "Several people are wearing orange vests and hard hats.",
+    hint: "Make a strong guess about who they are",
+    model: "They must be rescue workers or investigators." }
+];
+
+const LEVELS = [
+  { tag: "Level 1 · Survival — one loop, one zone",
+    text: ["I can see a plane. It is in the water. Maybe it went off the runway. Rescue people are helping."] },
+  { tag: "Level 2 · Basic — two zones",
+    text: ["I can see a passenger aircraft in the water. It looks like a Boeing 737. It may have overrun the runway. The doors are open and the slides are out, so the people are safe. I can see workers near the plane. They are wearing orange vests. They must be rescue workers. They will check the aircraft."] },
+  { tag: "Level 3 · ICAO 4 — all four zones",
+    text: ["In this picture I can see a narrow-body aircraft, possibly a Boeing 737, partially submerged in water near the end of a runway. There are tire tracks on the grass, so this must have been a runway excursion. The fuselage looks intact, which may indicate that the speed was not very high. The forward exits are open and the evacuation slides have been deployed, so the crew must have started an evacuation. Several people are standing on the wing — they could be investigators or emergency personnel. In the background there are fire trucks and people in reflective clothing. An orange barrier floats around the aircraft, probably to contain fuel or oil. The weather looks calm, but the runway may have been wet during the landing."] },
+  { tag: "Level 4 · ICAO 5 — causes, perspectives, actions",
+    text: ["As for possible causes, there is usually no single factor. A contributing factor could have been poor braking action on a contaminated runway, or the aircraft could have encountered a tailwind or wind shear.",
+           "From a safety perspective, the intact fuselage is important because lower impact forces increase the chances of survival. The crew's first priority would be to secure the aircraft, inform ATC and evacuate. ATC would need to alert fire rescue, close the runway and instruct arriving traffic to go around."] },
+  { tag: "Level 5 · Examiner discussion",
+    text: ["If the runway had been equipped with an EMAS arrestor bed, the aircraft might have stopped before reaching the water. Compared to high-speed overruns, this outcome is relatively fortunate.",
+           "In my opinion, this case shows that runway condition reports and stabilized-approach criteria are not bureaucracy — they are the last barriers before exactly this kind of accident. What I would want to know from the investigation is the touchdown point and the braking action reported by previous crews."] }
+];
+
+// keyword lists for automatic Speak metrics
+const ZONE_KEYWORDS = {
+  plane:    ["plane", "aircraft", "boeing", "fuselage", "wing", "slide", "door", "exit", "engine", "jet"],
+  people:   ["people", "person", "worker", "investigator", "rescue", "crew", "passenger", "vest", "staff"],
+  place:    ["runway", "water", "truck", "vehicle", "barrier", "boom", "cone", "grass", "shore", "airport"],
+  panorama: ["weather", "night", "light", "calm", "smoke", "sky", "dark", "wind", "rain", "panic"]
+};
+const VOCAB_LIST = ["runway", "excursion", "overrun", "fuselage", "slide", "evacuation", "narrow-body", "tire tracks",
+  "fire truck", "barrier", "boom", "containment", "atc", "crew", "investigator", "floodlight", "vest", "raft", "braking"];
+
+// ---------------- STATE ----------------
+let currentZone = "plane";
+let currentStep = "see";
+let mode = "learn";
+let revealed = true;
+
+let progress = {};
+try { progress = JSON.parse(localStorage.getItem("scanMethodProgress") || "{}"); } catch (e) { progress = {}; }
+function saveProgress() { try { localStorage.setItem("scanMethodProgress", JSON.stringify(progress)); } catch (e) {} }
+
+// ---------------- TTS ----------------
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-US";
+  u.rate = 0.95;
+  window.speechSynthesis.speak(u);
+}
+
+// ---------------- RENDER: zones / steps ----------------
+const svg = document.getElementById("zoneSvg");
+const zoneBtnsEl = document.getElementById("zoneBtns");
+const stepBtnsEl = document.getElementById("stepBtns");
+const panelEl = document.getElementById("phrasePanel");
+
+function buildZoneOverlay() {
+  svg.innerHTML = "";
+  ZONE_ORDER.forEach(zid => {
+    ZONES[zid].polys.forEach(poly => {
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
+      p.setAttribute("points", poly.map(pt => pt.join(",")).join(" "));
+      p.setAttribute("class", "zone-poly");
+      p.dataset.zone = zid;
+      p.addEventListener("click", () => selectZone(zid));
+      svg.appendChild(p);
+    });
+  });
+}
+
+function buildZoneButtons() {
+  zoneBtnsEl.innerHTML = "";
+  ZONE_ORDER.forEach(zid => {
+    const z = ZONES[zid];
+    const b = document.createElement("button");
+    b.className = "zone-btn";
+    b.textContent = z.name;
+    b.style.borderColor = z.color;
+    b.style.color = z.color;
+    b.dataset.zone = zid;
+    b.addEventListener("click", () => selectZone(zid));
+    zoneBtnsEl.appendChild(b);
+  });
+}
+
+function buildStepButtons() {
+  stepBtnsEl.innerHTML = "";
+  STEP_ORDER.forEach(sid => {
+    const s = STEPS[sid];
+    const b = document.createElement("button");
+    b.className = "step-btn";
+    b.dataset.step = sid;
+    b.innerHTML = "<b>" + s.letter + "</b><span>" + s.word.toUpperCase() + "</span>";
+    b.addEventListener("click", () => selectStep(sid));
+    stepBtnsEl.appendChild(b);
+  });
+}
+
+function buildIntroChips() {
+  const el = document.getElementById("introChips");
+  ZONE_ORDER.forEach(zid => {
+    const z = ZONES[zid];
+    const c = document.createElement("span");
+    c.className = "chip";
+    c.textContent = z.name.toUpperCase();
+    c.style.borderColor = z.color;
+    c.style.color = z.color;
+    el.appendChild(c);
+  });
+}
+
+function selectZone(zid) {
+  currentZone = zid;
+  revealed = (mode === "learn");
+  render();
+}
+function selectStep(sid) {
+  currentStep = sid;
+  revealed = (mode === "learn");
+  render();
+}
+
+function markDone() {
+  progress[currentZone + "." + currentStep] = true;
+  saveProgress();
+  render();
+}
+
+function render() {
+  const z = ZONES[currentZone];
+  const s = STEPS[currentStep];
+  const data = z.steps[currentStep];
+
+  svg.querySelectorAll(".zone-poly").forEach(p => {
+    const active = p.dataset.zone === currentZone;
+    p.classList.toggle("active", active);
+    p.style.fill = active ? ZONES[p.dataset.zone].color : "transparent";
+    p.style.stroke = active ? ZONES[p.dataset.zone].color : "transparent";
+  });
+
+  zoneBtnsEl.querySelectorAll(".zone-btn").forEach(b => {
+    const active = b.dataset.zone === currentZone;
+    b.classList.toggle("active", active);
+    b.style.background = active ? ZONES[b.dataset.zone].color : "#fffdf8";
+  });
+
+  stepBtnsEl.querySelectorAll(".step-btn").forEach(b => {
+    b.classList.toggle("active", b.dataset.step === currentStep);
+    b.classList.toggle("done", !!progress[currentZone + "." + b.dataset.step]);
+  });
+
+  const showModel = revealed;
+  let html = "";
+  html += '<div class="zone-tag" style="color:' + z.color + '">' + z.name + " · " + s.letter + " — " + s.word + "</div>";
+  html += '<div class="ask">' + s.q + "</div>";
+  html += '<div class="starters">' + data.starters.map(st => '<span class="starter">' + st + "</span>").join("") + "</div>";
+  html += '<div class="model' + (showModel ? "" : " hidden-model") + '" id="modelText">' + data.model + "</div>";
+  html += '<div class="panel-actions">';
+  if (!showModel) {
+    html += '<button class="action-btn primary" id="revealBtn">Show model sentence</button>';
+  } else {
+    html += '<button class="action-btn primary" id="playBtn">▶ Listen</button>';
+    html += '<button class="action-btn" id="doneBtn">' + (progress[currentZone + "." + currentStep] ? "Done ✓" : "I said it ✓") + "</button>";
+  }
+  html += '<button class="action-btn" id="nextBtn">Next step →</button>';
+  html += "</div>";
+  panelEl.innerHTML = html;
+
+  const revealBtn = document.getElementById("revealBtn");
+  if (revealBtn) revealBtn.addEventListener("click", () => { revealed = true; render(); });
+  const playBtn = document.getElementById("playBtn");
+  if (playBtn) playBtn.addEventListener("click", () => speak(data.model));
+  const doneBtn = document.getElementById("doneBtn");
+  if (doneBtn) doneBtn.addEventListener("click", markDone);
+  document.getElementById("nextBtn").addEventListener("click", advance);
+
+  renderProgress();
+}
+
+function advance() {
+  const si = STEP_ORDER.indexOf(currentStep);
+  if (si < STEP_ORDER.length - 1) {
+    currentStep = STEP_ORDER[si + 1];
+  } else {
+    currentStep = STEP_ORDER[0];
+    const zi = ZONE_ORDER.indexOf(currentZone);
+    currentZone = ZONE_ORDER[(zi + 1) % ZONE_ORDER.length];
+  }
+  revealed = (mode === "learn");
+  render();
+}
+
+function renderProgress() {
+  const grid = document.getElementById("progressGrid");
+  grid.innerHTML = "";
+  let done = 0;
+  ZONE_ORDER.forEach(zid => {
+    STEP_ORDER.forEach(sid => {
+      const cell = document.createElement("div");
+      cell.className = "pcell";
+      if (progress[zid + "." + sid]) {
+        cell.classList.add("on");
+        cell.style.background = ZONES[zid].color;
+        done++;
+      }
+      cell.title = ZONES[zid].name + " · " + STEPS[sid].word;
+      grid.appendChild(cell);
+    });
+  });
+  document.getElementById("progressText").textContent = done + " / 16 sentences scanned";
+}
+
+// ---------------- MODE ----------------
+document.getElementById("modeLearn").addEventListener("click", () => setMode("learn"));
+document.getElementById("modeDrill").addEventListener("click", () => setMode("drill"));
+function setMode(m) {
+  mode = m;
+  revealed = (m === "learn");
+  document.getElementById("modeLearn").classList.toggle("active", m === "learn");
+  document.getElementById("modeDrill").classList.toggle("active", m === "drill");
+  render();
+}
+
+// ---------------- RESET ----------------
+document.getElementById("resetBtn").addEventListener("click", () => {
+  progress = {};
+  saveProgress();
+  render();
+});
+
+// ---------------- EVIDENCE DRILL ----------------
+let factIndex = 0;
+let factRevealed = false;
+let factProgress = {};
+try { factProgress = JSON.parse(localStorage.getItem("scanFactProgress") || "{}"); } catch (e) { factProgress = {}; }
+function saveFactProgress() { try { localStorage.setItem("scanFactProgress", JSON.stringify(factProgress)); } catch (e) {} }
+
+function renderFact() {
+  const f = FACTS[factIndex];
+  const card = document.getElementById("factCard");
+  let html = "";
+  html += '<div class="fact-label">Visible fact ' + (factIndex + 1) + " / " + FACTS.length + "</div>";
+  html += '<div class="fact-text">' + f.fact + "</div>";
+  html += '<div class="fact-hint">' + f.hint + "</div>";
+  html += '<div class="model' + (factRevealed ? "" : " hidden-model") + '" style="margin-top:12px;">' + f.model + "</div>";
+  html += '<div class="panel-actions">';
+  if (!factRevealed) {
+    html += '<button class="action-btn primary" id="factRevealBtn">Show model guess</button>';
+  } else {
+    html += '<button class="action-btn primary" id="factPlayBtn">▶ Listen</button>';
+    html += '<button class="action-btn" id="factDoneBtn">' + (factProgress[factIndex] ? "Done ✓" : "I said it ✓") + "</button>";
+  }
+  html += '<button class="action-btn" id="factNextBtn">Next fact →</button>';
+  html += "</div>";
+  card.innerHTML = html;
+
+  const r = document.getElementById("factRevealBtn");
+  if (r) r.addEventListener("click", () => { factRevealed = true; renderFact(); });
+  const p = document.getElementById("factPlayBtn");
+  if (p) p.addEventListener("click", () => speak(f.model));
+  const d = document.getElementById("factDoneBtn");
+  if (d) d.addEventListener("click", () => { factProgress[factIndex] = true; saveFactProgress(); renderFact(); });
+  document.getElementById("factNextBtn").addEventListener("click", () => {
+    factIndex = (factIndex + 1) % FACTS.length;
+    factRevealed = false;
+    renderFact();
+  });
+
+  const dots = document.getElementById("factDots");
+  dots.innerHTML = "";
+  FACTS.forEach((_, i) => {
+    const dot = document.createElement("div");
+    dot.className = "fdot" + (i === factIndex ? " current" : "") + (factProgress[i] ? " done" : "");
+    dot.addEventListener("click", () => { factIndex = i; factRevealed = false; renderFact(); });
+    dots.appendChild(dot);
+  });
+}
+
+// ---------------- SPEAK MODE ----------------
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const speakStartBtn = document.getElementById("speakStartBtn");
+const speakStopBtn = document.getElementById("speakStopBtn");
+const transcriptBox = document.getElementById("transcriptBox");
+const speakResults = document.getElementById("speakResults");
+const recDot = document.getElementById("recDot");
+const speakTimerEl = document.getElementById("speakTimer");
+const asrNote = document.getElementById("asrNote");
+
+if (!SpeechRec) {
+  asrNote.textContent = "Speech recognition is not supported in this browser — you will still get a recording, but no transcript or metrics. Use Chrome or Edge for full Speak mode.";
+}
+
+let mediaRecorder = null;
+let audioChunks = [];
+let recognition = null;
+let recognizing = false;
+let finalTranscript = "";
+let chunkCount = 0;
+let speakT0 = 0;
+let firstWordAt = null;
+let timerInterval = null;
+let lastSession = null;
+
+function fmtTime(ms) {
+  const s = Math.floor(ms / 1000);
+  return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0");
+}
+
+async function startSpeak() {
+  let stream;
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  } catch (e) {
+    asrNote.textContent = "Microphone access was denied — allow the microphone to use Speak mode.";
+    return;
+  }
+
+  finalTranscript = "";
+  chunkCount = 0;
+  firstWordAt = null;
+  audioChunks = [];
+  speakResults.innerHTML = "";
+  document.getElementById("aiOutput").textContent = "";
+  transcriptBox.innerHTML = '<span class="transcript-placeholder">Listening… start speaking.</span>';
+
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+  mediaRecorder.start();
+
+  if (SpeechRec) {
+    recognition = new SpeechRec();
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onresult = ev => {
+      if (firstWordAt === null) firstWordAt = Date.now();
+      let interim = "";
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        if (ev.results[i].isFinal) {
+          finalTranscript += ev.results[i][0].transcript + " ";
+          chunkCount++;
+        } else {
+          interim += ev.results[i][0].transcript;
+        }
+      }
+      transcriptBox.innerHTML = finalTranscript + '<span class="interim">' + interim + "</span>";
+    };
+    recognition.onend = () => { if (recognizing) { try { recognition.start(); } catch (e) {} } };
+    recognizing = true;
+    recognition.start();
+  }
+
+  speakT0 = Date.now();
+  timerInterval = setInterval(() => { speakTimerEl.textContent = fmtTime(Date.now() - speakT0); }, 250);
+  recDot.classList.add("on");
+  speakStartBtn.disabled = true;
+  speakStopBtn.disabled = false;
+}
+
+function stopSpeak() {
+  recognizing = false;
+  if (recognition) { try { recognition.stop(); } catch (e) {} recognition = null; }
+  clearInterval(timerInterval);
+  recDot.classList.remove("on");
+  speakStartBtn.disabled = false;
+  speakStopBtn.disabled = true;
+
+  const durationMs = Date.now() - speakT0;
+
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    mediaRecorder.onstop = () => {
+      mediaRecorder.stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+      finishSpeakSession(durationMs, URL.createObjectURL(blob));
+    };
+    mediaRecorder.stop();
+  } else {
+    finishSpeakSession(durationMs, null);
+  }
+}
+
+function computeMetrics(text, durationMs) {
+  const lower = " " + text.toLowerCase() + " ";
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+
+  const modalRe = /\b(might|may|could|must|would|should)\b(\s+have)?/g;
+  let modals = 0, modalHave = 0, m;
+  while ((m = modalRe.exec(lower)) !== null) { modals++; if (m[2]) modalHave++; }
+
+  const evidence = (lower.match(/\b(because|suggests?|so this|which means)\b/g) || []).length;
+
+  let vocabHits = [];
+  VOCAB_LIST.forEach(v => { if (lower.includes(v)) vocabHits.push(v); });
+
+  let zonesCovered = [];
+  ZONE_ORDER.forEach(zid => {
+    if (ZONE_KEYWORDS[zid].some(k => lower.includes(k))) zonesCovered.push(ZONES[zid].name);
+  });
+
+  return {
+    date: new Date().toISOString().slice(0, 16).replace("T", " "),
+    durationSec: Math.round(durationMs / 1000),
+    ttfpSec: firstWordAt ? Math.round((firstWordAt - speakT0) / 10) / 100 : null,
+    words: words,
+    chunks: chunkCount,
+    modals: modals,
+    modalHave: modalHave,
+    evidence: evidence,
+    vocab: vocabHits,
+    zones: zonesCovered
+  };
+}
+
+function metricRow(name, value, ok, target) {
+  const cls = ok === null ? "" : (ok ? "metric-ok" : "metric-low");
+  return "<tr><td>" + name + '</td><td class="' + cls + '">' + value + "</td><td>" + target + "</td></tr>";
+}
+
+function finishSpeakSession(durationMs, audioUrl) {
+  const text = finalTranscript.trim();
+  const hasASR = !!SpeechRec;
+  const mtr = computeMetrics(text, durationMs);
+  lastSession = { transcript: text, metrics: mtr };
+
+  let html = "";
+  if (audioUrl) {
+    html += '<p style="margin-top:6px;"><audio controls src="' + audioUrl + '" style="width:100%;"></audio></p>';
+  }
+  if (hasASR) {
+    html += '<table class="metric-table"><tr><th>Metric</th><th>You</th><th>Target (week 6)</th></tr>';
+    html += metricRow("Time to first phrase", mtr.ttfpSec !== null ? mtr.ttfpSec + " s" : "—", mtr.ttfpSec !== null ? mtr.ttfpSec <= 5 : null, "≤ 5 s");
+    html += metricRow("Speaking time", mtr.durationSec + " s", mtr.durationSec >= 45, "60–90 s");
+    html += metricRow("Words", mtr.words, mtr.words >= 80, "≥ 80");
+    html += metricRow("Modal verbs", mtr.modals + " (with have: " + mtr.modalHave + ")", mtr.modals >= 3, "≥ 3");
+    html += metricRow("Evidence (because / suggests)", mtr.evidence, mtr.evidence >= 1, "≥ 1");
+    html += metricRow("Aviation vocabulary", mtr.vocab.length + (mtr.vocab.length ? " — " + mtr.vocab.slice(0, 6).join(", ") : ""), mtr.vocab.length >= 6, "≥ 6 terms");
+    html += metricRow("Zones covered", mtr.zones.length + " / 4" + (mtr.zones.length ? " — " + mtr.zones.join(", ") : ""), mtr.zones.length === 4, "4 / 4");
+    html += "</table>";
+    html += '<p class="small-note">Metrics are automatic and approximate — they are a mirror, not a grade. Listen to your recording and find one thing you did well.</p>';
+  }
+  speakResults.innerHTML = html;
+
+  if (!text && hasASR) {
+    transcriptBox.innerHTML = '<span class="transcript-placeholder">No speech was recognised. Try again — speak a little louder, in English.</span>';
+  }
+
+  // save history
+  if (hasASR && text) {
+    let hist = [];
+    try { hist = JSON.parse(localStorage.getItem("scanSpeakHistory") || "[]"); } catch (e) {}
+    hist.push(mtr);
+    if (hist.length > 20) hist = hist.slice(-20);
+    try { localStorage.setItem("scanSpeakHistory", JSON.stringify(hist)); } catch (e) {}
+  }
+  renderSpeakHistory();
+
+  document.getElementById("aiFeedbackBtn").disabled = !(text && text.length > 20);
+}
+
+function renderSpeakHistory() {
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem("scanSpeakHistory") || "[]"); } catch (e) {}
+  const el = document.getElementById("speakHistory");
+  if (!hist.length) { el.textContent = ""; return; }
+  const last = hist.slice(-5).map(h =>
+    h.date.slice(5, 16) + " · " + h.words + " words · " + h.modals + " modals · " + h.zones.length + "/4 zones"
+  );
+  el.innerHTML = "<strong>Recent sessions:</strong> " + last.join(" &nbsp;|&nbsp; ");
+}
+
+speakStartBtn.addEventListener("click", startSpeak);
+speakStopBtn.addEventListener("click", stopSpeak);
+
+// ---------------- AI FEEDBACK (Claude API) ----------------
+const COACH_SYSTEM = `You are a gentle ICAO aviation-English speaking coach. You are a co-pilot, NOT an examiner.
+The student has cognitive difficulties (weak short-term memory, fear of speaking), so follow these rules strictly:
+- Never use the words "mistake", "error" or "wrong". Correct by echo: restate the student's sentence correctly and naturally.
+- Correct at most TWO things in the whole answer - choose the two most useful ones.
+- Always start by naming ONE concrete thing the student did well (a good modal verb, a rescue phrase, a correct term).
+- The student is describing this picture: a Boeing 737 partially submerged in water after a runway excursion at night; tire tracks lead from the runway to the water; forward exits open, evacuation slides deployed; people in hard hats and reflective vests on the right wing and on the shore; a yellow raft; an orange floating containment boom around the aircraft; fire trucks and airport vehicles in the background; a floodlight; the scene is calm, no fire or smoke.
+- The student uses the SCAN method: See (fact) -> Call (term) -> Assume (modal guess + "because I can see" evidence) -> Next (risk / crew / ATC action), over four zones: Plane, People, Place, Panorama.
+Structure your reply in exactly these short sections, in simple English:
+1. "Well done:" - one concrete strength.
+2. "Polished version:" - the student's own answer, lightly corrected (keep their ideas and order; do not add new content).
+3. "Your Level 1 minimum:" - compress their answer to 3-4 very short sentences (this is their safe minimum).
+4. "One step up:" - take ONE of their sentences and show a slightly richer Level-4 version of it.
+5. "Next time:" - one single tip (one sentence).
+Keep the whole reply under 250 words. Do not use markdown headers or bullet lists; plain text with the five labels.`;
+
+const apiKeyInput = document.getElementById("apiKeyInput");
+const aiStatus = document.getElementById("aiStatus");
+const aiOutput = document.getElementById("aiOutput");
+
+function loadKey() {
+  const k = localStorage.getItem("anthropicApiKey") || "";
+  if (k) apiKeyInput.placeholder = "API key saved (" + k.slice(0, 12) + "…)";
+}
+document.getElementById("saveKeyBtn").addEventListener("click", () => {
+  const v = apiKeyInput.value.trim();
+  if (!v) return;
+  try { localStorage.setItem("anthropicApiKey", v); } catch (e) {}
+  apiKeyInput.value = "";
+  loadKey();
+  aiStatus.textContent = "Key saved in this browser.";
+});
+document.getElementById("clearKeyBtn").addEventListener("click", () => {
+  try { localStorage.removeItem("anthropicApiKey"); } catch (e) {}
+  apiKeyInput.placeholder = "Anthropic API key (sk-ant-…)";
+  aiStatus.textContent = "Key removed.";
+});
+
+document.getElementById("aiFeedbackBtn").addEventListener("click", async () => {
+  if (!lastSession || !lastSession.transcript) return;
+  const key = localStorage.getItem("anthropicApiKey");
+  if (!key) {
+    aiStatus.textContent = "Enter and save your Anthropic API key first.";
+    return;
+  }
+  const btn = document.getElementById("aiFeedbackBtn");
+  btn.disabled = true;
+  aiStatus.textContent = "Asking the coach…";
+  aiOutput.textContent = "";
+
+  const mtr = lastSession.metrics;
+  const userMsg = "Here is my spoken description (automatic transcript, punctuation may be missing):\n\n\"" +
+    lastSession.transcript + "\"\n\nAutomatic metrics: " + mtr.words + " words, " + mtr.modals +
+    " modal verbs, " + mtr.evidence + " evidence phrases, zones covered: " +
+    (mtr.zones.join(", ") || "none detected") + ".";
+
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-api-key": key,
+        "anthropic-version": "2023-06-01",
+        "anthropic-dangerous-direct-browser-access": "true"
+      },
+      body: JSON.stringify({
+        model: "claude-opus-4-8",
+        max_tokens: 1000,
+        system: COACH_SYSTEM,
+        messages: [{ role: "user", content: userMsg }]
+      })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => null);
+      const msg = errBody && errBody.error && errBody.error.message ? errBody.error.message : ("HTTP " + res.status);
+      throw new Error(msg);
+    }
+    const data = await res.json();
+    const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+    aiOutput.textContent = text || "(empty reply)";
+    aiStatus.textContent = "";
+  } catch (e) {
+    aiStatus.textContent = "Could not get feedback: " + e.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+// ---------------- LEVELS ----------------
+function buildLevels() {
+  const wrap = document.getElementById("levels");
+  LEVELS.forEach(lv => {
+    const item = document.createElement("div");
+    item.className = "level-item";
+    const head = document.createElement("button");
+    head.className = "level-head";
+    head.innerHTML = "<span>" + lv.tag + "</span><span class='lv-tag'>open ▾</span>";
+    head.addEventListener("click", () => item.classList.toggle("open"));
+    const body = document.createElement("div");
+    body.className = "level-body";
+    lv.text.forEach(t => {
+      const p = document.createElement("p");
+      p.textContent = t;
+      body.appendChild(p);
+    });
+    const play = document.createElement("button");
+    play.className = "action-btn primary";
+    play.textContent = "▶ Listen";
+    play.addEventListener("click", () => speak(lv.text.join(" ")));
+    body.appendChild(play);
+    item.appendChild(head);
+    item.appendChild(body);
+    wrap.appendChild(item);
+  });
+}
+
+// ---------------- SKELETON ----------------
+document.querySelector("#skeletonItem .level-head").addEventListener("click", () => {
+  document.getElementById("skeletonItem").classList.toggle("open");
+});
+
+// ---------------- SOS ----------------
+const sosPanel = document.getElementById("sosPanel");
+document.getElementById("sosBtn").addEventListener("click", () => sosPanel.classList.toggle("open"));
+function buildSos() {
+  const list = document.getElementById("sosList");
+  RESCUE.forEach(ph => {
+    const row = document.createElement("div");
+    row.className = "sos-phrase";
+    const span = document.createElement("span");
+    span.textContent = ph;
+    const btn = document.createElement("button");
+    btn.textContent = "▶";
+    btn.setAttribute("aria-label", "Listen");
+    btn.addEventListener("click", () => speak(ph));
+    row.appendChild(span);
+    row.appendChild(btn);
+    list.appendChild(row);
+  });
+}
+
+// ---------------- INIT ----------------
+buildIntroChips();
+buildZoneOverlay();
+buildZoneButtons();
+buildStepButtons();
+buildLevels();
+buildSos();
+renderFact();
+renderSpeakHistory();
+loadKey();
+render();
+</script>
+</body>
+</html>
