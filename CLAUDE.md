@@ -30,6 +30,18 @@ Three page types:
 - **Flight Academy Trainer** — listen-along ground school under `Flight_academy_trainer/`. Each **course is its own standalone page** (cloned engine) with its own audio folder and its own `index.html` card (tag `Listen & Read`) — courses are never mixed in one file. Current courses: `flight_academy_trainer.html` (Pilot Guide LSA, audio in `Pilot_Guide_LSA/`) and `belgrade_takeoff_accident_trainer.html` (Embraer E190 Belgrade, audio in `Belgrade_Accident/`). A page plays a chapter MP3 and highlights the matching transcript answer in sync (auto-scroll + tap-to-seek), driven by a `CHAPTERS` JS array; `const DIR` points to that course's audio folder. **Standard: one MP3 per chapter** (named `NN-<slug>.mp3`) when the material has ≥3 sections — gives a full chapter rail and tighter per-chapter sync. Subfolder, so back-link is `../index.html`. MVP sync is char-length approximate. **See `Flight_academy_trainer/README.md` for the full course-authoring spec** (file requirements, processing pipeline, what to keep out of git).
 - **Crossword pages** — interactive crosswords + typing trainers, self-contained with their own day/night theme. **All crosswords live in `Crosswords/`**; current set: `present-perfect-1.html`, `present-perfect-2.html`, `1_crossword.html` (communication problems), `rejected-takeoffs.html`, `stall.html`. Because they live in a subfolder, their `← All quizzes` back-link points to `../index.html`; cards in `index.html` (and links from `songs.html`/`infographics.html`) reference them as `Crosswords/<file>.html`. Built/standardized via the `crossword-builder` skill — note that regeneration drops the back-link, so re-add it after rebuilding.
 
+## Narration voice (TTS)
+
+**Standard voice for any pre-recorded narration: ElevenLabs "Daniel — Steady Broadcaster" (UK).** Use it for every new MP3 we generate ourselves (not user-supplied Suno songs). Calm, clear, male, broadcaster tone — chosen for ICAO clarity.
+
+- `voice_id`: `onwK4e9ZLuTAKqWW03F9` · `model_id`: `eleven_multilingual_v2`
+- `voice_settings`: `{ stability: 0.6, similarity_boost: 0.8, style: 0.0 }`
+- Rhythm: slowed to `atempo=0.93` via ffmpeg (pitch-preserving) for a calmer pace.
+- Needs `ELEVENLABS_API_KEY` in the env and `ffmpeg` on PATH.
+- Web Speech API stays as a runtime fallback on pages (set `lang="en-GB"`, `rate=0.92` to match).
+
+Reference pipeline: `scan-method-audio/build-audio.mjs` — reads the fixed spoken strings straight from `scan-method-trainer.html`, writes one MP3 per string (filenames are the stable IDs the page passes to `playClip(id, fallbackText)`), and records the run in `scan-method-audio/manifest.json`. Idempotent (`--force` to regenerate). Clone this script for future audio sets rather than re-deriving the voice settings. The SCAN trainer plays `scan-method-audio/<id>.mp3` and falls back to Web Speech if a clip is missing.
+
 ## Adding content (data-array contracts)
 
 **Infographic** → push to the `images` array in `infographics.html`: `{ file, title }`. `file` is the basename (no extension). Full image goes to `img/<file>.png`; a compressed JPEG preview to `img/thumb/<file>.jpg` (generate with `sips`, target ~200 KB).

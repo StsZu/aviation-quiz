@@ -663,14 +663,33 @@ let progress = {};
 try { progress = JSON.parse(localStorage.getItem("scanMethodProgress") || "{}"); } catch (e) { progress = {}; }
 function saveProgress() { try { localStorage.setItem("scanMethodProgress", JSON.stringify(progress)); } catch (e) {} }
 
-// ---------------- TTS ----------------
+// ---------------- AUDIO ----------------
+// Pre-recorded narration (ElevenLabs "Daniel", see scan-method-audio/) with a
+// Web Speech fallback when a clip is missing or audio playback is blocked.
+const AUDIO_DIR = "scan-method-audio/";
+let currentAudio = null;
+
 function speak(text) {
   if (!("speechSynthesis" in window)) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
-  u.lang = "en-US";
-  u.rate = 0.95;
+  u.lang = "en-GB";
+  u.rate = 0.92;
   window.speechSynthesis.speak(u);
+}
+
+function playClip(id, text) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  let fellBack = false;
+  const fallback = () => { if (fellBack) return; fellBack = true; speak(text); };
+  try {
+    const a = new Audio(AUDIO_DIR + id + ".mp3");
+    a.addEventListener("error", fallback);
+    currentAudio = a;
+    const p = a.play();
+    if (p && p.catch) p.catch(fallback);
+  } catch (e) { fallback(); }
 }
 
 // ---------------- RENDER: zones / steps ----------------
@@ -794,7 +813,7 @@ function render() {
   const revealBtn = document.getElementById("revealBtn");
   if (revealBtn) revealBtn.addEventListener("click", () => { revealed = true; render(); });
   const playBtn = document.getElementById("playBtn");
-  if (playBtn) playBtn.addEventListener("click", () => speak(data.model));
+  if (playBtn) playBtn.addEventListener("click", () => playClip("zone-" + currentZone + "-" + currentStep, data.model));
   const doneBtn = document.getElementById("doneBtn");
   if (doneBtn) doneBtn.addEventListener("click", markDone);
   document.getElementById("nextBtn").addEventListener("click", advance);
@@ -882,7 +901,7 @@ function renderFact() {
   const r = document.getElementById("factRevealBtn");
   if (r) r.addEventListener("click", () => { factRevealed = true; renderFact(); });
   const p = document.getElementById("factPlayBtn");
-  if (p) p.addEventListener("click", () => speak(f.model));
+  if (p) p.addEventListener("click", () => playClip("fact-" + factIndex, f.model));
   const d = document.getElementById("factDoneBtn");
   if (d) d.addEventListener("click", () => { factProgress[factIndex] = true; saveFactProgress(); renderFact(); });
   document.getElementById("factNextBtn").addEventListener("click", () => {
@@ -1187,7 +1206,7 @@ document.getElementById("aiFeedbackBtn").addEventListener("click", async () => {
 // ---------------- LEVELS ----------------
 function buildLevels() {
   const wrap = document.getElementById("levels");
-  LEVELS.forEach(lv => {
+  LEVELS.forEach((lv, li) => {
     const item = document.createElement("div");
     item.className = "level-item";
     const head = document.createElement("button");
@@ -1204,7 +1223,7 @@ function buildLevels() {
     const play = document.createElement("button");
     play.className = "action-btn primary";
     play.textContent = "▶ Listen";
-    play.addEventListener("click", () => speak(lv.text.join(" ")));
+    play.addEventListener("click", () => playClip("level-" + li, lv.text.join(" ")));
     body.appendChild(play);
     item.appendChild(head);
     item.appendChild(body);
@@ -1222,7 +1241,7 @@ const sosPanel = document.getElementById("sosPanel");
 document.getElementById("sosBtn").addEventListener("click", () => sosPanel.classList.toggle("open"));
 function buildSos() {
   const list = document.getElementById("sosList");
-  RESCUE.forEach(ph => {
+  RESCUE.forEach((ph, ri) => {
     const row = document.createElement("div");
     row.className = "sos-phrase";
     const span = document.createElement("span");
@@ -1230,7 +1249,7 @@ function buildSos() {
     const btn = document.createElement("button");
     btn.textContent = "▶";
     btn.setAttribute("aria-label", "Listen");
-    btn.addEventListener("click", () => speak(ph));
+    btn.addEventListener("click", () => playClip("rescue-" + ri, ph));
     row.appendChild(span);
     row.appendChild(btn);
     list.appendChild(row);
