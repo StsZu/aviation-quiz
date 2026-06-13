@@ -390,9 +390,45 @@
 (function(){
   "use strict";
 
+  /* ===AUDIO DATA=== — read by actor-methods-audio/build-audio.mjs to generate
+     the ElevenLabs "Daniel" clips. Keep this block as pure data (id + spoken
+     text); the build script slices it between these markers. Each id maps to
+     actor-methods-audio/<id>.mp3, with Web Speech as the runtime fallback. */
+  const AUDIO = [
+    { id:"method-0", text:"Aircraft in water, near runway, possible runway overrun, risk of fuel leak, crew evacuation." },
+    { id:"method-1", text:"Beat 1: What I can see. Beat 2: What type of aircraft. Beat 3: What may have happened. Beat 4: The main risk. Beat 5: What the crew should do. Beat 6: Safety conclusion." },
+    { id:"method-2", text:"I can see, a narrow-body aircraft, partially submerged in water, near the end of a runway." },
+    { id:"method-3", text:"Read once. Close the text. Say it from memory. Check mistakes. Repeat." },
+    { id:"method-4", text:"The forward exits are open and the evacuation slides have been deployed." },
+    { id:"method-5", text:"Cue: What can you see? Response: I can see a narrow-body aircraft partially submerged in water." },
+    { id:"method-6", text:"I can see a narrow-body aircraft partially submerged in water." },
+    { id:"method-7", text:"The slides have been deployed. The evacuation slides have been deployed. The forward exits are open and the evacuation slides have been deployed." },
+    { id:"method-8", text:"Point forward: I can see. Move hand from runway to water: It may have overrun the runway. Palm down, serious tone: The main risk is." },
+    { id:"method-9", text:"Aircraft in water, near runway, Boeing 737, exits open, slides deployed, runway overrun, tire tracks, fuel leak risk, evacuation, secure aircraft." },
+    { id:"model-0", text:"I can see a narrow-body aircraft partially submerged in water near the end of a runway." },
+    { id:"model-1", text:"It looks like a Boeing 737." },
+    { id:"model-2", text:"The forward exits are open and the evacuation slides have been deployed." },
+    { id:"model-3", text:"The aircraft must have overrun the runway because the tire tracks lead from the runway into the water." },
+    { id:"model-4", text:"The main risk is fuel leaking into the water, so the crew should evacuate everyone and secure the aircraft." },
+    { id:"cue-0", text:"I can see a narrow-body aircraft partially submerged in water." },
+    { id:"cue-1", text:"It may have overrun the runway." },
+    { id:"cue-2", text:"The main risk is fuel leaking into the water." },
+    { id:"cue-3", text:"The crew should evacuate everyone and secure the aircraft." },
+    { id:"example-full", text:"I can see a narrow-body aircraft partially submerged in water near the end of a runway. It looks like a Boeing 737. The forward exits are open and the evacuation slides have been deployed. The aircraft must have overrun the runway because the tire tracks lead from the runway into the water. The main risk is fuel leaking into the water, so the crew should evacuate everyone and secure the aircraft." },
+    { id:"example-short", text:"I can see an aircraft in the water. It looks like a Boeing 737. It may have overrun the runway. The main risk is fuel leakage. The crew should evacuate everyone and secure the aircraft." },
+    { id:"example-stronger", text:"I can see a narrow-body aircraft partially submerged in water near the end of a runway. The evacuation slides have been deployed, so the crew has probably started an evacuation. The aircraft must have overrun the runway because the tire tracks lead into the water. The main risk is fuel leaking into the water. The safest action is to evacuate all passengers, secure the aircraft, and prevent further danger." }
+  ];
+  /* ===END AUDIO DATA=== */
+  var AUDIO_DIR = "actor-methods-audio/";
+  var AUDIO_MAP = {};
+  AUDIO.forEach(function(c){ AUDIO_MAP[c.id] = c.text; });
+
   /* ---------- TTS ---------- */
   var synth = window.speechSynthesis || null;
+  var currentAudio = null;
+  function stopAudio(){ if(currentAudio){ try{ currentAudio.pause(); }catch(e){} currentAudio = null; } }
   function speakText(text){
+    stopAudio();
     if(!synth){ return; }
     try{
       if(synth.speaking){ synth.cancel(); }
@@ -415,14 +451,31 @@
   function setStatus(s){ var el=document.getElementById('audio-status'); if(el){ el.textContent=s; } }
   if(synth && typeof synth.onvoiceschanged !== 'undefined'){ synth.onvoiceschanged=function(){}; }
 
-  function speakBtn(text){
+  function playClip(id, fallback){
+    fallback = fallback || AUDIO_MAP[id] || '';
+    if(!id){ speakText(fallback); return; }
+    stopAudio();
+    if(synth && synth.speaking){ try{ synth.cancel(); }catch(e){} }
+    try{
+      var a = new Audio(AUDIO_DIR + id + '.mp3');
+      currentAudio = a;
+      a.addEventListener('playing', function(){ document.body.classList.add('speaking'); setStatus('SPEAKING'); });
+      a.addEventListener('ended', function(){ document.body.classList.remove('speaking'); setStatus('READY'); currentAudio=null; });
+      a.addEventListener('error', function(){ document.body.classList.remove('speaking'); currentAudio=null; speakText(fallback); });
+      var pr = a.play();
+      if(pr && pr.catch){ pr.catch(function(){ currentAudio=null; speakText(fallback); }); }
+    }catch(e){ speakText(fallback); }
+  }
+  function waveBtn(handler){
     var b=document.createElement('button');
     b.className='speak'; b.type='button';
     b.setAttribute('aria-label','Listen');
     b.innerHTML='🔊<span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>';
-    b.addEventListener('click',function(){ speakText(text); });
+    b.addEventListener('click', handler);
     return b;
   }
+  function speakBtn(text){ return waveBtn(function(){ speakText(text); }); }
+  function clipBtn(id){ return waveBtn(function(){ playClip(id, AUDIO_MAP[id]); }); }
   function exRow(text, opts){
     opts = opts || {};
     var row=document.createElement('div');
@@ -431,7 +484,7 @@
     if(opts.q){ var q=document.createElement('span'); q.className='q'; q.textContent=opts.q; t.appendChild(q); }
     var span=document.createElement('span'); span.textContent=text; t.appendChild(span);
     row.appendChild(t);
-    row.appendChild(speakBtn(opts.say || text));
+    row.appendChild(opts.clip ? clipBtn(opts.clip) : speakBtn(opts.say || text));
     return row;
   }
 
@@ -456,7 +509,7 @@
       var h=document.createElement('h3'); h.textContent=m.t;
       var p=document.createElement('p'); p.textContent=m.p;
       card.appendChild(num); card.appendChild(h); card.appendChild(p);
-      card.appendChild(exRow(m.ex,{mono:m.mono, say:m.say}));
+      card.appendChild(exRow(m.ex,{mono:m.mono, clip:'method-'+i}));
       grid.appendChild(card);
     });
   })();
@@ -485,8 +538,8 @@
     bReveal && bReveal.addEventListener('click',function(){
       revealed=true; full.textContent=FL[idx].full; full.classList.remove('hidden');
     });
-    bSpeak && bSpeak.addEventListener('click',function(){ speakText(FL[idx].full); });
-    bNext && bNext.addEventListener('click',function(){ idx=(idx+1)%FL.length; render(); });
+    bSpeak && bSpeak.addEventListener('click',function(){ playClip('model-'+idx, FL[idx].full); });
+    bNext && bNext.addEventListener('click',function(){ stopAudio(); idx=(idx+1)%FL.length; render(); });
     render();
   })();
 
@@ -499,14 +552,14 @@
   ];
   (function renderCues(){
     var grid=document.getElementById('cues-grid'); if(!grid){ return; }
-    CUES.forEach(function(c){
+    CUES.forEach(function(c,i){
       var card=document.createElement('div'); card.className='cue-card';
       var cue=document.createElement('div'); cue.className='cue'; cue.textContent=c.cue;
       var resp=document.createElement('div'); resp.className='resp'; resp.textContent=c.resp;
       var rowEl=document.createElement('div'); rowEl.className='cue-row';
       var rev=document.createElement('button'); rev.className='btn reveal-btn'; rev.type='button'; rev.textContent='Show response';
       rev.addEventListener('click',function(){ card.classList.add('open'); });
-      var sp=speakBtn(c.resp);
+      var sp=clipBtn('cue-'+i);
       rowEl.appendChild(rev); rowEl.appendChild(sp);
       card.appendChild(cue); card.appendChild(resp); card.appendChild(rowEl);
       grid.appendChild(card);
@@ -570,30 +623,20 @@
     var panel=document.getElementById('example-panel'); if(!panel){ return; }
     function sub(label, first){ var h=document.createElement('h3'); h.style.cssText='font-size:14px;color:var(--amber);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;margin:'+(first?'0':'18px')+' 0 8px;'; h.textContent=label; return h; }
     panel.appendChild(sub('Full version', true));
-    panel.appendChild(exRow(EXAMPLE.full,{strong:true}));
+    panel.appendChild(exRow(EXAMPLE.full,{strong:true, clip:'example-full'}));
     panel.appendChild(sub('Beat version'));
     var ol=document.createElement('ul'); ol.className='beats-skeleton';
     EXAMPLE.beats.forEach(function(b,i){ var li=document.createElement('li'); li.textContent=(i+1)+'. '+b; ol.appendChild(li); });
     panel.appendChild(ol);
     panel.appendChild(sub('First-letter version'));
     EXAMPLE.firstletter.forEach(function(code,i){
-      panel.appendChild(exRow(code,{mono:true, say:fullLineFor(i)}));
+      panel.appendChild(exRow(code,{mono:true, clip:'model-'+i}));
     });
     panel.appendChild(sub('Short practice version'));
-    panel.appendChild(exRow(EXAMPLE.short));
+    panel.appendChild(exRow(EXAMPLE.short,{clip:'example-short'}));
     panel.appendChild(sub('Stronger practice version'));
-    panel.appendChild(exRow(EXAMPLE.stronger,{strong:true}));
+    panel.appendChild(exRow(EXAMPLE.stronger,{strong:true, clip:'example-stronger'}));
   })();
-  function fullLineFor(i){
-    var lines=[
-      "I can see a narrow-body aircraft partially submerged in water near the end of a runway.",
-      "It looks like a Boeing 737.",
-      "The forward exits are open and the evacuation slides have been deployed.",
-      "The aircraft must have overrun the runway because the tire tracks lead from the runway into the water.",
-      "The main risk is fuel leaking into the water, so the crew should evacuate everyone and secure the aircraft."
-    ];
-    return lines[i] || '';
-  }
 
   /* ---------- 08 Phrase bank ---------- */
   var PHRASES = [

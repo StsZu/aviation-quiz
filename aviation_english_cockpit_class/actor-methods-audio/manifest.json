@@ -1,0 +1,101 @@
+{
+  "voice": "ElevenLabs Daniel",
+  "voice_id": "onwK4e9ZLuTAKqWW03F9",
+  "model": "eleven_multilingual_v2",
+  "voice_settings": {
+    "stability": 0.6,
+    "similarity_boost": 0.8,
+    "style": 0
+  },
+  "atempo": "0.93",
+  "items": [
+    {
+      "id": "method-0",
+      "text": "Aircraft in water, near runway, possible runway overrun, risk of fuel leak, crew evacuation."
+    },
+    {
+      "id": "method-1",
+      "text": "Beat 1: What I can see. Beat 2: What type of aircraft. Beat 3: What may have happened. Beat 4: The main risk. Beat 5: What the crew should do. Beat 6: Safety conclusion."
+    },
+    {
+      "id": "method-2",
+      "text": "I can see, a narrow-body aircraft, partially submerged in water, near the end of a runway."
+    },
+    {
+      "id": "method-3",
+      "text": "Read once. Close the text. Say it from memory. Check mistakes. Repeat."
+    },
+    {
+      "id": "method-4",
+      "text": "The forward exits are open and the evacuation slides have been deployed."
+    },
+    {
+      "id": "method-5",
+      "text": "Cue: What can you see? Response: I can see a narrow-body aircraft partially submerged in water."
+    },
+    {
+      "id": "method-6",
+      "text": "I can see a narrow-body aircraft partially submerged in water."
+    },
+    {
+      "id": "method-7",
+      "text": "The slides have been deployed. The evacuation slides have been deployed. The forward exits are open and the evacuation slides have been deployed."
+    },
+    {
+      "id": "method-8",
+      "text": "Point forward: I can see. Move hand from runway to water: It may have overrun the runway. Palm down, serious tone: The main risk is."
+    },
+    {
+      "id": "method-9",
+      "text": "Aircraft in water, near runway, Boeing 737, exits open, slides deployed, runway overrun, tire tracks, fuel leak risk, evacuation, secure aircraft."
+    },
+    {
+      "id": "model-0",
+      "text": "I can see a narrow-body aircraft partially submerged in water near the end of a runway."
+    },
+    {
+      "id": "model-1",
+      "text": "It looks like a Boeing 737."
+    },
+    {
+      "id": "model-2",
+      "text": "The forward exits are open and the evacuation slides have been deployed."
+    },
+    {
+      "id": "model-3",
+      "text": "The aircraft must have overrun the runway because the tire tracks lead from the runway into the water."
+    },
+    {
+      "id": "model-4",
+      "text": "The main risk is fuel leaking into the water, so the crew should evacuate everyone and secure the aircraft."
+    },
+    {
+      "id": "cue-0",
+      "text": "I can see a narrow-body aircraft partially submerged in water."
+    },
+    {
+      "id": "cue-1",
+      "text": "It may have overrun the runway."
+    },
+    {
+      "id": "cue-2",
+      "text": "The main risk is fuel leaking into the water."
+    },
+    {
+      "id": "cue-3",
+      "text": "The crew should evacuate everyone and secure the aircraft."
+    },
+    {
+      "id": "example-full",
+      "text": "I can see a narrow-body aircraft partially submerged in water near the end of a runway. It looks like a Boeing 737. The forward exits are open and the evacuation slides have been deployed. The aircraft must have overrun the runway because the tire tracks lead from the runway into the water. The main risk is fuel leaking into the water, so the crew should evacuate everyone and secure the aircraft."
+    },
+    {
+      "id": "example-short",
+      "text": "I can see an aircraft in the water. It looks like a Boeing 737. It may have overrun the runway. The main risk is fuel leakage. The crew should evacuate everyone and secure the aircraft."
+    },
+    {
+      "id": "example-stronger",
+      "text": "I can see a narrow-body aircraft partially submerged in water near the end of a runway. The evacuation slides have been deployed, so the crew has probably started an evacuation. The aircraft must have overrun the runway because the tire tracks lead into the water. The main risk is fuel leaking into the water. The safest action is to evacuate all passengers, secure the aircraft, and prevent further danger."
+    }
+  ]
+}
