@@ -1,0 +1,37 @@
+1
+00:00:00,000 --> 00:00:22,475
+Abnormal landing. Large jet aircraft. Heavily banked aircraft. Sparks and smoke. Potential emergency situation. Now listen and repeat. This picture depicts an abnormal landing. I can see a large jet aircraft on a runway. The aircraft is heavily banked. There are sparks and smoke near the ground. This looks like a potential emergency situation. Now listen to a stronger version.
+
+2
+00:00:22,825 --> 00:00:41,851
+This picture depicts a large jet aircraft executing an abnormal landing on a runway. The aircraft is heavily banked. This creates a dangerous situation because there are sparks and smoke near the ground. Now listen to the full exam version. This picture depicts a large jet aircraft executing an abnormal landing on a runway.
+
+3
+00:00:43,251 --> 00:00:51,051
+The aircraft is heavily banked, resulting in what looks like a potential emergency situation due to sparks and smoke near the ground.
+
+4
+00:00:52,451 --> 00:01:09,102
+Now say it yourself using these words.
+Abnormal landing.
+Large jet aircraft.
+Heavily banked.
+Runway.
+Sparks and smoke.
+Potential emergency situation.
+Now repeat the final version one more time.
+This picture depicts a large jet aircraft executing an abnormal landing on a runway.
+
+5
+00:01:10,502 --> 00:01:22,477
+The aircraft is heavily banked, resulting in what looks like a potential emergency situation due to sparks and smoke near the ground.
+This picture depicts an abnormal landing involving a large jet aircraft.
+
+6
+00:01:23,877 --> 00:01:27,852
+The aircraft appears to be heavily banked while landing on the runway.
+
+7
+00:01:29,252 --> 00:01:36,078
+This looks like a potential emergency situation because there are sparks and smoke near the ground.
+```

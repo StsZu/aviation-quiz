@@ -1,0 +1,65 @@
+1
+00:00:00,000 --> 00:00:24,975
+Wide-body military transport aircraft. High-speed roll after touchdown. Runway deceleration. Engine thrust reversers. Wing spoilers. Fully deployed. Now listen and repeat. This picture depicts a military transport aircraft after landing. I can see a wide-body aircraft on the runway. The aircraft appears to be in the high-speed rolling phase after touchdown. It looks like the aircraft is decelerating on the runway.
+
+2
+00:00:25,325 --> 00:00:32,201
+The thrust reversers and wing spoilers are deployed. This looks like a normal landing roll. Now listen to a stronger version.
+
+3
+00:00:33,601 --> 00:00:40,476
+This picture depicts a wide-body military transport aircraft during the high-speed rolling phase of flight after touchdown.
+
+4
+00:00:41,876 --> 00:00:52,402
+The situation looks like a standard deceleration on the runway.
+Both engine thrust reversers and wing spoilers appear to be fully deployed.
+Now listen to the full exam version.
+
+5
+00:00:53,802 --> 00:01:00,677
+This picture depicts a wide-body military transport aircraft during the high-speed rolling phase of flight after touchdown.
+
+6
+00:01:02,077 --> 00:01:10,602
+The situation looks like a standard high-energy deceleration on the runway, with both engine thrust reversers and wing spoilers fully deployed.
+
+7
+00:01:12,002 --> 00:01:26,753
+Now say it yourself using these words.
+Wide-body military transport aircraft.
+High-speed rolling phase.
+After touchdown.
+Runway.
+High-energy deceleration.
+Engine thrust reversers.
+Wing spoilers.
+Fully deployed.
+Now repeat the final version one more time.
+
+8
+00:01:28,153 --> 00:01:35,028
+This picture depicts a wide-body military transport aircraft during the high-speed rolling phase of flight after touchdown.
+
+9
+00:01:36,428 --> 00:01:49,479
+The situation looks like a standard high-energy deceleration on the runway, with both engine thrust reversers and wing spoilers fully deployed.
+This picture depicts a wide-body military transport aircraft after landing.
+
+10
+00:01:50,879 --> 00:01:55,604
+The aircraft appears to be in the high-speed rolling phase on the runway after touchdown.
+
+11
+00:01:57,004 --> 00:02:06,330
+It looks like a normal deceleration, with thrust reversers and wing spoilers fully deployed.
+This picture depicts a military transport aircraft after landing.
+
+12
+00:02:07,730 --> 00:02:10,105
+It is rolling on the runway at high speed.
+
+13
+00:02:11,505 --> 00:02:17,605
+The aircraft appears to be slowing down, with thrust reversers and spoilers deployed.
+```

@@ -1,0 +1,55 @@
+1
+00:00:00,000 --> 00:00:23,375
+Severe incident. Forced water landing. Runway excursion. Lake. Light single-engine aircraft. Partially submerged. Nose-first. Nose-over position. Now listen and repeat. This picture depicts a severe incident. I can see a light single-engine aircraft in the water. The aircraft is partially submerged nose-first. It appears to be in a nose-over position. This may have been a forced water landing.
+
+2
+00:00:23,725 --> 00:00:46,401
+It could also have been a runway excursion into a lake. Now listen to a stronger version. This picture depicts the aftermath of a severe incident. It may have been a forced water landing or a runway excursion into a lake. A light single-engine aircraft is partially submerged nose-first. The airframe shows a clear sign of a nose-over position. Now listen to the full exam version.
+
+3
+00:00:47,801 --> 00:00:55,551
+This picture depicts the aftermath of a severe incident, possibly a forced water landing or a runway excursion into a lake.
+
+4
+00:00:56,951 --> 00:01:04,427
+A light single-engine aircraft is partially submerged nose-first, with its airframe showing a clear sign of a nose-over position.
+
+5
+00:01:05,827 --> 00:01:18,902
+Now say it yourself using these words.
+Severe incident.
+Forced water landing.
+Runway excursion.
+Lake.
+Light single-engine aircraft.
+Partially submerged.
+Nose-first.
+Nose-over position.
+Now repeat the final version one more time.
+
+6
+00:01:20,302 --> 00:01:28,053
+This picture depicts the aftermath of a severe incident, possibly a forced water landing or a runway excursion into a lake.
+
+7
+00:01:29,453 --> 00:01:42,878
+A light single-engine aircraft is partially submerged nose-first, with its airframe showing a clear sign of a nose-over position.
+This picture depicts the aftermath of a serious incident involving a light single-engine aircraft.
+
+8
+00:01:44,278 --> 00:01:48,278
+The aircraft appears to be partially submerged nose-first in the water.
+
+9
+00:01:49,678 --> 00:01:56,754
+This may have been a forced water landing or a runway excursion into a lake.
+This picture depicts a serious incident.
+
+10
+00:01:58,154 --> 00:02:00,504
+I can see a light aircraft in the water.
+
+11
+00:02:01,904 --> 00:02:06,980
+The aircraft is partially submerged and appears to be nose-first.
+```
