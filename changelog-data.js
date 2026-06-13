@@ -14,6 +14,9 @@ window.CHANGELOG_TYPES = [
 ];
 
 window.CHANGELOG = [
+  // 2026-06-13
+  { date: "2026-06-13", type: "Cockpit Class",   title: "Class: Actor Methods to Remember Texts",               href: "aviation_english_cockpit_class/actor-methods-to-remember-aviation-texts.html" },
+
   // 2026-06-12
   { date: "2026-06-12", type: "Describe Picture",title: "SCAN Method — The Pilot's Picture Scan",                 href: "scan-method-trainer.html" },
 
