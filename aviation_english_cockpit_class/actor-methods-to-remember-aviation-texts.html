@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actor Methods to Remember Aviation Texts — Cockpit Class</title>
+<style>
+  :root{
+    --bg-main:#f8fafc; --bg-panel:#ffffff; --bg-inner:#f1f5f9;
+    --border:#e2e8f0; --border-2:#cbd5e1;
+    --text-main:#0f172a; --text-muted:#475569; --text-faint:#94a3b8;
+    --amber:#b45309; --green:#047857; --blue:#1d4ed8; --red:#b91c1c;
+    --font-body:"SF Pro Text",-apple-system,system-ui,Arial,sans-serif;
+    --font-mono:"SF Mono","JetBrains Mono","Courier New",monospace;
+    --shadow:0 4px 30px rgba(0,0,0,0.04);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--bg-main); color:var(--text-main);
+    font-family:var(--font-body); font-size:16px; line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--blue); text-decoration:none;}
+  a:hover{text-decoration:underline;}
+  h1,h2,h3,h4{line-height:1.25; margin:0;}
+  .mono{font-family:var(--font-mono);}
+
+  /* Back-link */
+  .backlink{
+    position:fixed; top:14px; left:14px; z-index:9999;
+    display:inline-flex; align-items:center; gap:6px;
+    padding:8px 14px; border-radius:999px;
+    background:rgba(15,23,42,0.88); color:#fff;
+    font-size:14px; font-weight:600; text-decoration:none;
+    box-shadow:0 2px 8px rgba(0,0,0,0.25);
+    -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  }
+  .backlink:hover{text-decoration:none; background:rgba(15,23,42,1);}
+
+  /* Top bar */
+  header.topbar{
+    position:sticky; top:0; z-index:50;
+    background:rgba(255,255,255,0.9); -webkit-backdrop-filter:blur(12px); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  .topbar-inner{
+    max-width:1180px; margin:0 auto; padding:0 20px;
+    height:64px; display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand{display:flex; align-items:center; gap:12px; min-width:0;}
+  .brand .logo{
+    width:40px; height:40px; flex:none; border-radius:10px;
+    background:var(--bg-inner); border:1px solid rgba(180,83,9,0.3);
+    display:flex; align-items:center; justify-content:center;
+    color:var(--amber); font-family:var(--font-mono); font-weight:700; font-size:13px;
+  }
+  .brand .eyebrow{display:block; font-family:var(--font-mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-faint);}
+  .brand h1{font-size:15px; font-weight:700; color:var(--text-main); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .readouts{display:flex; align-items:center; gap:10px; font-family:var(--font-mono); font-size:11px;}
+  .readout{display:flex; align-items:center; gap:7px; background:var(--bg-inner); border:1px solid var(--border); padding:6px 11px; border-radius:8px;}
+  .readout .dot{width:8px; height:8px; border-radius:50%; background:var(--green);}
+  .readout .dot.amber{background:var(--amber);}
+  .readout .label{color:var(--text-faint);}
+  .readout .val{color:var(--green); font-weight:600;}
+  .readout .val.amber{color:var(--amber);}
+  @media(max-width:760px){ .readouts{display:none;} }
+
+  /* Layout */
+  .layout{max-width:1180px; margin:0 auto; padding:28px 20px 80px; display:grid; grid-template-columns:230px 1fr; gap:32px;}
+  @media(max-width:900px){ .layout{grid-template-columns:1fr; gap:18px;} }
+
+  /* Sidebar nav */
+  nav.coords{align-self:start; position:sticky; top:88px;}
+  nav.coords .nav-title{font-family:var(--font-mono); font-size:10px; letter-spacing:.18em; text-transform:uppercase; color:var(--text-faint); padding:0 12px; margin-bottom:8px;}
+  nav.coords a{
+    display:flex; align-items:center; gap:10px;
+    padding:9px 12px; border-radius:9px; font-size:13.5px; font-weight:500;
+    color:var(--text-muted); border-left:3px solid transparent; transition:all .15s;
+  }
+  nav.coords a:hover{background:var(--bg-panel); color:var(--text-main); text-decoration:none;}
+  nav.coords a.active{background:var(--bg-panel); color:var(--text-main); border-left-color:var(--amber); box-shadow:var(--shadow);}
+  nav.coords a .n{font-family:var(--font-mono); font-size:11px; color:var(--text-faint); font-weight:700;}
+  nav.coords a.active .n{color:var(--amber);}
+  @media(max-width:900px){
+    nav.coords{position:static;}
+    nav.coords .nav-links{display:flex; flex-wrap:wrap; gap:6px;}
+    nav.coords a{border-left:none; border:1px solid var(--border);}
+    nav.coords a.active{border-color:var(--amber);}
+  }
+
+  main{min-width:0; display:flex; flex-direction:column; gap:40px;}
+  section{scroll-margin-top:84px;}
+  .sec-head{display:flex; align-items:center; gap:12px; margin-bottom:14px;}
+  .sec-head .badge{font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--amber); background:rgba(180,83,9,0.1); padding:4px 9px; border-radius:6px;}
+  .sec-head h2{font-size:23px; font-weight:800; letter-spacing:-.01em;}
+  .lead{color:var(--text-muted); margin:0 0 6px;}
+
+  .panel{background:var(--bg-panel); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:22px;}
+  .hero{position:relative; overflow:hidden;}
+  .hero .topline{position:absolute; inset:0 0 auto 0; height:3px; background:linear-gradient(to right,transparent,var(--amber),transparent);}
+  .tag-pill{display:inline-block; font-family:var(--font-mono); font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; color:var(--amber); background:rgba(180,83,9,0.1); border:1px solid rgba(180,83,9,0.3); padding:5px 12px; border-radius:999px;}
+  .hero h2.title{font-size:34px; font-weight:800; letter-spacing:-.02em; margin:16px 0 10px;}
+  .hero h2.title em{color:var(--amber); font-style:normal;}
+  .hero p.sub{font-size:18px; color:var(--text-muted); max-width:62ch; margin:0;}
+  .outcomes{display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:22px; padding-top:22px; border-top:1px solid var(--border);}
+  @media(max-width:680px){ .outcomes{grid-template-columns:1fr;} .hero h2.title{font-size:26px;} }
+  .outcome{background:var(--bg-inner); border:1px solid var(--border); border-radius:10px; padding:13px; font-size:13.5px;}
+  .outcome b{display:block; color:var(--amber); font-family:var(--font-mono); font-size:11px; margin-bottom:5px;}
+
+  /* Method grid */
+  .methods{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  @media(max-width:680px){ .methods{grid-template-columns:1fr;} }
+  .method{background:var(--bg-panel); border:1px solid var(--border); border-radius:14px; padding:18px; box-shadow:var(--shadow);}
+  .method .num{font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--amber);}
+  .method h3{font-size:16px; font-weight:700; margin:6px 0 8px;}
+  .method p{font-size:14.5px; color:var(--text-muted); margin:0 0 12px;}
+
+  /* Example / speak rows */
+  .ex{display:flex; align-items:flex-start; gap:10px; background:var(--bg-inner); border:1px solid var(--border); border-radius:10px; padding:11px 12px; margin-top:8px;}
+  .ex .txt{flex:1; font-size:14px;}
+  .ex .txt .q{color:var(--text-faint); font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; display:block; margin-bottom:3px;}
+  .ex.mono .txt{font-family:var(--font-mono);}
+  .ex.strong .txt{color:var(--text-main); font-weight:500;}
+  .speak{flex:none; cursor:pointer; border:1px solid var(--border-2); background:var(--bg-panel); color:var(--text-muted); border-radius:8px; padding:6px 9px; font-size:13px; display:inline-flex; align-items:center; gap:5px; transition:all .15s;}
+  .speak:hover{border-color:var(--amber); color:var(--amber);}
+  .speak:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+
+  .code-line{font-family:var(--font-mono); background:var(--bg-inner); border:1px solid var(--border); border-radius:8px; padding:10px 12px; font-size:14px; color:var(--text-main); white-space:pre-wrap;}
+
+  /* Trainers */
+  .trainer{background:var(--bg-panel); border:1px solid var(--border); border-radius:16px; box-shadow:var(--shadow); padding:22px;}
+  .trainer .stage{background:var(--bg-inner); border:1px solid var(--border); border-radius:12px; padding:20px; text-align:center;}
+  .trainer .counter{font-family:var(--font-mono); font-size:11px; color:var(--text-faint); letter-spacing:.1em; text-transform:uppercase;}
+  .trainer .prompt-code{font-family:var(--font-mono); font-size:22px; font-weight:700; color:var(--amber); margin:14px 0; word-spacing:2px;}
+  .trainer .revealed{font-size:18px; color:var(--text-main); margin:14px 0 4px; min-height:1.4em;}
+  .trainer .revealed.hidden{color:var(--text-faint); font-style:italic; font-size:15px;}
+  .controls{display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin-top:16px;}
+  .btn{cursor:pointer; border:1px solid var(--border-2); background:var(--bg-panel); color:var(--text-main); border-radius:9px; padding:9px 16px; font-size:14px; font-weight:600; font-family:var(--font-body); transition:all .15s;}
+  .btn:hover{border-color:var(--amber); color:var(--amber);}
+  .btn.primary{background:var(--amber); border-color:var(--amber); color:#fff;}
+  .btn.primary:hover{background:#92400e; color:#fff;}
+  .btn:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+
+  /* Cue flashcards */
+  .cues{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
+  @media(max-width:680px){ .cues{grid-template-columns:1fr;} }
+  .cue-card{background:var(--bg-panel); border:1px solid var(--border); border-radius:12px; padding:16px; box-shadow:var(--shadow);}
+  .cue-card .cue{font-weight:700; font-size:15px; margin-bottom:10px;}
+  .cue-card .cue::before{content:"CUE "; font-family:var(--font-mono); font-size:10px; color:var(--text-faint); letter-spacing:.1em;}
+  .cue-card .resp{display:none; background:var(--bg-inner); border:1px solid var(--border); border-radius:9px; padding:10px 12px; font-size:14px; margin-bottom:10px;}
+  .cue-card.open .resp{display:block;}
+  .cue-card.open .reveal-btn{display:none;}
+  .cue-row{display:flex; gap:8px; align-items:center;}
+
+  /* Chunk builder */
+  .chunk-out{font-size:18px; line-height:1.7; min-height:3em; background:var(--bg-inner); border:1px solid var(--border); border-radius:12px; padding:18px;}
+  .chunk-out .next{color:var(--text-faint);}
+  .beats-skeleton{list-style:none; padding:0; margin:16px 0 0; display:grid; gap:6px;}
+  .beats-skeleton li{font-family:var(--font-mono); font-size:14px; background:var(--bg-inner); border:1px solid var(--border); border-left:3px solid var(--amber); border-radius:8px; padding:8px 12px;}
+
+  /* Steps */
+  .steps{display:grid; gap:12px;}
+  .step{display:grid; grid-template-columns:48px 1fr; gap:14px; align-items:start; background:var(--bg-panel); border:1px solid var(--border); border-radius:12px; padding:16px; box-shadow:var(--shadow);}
+  .step .sn{width:40px; height:40px; border-radius:10px; background:rgba(180,83,9,0.1); color:var(--amber); font-family:var(--font-mono); font-weight:700; display:flex; align-items:center; justify-content:center; font-size:16px;}
+  .step h4{font-size:15.5px; margin-bottom:4px;}
+  .step p{font-size:14px; color:var(--text-muted); margin:0;}
+
+  /* Phrase bank */
+  .phrasebank{display:grid; grid-template-columns:repeat(2,1fr); gap:14px;}
+  @media(max-width:680px){ .phrasebank{grid-template-columns:1fr;} }
+  .pgroup{background:var(--bg-panel); border:1px solid var(--border); border-radius:14px; padding:16px; box-shadow:var(--shadow);}
+  .pgroup h4{font-size:14px; color:var(--amber); font-family:var(--font-mono); text-transform:uppercase; letter-spacing:.05em; margin-bottom:10px;}
+  .pgroup .ex{margin-top:6px;}
+
+  /* Quiz */
+  .quiz .q{font-weight:700; font-size:16px; margin-bottom:12px;}
+  .quiz .opts{display:grid; gap:8px;}
+  .opt{text-align:left; cursor:pointer; border:1px solid var(--border-2); background:var(--bg-panel); color:var(--text-main); border-radius:10px; padding:11px 14px; font-size:14.5px; font-family:var(--font-body); transition:all .12s;}
+  .opt:hover:not(:disabled){border-color:var(--amber);}
+  .opt:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+  .opt.correct{border-color:var(--green); background:rgba(4,120,87,0.08); color:var(--green); font-weight:600;}
+  .opt.wrong{border-color:var(--red); background:rgba(185,28,28,0.07); color:var(--red); font-weight:600;}
+  .opt:disabled{cursor:default;}
+  .feedback{margin-top:14px; font-size:14px; padding:12px 14px; border-radius:10px; display:none;}
+  .feedback.show{display:block;}
+  .feedback.ok{background:rgba(4,120,87,0.08); border:1px solid rgba(4,120,87,0.3); color:var(--green);}
+  .feedback.no{background:rgba(185,28,28,0.07); border:1px solid rgba(185,28,28,0.3); color:var(--red);}
+  .feedback b{font-family:var(--font-mono); font-size:12px; display:block; margin-bottom:4px;}
+  .quiz-nav{display:flex; justify-content:space-between; align-items:center; margin-top:18px; padding-top:16px; border-top:1px solid var(--border);}
+  .progressbar{flex:1; height:7px; background:var(--bg-inner); border:1px solid var(--border); border-radius:999px; overflow:hidden; margin:0 16px;}
+  .progressbar i{display:block; height:100%; background:var(--blue); transition:width .3s;}
+
+  /* Revision */
+  .formula{font-family:var(--font-mono); font-size:14.5px; background:var(--bg-inner); border:1px solid var(--border); border-radius:10px; padding:13px 15px; margin:10px 0; line-height:1.8;}
+  .formula b{color:var(--amber);}
+  .checklist{list-style:none; padding:0; margin:10px 0 0; display:grid; gap:8px;}
+  .checklist li{display:flex; gap:10px; align-items:flex-start; font-size:14.5px;}
+  .checklist li::before{content:"✓"; color:var(--green); font-weight:700; flex:none;}
+
+  footer{max-width:1180px; margin:0 auto; padding:24px 20px 60px; color:var(--text-faint); font-family:var(--font-mono); font-size:12px; display:flex; flex-wrap:wrap; gap:8px; justify-content:space-between; border-top:1px solid var(--border);}
+
+  /* audio wave accent */
+  .wave{display:inline-flex; align-items:flex-end; gap:2px; height:14px; margin-left:4px;}
+  .wave i{width:3px; background:var(--amber); border-radius:2px; height:4px;}
+  body.speaking .wave i{animation:wv .8s ease-in-out infinite;}
+  .wave i:nth-child(2){animation-delay:.12s;} .wave i:nth-child(3){animation-delay:.24s;} .wave i:nth-child(4){animation-delay:.36s;}
+  @keyframes wv{0%,100%{height:4px;}50%{height:14px;}}
+</style>
+</head>
+<body>
+
+<a class="backlink" href="../index.html">&larr; All quizzes</a>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <div class="logo">ACT</div>
+      <div>
+        <span class="eyebrow">Aviation English Practice</span>
+        <h1>Actor Methods to Remember Texts</h1>
+      </div>
+    </div>
+    <div class="readouts">
+      <div class="readout">
+        <span class="dot"></span><span class="label">AUDIO</span><span class="val" id="audio-status">READY</span>
+      </div>
+      <div class="readout">
+        <span class="dot amber"></span><span class="label">QUIZ</span><span class="val amber" id="quiz-readout">0 / 6</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+  <nav class="coords" aria-label="Section navigation">
+    <p class="nav-title">Flight Coordinates</p>
+    <div class="nav-links">
+      <a href="#hero" data-nav="hero" class="active"><span class="n">01</span> Pre-Flight Briefing</a>
+      <a href="#methods" data-nav="methods"><span class="n">02</span> The 10 Methods</a>
+      <a href="#firstletter" data-nav="firstletter"><span class="n">03</span> First-Letter Trainer</a>
+      <a href="#cues" data-nav="cues"><span class="n">04</span> Cue–Response Cards</a>
+      <a href="#chunks" data-nav="chunks"><span class="n">05</span> Beat &amp; Chunk Builder</a>
+      <a href="#steps" data-nav="steps"><span class="n">06</span> The 8-Step Method</a>
+      <a href="#example" data-nav="example"><span class="n">07</span> Example Training Text</a>
+      <a href="#phrases" data-nav="phrases"><span class="n">08</span> Useful Phrases</a>
+      <a href="#quiz" data-nav="quiz"><span class="n">09</span> Mini Quiz</a>
+      <a href="#revision" data-nav="revision"><span class="n">10</span> Revision Checklist</a>
+    </div>
+  </nav>
+
+  <main>
+
+    <!-- 01 HERO -->
+    <section id="hero">
+      <div class="panel hero">
+        <div class="topline"></div>
+        <span class="tag-pill">ICAO Level 4–5 · Memory &amp; Speaking</span>
+        <h2 class="title">How actors learn lines — and how pilots <em>remember aviation texts</em></h2>
+        <p class="sub">The goal is not to memorize a text like a poem. The goal is to remember the <strong>logic of the situation</strong> and speak clearly, naturally, and confidently — through meaning, structure, cues, rhythm, and repeated speaking practice.</p>
+        <div class="outcomes">
+          <div class="outcome"><b>🔑 OUTCOME 1</b>Learn the idea and beats first, so the words become easy to produce.</div>
+          <div class="outcome"><b>🎯 OUTCOME 2</b>Train active recall with chunks, cues, and first-letter prompts — not passive reading.</div>
+          <div class="outcome"><b>🎙️ OUTCOME 3</b>Speak aloud and run a camera drill until clear aviation communication is automatic.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 METHODS -->
+    <section id="methods">
+      <div class="sec-head"><span class="badge">02</span><h2>The 10 Actor Methods</h2></div>
+      <p class="lead">Good actors learn a text through meaning, structure, cues, rhythm, and repeated speaking practice. Tap 🔊 on any line to hear it.</p>
+      <div class="methods" id="methods-grid"></div>
+    </section>
+
+    <!-- 03 FIRST-LETTER TRAINER -->
+    <section id="firstletter">
+      <div class="sec-head"><span class="badge">03</span><h2>First-Letter Prompt Trainer</h2></div>
+      <p class="lead">Look at the code and say the full sentence from memory. The code gives you support, but not the full answer — your brain reconstructs the line.</p>
+      <div class="trainer">
+        <div class="stage">
+          <span class="counter" id="fl-counter">LINE 1 OF 5</span>
+          <div class="prompt-code" id="fl-code">—</div>
+          <div class="revealed hidden" id="fl-full">Say it aloud, then reveal to check.</div>
+        </div>
+        <div class="controls">
+          <button class="btn" id="fl-reveal" type="button">Reveal sentence</button>
+          <button class="btn" id="fl-speak" type="button">🔊 Hear full line</button>
+          <button class="btn primary" id="fl-next" type="button">Next line ▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 CUE-RESPONSE -->
+    <section id="cues">
+      <div class="sec-head"><span class="badge">04</span><h2>Cue–Response Flashcards</h2></div>
+      <p class="lead">In ICAO speaking, the question is your cue. Train automatic answers to common ICAO-style questions instead of memorizing one big text.</p>
+      <div class="cues" id="cues-grid"></div>
+    </section>
+
+    <!-- 05 CHUNK BUILDER -->
+    <section id="chunks">
+      <div class="sec-head"><span class="badge">05</span><h2>Beat &amp; Chunk Builder</h2></div>
+      <p class="lead">A chunk is a small group of words that belongs together. Build the sentence one chunk at a time — much better than reading it silently ten times.</p>
+      <div class="trainer">
+        <div class="chunk-out" id="chunk-out"><span class="next">Press “Add chunk” to begin.</span></div>
+        <div class="controls">
+          <button class="btn primary" id="chunk-add" type="button">Add chunk +</button>
+          <button class="btn" id="chunk-speak" type="button">🔊 Say so far</button>
+          <button class="btn" id="chunk-reset" type="button">Reset</button>
+        </div>
+        <p class="lead" style="margin-top:18px;">Your answer has a route. You know where to go next:</p>
+        <ul class="beats-skeleton">
+          <li>Beat 1: What I can see</li>
+          <li>Beat 2: What type of aircraft it may be</li>
+          <li>Beat 3: What may have happened</li>
+          <li>Beat 4: What the main risk is</li>
+          <li>Beat 5: What the crew should do</li>
+          <li>Beat 6: Safety conclusion</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- 06 STEPS -->
+    <section id="steps">
+      <div class="sec-head"><span class="badge">06</span><h2>The 8-Step Actor Method for ICAO Texts</h2></div>
+      <p class="lead">Use this system for every aviation picture, video, or prepared ICAO answer.</p>
+      <div class="steps" id="steps-grid"></div>
+    </section>
+
+    <!-- 07 EXAMPLE -->
+    <section id="example">
+      <div class="sec-head"><span class="badge">07</span><h2>Example Training Text</h2></div>
+      <p class="lead">The same answer in every form — full, beats, first-letter code, and two practice versions.</p>
+      <div class="panel" id="example-panel"></div>
+    </section>
+
+    <!-- 08 PHRASES -->
+    <section id="phrases">
+      <div class="sec-head"><span class="badge">08</span><h2>Useful Phrases for This Method</h2></div>
+      <p class="lead">Ready-made building blocks for each beat of your answer.</p>
+      <div class="phrasebank" id="phrasebank"></div>
+    </section>
+
+    <!-- 09 QUIZ -->
+    <section id="quiz">
+      <div class="sec-head"><span class="badge">09</span><h2>Mini Quiz</h2></div>
+      <p class="lead">Check your understanding of the actor method. Instant feedback after each answer.</p>
+      <div class="trainer quiz">
+        <div id="quiz-body"><!-- populated by JS --></div>
+        <div class="quiz-nav">
+          <span class="counter" id="quiz-counter">Q 1 / 6</span>
+          <div class="progressbar"><i id="quiz-bar" style="width:16%"></i></div>
+          <button class="btn primary" id="quiz-next" type="button" disabled>Next ▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 REVISION -->
+    <section id="revision">
+      <div class="sec-head"><span class="badge">10</span><h2>Revision Checklist — The Main Secret</h2></div>
+      <div class="panel">
+        <p class="lead">Actors do not remember text only as text. They remember:</p>
+        <div class="formula">Situation → intention → <b>beats</b> → <b>cues</b> → action → spoken rhythm</div>
+        <p class="lead">For aviation English, use this formula:</p>
+        <div class="formula">Picture → aviation logic → <b>beats</b> → <b>chunks</b> → <b>active recall</b> → <b>first-letter code</b> → camera practice</div>
+        <ul class="checklist">
+          <li>Memorize the idea, not the words first.</li>
+          <li>Divide the answer into beats; build a skeleton before the full text.</li>
+          <li>Group words into chunks and say them aloud, not silently.</li>
+          <li>Use active recall and cover-and-recite: look less, recall more.</li>
+          <li>Train cue–response: the ICAO question is your cue.</li>
+          <li>Use first-letter prompts to reconstruct, then remove the text completely.</li>
+          <li>Record one camera run — check logic, vocabulary, and a safety conclusion. Don't overcorrect.</li>
+        </ul>
+        <p class="lead" style="margin-top:16px;">This method helps you speak more naturally because you are not simply repeating memorized words — you are explaining a situation with clear aviation logic. That is exactly what you need for ICAO Level 4–5 speaking.</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <span>Aviation English Cockpit Class · Actor Methods to Remember Texts</span>
+  <span>Compiled for self-immersive ICAO Level 4–5 readiness</span>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- TTS ---------- */
+  var synth = window.speechSynthesis || null;
+  function speakText(text){
+    if(!synth){ return; }
+    try{
+      if(synth.speaking){ synth.cancel(); }
+      var clean = String(text).replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').trim();
+      if(!clean){ return; }
+      var u = new SpeechSynthesisUtterance(clean);
+      u.lang = 'en-GB';
+      u.rate = 0.92;
+      var voices = synth.getVoices() || [];
+      var pref = voices.find(function(v){ return /en-GB/i.test(v.lang) && /(Daniel|UK|British|Google UK)/i.test(v.name); })
+              || voices.find(function(v){ return /en-GB/i.test(v.lang); })
+              || voices.find(function(v){ return /en[-_]/i.test(v.lang); });
+      if(pref){ u.voice = pref; }
+      u.onstart = function(){ document.body.classList.add('speaking'); setStatus('SPEAKING'); };
+      u.onend = function(){ document.body.classList.remove('speaking'); setStatus('READY'); };
+      u.onerror = function(){ document.body.classList.remove('speaking'); setStatus('READY'); };
+      synth.speak(u);
+    }catch(e){ /* no-op */ }
+  }
+  function setStatus(s){ var el=document.getElementById('audio-status'); if(el){ el.textContent=s; } }
+  if(synth && typeof synth.onvoiceschanged !== 'undefined'){ synth.onvoiceschanged=function(){}; }
+
+  function speakBtn(text){
+    var b=document.createElement('button');
+    b.className='speak'; b.type='button';
+    b.setAttribute('aria-label','Listen');
+    b.innerHTML='🔊<span class="wave" aria-hidden="true"><i></i><i></i><i></i><i></i></span>';
+    b.addEventListener('click',function(){ speakText(text); });
+    return b;
+  }
+  function exRow(text, opts){
+    opts = opts || {};
+    var row=document.createElement('div');
+    row.className='ex'+(opts.mono?' mono':'')+(opts.strong?' strong':'');
+    var t=document.createElement('div'); t.className='txt';
+    if(opts.q){ var q=document.createElement('span'); q.className='q'; q.textContent=opts.q; t.appendChild(q); }
+    var span=document.createElement('span'); span.textContent=text; t.appendChild(span);
+    row.appendChild(t);
+    row.appendChild(speakBtn(opts.say || text));
+    return row;
+  }
+
+  /* ---------- 02 Methods ---------- */
+  var METHODS = [
+    {t:"Memorize the idea, not the words", p:"Learning word by word is fragile — forget one word and the sentence collapses. Actors ask: What is happening? What do I want to say? Why? When you remember the logic, the words are easy to produce.", ex:"Aircraft in water → near runway → possible runway overrun → risk of fuel leak → crew evacuation."},
+    {t:"Use beats: small meaning units", p:"A beat is a small unit of meaning with one clear purpose. A long answer is divided into beats — you move from one beat to the next instead of remembering one long paragraph.", ex:"Beat 1: What I can see · Beat 2: What type of aircraft · Beat 3: What may have happened · Beat 4: The main risk · Beat 5: What the crew should do · Beat 6: Safety conclusion."},
+    {t:"Use chunks: group words into blocks", p:"A chunk is a small group of words that belongs together. Break a long sentence into chunks and build it up gradually.", ex:"I can see / a narrow-body aircraft / partially submerged in water / near the end of a runway.", mono:true},
+    {t:"Use active recall, not passive reading", p:"Passive reading means looking at the text again and again. Active recall means closing the text and saying it from memory. If you only read, your eyes remember; if you speak from memory, your brain and mouth learn to produce it.", ex:"Read once. Close the text. Say it from memory. Check mistakes. Repeat.", mono:true},
+    {t:"Use the cover-and-recite method", p:"Read one sentence, cover it, say it aloud from memory. If you forget, look only at the first word, then try again. The rule is simple: look less, recall more.", ex:"The forward exits are open and the evacuation slides have been deployed."},
+    {t:"Learn cue-response patterns", p:"Actors learn the cue before the line. In ICAO speaking, the question is your cue — you train automatic answers to common questions, not one big text.", ex:"Cue: What can you see? → Response: I can see a narrow-body aircraft partially submerged in water."},
+    {t:"Use first-letter prompts", p:"Write only the first letter of each word. The code gives support but not the full answer, forcing your brain to reconstruct the sentence.", ex:"I c s a n-b a p s i w.", mono:true, say:"I can see a narrow-body aircraft partially submerged in water."},
+    {t:"Speak aloud, not silently", p:"Speaking is physical — your mouth, tongue, jaw, breathing, and rhythm must get used to the sentence. Knowing the sentence is not enough; you must say it smoothly.", ex:"The slides have been deployed. The evacuation slides have been deployed. The forward exits are open and the evacuation slides have been deployed."},
+    {t:"Add movement or gestures", p:"Actors connect words with movement. Small gestures are memory anchors — not for performance — that help your brain reach the next beat.", ex:"Point forward: I can see... · Move hand from runway to water: It may have overrun the runway. · Palm down, serious tone: The main risk is..."},
+    {t:"Build a skeleton before the full text", p:"A skeleton is the basic logic of the answer without full sentences — your memory map. Build the answer step by step from it.", ex:"aircraft in water · near runway · Boeing 737 · exits open · slides deployed · runway overrun · tire tracks · fuel leak risk · evacuation · secure aircraft", mono:true}
+  ];
+  (function renderMethods(){
+    var grid=document.getElementById('methods-grid'); if(!grid){ return; }
+    METHODS.forEach(function(m,i){
+      var card=document.createElement('article'); card.className='method';
+      var num=document.createElement('span'); num.className='num'; num.textContent='METHOD '+(i+1<10?'0'+(i+1):(i+1));
+      var h=document.createElement('h3'); h.textContent=m.t;
+      var p=document.createElement('p'); p.textContent=m.p;
+      card.appendChild(num); card.appendChild(h); card.appendChild(p);
+      card.appendChild(exRow(m.ex,{mono:m.mono, say:m.say}));
+      grid.appendChild(card);
+    });
+  })();
+
+  /* ---------- 03 First-letter trainer ---------- */
+  var FL = [
+    {code:"I c s a n-b a p s i w n t e o a r.", full:"I can see a narrow-body aircraft partially submerged in water near the end of a runway."},
+    {code:"I l l a B 737.", full:"It looks like a Boeing 737."},
+    {code:"T f e a o a t e s h b d.", full:"The forward exits are open and the evacuation slides have been deployed."},
+    {code:"T a m h o t r b t t t l f t r i t w.", full:"The aircraft must have overrun the runway because the tire tracks lead from the runway into the water."},
+    {code:"T m r i f l i t w, s t c s e e a s t a.", full:"The main risk is fuel leaking into the water, so the crew should evacuate everyone and secure the aircraft."}
+  ];
+  (function flTrainer(){
+    var idx=0, revealed=false;
+    var code=document.getElementById('fl-code'), full=document.getElementById('fl-full'),
+        counter=document.getElementById('fl-counter'),
+        bReveal=document.getElementById('fl-reveal'), bSpeak=document.getElementById('fl-speak'), bNext=document.getElementById('fl-next');
+    if(!code||!full){ return; }
+    function render(){
+      code.textContent=FL[idx].code;
+      counter.textContent='LINE '+(idx+1)+' OF '+FL.length;
+      revealed=false;
+      full.textContent='Say it aloud, then reveal to check.';
+      full.classList.add('hidden');
+    }
+    bReveal && bReveal.addEventListener('click',function(){
+      revealed=true; full.textContent=FL[idx].full; full.classList.remove('hidden');
+    });
+    bSpeak && bSpeak.addEventListener('click',function(){ speakText(FL[idx].full); });
+    bNext && bNext.addEventListener('click',function(){ idx=(idx+1)%FL.length; render(); });
+    render();
+  })();
+
+  /* ---------- 04 Cue-response ---------- */
+  var CUES = [
+    {cue:"What can you see?", resp:"I can see a narrow-body aircraft partially submerged in water."},
+    {cue:"What may have happened?", resp:"It may have overrun the runway."},
+    {cue:"What is the main risk?", resp:"The main risk is fuel leaking into the water."},
+    {cue:"What should the crew do?", resp:"The crew should evacuate everyone and secure the aircraft."}
+  ];
+  (function renderCues(){
+    var grid=document.getElementById('cues-grid'); if(!grid){ return; }
+    CUES.forEach(function(c){
+      var card=document.createElement('div'); card.className='cue-card';
+      var cue=document.createElement('div'); cue.className='cue'; cue.textContent=c.cue;
+      var resp=document.createElement('div'); resp.className='resp'; resp.textContent=c.resp;
+      var rowEl=document.createElement('div'); rowEl.className='cue-row';
+      var rev=document.createElement('button'); rev.className='btn reveal-btn'; rev.type='button'; rev.textContent='Show response';
+      rev.addEventListener('click',function(){ card.classList.add('open'); });
+      var sp=speakBtn(c.resp);
+      rowEl.appendChild(rev); rowEl.appendChild(sp);
+      card.appendChild(cue); card.appendChild(resp); card.appendChild(rowEl);
+      grid.appendChild(card);
+    });
+  })();
+
+  /* ---------- 05 Chunk builder ---------- */
+  var CHUNKS = ["I can see","a narrow-body aircraft","partially submerged in water","near the end of a runway."];
+  (function chunkBuilder(){
+    var out=document.getElementById('chunk-out'), bAdd=document.getElementById('chunk-add'),
+        bSpeak=document.getElementById('chunk-speak'), bReset=document.getElementById('chunk-reset');
+    if(!out){ return; }
+    var n=0;
+    function text(){ return CHUNKS.slice(0,n).join(' '); }
+    function render(){
+      if(n===0){ out.innerHTML='<span class="next">Press “Add chunk” to begin.</span>'; return; }
+      var done=text();
+      var more = n<CHUNKS.length ? ' <span class="next">/ '+CHUNKS[n]+'…</span>' : '';
+      out.innerHTML=done+more;
+    }
+    bAdd && bAdd.addEventListener('click',function(){ if(n<CHUNKS.length){ n++; render(); } });
+    bSpeak && bSpeak.addEventListener('click',function(){ if(n>0){ speakText(text()); } });
+    bReset && bReset.addEventListener('click',function(){ n=0; render(); });
+    render();
+  })();
+
+  /* ---------- 06 Steps ---------- */
+  var STEPS = [
+    {h:"Understand the situation", p:"Ask: What can I see? What may be happening? What caused it? What is the risk? What should the crew do? What is the safety conclusion? Don't start by memorizing the full text."},
+    {h:"Create the skeleton", p:"Your memory map: aircraft in water · runway overrun · Boeing 737 · exits open · slides deployed · fuel leak · evacuation · secure aircraft."},
+    {h:"Divide the answer into beats", p:"I can see... → It looks like... → It may have... → The main risk is... → The crew should... → Safety conclusion. Now your answer has a route."},
+    {h:"Build a simple version first", p:"Start with a version you can say easily: “I can see an aircraft in the water. It looks like a Boeing 737. The exits are open and the slides are deployed. It may have overrun the runway. The main risk is fuel leakage. The crew should evacuate everyone and secure the aircraft.”"},
+    {h:"Upgrade to a stronger aviation version", p:"Make it more natural and ICAO-style: “…partially submerged in water near the end of a runway… The aircraft must have overrun the runway because the tire tracks lead from the runway into the water…”"},
+    {h:"Create first-letter prompts", p:"Reduce each line to first letters and say the full answer using only the code (see the First-Letter Trainer above)."},
+    {h:"Remove the text completely", p:"Practise without the full text and without the code — using only the six beats. This is the level you need for real speaking."},
+    {h:"Record one camera run", p:"Record yourself and don't stop after every small mistake. Check only three things: Was the logic clear? Did I use aviation vocabulary? Did I finish with a safety conclusion? Don't overcorrect — clear communication matters more."}
+  ];
+  (function renderSteps(){
+    var grid=document.getElementById('steps-grid'); if(!grid){ return; }
+    STEPS.forEach(function(s,i){
+      var row=document.createElement('div'); row.className='step';
+      var sn=document.createElement('div'); sn.className='sn'; sn.textContent=(i+1);
+      var body=document.createElement('div');
+      var h=document.createElement('h4'); h.textContent='Step '+(i+1)+'. '+s.h;
+      var p=document.createElement('p'); p.textContent=s.p;
+      body.appendChild(h); body.appendChild(p);
+      row.appendChild(sn); row.appendChild(body);
+      grid.appendChild(row);
+    });
+  })();
+
+  /* ---------- 07 Example training text ---------- */
+  var EXAMPLE = {
+    full:"I can see a narrow-body aircraft partially submerged in water near the end of a runway. It looks like a Boeing 737. The forward exits are open and the evacuation slides have been deployed. The aircraft must have overrun the runway because the tire tracks lead from the runway into the water. The main risk is fuel leaking into the water, so the crew should evacuate everyone and secure the aircraft.",
+    beats:["Aircraft in water","Boeing 737","Exits open and slides deployed","Runway overrun","Tire tracks","Fuel leak risk","Evacuation and securing the aircraft"],
+    firstletter:["I c s a n-b a p s i w n t e o a r.","I l l a B 737.","T f e a o a t e s h b d.","T a m h o t r b t t t l f t r i t w.","T m r i f l i t w, s t c s e e a s t a."],
+    short:"I can see an aircraft in the water. It looks like a Boeing 737. It may have overrun the runway. The main risk is fuel leakage. The crew should evacuate everyone and secure the aircraft.",
+    stronger:"I can see a narrow-body aircraft partially submerged in water near the end of a runway. The evacuation slides have been deployed, so the crew has probably started an evacuation. The aircraft must have overrun the runway because the tire tracks lead into the water. The main risk is fuel leaking into the water. The safest action is to evacuate all passengers, secure the aircraft, and prevent further danger."
+  };
+  (function renderExample(){
+    var panel=document.getElementById('example-panel'); if(!panel){ return; }
+    function sub(label, first){ var h=document.createElement('h3'); h.style.cssText='font-size:14px;color:var(--amber);font-family:var(--font-mono);text-transform:uppercase;letter-spacing:.05em;margin:'+(first?'0':'18px')+' 0 8px;'; h.textContent=label; return h; }
+    panel.appendChild(sub('Full version', true));
+    panel.appendChild(exRow(EXAMPLE.full,{strong:true}));
+    panel.appendChild(sub('Beat version'));
+    var ol=document.createElement('ul'); ol.className='beats-skeleton';
+    EXAMPLE.beats.forEach(function(b,i){ var li=document.createElement('li'); li.textContent=(i+1)+'. '+b; ol.appendChild(li); });
+    panel.appendChild(ol);
+    panel.appendChild(sub('First-letter version'));
+    EXAMPLE.firstletter.forEach(function(code,i){
+      panel.appendChild(exRow(code,{mono:true, say:fullLineFor(i)}));
+    });
+    panel.appendChild(sub('Short practice version'));
+    panel.appendChild(exRow(EXAMPLE.short));
+    panel.appendChild(sub('Stronger practice version'));
+    panel.appendChild(exRow(EXAMPLE.stronger,{strong:true}));
+  })();
+  function fullLineFor(i){
+    var lines=[
+      "I can see a narrow-body aircraft partially submerged in water near the end of a runway.",
+      "It looks like a Boeing 737.",
+      "The forward exits are open and the evacuation slides have been deployed.",
+      "The aircraft must have overrun the runway because the tire tracks lead from the runway into the water.",
+      "The main risk is fuel leaking into the water, so the crew should evacuate everyone and secure the aircraft."
+    ];
+    return lines[i] || '';
+  }
+
+  /* ---------- 08 Phrase bank ---------- */
+  var PHRASES = [
+    {g:"Starting the description", lines:["I can see...","The picture shows...","This situation involves...","It looks like..."]},
+    {g:"Explaining what may have happened", lines:["It may have...","It might have...","It must have...","One possible cause is...","This suggests that..."]},
+    {g:"Explaining risks", lines:["The main risk is...","This is dangerous because...","There is a risk of...","The situation could lead to..."]},
+    {g:"Explaining crew actions", lines:["The crew should...","The pilot should...","The first priority is...","If necessary, the crew should..."]},
+    {g:"Safety conclusion", lines:["Safety is the first priority.","The safest decision is to stop the operation.","The crew should follow procedures and avoid rushing.","Clear communication helps prevent further problems.","The main goal is to protect passengers and crew."]}
+  ];
+  (function renderPhrases(){
+    var bank=document.getElementById('phrasebank'); if(!bank){ return; }
+    PHRASES.forEach(function(p){
+      var box=document.createElement('div'); box.className='pgroup';
+      var h=document.createElement('h4'); h.textContent=p.g; box.appendChild(h);
+      p.lines.forEach(function(l){ box.appendChild(exRow(l)); });
+      bank.appendChild(box);
+    });
+  })();
+
+  /* ---------- 09 Quiz ---------- */
+  var QUIZ = [
+    {q:"What is a “beat” in the actor method?", opts:["A small unit of meaning or action with one clear purpose","The rhythm of your breathing while speaking","A first-letter memory code","A complete memorized paragraph"], correct:0, why:"A beat is a small unit of meaning or action; a long answer is divided into several beats, each with one clear purpose."},
+    {q:"How does active recall differ from passive reading?", opts:["You read the text aloud ten times","You close the text and say it from memory, then check","You only look at the first letter of each word","You translate the text into your own language"], correct:1, why:"Active recall means closing the text and saying it from memory, then checking mistakes — harder than reading, which is exactly why it works."},
+    {q:"What is the purpose of a first-letter prompt?", opts:["To give you the full answer in shorthand","To replace speaking practice entirely","To give support but force your brain to reconstruct the sentence","To test your spelling of aviation words"], correct:2, why:"First-letter prompts give you support but not the full answer, so your brain has to reconstruct the sentence."},
+    {q:"In ICAO speaking, what acts as your “cue”?", opts:["The question from the examiner","The first word of your answer","Your hand gesture","The safety conclusion"], correct:0, why:"In ICAO speaking the question is your cue — you train automatic answers to common ICAO-style questions."},
+    {q:"Why should you build a skeleton before learning the full text?", opts:["To memorize the exact words faster","To have the basic logic of the answer as a memory map","To avoid speaking aloud","To impress the examiner with long sentences"], correct:1, why:"A skeleton is the basic logic of the answer without full sentences — your memory map to build the answer step by step."},
+    {q:"After a camera run, which three things should you check?", opts:["Spelling, grammar, and accent","Speed, volume, and pauses","Was the logic clear, did I use aviation vocabulary, did I finish with a safety conclusion","Word count, eye contact, and posture"], correct:2, why:"Check only: Was the logic clear? Did I use aviation vocabulary? Did I finish with a safety conclusion? Don't overcorrect small grammar mistakes."}
+  ];
+  (function quiz(){
+    var body=document.getElementById('quiz-body'), counter=document.getElementById('quiz-counter'),
+        bar=document.getElementById('quiz-bar'), bNext=document.getElementById('quiz-next'),
+        readout=document.getElementById('quiz-readout');
+    if(!body){ return; }
+    var idx=0, score=0, answered=false;
+    function updateReadout(){ if(readout){ readout.textContent=score+' / '+QUIZ.length; } }
+    function render(){
+      answered=false; bNext.disabled=true;
+      var item=QUIZ[idx];
+      body.innerHTML='';
+      var q=document.createElement('div'); q.className='q'; q.textContent='Q'+(idx+1)+'. '+item.q; body.appendChild(q);
+      var opts=document.createElement('div'); opts.className='opts';
+      item.opts.forEach(function(o,oi){
+        var b=document.createElement('button'); b.className='opt'; b.type='button'; b.textContent=o;
+        b.addEventListener('click',function(){ choose(oi, opts, item, fb); });
+        opts.appendChild(b);
+      });
+      body.appendChild(opts);
+      var fb=document.createElement('div'); fb.className='feedback'; body.appendChild(fb);
+      counter.textContent='Q '+(idx+1)+' / '+QUIZ.length;
+      bar.style.width=((idx+1)/QUIZ.length*100)+'%';
+      bNext.textContent = idx<QUIZ.length-1 ? 'Next ▶' : 'Finish';
+    }
+    function choose(oi, optsEl, item, fb){
+      if(answered){ return; }
+      answered=true;
+      var btns=optsEl.querySelectorAll('.opt');
+      btns.forEach(function(b,bi){
+        b.disabled=true;
+        if(bi===item.correct){ b.classList.add('correct'); }
+        if(bi===oi && oi!==item.correct){ b.classList.add('wrong'); }
+      });
+      if(oi===item.correct){
+        score++; updateReadout();
+        fb.className='feedback show ok';
+        fb.innerHTML='<b>✓ CORRECT</b>'+item.why;
+      }else{
+        fb.className='feedback show no';
+        fb.innerHTML='<b>✗ NOT QUITE</b>'+item.why;
+      }
+      bNext.disabled=false;
+    }
+    bNext.addEventListener('click',function(){
+      if(idx<QUIZ.length-1){ idx++; render(); }
+      else{ finish(); }
+    });
+    function finish(){
+      body.innerHTML='';
+      var d=document.createElement('div'); d.style.textAlign='center'; d.style.padding='10px';
+      var h=document.createElement('h3'); h.style.fontSize='20px'; h.textContent='Score: '+score+' / '+QUIZ.length;
+      var p=document.createElement('p'); p.className='lead'; p.style.marginTop='8px';
+      p.textContent = score===QUIZ.length ? 'Perfect — you know the actor method. Now run a camera drill aloud.' :
+                      score>=QUIZ.length-2 ? 'Strong — review the missed points and try a first-letter run.' :
+                      'Review the 10 methods and the 8 steps, then try again.';
+      var again=document.createElement('button'); again.className='btn primary'; again.type='button'; again.textContent='Restart quiz'; again.style.marginTop='14px';
+      again.addEventListener('click',function(){ idx=0; score=0; updateReadout(); render(); });
+      d.appendChild(h); d.appendChild(p); d.appendChild(again); body.appendChild(d);
+      counter.textContent='DONE'; bar.style.width='100%'; bNext.disabled=true;
+    }
+    updateReadout(); render();
+  })();
+
+  /* ---------- Scroll-spy nav ---------- */
+  (function scrollSpy(){
+    var links = Array.prototype.slice.call(document.querySelectorAll('nav.coords a[data-nav]'));
+    var sections = links.map(function(a){ return document.getElementById(a.getAttribute('data-nav')); }).filter(Boolean);
+    if(!('IntersectionObserver' in window) || !sections.length){ return; }
+    function setActive(id){
+      links.forEach(function(a){ a.classList.toggle('active', a.getAttribute('data-nav')===id); });
+    }
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){ if(e.isIntersecting){ setActive(e.target.id); } });
+    }, {rootMargin:'-45% 0px -50% 0px', threshold:0});
+    sections.forEach(function(s){ io.observe(s); });
+  })();
+
+})();
+</script>
+</body>
+</html>
