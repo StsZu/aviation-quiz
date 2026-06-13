@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SCAN Trainer — Crosswind Landing</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #e7dfd2;
+    color: #2f2822;
+    min-height: 100vh;
+    padding: 24px 16px 90px;
+  }
+
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  .back-link {
+    display: inline-block;
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    color: #7a6858;
+    text-decoration: none;
+    margin-bottom: 18px;
+    padding: 6px 14px;
+    background: #f8f3e9;
+    border: 1px solid #d4c7b3;
+    border-radius: 20px;
+  }
+  .back-link:hover { color: #2f2822; }
+
+  h1 { font-size: 30px; margin-bottom: 6px; }
+  .subtitle { color: #7a6858; font-style: italic; margin-bottom: 24px; font-size: 17px; }
+
+  .card {
+    background: #f8f3e9;
+    border: 1px solid #d4c7b3;
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 22px;
+  }
+  .card h2 { font-size: 21px; margin-bottom: 14px; }
+  .card p { line-height: 1.55; margin-bottom: 10px; }
+  .muted { color: #7a6858; }
+  .section-tag { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #b08a5a; font-weight: bold; display: block; margin-bottom: 6px; }
+
+  /* ---- intro: SCAN cycle ---- */
+  .scan-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 16px 0; }
+  .scan-step {
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 14px;
+    padding: 12px 10px;
+    text-align: center;
+  }
+  .scan-step .letter { font-size: 26px; font-weight: bold; }
+  .scan-step .word { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; color: #7a6858; text-transform: uppercase; margin: 2px 0 6px; }
+  .scan-step .q { font-size: 14px; font-style: italic; }
+
+  .traffic { margin-top: 14px; }
+  .traffic-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; position: relative; top: 1px; }
+
+  /* ---- picture ---- */
+  .pic-frame { position: relative; border-radius: 14px; overflow: hidden; border: 1px solid #d4c7b3; }
+  .pic-frame img { display: block; width: 100%; height: auto; }
+
+  /* ---- memory route ---- */
+  .route { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0 4px; }
+  .route .node {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 13px;
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 12px;
+    padding: 7px 12px;
+  }
+  .route .arrow { color: #b08a5a; font-weight: bold; }
+
+  /* ---- buttons ---- */
+  .action-btn {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 18px;
+    border: 1px solid #d4c7b3;
+    background: #f8f3e9;
+    color: #2f2822;
+    cursor: pointer;
+  }
+  .action-btn:hover { background: #efe7d8; }
+  .action-btn.primary { background: #2f2822; color: #f8f3e9; border-color: #2f2822; }
+  .action-btn:disabled { opacity: .45; cursor: default; }
+  .btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+
+  /* ---- accordion (scan4p + levels) ---- */
+  .acc-item { border: 1px solid #d4c7b3; border-radius: 14px; margin-bottom: 10px; background: #fffdf8; overflow: hidden; }
+  .acc-head {
+    width: 100%;
+    text-align: left;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    padding: 14px 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #2f2822;
+  }
+  .acc-head .tag { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; color: #7a6858; }
+  .acc-head .zdot { display: inline-block; width: 11px; height: 11px; border-radius: 50%; margin-right: 8px; position: relative; top: 1px; }
+  .acc-body { display: none; padding: 0 18px 16px; }
+  .acc-item.open .acc-body { display: block; }
+  .acc-body p { font-size: 16px; line-height: 1.6; margin-bottom: 10px; }
+  .scan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 6px; }
+  .scan-grid .sc h4 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #7a6858; margin-bottom: 4px; }
+  .scan-grid ul { margin: 0 0 0 18px; }
+  .scan-grid li { font-size: 14.5px; line-height: 1.5; }
+  @media (max-width: 560px) { .scan-grid { grid-template-columns: 1fr; } }
+
+  /* ---- chips ---- */
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 6px 0 4px; }
+  .chip {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 13px;
+    padding: 6px 12px;
+    border-radius: 14px;
+    border: 1px solid #d4c7b3;
+    background: #fffdf8;
+  }
+
+  /* ---- beats ---- */
+  .beat { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #e6dcc9; }
+  .beat:last-child { border-bottom: none; }
+  .beat .bn {
+    flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+    background: #2f2822; color: #f8f3e9;
+    font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .beat .bt strong { display: block; font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; letter-spacing: .5px; color: #7a6858; text-transform: uppercase; margin-bottom: 2px; }
+  .beat .bt span { font-size: 16px; line-height: 1.5; }
+
+  /* ---- chunk builder ---- */
+  .chunk-stage { margin-top: 14px; }
+  .chunk {
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-left: 4px solid #5a8a4a;
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    font-size: 16px;
+    line-height: 1.45;
+  }
+  .chunk-empty { color: #a09080; font-style: italic; font-size: 14px; }
+  .chunk-count { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: #7a6858; margin-top: 8px; }
+
+  /* ---- first-letter trainer ---- */
+  .fl-code {
+    font-family: "SF Mono", "SF Pro Text", Menlo, monospace;
+    font-size: 20px;
+    letter-spacing: 1px;
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 12px;
+    padding: 16px;
+    line-height: 1.6;
+  }
+  .fl-full { font-size: 18px; line-height: 1.55; margin-top: 12px; }
+  .fl-full.hidden-model { filter: blur(6px); user-select: none; }
+  .fl-pos { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: #7a6858; margin-top: 10px; }
+
+  /* ---- flashcards ---- */
+  .flash {
+    background: #fffdf8;
+    border: 1px solid #d4c7b3;
+    border-radius: 14px;
+    padding: 20px;
+    margin-top: 14px;
+    text-align: center;
+  }
+  .flash .cue-label { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #7a6858; }
+  .flash .cue { font-size: 21px; margin: 8px 0 4px; }
+  .flash .resp { font-size: 17px; line-height: 1.5; margin-top: 14px; color: #2f5a3a; }
+  .flash .resp.hidden-model { filter: blur(6px); user-select: none; color: #2f2822; }
+  .flash-dots { display: flex; gap: 6px; margin-top: 14px; justify-content: center; }
+  .fdot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #d4c7b3; background: #fffdf8; cursor: pointer; }
+  .fdot.current { background: #2f2822; border-color: #2f2822; }
+
+  /* ---- recall toggle ---- */
+  .mode-toggle { display: flex; gap: 8px; margin: 12px 0 4px; flex-wrap: wrap; }
+  .mode-btn {
+    font-family: "SF Pro Text", Arial, sans-serif;
+    font-size: 14px;
+    padding: 8px 18px;
+    border-radius: 18px;
+    border: 1px solid #d4c7b3;
+    background: #fffdf8;
+    color: #7a6858;
+    cursor: pointer;
+  }
+  .mode-btn.active { background: #2f2822; color: #f8f3e9; border-color: #2f2822; }
+
+  /* recall focus modes: hide study cards except the chosen one */
+  body:not(.recall-full) .study-card { display: none; }
+  body.recall-beats #cardBeats { display: block; }
+  body.recall-first #cardFirst { display: block; }
+  body.recall-image #cardPicture { display: block; }
+
+  /* ---- quiz ---- */
+  .q-item { border-bottom: 1px solid #e6dcc9; padding: 14px 0; }
+  .q-item:last-child { border-bottom: none; }
+  .q-item .q-text { font-size: 16px; margin-bottom: 10px; }
+  .q-opt {
+    display: block; width: 100%; text-align: left;
+    font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px;
+    padding: 9px 14px; margin-bottom: 6px;
+    border: 1px solid #d4c7b3; border-radius: 10px;
+    background: #fffdf8; color: #2f2822; cursor: pointer;
+  }
+  .q-opt:hover { background: #efe7d8; }
+  .q-opt.correct { background: #e3efd9; border-color: #5a8a4a; color: #2f5a2a; }
+  .q-opt.wrong { background: #f3ddd9; border-color: #b5483a; color: #7a2f26; }
+  .q-opt:disabled { cursor: default; }
+  .q-exp { font-size: 14px; color: #7a6858; margin-top: 6px; font-style: italic; }
+
+  /* ---- checklist ---- */
+  .checklist { list-style: none; margin: 6px 0; }
+  .checklist li { padding: 5px 0; font-size: 15.5px; }
+  .checklist label { display: flex; gap: 10px; align-items: flex-start; cursor: pointer; }
+  .checklist input { margin-top: 4px; width: 16px; height: 16px; flex-shrink: 0; }
+  .check-sub { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #7a6858; margin: 12px 0 4px; }
+
+  /* ---- speak mode ---- */
+  .speak-controls { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 14px 0; }
+  .rec-dot { width: 12px; height: 12px; border-radius: 50%; background: #b5483a; display: none; animation: blink 1s infinite; }
+  .rec-dot.on { display: inline-block; }
+  @keyframes blink { 50% { opacity: .2; } }
+  .speak-timer { font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; color: #7a6858; min-width: 48px; }
+  .transcript-box { background: #fffdf8; border: 1px solid #d4c7b3; border-radius: 14px; padding: 16px; min-height: 70px; font-size: 16px; line-height: 1.6; margin-bottom: 12px; }
+  .transcript-box .interim { color: #a09080; }
+  .transcript-placeholder { color: #a09080; font-style: italic; font-size: 14px; }
+  .metric-table { width: 100%; border-collapse: collapse; font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px; margin: 10px 0; }
+  .metric-table td, .metric-table th { padding: 7px 10px; border-bottom: 1px solid #e6dcc9; text-align: left; }
+  .metric-table th { color: #7a6858; font-weight: normal; font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+  .metric-ok { color: #5a8a4a; font-weight: bold; }
+  .metric-low { color: #b5483a; }
+  .history-line { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: #7a6858; margin-top: 8px; }
+
+  /* ---- AI feedback ---- */
+  .ai-box { background: #fffdf8; border: 1px solid #d4c7b3; border-radius: 14px; padding: 16px; margin-top: 12px; }
+  .ai-box h3 { font-size: 16px; margin-bottom: 8px; }
+  .ai-output { white-space: pre-wrap; font-size: 15px; line-height: 1.6; margin-top: 10px; }
+  .key-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin: 8px 0; }
+  .key-row input { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; padding: 8px 12px; border: 1px solid #d4c7b3; border-radius: 10px; background: #fff; flex: 1 1 220px; }
+  .small-note { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; color: #7a6858; }
+  .ai-status { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; color: #7a6858; font-style: italic; }
+
+  /* ---- nav ---- */
+  .nav-links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .nav-links a {
+    font-family: "SF Pro Text", Arial, sans-serif; font-size: 14px;
+    text-decoration: none; color: #2f2822;
+    background: #fffdf8; border: 1px solid #d4c7b3; border-radius: 14px;
+    padding: 10px 16px;
+  }
+  .nav-links a:hover { background: #efe7d8; }
+
+  /* ---- SOS ---- */
+  .sos-btn { position: fixed; right: 20px; bottom: 20px; z-index: 50; font-family: "SF Pro Text", Arial, sans-serif; font-size: 16px; font-weight: bold; padding: 14px 22px; border-radius: 30px; border: none; background: #b5483a; color: #fff; cursor: pointer; box-shadow: 0 4px 14px rgba(47,40,34,.3); }
+  .sos-panel { display: none; position: fixed; right: 20px; bottom: 78px; z-index: 50; width: min(340px, calc(100vw - 40px)); background: #f8f3e9; border: 1px solid #d4c7b3; border-radius: 18px; padding: 18px; box-shadow: 0 6px 20px rgba(47,40,34,.25); }
+  .sos-panel.open { display: block; }
+  .sos-panel h3 { font-size: 16px; margin-bottom: 4px; }
+  .sos-panel .muted { font-size: 13px; margin-bottom: 10px; }
+  .sos-phrase { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: #fffdf8; border: 1px solid #d4c7b3; border-radius: 10px; padding: 8px 10px; margin-bottom: 6px; font-size: 14px; }
+  .sos-phrase button { font-size: 13px; border: none; background: none; cursor: pointer; color: #7a6858; flex-shrink: 0; }
+
+  footer { text-align: center; color: #7a6858; font-size: 13px; font-family: "SF Pro Text", Arial, sans-serif; margin-top: 30px; }
+
+  @media (max-width: 640px) {
+    .scan-row { grid-template-columns: repeat(2, 1fr); }
+    h1 { font-size: 24px; }
+  }
+</style>
+</head>
+<body class="recall-full">
+<div class="wrap">
+
+  <a class="back-link" href="index.html">← All quizzes</a>
+
+  <h1>SCAN Trainer — Crosswind Landing</h1>
+  <p class="subtitle">Picture logic with SCAN × 4P, then the actor method to remember the logic — not the words.</p>
+
+  <!-- ============ 2. PICTURE ============ -->
+  <div class="card study-card" id="cardPicture">
+    <span class="section-tag">The picture</span>
+    <div class="pic-frame">
+      <img src="img/scan-crosswind-landing.jpg" alt="A large passenger aircraft on final approach, landing gear and flaps extended, banked slightly into a crosswind, hazy urban background">
+    </div>
+    <p class="muted" style="margin-top:12px;">A large passenger aircraft on final approach, gear and flaps extended, banked slightly into the wind — a crosswind landing that must stay stabilized.</p>
+  </div>
+
+  <!-- ============ 3. SCAN METHOD ============ -->
+  <div class="card">
+    <span class="section-tag">The method</span>
+    <h2>One loop. Four zones. Full answer.</h2>
+    <p>You don't memorise a structure — you <strong>scan</strong> the picture with one small loop of four steps, run over four zones.</p>
+    <div class="scan-row">
+      <div class="scan-step"><div class="letter">S</div><div class="word">See</div><div class="q">What can I see?</div></div>
+      <div class="scan-step"><div class="letter">C</div><div class="word">Call</div><div class="q">What is it called?</div></div>
+      <div class="scan-step"><div class="letter">A</div><div class="word">Assume</div><div class="q">What may have happened?</div></div>
+      <div class="scan-step"><div class="letter">N</div><div class="word">Next</div><div class="q">What happens next?</div></div>
+    </div>
+    <p><strong>Four zones:</strong> Plane · People · Place · Panorama. Four zones × four sentences = a full ICAO-style answer.</p>
+    <div class="traffic">
+      <p><strong>The Assume step uses a "traffic light" of certainty:</strong></p>
+      <div class="traffic-row"><span class="dot" style="background:#5a8a4a"></span><span><em>might have / may have</em> — a weak guess</span></div>
+      <div class="traffic-row"><span class="dot" style="background:#d8a13a"></span><span><em>could have / probably</em> — a medium guess</span></div>
+      <div class="traffic-row"><span class="dot" style="background:#b5483a"></span><span><em>must have… because I can see…</em> — a strong guess with evidence</span></div>
+    </div>
+  </div>
+
+  <!-- ============ 4. MEMORY ROUTE ============ -->
+  <div class="card">
+    <span class="section-tag">Actor method · memory route</span>
+    <h2>The route from picture to camera</h2>
+    <p class="muted">The goal is not to memorise the text word by word. The goal is to remember the <strong>logic of the situation</strong> and speak clearly.</p>
+    <div class="route" id="routePanel"></div>
+  </div>
+
+  <!-- ============ 5. SCAN × 4P ============ -->
+  <div class="card study-card">
+    <span class="section-tag">SCAN × 4P skeleton</span>
+    <h2>Scan each zone — See, Call, Assume, Next</h2>
+    <p class="muted">Open a zone, read its four steps aloud, then press Listen to hear the rhythm.</p>
+    <div id="scan4p"></div>
+  </div>
+
+  <!-- ============ 6. VOCABULARY ============ -->
+  <div class="card study-card">
+    <span class="section-tag">Necessary vocabulary</span>
+    <h2>Words you will need</h2>
+    <div class="chips" id="vocabChips"></div>
+    <div class="btn-row"><button class="action-btn primary" id="speakVocabBtn">▶ Speak vocabulary</button></div>
+  </div>
+
+  <!-- ============ 7. SPEAKING BEATS ============ -->
+  <div class="card study-card" id="cardBeats">
+    <span class="section-tag">Speaking beats</span>
+    <h2>Seven beats — the spine of your answer</h2>
+    <p class="muted">Learn these seven beats <strong>before</strong> the full story. Hit each beat in order and the answer builds itself.</p>
+    <div id="beatsList"></div>
+    <div class="btn-row"><button class="action-btn primary" id="speakBeatsBtn">▶ Speak the beats</button></div>
+  </div>
+
+  <!-- ============ 8. ICAO STORY ============ -->
+  <div class="card study-card">
+    <span class="section-tag">ICAO story · Levels 4–5</span>
+    <h2>From beats to a full answer</h2>
+    <p class="muted">The same logic, more language. Open a level, listen, then shadow it aloud.</p>
+    <div id="story"></div>
+  </div>
+
+  <!-- ============ SPEAK ============ -->
+  <div class="card study-card">
+    <span class="section-tag">Speak</span>
+    <h2>Record your full answer</h2>
+    <p class="muted">Look at the picture, press <strong>Start</strong> and describe it aloud (aim for 60–90 seconds, all four zones). The trainer transcribes your speech and measures your ICAO metrics automatically.</p>
+    <div class="speak-controls">
+      <button class="action-btn primary" id="speakStartBtn">● Start</button>
+      <button class="action-btn" id="speakStopBtn" disabled>■ Stop</button>
+      <span class="rec-dot" id="recDot"></span>
+      <span class="speak-timer" id="speakTimer">0:00</span>
+    </div>
+    <div class="transcript-box" id="transcriptBox">
+      <span class="transcript-placeholder">Your transcript will appear here while you speak…</span>
+    </div>
+    <div id="speakResults"></div>
+    <div class="history-line" id="speakHistory"></div>
+    <p class="small-note" id="asrNote"></p>
+
+    <div class="ai-box" id="aiBox">
+      <h3>AI coach feedback (optional)</h3>
+      <p class="small-note">Uses the Anthropic API directly from your browser. Your API key is stored only in this browser (localStorage) and sent only to api.anthropic.com. Do not enter your key on a shared computer.</p>
+      <div class="key-row">
+        <input type="password" id="apiKeyInput" placeholder="Anthropic API key (sk-ant-…)" autocomplete="off">
+        <button class="action-btn" id="saveKeyBtn">Save key</button>
+        <button class="action-btn" id="clearKeyBtn">Clear</button>
+      </div>
+      <button class="action-btn primary" id="aiFeedbackBtn" disabled>Get AI feedback on my answer</button>
+      <div class="ai-status" id="aiStatus"></div>
+      <div class="ai-output" id="aiOutput"></div>
+    </div>
+  </div>
+
+  <!-- ============ 9. CHUNK BUILDER ============ -->
+  <div class="card study-card">
+    <span class="section-tag">Build the answer · chunk builder</span>
+    <h2>Add the answer one chunk at a time</h2>
+    <p class="muted">Press <strong>Add chunk</strong> to reveal the next line, then say everything so far out loud. Build the whole answer step by step.</p>
+    <div class="chunk-stage" id="chunkStage"></div>
+    <div class="chunk-count" id="chunkCount"></div>
+    <div class="btn-row">
+      <button class="action-btn primary" id="chunkAddBtn">＋ Add chunk</button>
+      <button class="action-btn" id="chunkSayBtn">▶ Say so far</button>
+      <button class="action-btn" id="chunkSpeakBtn">▶ Speak current chunk</button>
+      <button class="action-btn" id="chunkResetBtn">Reset</button>
+    </div>
+  </div>
+
+  <!-- ============ 10. FIRST-LETTER TRAINER ============ -->
+  <div class="card study-card" id="cardFirst">
+    <span class="section-tag">First-letter prompt trainer</span>
+    <h2>Rebuild the sentence from its first letters</h2>
+    <p class="muted">Read the code, say the full sentence from memory, then reveal to check.</p>
+    <div class="fl-code" id="flCode"></div>
+    <div class="fl-full hidden-model" id="flFull"></div>
+    <div class="fl-pos" id="flPos"></div>
+    <div class="btn-row">
+      <button class="action-btn primary" id="flRevealBtn">Reveal sentence</button>
+      <button class="action-btn" id="flHideBtn">Hide sentence</button>
+      <button class="action-btn" id="flNextBtn">Next line →</button>
+      <button class="action-btn" id="flSpeakBtn">▶ Speak full line</button>
+    </div>
+  </div>
+
+  <!-- ============ 11. CUE–RESPONSE FLASHCARDS ============ -->
+  <div class="card study-card">
+    <span class="section-tag">Cue–response flashcards</span>
+    <h2>Examiner cue → automatic answer</h2>
+    <p class="muted">Read the cue, say your response aloud, then reveal the model answer.</p>
+    <div class="flash" id="flash"></div>
+    <div class="flash-dots" id="flashDots"></div>
+    <div class="btn-row">
+      <button class="action-btn primary" id="cardRevealBtn">Reveal response</button>
+      <button class="action-btn" id="cardNextBtn">Next card →</button>
+      <button class="action-btn" id="cardSpeakBtn">▶ Speak response</button>
+    </div>
+  </div>
+
+  <!-- ============ 12. RECALL MODE ============ -->
+  <div class="card">
+    <span class="section-tag">Recall mode</span>
+    <h2>Practise without the full text</h2>
+    <p class="muted">Active recall beats passive reading. Hide everything except one support and rebuild the answer from it.</p>
+    <div class="mode-toggle" id="recallToggle">
+      <button class="mode-btn active" data-recall="full">Full text</button>
+      <button class="mode-btn" data-recall="beats">Beats only</button>
+      <button class="mode-btn" data-recall="first">First letters only</button>
+      <button class="mode-btn" data-recall="image">Image only</button>
+    </div>
+  </div>
+
+  <!-- ============ 13. MINI QUIZ ============ -->
+  <div class="card study-card">
+    <span class="section-tag">Mini quiz · self-check</span>
+    <h2>Check the logic</h2>
+    <div id="quiz"></div>
+  </div>
+
+  <!-- ============ 14. CAMERA PRACTICE CHECKLIST ============ -->
+  <div class="card study-card">
+    <span class="section-tag">Camera / voice practice checklist</span>
+    <h2>Before you record</h2>
+    <ul class="checklist">
+      <li><label><input type="checkbox"> I started within 5 seconds.</label></li>
+      <li><label><input type="checkbox"> I used the SCAN structure.</label></li>
+      <li><label><input type="checkbox"> I mentioned the aircraft.</label></li>
+      <li><label><input type="checkbox"> I explained a possible cause.</label></li>
+      <li><label><input type="checkbox"> I named the main risk.</label></li>
+      <li><label><input type="checkbox"> I said what the crew should do.</label></li>
+      <li><label><input type="checkbox"> I finished with a safety conclusion.</label></li>
+    </ul>
+    <div class="check-sub">After recording — ask yourself</div>
+    <ul class="checklist">
+      <li><label><input type="checkbox"> Was my answer clear?</label></li>
+      <li><label><input type="checkbox"> Did I stop for too long?</label></li>
+      <li><label><input type="checkbox"> Did I use aviation vocabulary?</label></li>
+      <li><label><input type="checkbox"> Did I sound natural or just memorised?</label></li>
+      <li><label><input type="checkbox"> What one sentence should I improve?</label></li>
+    </ul>
+  </div>
+
+  <!-- ============ 15. USEFUL PHRASES ============ -->
+  <div class="card study-card">
+    <span class="section-tag">Useful phrases</span>
+    <h2>Keep these on the table</h2>
+    <div class="chips" id="phraseChips"></div>
+  </div>
+
+  <!-- ============ 16. NAVIGATION ============ -->
+  <div class="card">
+    <span class="section-tag">More SCAN trainers</span>
+    <div class="nav-links">
+      <a href="index.html">← All quizzes</a>
+      <a href="scan-method-trainer.html">SCAN Method — Runway Excursion</a>
+      <a href="scan-runway-incursion-trainer.html">SCAN — Runway Incursion</a>
+      <a href="scan-ground-collision-trainer.html">SCAN — Ground Vehicle Collision</a>
+    </div>
+  </div>
+
+  <footer>SCAN Method · See — Call — Assume — Next · Plane / People / Place / Panorama · Actor method: remember the logic, not the words</footer>
+</div>
+
+<!-- SOS -->
+<button class="sos-btn" id="sosBtn">SOS</button>
+<div class="sos-panel" id="sosPanel">
+  <h3>Rescue phrases</h3>
+  <p class="muted">Say one of these and keep going. Recovering well is a skill the examiner rewards.</p>
+  <div id="sosList"></div>
+</div>
+
+<script>
+// ================= DATA =================
+const ZONE_ORDER = ["plane", "people", "place", "panorama"];
+const ZONE_META = {
+  plane:    { name: "Plane",    color: "#4a7fb5" },
+  people:   { name: "People",   color: "#d2691e" },
+  place:    { name: "Place",    color: "#5a8a4a" },
+  panorama: { name: "Panorama", color: "#8a8a8a" }
+};
+
+const SCAN4P = {
+  "plane": {
+    "see": [
+      "large passenger aircraft",
+      "aircraft on final approach",
+      "landing gear extended",
+      "flaps extended",
+      "wings not perfectly level",
+      "aircraft close to the runway"
+    ],
+    "call": [
+      "final approach",
+      "crosswind landing",
+      "landing configuration",
+      "possible unstable approach",
+      "runway alignment issue"
+    ],
+    "assume": [
+      "the aircraft may be landing in crosswind",
+      "the pilot may be correcting drift",
+      "the aircraft may be slightly off the centerline",
+      "the approach could become unstable",
+      "the crew may be ready for go-around"
+    ],
+    "next": [
+      "the pilot should maintain the correct speed",
+      "the pilot should keep the runway centerline",
+      "the crew should monitor alignment and sink rate",
+      "if unstable, the crew should go around"
+    ]
+  },
+  "people": {
+    "see": [
+      "no people visible outside",
+      "flight crew inside the cockpit",
+      "pilots managing the landing",
+      "ATC controlling runway traffic"
+    ],
+    "call": [
+      "pilot flying",
+      "pilot monitoring",
+      "air traffic controller",
+      "cockpit crew"
+    ],
+    "assume": [
+      "the pilot flying is correcting for wind",
+      "the pilot monitoring is checking speed and descent rate",
+      "ATC may have provided wind information",
+      "the crew may be discussing go-around criteria"
+    ],
+    "next": [
+      "the pilot monitoring should call deviations",
+      "the crew should use standard procedures",
+      "ATC should provide wind updates",
+      "the crew should not continue if the approach is unstable"
+    ]
+  },
+  "place": {
+    "see": [
+      "runway ahead",
+      "runway lights",
+      "runway markings",
+      "airport environment",
+      "urban area in the background"
+    ],
+    "call": [
+      "runway threshold",
+      "runway centerline",
+      "approach lights",
+      "touchdown zone",
+      "active runway"
+    ],
+    "assume": [
+      "the aircraft is near the runway threshold",
+      "runway alignment may be difficult",
+      "crosswind may push the aircraft sideways",
+      "the landing zone must be carefully controlled"
+    ],
+    "next": [
+      "the aircraft should touch down near the centerline",
+      "the pilot should avoid excessive side drift",
+      "the crew should be ready for a rejected landing / go-around",
+      "the runway must remain clear"
+    ]
+  },
+  "panorama": {
+    "see": [
+      "hazy background",
+      "daylight conditions",
+      "possible wind effects",
+      "visibility acceptable but not perfect"
+    ],
+    "call": [
+      "haze",
+      "crosswind conditions",
+      "possible gusts",
+      "visual approach conditions"
+    ],
+    "assume": [
+      "the weather may be affecting the approach",
+      "gusty wind may cause aircraft movement",
+      "turbulence may make landing more difficult",
+      "visibility is probably acceptable"
+    ],
+    "next": [
+      "the crew should monitor wind changes",
+      "ATC should report gusts or wind shear",
+      "the pilot should use proper crosswind technique",
+      "the safety margin should be protected"
+    ]
+  }
+};
+
+const BEATS = [
+  {
+    "title": "What I can see",
+    "line": "A large passenger aircraft on final approach, landing gear and flaps extended, wings not quite level, close to the runway."
+  },
+  {
+    "title": "What it is called",
+    "line": "This is a crosswind landing, or a possible unstable approach."
+  },
+  {
+    "title": "What may be happening",
+    "line": "The pilot may be correcting drift in crosswind conditions, slightly off the centerline."
+  },
+  {
+    "title": "Possible causes",
+    "line": "A side wind, gusty wind, turbulence near the runway, or a late correction on final."
+  },
+  {
+    "title": "Main risks",
+    "line": "A hard landing, bounced landing, runway excursion, or loss of directional control."
+  },
+  {
+    "title": "What the crew should do",
+    "line": "The pilot flying should keep the centerline and correct drift; the pilot monitoring should call deviations; if unstable, go around."
+  },
+  {
+    "title": "Safety conclusion",
+    "line": "A stable approach comes first. If the aircraft is not stabilized, the crew should go around."
+  }
+];
+
+const VOCAB = ["final approach","crosswind landing","runway centerline","landing gear extended","flaps extended","correct the drift","crab angle","gusty wind","unstable approach","hard landing","runway excursion","loss of directional control","go-around decision"];
+
+const STORY = {
+  "l4": [
+    "In this picture, I can see a large passenger aircraft on final approach to the runway. The aircraft is configured for landing, with the landing gear extended and the flaps deployed. The aircraft appears slightly banked, which suggests that the crew may be dealing with crosswind conditions.",
+    "This may be a normal crosswind landing, but it could also become an unstable approach if the aircraft is not correctly aligned with the runway. Possible contributing factors include gusty wind, turbulence near the runway, wake turbulence from previous traffic, or a late correction by the pilot.",
+    "From a safety perspective, the main risks are a hard landing, a bounced landing, a runway excursion, or loss of directional control during the landing roll. If the aircraft touches down with too much side drift or excessive bank angle, the landing gear may be stressed, and the aircraft may not remain on the centerline.",
+    "The pilot flying should maintain the correct approach speed, control the drift, and keep the aircraft aligned with the runway centerline. The pilot monitoring should call out any deviation in speed, sink rate, or alignment. ATC should provide accurate wind information, especially if there are gusts or wind shear reports.",
+    "In my opinion, the key decision in this situation is not only how to land, but also when to stop trying. If the approach is not stabilized, the crew should go around without hesitation."
+  ],
+  "l5": [
+    "This picture shows a large commercial aircraft in the final stage of approach, very close to the runway. The aircraft is fully configured for landing, with the landing gear down and the flaps extended. Its attitude suggests that the crew may be correcting for crosswind or gusty conditions.",
+    "At first glance, this could be a normal crosswind landing. However, the aircraft is close to touchdown, so any significant deviation in speed, sink rate, bank angle, or runway alignment would leave very little time for correction. The possible causes include strong side wind, gusts, mechanical turbulence near buildings, or a late correction on short final. Wake turbulence from a preceding aircraft could also be a factor.",
+    "The main operational risk is that the crew may continue an unstable approach too long. A hard touchdown, bounced landing, runway excursion, or loss of directional control can happen very quickly during the flare and landing roll. A wingtip or engine nacelle strike is also possible if the bank angle becomes excessive close to the ground. The correct response is disciplined monitoring and early decision-making: the pilot flying maintains speed and alignment, and the pilot monitoring actively calls out deviations.",
+    "Safety conclusion: in crosswind conditions, the crew must protect the stable approach criteria. If speed, alignment, or descent rate is not safe, the best decision is to go around and set up for another approach."
+  ]
+};
+
+const CHUNKS = [
+  "I can see a large passenger aircraft on final approach.",
+  "The landing gear and flaps are extended, and the wings are not quite level.",
+  "This may be a crosswind landing or an unstable approach.",
+  "The main risk is a hard landing or a runway excursion.",
+  "If the approach is not stable, the safest action is to go around."
+];
+
+const LINES = [
+  {
+    "full": "The aircraft is on final approach with the landing gear and flaps extended.",
+    "code": "T a i o f a w t l g a f e."
+  },
+  {
+    "full": "The aircraft may be correcting for crosswind conditions.",
+    "code": "T a m b c f c c."
+  },
+  {
+    "full": "The main risk is a hard landing or a runway excursion.",
+    "code": "T m r i a h l o a r e."
+  },
+  {
+    "full": "If the approach is not stabilized, the crew should go around.",
+    "code": "I t a i n s, t c s g a."
+  },
+  {
+    "full": "A stable approach is more important than saving one landing.",
+    "code": "A s a i m i t s o l."
+  }
+];
+
+const CARDS = [
+  {
+    "cue": "What may be happening?",
+    "resp": "The aircraft may be landing in crosswind conditions."
+  },
+  {
+    "cue": "What is the main risk?",
+    "resp": "The main risk is a hard landing, bounced landing, or runway excursion."
+  },
+  {
+    "cue": "What should the crew do if the approach is unstable?",
+    "resp": "The crew should go around."
+  },
+  {
+    "cue": "What can you see?",
+    "resp": "I can see a passenger aircraft on final approach with the landing gear and flaps extended."
+  },
+  {
+    "cue": "What should the pilot monitoring do?",
+    "resp": "The pilot monitoring should call out any deviation in speed, sink rate, or alignment."
+  }
+];
+
+const QUIZ = [
+  {
+    "q": "The aircraft is banked and slightly off the centerline on short final. What is this most likely?",
+    "options": [
+      "A crosswind landing / possible unstable approach",
+      "A normal go-around",
+      "A pushback",
+      "A runway incursion"
+    ],
+    "correct": 0,
+    "explanation": "A banked aircraft correcting drift on final is a crosswind landing, which can become an unstable approach."
+  },
+  {
+    "q": "If the approach is not stabilized, what should the crew do?",
+    "options": [
+      "Force the landing",
+      "Go around",
+      "Retract the flaps",
+      "Increase the bank angle"
+    ],
+    "correct": 1,
+    "explanation": "If the stable-approach criteria are not met, a go-around is the correct, normal decision."
+  },
+  {
+    "q": "Which is a main risk of an unstable crosswind landing?",
+    "options": [
+      "Engine fire",
+      "Runway excursion or loss of directional control",
+      "Cabin depressurisation",
+      "Bird strike"
+    ],
+    "correct": 1,
+    "explanation": "Too much side drift or bank can cause a hard landing, runway excursion, or loss of directional control."
+  },
+  {
+    "q": "What is the job of the pilot monitoring?",
+    "options": [
+      "Fly the aircraft",
+      "Call out deviations in speed, sink rate and alignment",
+      "Talk to the passengers",
+      "Lower the gear only"
+    ],
+    "correct": 1,
+    "explanation": "The pilot monitoring actively calls deviations — not just observes silently."
+  },
+  {
+    "q": "What does “the aircraft may be correcting drift” express?",
+    "options": [
+      "A certainty",
+      "A weak or medium guess with a modal verb",
+      "A command",
+      "An ATC clearance"
+    ],
+    "correct": 1,
+    "explanation": "“may be” is a modal guess — appropriate when you infer something you cannot fully confirm."
+  }
+];
+
+const ROUTE = ["Picture", "Aviation Logic", "Beats", "Chunks", "Active Recall", "First-Letter Code", "Camera Practice"];
+
+const RESCUE = [
+  "I'm not sure what it's called, but it looks like a…",
+  "Let me look at another part of the picture.",
+  "It's difficult to say from this photo, but…",
+  "So, as I said, the approach may not be stable."
+];
+
+// metrics
+const ZONE_KEYWORDS = {
+  "plane": [
+    "aircraft",
+    "plane",
+    "wide-body",
+    "jet",
+    "landing gear",
+    "flaps",
+    "wing",
+    "fuselage",
+    "final approach"
+  ],
+  "people": [
+    "pilot",
+    "crew",
+    "pilot flying",
+    "pilot monitoring",
+    "controller",
+    "atc",
+    "cockpit"
+  ],
+  "place": [
+    "runway",
+    "centerline",
+    "centreline",
+    "threshold",
+    "touchdown",
+    "approach lights",
+    "airport"
+  ],
+  "panorama": [
+    "wind",
+    "crosswind",
+    "gust",
+    "gusty",
+    "haze",
+    "hazy",
+    "turbulence",
+    "weather",
+    "visibility",
+    "wind shear"
+  ]
+};
+const VOCAB_LIST = ["crosswind","crosswind landing","final approach","landing gear","flaps","centerline","centreline","drift","crab","unstable approach","stable approach","hard landing","runway excursion","go around","go-around","loss of directional control","sink rate","gust"];
+
+const COACH_SYSTEM = `You are a gentle ICAO aviation-English speaking coach. You are a co-pilot, NOT an examiner.
+The student has cognitive difficulties (weak short-term memory, fear of speaking), so follow these rules strictly:
+- Never use the words "mistake", "error" or "wrong". Correct by echo: restate the student's sentence correctly and naturally.
+- Correct at most TWO things in the whole answer - choose the two most useful ones.
+- Always start by naming ONE concrete thing the student did well (a good modal verb, a rescue phrase, a correct term).
+- The student is describing this picture: a large passenger aircraft on short final approach to a runway, seen from behind, fully configured for landing with the landing gear down and the flaps extended. The wings are not perfectly level - the aircraft appears banked, as if correcting for crosswind. The background is a hazy urban area in daylight. This may be a normal crosswind landing or a possible unstable approach; the weather is not severe, but wind can be dangerous even with acceptable visibility.
+- The student uses the SCAN method: See (fact) -> Call (term) -> Assume (modal guess + "because I can see" evidence) -> Next (risk / crew / ATC action), over four zones: Plane, People, Place, Panorama.
+Structure your reply in exactly these short sections, in simple English:
+1. "Well done:" - one concrete strength.
+2. "Polished version:" - the student's own answer, lightly corrected (keep their ideas and order; do not add new content).
+3. "Your Level 1 minimum:" - compress their answer to 3-4 very short sentences (this is their safe minimum).
+4. "One step up:" - take ONE of their sentences and show a slightly richer Level-4 version of it.
+5. "Next time:" - one single tip (one sentence).
+Keep the whole reply under 250 words. Do not use markdown headers or bullet lists; plain text with the five labels.`;
+
+// ================= AUDIO =================
+function speak(text) {
+  if (!("speechSynthesis" in window)) return;
+  window.speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = "en-GB";
+  u.rate = 0.92;
+  window.speechSynthesis.speak(u);
+}
+
+// ================= 4. MEMORY ROUTE =================
+(function buildRoute() {
+  const el = document.getElementById("routePanel");
+  ROUTE.forEach((n, i) => {
+    const node = document.createElement("span");
+    node.className = "node";
+    node.textContent = n;
+    el.appendChild(node);
+    if (i < ROUTE.length - 1) {
+      const a = document.createElement("span");
+      a.className = "arrow";
+      a.textContent = "→";
+      el.appendChild(a);
+    }
+  });
+})();
+
+// ================= 5. SCAN × 4P =================
+(function buildScan4P() {
+  const wrap = document.getElementById("scan4p");
+  const STEP_LABEL = { see: "S — See", call: "C — Call", assume: "A — Assume", next: "N — Next" };
+  ZONE_ORDER.forEach(zid => {
+    const z = ZONE_META[zid];
+    const data = SCAN4P[zid];
+    const item = document.createElement("div");
+    item.className = "acc-item";
+    const head = document.createElement("button");
+    head.className = "acc-head";
+    head.innerHTML = "<span><span class='zdot' style='background:" + z.color + "'></span>" + z.name + "</span><span class='tag'>open ▾</span>";
+    head.addEventListener("click", () => item.classList.toggle("open"));
+    const body = document.createElement("div");
+    body.className = "acc-body";
+    let grid = '<div class="scan-grid">';
+    ["see", "call", "assume", "next"].forEach(s => {
+      grid += '<div class="sc"><h4>' + STEP_LABEL[s] + '</h4><ul>' + data[s].map(x => "<li>" + x + "</li>").join("") + "</ul></div>";
+    });
+    grid += "</div>";
+    const speakText = z.name + ". " + ["see", "call", "assume", "next"].map(s => data[s].join(", ")).join(". ") + ".";
+    grid += '<div class="btn-row"><button class="action-btn primary">▶ Listen to ' + z.name + '</button></div>';
+    body.innerHTML = grid;
+    body.querySelector("button").addEventListener("click", () => speak(speakText));
+    item.appendChild(head);
+    item.appendChild(body);
+    wrap.appendChild(item);
+  });
+})();
+
+// ================= 6 & 15. VOCAB =================
+(function buildVocab() {
+  ["vocabChips", "phraseChips"].forEach(id => {
+    const el = document.getElementById(id);
+    VOCAB.forEach(v => {
+      const c = document.createElement("span");
+      c.className = "chip";
+      c.textContent = v;
+      el.appendChild(c);
+    });
+  });
+  document.getElementById("speakVocabBtn").addEventListener("click", () => speak(VOCAB.join(", ")));
+})();
+
+// ================= 7. BEATS =================
+(function buildBeats() {
+  const el = document.getElementById("beatsList");
+  BEATS.forEach((b, i) => {
+    const row = document.createElement("div");
+    row.className = "beat";
+    row.innerHTML = "<div class='bn'>" + (i + 1) + "</div><div class='bt'><strong>" + b.title + "</strong><span>" + b.line + "</span></div>";
+    el.appendChild(row);
+  });
+  document.getElementById("speakBeatsBtn").addEventListener("click", () =>
+    speak(BEATS.map(b => b.title + ". " + b.line).join(" ")));
+})();
+
+// ================= 8. STORY (levels) =================
+(function buildStory() {
+  const wrap = document.getElementById("story");
+  [{ tag: "Level 4 style — clear and complete", text: STORY.l4 },
+   { tag: "Level 5 style — examiner discussion", text: STORY.l5 }].forEach(lv => {
+    const item = document.createElement("div");
+    item.className = "acc-item";
+    const head = document.createElement("button");
+    head.className = "acc-head";
+    head.innerHTML = "<span>" + lv.tag + "</span><span class='tag'>open ▾</span>";
+    head.addEventListener("click", () => item.classList.toggle("open"));
+    const body = document.createElement("div");
+    body.className = "acc-body";
+    lv.text.forEach(t => { const p = document.createElement("p"); p.textContent = t; body.appendChild(p); });
+    const play = document.createElement("button");
+    play.className = "action-btn primary";
+    play.textContent = "▶ Speak story";
+    play.addEventListener("click", () => speak(lv.text.join(" ")));
+    const row = document.createElement("div"); row.className = "btn-row"; row.appendChild(play);
+    body.appendChild(row);
+    item.appendChild(head); item.appendChild(body);
+    wrap.appendChild(item);
+  });
+})();
+
+// ================= 9. CHUNK BUILDER =================
+(function chunkBuilder() {
+  const stage = document.getElementById("chunkStage");
+  const count = document.getElementById("chunkCount");
+  let shown = 0;
+  function render() {
+    if (shown === 0) {
+      stage.innerHTML = '<div class="chunk-empty">Press “Add chunk” to reveal the first line.</div>';
+    } else {
+      stage.innerHTML = CHUNKS.slice(0, shown).map(c => '<div class="chunk">' + c + "</div>").join("");
+    }
+    count.textContent = shown + " / " + CHUNKS.length + " chunks";
+  }
+  document.getElementById("chunkAddBtn").addEventListener("click", () => {
+    if (shown < CHUNKS.length) { shown++; render(); }
+  });
+  document.getElementById("chunkSayBtn").addEventListener("click", () => {
+    if (shown > 0) speak(CHUNKS.slice(0, shown).join(" "));
+  });
+  document.getElementById("chunkSpeakBtn").addEventListener("click", () => {
+    if (shown > 0) speak(CHUNKS[shown - 1]);
+  });
+  document.getElementById("chunkResetBtn").addEventListener("click", () => { shown = 0; render(); });
+  render();
+})();
+
+// ================= 10. FIRST-LETTER TRAINER =================
+(function firstLetter() {
+  const codeEl = document.getElementById("flCode");
+  const fullEl = document.getElementById("flFull");
+  const posEl = document.getElementById("flPos");
+  let i = 0;
+  function render() {
+    codeEl.textContent = LINES[i].code;
+    fullEl.textContent = LINES[i].full;
+    fullEl.classList.add("hidden-model");
+    posEl.textContent = "Line " + (i + 1) + " / " + LINES.length;
+  }
+  document.getElementById("flRevealBtn").addEventListener("click", () => fullEl.classList.remove("hidden-model"));
+  document.getElementById("flHideBtn").addEventListener("click", () => fullEl.classList.add("hidden-model"));
+  document.getElementById("flNextBtn").addEventListener("click", () => { i = (i + 1) % LINES.length; render(); });
+  document.getElementById("flSpeakBtn").addEventListener("click", () => speak(LINES[i].full));
+  render();
+})();
+
+// ================= 11. FLASHCARDS =================
+(function flashcards() {
+  const flash = document.getElementById("flash");
+  const dots = document.getElementById("flashDots");
+  let i = 0, revealed = false;
+  function render() {
+    const c = CARDS[i];
+    flash.innerHTML = '<div class="cue-label">Examiner cue</div><div class="cue">' + c.cue +
+      '</div><div class="resp' + (revealed ? "" : " hidden-model") + '">' + c.resp + "</div>";
+    dots.innerHTML = "";
+    CARDS.forEach((_, j) => {
+      const d = document.createElement("div");
+      d.className = "fdot" + (j === i ? " current" : "");
+      d.addEventListener("click", () => { i = j; revealed = false; render(); });
+      dots.appendChild(d);
+    });
+  }
+  document.getElementById("cardRevealBtn").addEventListener("click", () => { revealed = true; render(); });
+  document.getElementById("cardNextBtn").addEventListener("click", () => { i = (i + 1) % CARDS.length; revealed = false; render(); });
+  document.getElementById("cardSpeakBtn").addEventListener("click", () => speak(CARDS[i].resp));
+  render();
+})();
+
+// ================= 12. RECALL MODE =================
+(function recallMode() {
+  const toggle = document.getElementById("recallToggle");
+  toggle.querySelectorAll(".mode-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const mode = btn.dataset.recall;
+      document.body.className = "recall-" + mode;
+      toggle.querySelectorAll(".mode-btn").forEach(b => b.classList.toggle("active", b === btn));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  });
+})();
+
+// ================= 13. QUIZ =================
+(function buildQuiz() {
+  const wrap = document.getElementById("quiz");
+  QUIZ.forEach((q, qi) => {
+    const item = document.createElement("div");
+    item.className = "q-item";
+    const qt = document.createElement("div");
+    qt.className = "q-text";
+    qt.textContent = (qi + 1) + ". " + q.q;
+    item.appendChild(qt);
+    const exp = document.createElement("div");
+    exp.className = "q-exp";
+    exp.style.display = "none";
+    exp.textContent = q.explanation;
+    const btns = [];
+    q.options.forEach((opt, oi) => {
+      const b = document.createElement("button");
+      b.className = "q-opt";
+      b.textContent = opt;
+      b.addEventListener("click", () => {
+        if (b.disabled) return;
+        btns.forEach(x => x.disabled = true);
+        if (oi === q.correct) { b.classList.add("correct"); }
+        else { b.classList.add("wrong"); btns[q.correct].classList.add("correct"); }
+        exp.style.display = "block";
+      });
+      btns.push(b);
+      item.appendChild(b);
+    });
+    item.appendChild(exp);
+    wrap.appendChild(item);
+  });
+})();
+
+// ================= SPEAK MODE =================
+const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+const speakStartBtn = document.getElementById("speakStartBtn");
+const speakStopBtn = document.getElementById("speakStopBtn");
+const transcriptBox = document.getElementById("transcriptBox");
+const speakResults = document.getElementById("speakResults");
+const recDot = document.getElementById("recDot");
+const speakTimerEl = document.getElementById("speakTimer");
+const asrNote = document.getElementById("asrNote");
+
+if (!SpeechRec) {
+  asrNote.textContent = "Speech recognition is not supported in this browser — you will still get a recording, but no transcript or metrics. Use Chrome or Edge for full Speak mode.";
+}
+
+let mediaRecorder = null, audioChunks = [], recognition = null, recognizing = false;
+let finalTranscript = "", chunkCount = 0, speakT0 = 0, firstWordAt = null, timerInterval = null, lastSession = null;
+
+function fmtTime(ms) { const s = Math.floor(ms / 1000); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+async function startSpeak() {
+  let stream;
+  try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+  catch (e) { asrNote.textContent = "Microphone access was denied — allow the microphone to use Speak mode."; return; }
+
+  finalTranscript = ""; chunkCount = 0; firstWordAt = null; audioChunks = [];
+  speakResults.innerHTML = ""; document.getElementById("aiOutput").textContent = "";
+  transcriptBox.innerHTML = '<span class="transcript-placeholder">Listening… start speaking.</span>';
+
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+  mediaRecorder.start();
+
+  if (SpeechRec) {
+    recognition = new SpeechRec();
+    recognition.lang = "en-US";
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.onresult = ev => {
+      if (firstWordAt === null) firstWordAt = Date.now();
+      let interim = "";
+      for (let i = ev.resultIndex; i < ev.results.length; i++) {
+        if (ev.results[i].isFinal) { finalTranscript += ev.results[i][0].transcript + " "; chunkCount++; }
+        else { interim += ev.results[i][0].transcript; }
+      }
+      transcriptBox.innerHTML = finalTranscript + '<span class="interim">' + interim + "</span>";
+    };
+    recognition.onend = () => { if (recognizing) { try { recognition.start(); } catch (e) {} } };
+    recognizing = true;
+    recognition.start();
+  }
+
+  speakT0 = Date.now();
+  timerInterval = setInterval(() => { speakTimerEl.textContent = fmtTime(Date.now() - speakT0); }, 250);
+  recDot.classList.add("on");
+  speakStartBtn.disabled = true;
+  speakStopBtn.disabled = false;
+}
+
+function stopSpeak() {
+  recognizing = false;
+  if (recognition) { try { recognition.stop(); } catch (e) {} recognition = null; }
+  clearInterval(timerInterval);
+  recDot.classList.remove("on");
+  speakStartBtn.disabled = false;
+  speakStopBtn.disabled = true;
+  const durationMs = Date.now() - speakT0;
+  if (mediaRecorder && mediaRecorder.state !== "inactive") {
+    mediaRecorder.onstop = () => {
+      mediaRecorder.stream.getTracks().forEach(t => t.stop());
+      const blob = new Blob(audioChunks, { type: mediaRecorder.mimeType || "audio/webm" });
+      finishSpeakSession(durationMs, URL.createObjectURL(blob));
+    };
+    mediaRecorder.stop();
+  } else { finishSpeakSession(durationMs, null); }
+}
+
+function computeMetrics(text, durationMs) {
+  const lower = " " + text.toLowerCase() + " ";
+  const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+  const modalRe = /\b(might|may|could|must|would|should)\b(\s+have)?/g;
+  let modals = 0, modalHave = 0, m;
+  while ((m = modalRe.exec(lower)) !== null) { modals++; if (m[2]) modalHave++; }
+  const evidence = (lower.match(/\b(because|suggests?|so this|which means)\b/g) || []).length;
+  let vocabHits = [];
+  VOCAB_LIST.forEach(v => { if (lower.includes(v)) vocabHits.push(v); });
+  let zonesCovered = [];
+  ZONE_ORDER.forEach(zid => { if (ZONE_KEYWORDS[zid].some(k => lower.includes(k))) zonesCovered.push(ZONE_META[zid].name); });
+  return {
+    date: new Date().toISOString().slice(0, 16).replace("T", " "),
+    durationSec: Math.round(durationMs / 1000),
+    ttfpSec: firstWordAt ? Math.round((firstWordAt - speakT0) / 10) / 100 : null,
+    words, chunks: chunkCount, modals, modalHave, evidence, vocab: vocabHits, zones: zonesCovered
+  };
+}
+
+function metricRow(name, value, ok, target) {
+  const cls = ok === null ? "" : (ok ? "metric-ok" : "metric-low");
+  return "<tr><td>" + name + '</td><td class="' + cls + '">' + value + "</td><td>" + target + "</td></tr>";
+}
+
+function finishSpeakSession(durationMs, audioUrl) {
+  const text = finalTranscript.trim();
+  const hasASR = !!SpeechRec;
+  const mtr = computeMetrics(text, durationMs);
+  lastSession = { transcript: text, metrics: mtr };
+  let html = "";
+  if (audioUrl) html += '<p style="margin-top:6px;"><audio controls src="' + audioUrl + '" style="width:100%;"></audio></p>';
+  if (hasASR) {
+    html += '<table class="metric-table"><tr><th>Metric</th><th>You</th><th>Target</th></tr>';
+    html += metricRow("Time to first phrase", mtr.ttfpSec !== null ? mtr.ttfpSec + " s" : "—", mtr.ttfpSec !== null ? mtr.ttfpSec <= 5 : null, "≤ 5 s");
+    html += metricRow("Speaking time", mtr.durationSec + " s", mtr.durationSec >= 45, "60–90 s");
+    html += metricRow("Words", mtr.words, mtr.words >= 80, "≥ 80");
+    html += metricRow("Modal verbs", mtr.modals + " (with have: " + mtr.modalHave + ")", mtr.modals >= 3, "≥ 3");
+    html += metricRow("Evidence (because / suggests)", mtr.evidence, mtr.evidence >= 1, "≥ 1");
+    html += metricRow("Aviation vocabulary", mtr.vocab.length + (mtr.vocab.length ? " — " + mtr.vocab.slice(0, 6).join(", ") : ""), mtr.vocab.length >= 6, "≥ 6 terms");
+    html += metricRow("Zones covered", mtr.zones.length + " / 4" + (mtr.zones.length ? " — " + mtr.zones.join(", ") : ""), mtr.zones.length === 4, "4 / 4");
+    html += "</table>";
+    html += '<p class="small-note">Metrics are automatic and approximate — they are a mirror, not a grade. Listen to your recording and find one thing you did well.</p>';
+  }
+  speakResults.innerHTML = html;
+  if (!text && hasASR) transcriptBox.innerHTML = '<span class="transcript-placeholder">No speech was recognised. Try again — speak a little louder, in English.</span>';
+  if (hasASR && text) {
+    let hist = [];
+    try { hist = JSON.parse(localStorage.getItem("scanCrosswindLandingHistory") || "[]"); } catch (e) {}
+    hist.push(mtr);
+    if (hist.length > 20) hist = hist.slice(-20);
+    try { localStorage.setItem("scanCrosswindLandingHistory", JSON.stringify(hist)); } catch (e) {}
+  }
+  renderSpeakHistory();
+  document.getElementById("aiFeedbackBtn").disabled = !(text && text.length > 20);
+}
+
+function renderSpeakHistory() {
+  let hist = [];
+  try { hist = JSON.parse(localStorage.getItem("scanCrosswindLandingHistory") || "[]"); } catch (e) {}
+  const el = document.getElementById("speakHistory");
+  if (!hist.length) { el.textContent = ""; return; }
+  const last = hist.slice(-5).map(h => h.date.slice(5, 16) + " · " + h.words + " words · " + h.modals + " modals · " + h.zones.length + "/4 zones");
+  el.innerHTML = "<strong>Recent sessions:</strong> " + last.join(" &nbsp;|&nbsp; ");
+}
+
+speakStartBtn.addEventListener("click", startSpeak);
+speakStopBtn.addEventListener("click", stopSpeak);
+
+// ================= AI FEEDBACK =================
+const apiKeyInput = document.getElementById("apiKeyInput");
+const aiStatus = document.getElementById("aiStatus");
+const aiOutput = document.getElementById("aiOutput");
+
+function loadKey() {
+  const k = localStorage.getItem("anthropicApiKey") || "";
+  if (k) apiKeyInput.placeholder = "API key saved (" + k.slice(0, 12) + "…)";
+}
+document.getElementById("saveKeyBtn").addEventListener("click", () => {
+  const v = apiKeyInput.value.trim();
+  if (!v) return;
+  try { localStorage.setItem("anthropicApiKey", v); } catch (e) {}
+  apiKeyInput.value = ""; loadKey();
+  aiStatus.textContent = "Key saved in this browser.";
+});
+document.getElementById("clearKeyBtn").addEventListener("click", () => {
+  try { localStorage.removeItem("anthropicApiKey"); } catch (e) {}
+  apiKeyInput.placeholder = "Anthropic API key (sk-ant-…)";
+  aiStatus.textContent = "Key removed.";
+});
+document.getElementById("aiFeedbackBtn").addEventListener("click", async () => {
+  if (!lastSession || !lastSession.transcript) return;
+  const key = localStorage.getItem("anthropicApiKey");
+  if (!key) { aiStatus.textContent = "Enter and save your Anthropic API key first."; return; }
+  const btn = document.getElementById("aiFeedbackBtn");
+  btn.disabled = true; aiStatus.textContent = "Asking the coach…"; aiOutput.textContent = "";
+  const mtr = lastSession.metrics;
+  const userMsg = "Here is my spoken description (automatic transcript, punctuation may be missing):\n\n\"" +
+    lastSession.transcript + "\"\n\nAutomatic metrics: " + mtr.words + " words, " + mtr.modals +
+    " modal verbs, " + mtr.evidence + " evidence phrases, zones covered: " + (mtr.zones.join(", ") || "none detected") + ".";
+  try {
+    const res = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-api-key": key, "anthropic-version": "2023-06-01", "anthropic-dangerous-direct-browser-access": "true" },
+      body: JSON.stringify({ model: "claude-opus-4-8", max_tokens: 1000, system: COACH_SYSTEM, messages: [{ role: "user", content: userMsg }] })
+    });
+    if (!res.ok) {
+      const errBody = await res.json().catch(() => null);
+      throw new Error(errBody && errBody.error && errBody.error.message ? errBody.error.message : ("HTTP " + res.status));
+    }
+    const data = await res.json();
+    const text = (data.content || []).filter(b => b.type === "text").map(b => b.text).join("\n");
+    aiOutput.textContent = text || "(empty reply)";
+    aiStatus.textContent = "";
+  } catch (e) { aiStatus.textContent = "Could not get feedback: " + e.message; }
+  finally { btn.disabled = false; }
+});
+
+// ================= SOS =================
+const sosPanel = document.getElementById("sosPanel");
+document.getElementById("sosBtn").addEventListener("click", () => sosPanel.classList.toggle("open"));
+(function buildSos() {
+  const list = document.getElementById("sosList");
+  RESCUE.forEach(ph => {
+    const row = document.createElement("div");
+    row.className = "sos-phrase";
+    const span = document.createElement("span"); span.textContent = ph;
+    const btn = document.createElement("button"); btn.textContent = "▶"; btn.setAttribute("aria-label", "Listen");
+    btn.addEventListener("click", () => speak(ph));
+    row.appendChild(span); row.appendChild(btn);
+    list.appendChild(row);
+  });
+})();
+
+// ================= INIT =================
+renderSpeakHistory();
+loadKey();
+</script>
+</body>
+</html>
