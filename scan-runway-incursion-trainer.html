@@ -120,6 +120,11 @@
   .scan-grid .sc h4 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #7a6858; margin-bottom: 4px; }
   .scan-grid ul { margin: 0 0 0 18px; }
   .scan-grid li { font-size: 14.5px; line-height: 1.5; }
+  .skel h3 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; letter-spacing: .5px; text-transform: uppercase; color: #7a6858; margin: 18px 0 6px; }
+  .skel h4 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13.5px; color: #2f2822; margin: 12px 0 4px; }
+  .skel ul, .skel ol { margin: 0 0 0 20px; }
+  .skel li { font-size: 15px; line-height: 1.6; }
+  .skel ol > li { margin-bottom: 5px; }
   @media (max-width: 560px) { .scan-grid { grid-template-columns: 1fr; } }
 
   /* ---- chips ---- */
@@ -333,6 +338,96 @@
     <div class="route" id="routePanel"></div>
   </div>
 
+  <!-- ============ 4b. ICAO PICTURE SKELETON (verbatim source) ============ -->
+  <div class="card study-card skel">
+    <span class="section-tag">ICAO picture skeleton</span>
+    <h2>ICAO Picture Skeleton — Runway Incursion / Traffic Conflict</h2>
+
+    <h3>1. General situation</h3>
+    <ul>
+      <li>busy runway / active runway</li>
+      <li>one aircraft landing / on final approach</li>
+      <li>another aircraft on runway / crossing or entering runway</li>
+      <li>possible runway incursion</li>
+      <li>high-risk situation</li>
+    </ul>
+
+    <h3>2. What I can see</h3>
+    <ul>
+      <li>large wide-body aircraft on the runway</li>
+      <li>Delta / SkyTeam livery</li>
+      <li>another aircraft approaching from behind / above</li>
+      <li>landing lights on</li>
+      <li>control tower in the background</li>
+      <li>runway markings and edge lights</li>
+      <li>evening / sunset conditions</li>
+    </ul>
+
+    <h3>3. What may be happening</h3>
+    <ul>
+      <li>aircraft on final approach</li>
+      <li>aircraft on runway not clear yet</li>
+      <li>possible clearance misunderstanding</li>
+      <li>possible late runway crossing</li>
+      <li>possible ATC coordination problem</li>
+      <li>possible go-around situation</li>
+    </ul>
+
+    <h3>4. Possible causes</h3>
+    <ul>
+      <li>communication breakdown</li>
+      <li>incorrect readback / misunderstood clearance</li>
+      <li>ATC sequencing problem</li>
+      <li>aircraft entered runway without clearance</li>
+      <li>slow runway vacating</li>
+      <li>reduced situational awareness</li>
+      <li>runway layout complexity</li>
+    </ul>
+
+    <h3>5. Main risks</h3>
+    <ul>
+      <li>collision on runway</li>
+      <li>landing aircraft cannot stop in time</li>
+      <li>late go-around</li>
+      <li>wake turbulence / jet blast</li>
+      <li>loss of separation</li>
+      <li>serious accident if both continue</li>
+    </ul>
+
+    <h3>6. What the pilots should do</h3>
+    <h4>Landing aircraft:</h4>
+    <ul>
+      <li>monitor runway condition</li>
+      <li>if runway occupied — go around</li>
+      <li>inform ATC</li>
+      <li>maintain safe altitude and separation</li>
+    </ul>
+    <h4>Aircraft on runway:</h4>
+    <ul>
+      <li>stop if instructed</li>
+      <li>vacate runway immediately if safe</li>
+      <li>confirm instructions with ATC</li>
+      <li>avoid crossing active runway without clearance</li>
+    </ul>
+    <h4>ATC:</h4>
+    <ul>
+      <li>cancel landing clearance</li>
+      <li>instruct go-around</li>
+      <li>stop aircraft on runway</li>
+      <li>give clear, short instructions</li>
+      <li>prevent further conflict</li>
+    </ul>
+
+    <h3>7. Safety conclusion</h3>
+    <ul>
+      <li>runway must be clear before landing</li>
+      <li>clear communication is critical</li>
+      <li>if there is any doubt — clarify</li>
+      <li>go-around is the safest option</li>
+      <li>safety more important than continuing the approach</li>
+    </ul>
+  </div>
+
   <!-- ============ 5. SCAN × 4P ============ -->
   <div class="card study-card">
     <span class="section-tag">SCAN × 4P skeleton</span>
@@ -347,6 +442,21 @@
     <h2>Words you will need</h2>
     <div class="chips" id="vocabChips"></div>
     <div class="btn-row"><button class="action-btn primary" id="speakVocabBtn">▶ Speak vocabulary</button></div>
+  </div>
+
+  <!-- ============ 6b. SHORT SPEAKING FRAME (verbatim source) ============ -->
+  <div class="card study-card skel">
+    <span class="section-tag">Short speaking frame</span>
+    <h2>Short speaking frame</h2>
+    <p class="muted">Use this order:</p>
+    <ol>
+      <li><strong>I can see</strong> → aircraft landing + aircraft on runway</li>
+      <li><strong>It may be</strong> → runway incursion / traffic conflict</li>
+      <li><strong>Possible causes</strong> → misunderstanding / ATC / clearance issue</li>
+      <li><strong>Main risk</strong> → collision / loss of separation</li>
+      <li><strong>Action</strong> → go-around / vacate runway / clarify with ATC</li>
+      <li><strong>Conclusion</strong> → safety first, runway must be clear</li>
+    </ol>
   </div>
 
   <!-- ============ 7. SPEAKING BEATS ============ -->
@@ -529,26 +639,26 @@ const SCAN4P = {
   plane: {
     see:  ["two aircraft", "one aircraft on final approach", "one large aircraft on the runway", "landing lights visible"],
     call: ["final approach", "active runway", "wide-body aircraft", "runway traffic conflict", "possible runway incursion"],
-    assume: ["the landing aircraft may have received landing clearance", "the aircraft on the runway may not have vacated in time", "there may have been a misunderstanding with ATC", "it could be a dangerous loss of separation"],
-    next: ["the landing aircraft should go around", "ATC should cancel the landing clearance", "the aircraft on the runway should stop or vacate", "all crews should confirm instructions clearly"]
+    assume: ["landing aircraft may have received landing clearance", "aircraft on runway may not have vacated in time", "there may have been a misunderstanding with ATC", "it could be a dangerous loss of separation"],
+    next: ["landing aircraft should go around", "ATC should cancel landing clearance", "aircraft on runway should stop or vacate", "all crews should confirm instructions clearly"]
   },
   people: {
     see:  ["no people clearly visible", "flight crews inside both aircraft", "ATC in the tower"],
     call: ["pilots", "air traffic controller", "ground crew possibly involved"],
-    assume: ["the pilots may be busy during a critical phase", "ATC may need to act immediately", "one crew may have misunderstood a clearance"],
-    next: ["the pilots should communicate clearly", "ATC should give short urgent instructions", "crews should read back all critical clearances"]
+    assume: ["pilots may be busy during a critical phase", "ATC may need to act immediately", "one crew may have misunderstood clearance"],
+    next: ["pilots should communicate clearly", "ATC should give short urgent instructions", "crews should read back all critical clearances"]
   },
   place: {
     see:  ["runway", "runway lights", "control tower", "airport environment", "evening or low-light conditions"],
     call: ["active runway", "runway threshold", "runway centerline", "control tower", "airport movement area"],
     assume: ["the runway may still be occupied", "the landing aircraft may be too close", "runway separation may be insufficient"],
-    next: ["the runway must be clear before landing", "ATC should protect the runway", "arriving traffic should go around if unsafe"]
+    next: ["runway must be clear before landing", "ATC should protect the runway", "arriving traffic should go around if unsafe"]
   },
   panorama: {
     see:  ["sunset / low light", "clear visibility", "calm-looking weather", "airport background"],
-    call: ["evening conditions", "visual approach conditions", "good visibility but reduced light"],
-    assume: ["visibility is probably acceptable", "low light may make distance judgment harder", "the main problem is not weather but traffic conflict"],
-    next: ["crews must maintain situational awareness", "ATC instructions must be clear and timely", "the safety margin must be protected"]
+    call: ["evening conditions", "visual approach conditions", "good visibility, but reduced light"],
+    assume: ["visibility is probably acceptable", "low light may make distance judgment harder", "the main problem is not weather, but traffic conflict"],
+    next: ["crews must maintain situational awareness", "ATC instructions must be clear and timely", "safety margin must be protected"]
   }
 };
 
@@ -566,13 +676,17 @@ const VOCAB = ["runway incursion", "active runway", "aircraft on final approach"
 
 const STORY = {
   l4: ["I can see two aircraft near an active runway. One aircraft is on final approach with its landing lights on, while a large wide-body aircraft is still on the runway.",
-       "This situation looks like a runway incursion or a serious runway traffic conflict. The landing aircraft may have been cleared to land before the runway was completely clear, or the aircraft on the runway did not vacate in time or misunderstood an ATC instruction.",
+       "This situation looks like a runway incursion or a serious runway traffic conflict. The landing aircraft may have been cleared to land before the runway was completely clear. Another possibility is that the aircraft on the runway did not vacate in time or misunderstood an ATC instruction.",
        "The main risk is a collision or a loss of separation. This is especially dangerous because landing is a critical phase of flight, and the aircraft has limited time and space to react.",
-       "From a safety point of view, the arriving aircraft should go around if the runway is occupied. ATC should cancel the landing clearance immediately and give clear instructions to both crews. The aircraft on the runway should stop or vacate only if it is safe to do so.",
+       "From a safety point of view, the arriving aircraft should go around if the runway is occupied. ATC should cancel the landing clearance immediately and give clear instructions to both crews. The aircraft on the runway should stop or vacate the runway only if it is safe to do so.",
+       "The weather looks calm and visibility seems acceptable, but the light conditions are low because it is probably evening. In my opinion, the main issue here is not the weather but runway safety and communication.",
        "The safety conclusion is simple: the runway must be clear before any aircraft lands. If there is any doubt, the safest decision is to go around and clarify the situation with ATC."],
   l5: ["I can see a potentially serious runway conflict. One aircraft is on short final with its landing lights on, while a large wide-body aircraft is still on or very close to the active runway.",
        "This looks like a runway incursion or, at least, a loss of runway separation. The arriving aircraft may have been cleared to land before the runway was fully vacated. Another possible cause is a misunderstanding between ATC and the crew on the ground, especially if the aircraft was crossing or backtracking on the runway.",
-       "From an operational point of view, this is a high-risk situation because the landing aircraft is already low, configured for landing, and has limited time to react. The safest action would be an immediate go-around: apply go-around power, follow the missed approach procedure, and inform ATC. At the same time, ATC should give clear, urgent instructions such as “Go around immediately” or “Hold position.”",
+       "From an operational point of view, this is a high-risk situation because the landing aircraft is already low, configured for landing, and has limited time to react. If the crew continues the approach while the runway is occupied, there is a risk of a serious collision. Even if there is still some distance between the aircraft, the safety margin is already reduced.",
+       "The safest action for the landing aircraft would be an immediate go-around. The crew should maintain control, apply go-around power, follow the missed approach procedure, and inform ATC. At the same time, ATC should give clear and urgent instructions, for example: “Go around immediately” or “Hold position.” The aircraft on the runway should not make any unpredictable movement unless instructed.",
+       "The weather appears acceptable, and visibility does not seem to be the main problem. However, the low light conditions may make visual judgment more difficult. In this case, the key factors are situational awareness, correct readback, runway monitoring, and timely ATC intervention.",
+       "In my opinion, this picture shows why runway discipline is so important. A runway is not just a piece of pavement; it is a protected area where timing and communication must be exact. If there is any doubt about runway occupancy, the crew should not try to “make it work.” A go-around is not a failure — it is a normal safety barrier.",
        "Safety conclusion: the runway must be confirmed clear before landing. Clear communication, correct readback, and early go-around decisions can prevent a runway incursion from becoming an accident."]
 };
 

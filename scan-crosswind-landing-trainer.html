@@ -120,6 +120,11 @@
   .scan-grid .sc h4 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #7a6858; margin-bottom: 4px; }
   .scan-grid ul { margin: 0 0 0 18px; }
   .scan-grid li { font-size: 14.5px; line-height: 1.5; }
+  .skel h3 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; letter-spacing: .5px; text-transform: uppercase; color: #7a6858; margin: 18px 0 6px; }
+  .skel h4 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13.5px; color: #2f2822; margin: 12px 0 4px; }
+  .skel ul, .skel ol { margin: 0 0 0 20px; }
+  .skel li { font-size: 15px; line-height: 1.6; }
+  .skel ol > li { margin-bottom: 5px; }
   @media (max-width: 560px) { .scan-grid { grid-template-columns: 1fr; } }
 
   /* ---- chips ---- */
@@ -333,6 +338,100 @@
     <div class="route" id="routePanel"></div>
   </div>
 
+  <!-- ============ 4b. ICAO PICTURE SKELETON (verbatim source) ============ -->
+  <div class="card study-card skel">
+    <span class="section-tag">ICAO picture skeleton</span>
+    <h2>ICAO Picture Skeleton — Crosswind Landing / Unstable Approach</h2>
+
+    <h3>1. General situation</h3>
+    <ul>
+      <li>large passenger aircraft on final approach</li>
+      <li>landing phase</li>
+      <li>runway visible ahead</li>
+      <li>aircraft slightly banked / not perfectly aligned</li>
+      <li>possible crosswind landing</li>
+      <li>demanding but normal landing situation</li>
+    </ul>
+
+    <h3>2. What I can see</h3>
+    <ul>
+      <li>wide-body aircraft from behind</li>
+      <li>landing gear extended</li>
+      <li>flaps extended</li>
+      <li>runway lights and markings</li>
+      <li>aircraft close to touchdown</li>
+      <li>urban area near the airport</li>
+      <li>possible haze / reduced visibility</li>
+      <li>aircraft wings not level</li>
+    </ul>
+
+    <h3>3. What may be happening</h3>
+    <ul>
+      <li>aircraft landing in crosswind conditions</li>
+      <li>pilot correcting drift</li>
+      <li>aircraft crabbing or banking into the wind</li>
+      <li>final approach close to runway threshold</li>
+      <li>possible unstable approach if alignment is poor</li>
+      <li>crew preparing for touchdown or go-around</li>
+    </ul>
+
+    <h3>4. Possible causes</h3>
+    <ul>
+      <li>crosswind from the side</li>
+      <li>gusty wind</li>
+      <li>turbulence near the runway</li>
+      <li>wake turbulence from previous traffic</li>
+      <li>wind shear possibility</li>
+      <li>late correction on final approach</li>
+      <li>unstable approach speed or alignment</li>
+    </ul>
+
+    <h3>5. Main risks</h3>
+    <ul>
+      <li>hard landing</li>
+      <li>runway excursion</li>
+      <li>wingtip or engine nacelle strike</li>
+      <li>bounced landing</li>
+      <li>loss of directional control after touchdown</li>
+      <li>unstable approach continued too long</li>
+      <li>go-around required at low altitude</li>
+    </ul>
+
+    <h3>6. What the crew should do</h3>
+    <h4>Pilot flying:</h4>
+    <ul>
+      <li>maintain correct approach speed</li>
+      <li>keep runway centerline</li>
+      <li>correct drift</li>
+      <li>use proper crosswind technique</li>
+      <li>avoid excessive bank angle</li>
+      <li>be ready to go around</li>
+    </ul>
+    <h4>Pilot monitoring:</h4>
+    <ul>
+      <li>monitor speed, sink rate, alignment</li>
+      <li>call out deviations</li>
+      <li>support decision-making</li>
+      <li>announce unstable approach if needed</li>
+    </ul>
+    <h4>ATC:</h4>
+    <ul>
+      <li>provide wind information</li>
+      <li>report windshear or gusts if known</li>
+      <li>clear runway area</li>
+      <li>expect possible go-around</li>
+    </ul>
+
+    <h3>7. Safety conclusion</h3>
+    <ul>
+      <li>stable approach is essential</li>
+      <li>if the aircraft is not stabilized, go around</li>
+      <li>crosswind landing requires good control and timely corrections</li>
+      <li>landing should not be forced</li>
+      <li>safety is more important than saving one approach</li>
+    </ul>
+  </div>
+
   <!-- ============ 5. SCAN × 4P ============ -->
   <div class="card study-card">
     <span class="section-tag">SCAN × 4P skeleton</span>
@@ -347,6 +446,21 @@
     <h2>Words you will need</h2>
     <div class="chips" id="vocabChips"></div>
     <div class="btn-row"><button class="action-btn primary" id="speakVocabBtn">▶ Speak vocabulary</button></div>
+  </div>
+
+  <!-- ============ 6b. SHORT SPEAKING FRAME (verbatim source) ============ -->
+  <div class="card study-card skel">
+    <span class="section-tag">Short speaking frame</span>
+    <h2>Short speaking frame</h2>
+    <p class="muted">Use this order:</p>
+    <ol>
+      <li><strong>I can see</strong> → aircraft landing, gear down, flaps extended</li>
+      <li><strong>It may be</strong> → crosswind landing / unstable approach</li>
+      <li><strong>Possible causes</strong> → side wind, gusts, turbulence</li>
+      <li><strong>Main risk</strong> → hard landing, runway excursion, loss of control</li>
+      <li><strong>Action</strong> → maintain centerline, monitor speed, go around if unstable</li>
+      <li><strong>Conclusion</strong> → stable approach first, landing second</li>
+    </ol>
   </div>
 
   <!-- ============ 7. SPEAKING BEATS ============ -->
@@ -543,24 +657,24 @@ const SCAN4P = {
       "runway alignment issue"
     ],
     "assume": [
-      "the aircraft may be landing in crosswind",
-      "the pilot may be correcting drift",
-      "the aircraft may be slightly off the centerline",
-      "the approach could become unstable",
-      "the crew may be ready for go-around"
+      "aircraft may be landing in crosswind",
+      "pilot may be correcting drift",
+      "aircraft may be slightly off the centerline",
+      "approach could become unstable",
+      "crew may be ready for go-around"
     ],
     "next": [
-      "the pilot should maintain the correct speed",
-      "the pilot should keep the runway centerline",
-      "the crew should monitor alignment and sink rate",
-      "if unstable, the crew should go around"
+      "pilot should maintain correct speed",
+      "pilot should keep runway centerline",
+      "crew should monitor alignment and sink rate",
+      "if unstable, crew should go around"
     ]
   },
   "people": {
     "see": [
       "no people visible outside",
       "flight crew inside the cockpit",
-      "pilots managing the landing",
+      "pilots managing landing",
       "ATC controlling runway traffic"
     ],
     "call": [
@@ -570,16 +684,16 @@ const SCAN4P = {
       "cockpit crew"
     ],
     "assume": [
-      "the pilot flying is correcting for wind",
-      "the pilot monitoring is checking speed and descent rate",
+      "pilot flying is correcting for wind",
+      "pilot monitoring is checking speed and descent rate",
       "ATC may have provided wind information",
-      "the crew may be discussing go-around criteria"
+      "crew may be discussing go-around criteria"
     ],
     "next": [
-      "the pilot monitoring should call deviations",
-      "the crew should use standard procedures",
+      "pilot monitoring should call deviations",
+      "crew should use standard procedures",
       "ATC should provide wind updates",
-      "the crew should not continue if the approach is unstable"
+      "crew should not continue if approach is unstable"
     ]
   },
   "place": {
@@ -598,16 +712,16 @@ const SCAN4P = {
       "active runway"
     ],
     "assume": [
-      "the aircraft is near the runway threshold",
+      "aircraft is near the runway threshold",
       "runway alignment may be difficult",
-      "crosswind may push the aircraft sideways",
-      "the landing zone must be carefully controlled"
+      "crosswind may push aircraft sideways",
+      "landing zone must be carefully controlled"
     ],
     "next": [
-      "the aircraft should touch down near the centerline",
-      "the pilot should avoid excessive side drift",
-      "the crew should be ready for a rejected landing / go-around",
-      "the runway must remain clear"
+      "aircraft should touch down near centerline",
+      "pilot should avoid excessive side drift",
+      "crew should be ready for rejected landing / go-around",
+      "runway must remain clear"
     ]
   },
   "panorama": {
@@ -624,16 +738,16 @@ const SCAN4P = {
       "visual approach conditions"
     ],
     "assume": [
-      "the weather may be affecting the approach",
+      "weather may be affecting approach",
       "gusty wind may cause aircraft movement",
       "turbulence may make landing more difficult",
       "visibility is probably acceptable"
     ],
     "next": [
-      "the crew should monitor wind changes",
+      "crew should monitor wind changes",
       "ATC should report gusts or wind shear",
-      "the pilot should use proper crosswind technique",
-      "the safety margin should be protected"
+      "pilot should use proper crosswind technique",
+      "safety margin should be protected"
     ]
   }
 };
@@ -669,20 +783,23 @@ const BEATS = [
   }
 ];
 
-const VOCAB = ["final approach","crosswind landing","runway centerline","landing gear extended","flaps extended","correct the drift","crab angle","gusty wind","unstable approach","hard landing","runway excursion","loss of directional control","go-around decision"];
+const VOCAB = ["final approach","crosswind landing","aircraft alignment","runway centerline","landing gear extended","flaps extended","correct the drift","crab angle","bank into the wind","gusty wind","unstable approach","hard landing","runway excursion","bounced landing","loss of directional control","go-around decision"];
 
 const STORY = {
   "l4": [
     "In this picture, I can see a large passenger aircraft on final approach to the runway. The aircraft is configured for landing, with the landing gear extended and the flaps deployed. The aircraft appears slightly banked, which suggests that the crew may be dealing with crosswind conditions.",
     "This may be a normal crosswind landing, but it could also become an unstable approach if the aircraft is not correctly aligned with the runway. Possible contributing factors include gusty wind, turbulence near the runway, wake turbulence from previous traffic, or a late correction by the pilot.",
-    "From a safety perspective, the main risks are a hard landing, a bounced landing, a runway excursion, or loss of directional control during the landing roll. If the aircraft touches down with too much side drift or excessive bank angle, the landing gear may be stressed, and the aircraft may not remain on the centerline.",
+    "From a safety perspective, the main risks are hard landing, bounced landing, runway excursion, or loss of directional control during the landing roll. If the aircraft touches down with too much side drift or excessive bank angle, the landing gear may be stressed, and the aircraft may not remain on the centerline.",
     "The pilot flying should maintain the correct approach speed, control the drift, and keep the aircraft aligned with the runway centerline. The pilot monitoring should call out any deviation in speed, sink rate, or alignment. ATC should provide accurate wind information, especially if there are gusts or wind shear reports.",
     "In my opinion, the key decision in this situation is not only how to land, but also when to stop trying. If the approach is not stabilized, the crew should go around without hesitation."
   ],
   "l5": [
     "This picture shows a large commercial aircraft in the final stage of approach, very close to the runway. The aircraft is fully configured for landing, with the landing gear down and the flaps extended. Its attitude suggests that the crew may be correcting for crosswind or gusty conditions.",
-    "At first glance, this could be a normal crosswind landing. However, the aircraft is close to touchdown, so any significant deviation in speed, sink rate, bank angle, or runway alignment would leave very little time for correction. The possible causes include strong side wind, gusts, mechanical turbulence near buildings, or a late correction on short final. Wake turbulence from a preceding aircraft could also be a factor.",
-    "The main operational risk is that the crew may continue an unstable approach too long. A hard touchdown, bounced landing, runway excursion, or loss of directional control can happen very quickly during the flare and landing roll. A wingtip or engine nacelle strike is also possible if the bank angle becomes excessive close to the ground. The correct response is disciplined monitoring and early decision-making: the pilot flying maintains speed and alignment, and the pilot monitoring actively calls out deviations.",
+    "At first glance, this could be a normal crosswind landing. However, from an examiner’s point of view, it is worth discussing the stability of the approach. The aircraft seems to be close to touchdown, so any significant deviation in speed, sink rate, bank angle, or runway alignment would leave very little time for correction. In crosswind conditions, the aircraft may drift sideways, and the pilot has to manage both alignment and descent rate at the same time.",
+    "The possible causes of this situation include strong side wind, gusts, mechanical turbulence near buildings, or a late correction on short final. Wake turbulence from a preceding aircraft could also be a factor, although we cannot confirm it from the picture. The weather does not look severe, but the background appears slightly hazy, and wind can be dangerous even when visibility is acceptable.",
+    "The main operational risk is that the crew may continue an unstable approach too long. A hard touchdown, bounced landing, runway excursion, or loss of directional control can happen very quickly during the flare and landing roll. A wingtip strike or engine nacelle strike is also possible if the bank angle becomes excessive close to the ground.",
+    "The correct response is disciplined monitoring and early decision-making. The pilot flying should maintain the correct speed, control the aircraft’s drift, and align it with the runway before touchdown. The pilot monitoring should actively call out deviations, not just observe silently. If the aircraft is not stabilized by the company’s required altitude, the crew should initiate a go-around.",
+    "In my opinion, this picture shows one of the most important lessons in airline operations: a landing is optional, but a go-around is a normal safety procedure. Pilots should not try to “save” a poor approach at low altitude. That is how small deviations become serious incidents.",
     "Safety conclusion: in crosswind conditions, the crew must protect the stable approach criteria. If speed, alignment, or descent rate is not safe, the best decision is to go around and set up for another approach."
   ]
 };

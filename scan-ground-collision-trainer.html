@@ -120,6 +120,11 @@
   .scan-grid .sc h4 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 12px; letter-spacing: 1px; text-transform: uppercase; color: #7a6858; margin-bottom: 4px; }
   .scan-grid ul { margin: 0 0 0 18px; }
   .scan-grid li { font-size: 14.5px; line-height: 1.5; }
+  .skel h3 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13px; letter-spacing: .5px; text-transform: uppercase; color: #7a6858; margin: 18px 0 6px; }
+  .skel h4 { font-family: "SF Pro Text", Arial, sans-serif; font-size: 13.5px; color: #2f2822; margin: 12px 0 4px; }
+  .skel ul, .skel ol { margin: 0 0 0 20px; }
+  .skel li { font-size: 15px; line-height: 1.6; }
+  .skel ol > li { margin-bottom: 5px; }
   @media (max-width: 560px) { .scan-grid { grid-template-columns: 1fr; } }
 
   /* ---- chips ---- */
@@ -333,6 +338,103 @@
     <div class="route" id="routePanel"></div>
   </div>
 
+  <!-- ============ 4b. ICAO PICTURE SKELETON (verbatim source) ============ -->
+  <div class="card study-card skel">
+    <span class="section-tag">ICAO picture skeleton</span>
+    <h2>ICAO Picture Skeleton — Engine / Ground Vehicle Collision</h2>
+
+    <h3>1. General situation</h3>
+    <ul>
+      <li>aircraft on apron / stand area</li>
+      <li>ground support vehicle very close to engine</li>
+      <li>engine nacelle damaged</li>
+      <li>possible collision during ground handling</li>
+      <li>abnormal ground operation situation</li>
+    </ul>
+
+    <h3>2. What I can see</h3>
+    <ul>
+      <li>commercial passenger aircraft</li>
+      <li>orange engine nacelle</li>
+      <li>damaged engine cowling / nacelle</li>
+      <li>ground tug / pushback vehicle</li>
+      <li>wet apron surface</li>
+      <li>aircraft fuselage and wing section</li>
+      <li>ground handling company vehicle</li>
+      <li>aircraft parked or being moved</li>
+    </ul>
+
+    <h3>3. What may be happening</h3>
+    <ul>
+      <li>ground vehicle hit the engine</li>
+      <li>aircraft may have been parked at the gate</li>
+      <li>tug may have approached too close</li>
+      <li>possible pushback or towing operation</li>
+      <li>possible ground handling incident</li>
+      <li>aircraft probably not airworthy after impact</li>
+    </ul>
+
+    <h3>4. Possible causes</h3>
+    <ul>
+      <li>poor communication between ground crew and cockpit</li>
+      <li>incorrect marshalling</li>
+      <li>driver misjudged distance</li>
+      <li>low visibility / wet surface</li>
+      <li>lack of situational awareness</li>
+      <li>vehicle brake or control problem</li>
+      <li>non-compliance with safety procedures</li>
+      <li>working under time pressure</li>
+    </ul>
+
+    <h3>5. Main risks</h3>
+    <ul>
+      <li>engine damage</li>
+      <li>hidden structural damage</li>
+      <li>fuel or oil leakage</li>
+      <li>fire risk</li>
+      <li>aircraft unfit for flight</li>
+      <li>injury to ground staff</li>
+      <li>expensive maintenance delay</li>
+      <li>unsafe departure if damage is missed</li>
+    </ul>
+
+    <h3>6. What the crew / ground staff should do</h3>
+    <h4>Flight crew:</h4>
+    <ul>
+      <li>stop the operation</li>
+      <li>set parking brake</li>
+      <li>shut down engine if running</li>
+      <li>inform ATC / ground control</li>
+      <li>request inspection and maintenance</li>
+      <li>do not depart until aircraft is cleared</li>
+    </ul>
+    <h4>Ground crew:</h4>
+    <ul>
+      <li>stop vehicle immediately</li>
+      <li>secure the area</li>
+      <li>report the incident</li>
+      <li>keep personnel away from engine</li>
+      <li>check for leaks or fire risk</li>
+      <li>follow company emergency procedures</li>
+    </ul>
+    <h4>Maintenance:</h4>
+    <ul>
+      <li>inspect engine nacelle</li>
+      <li>check fan blades and internal parts</li>
+      <li>check for hidden damage</li>
+      <li>decide if aircraft is airworthy</li>
+    </ul>
+
+    <h3>7. Safety conclusion</h3>
+    <ul>
+      <li>aircraft must not continue flight without inspection</li>
+      <li>ground operations require clear communication</li>
+      <li>safe distance from aircraft engines is critical</li>
+      <li>better to delay the flight than risk unsafe departure</li>
+      <li>safety first, schedule second — the boring rule that saves very expensive metal</li>
+    </ul>
+  </div>
+
   <!-- ============ 5. SCAN × 4P ============ -->
   <div class="card study-card">
     <span class="section-tag">SCAN × 4P skeleton</span>
@@ -347,6 +449,21 @@
     <h2>Words you will need</h2>
     <div class="chips" id="vocabChips"></div>
     <div class="btn-row"><button class="action-btn primary" id="speakVocabBtn">▶ Speak vocabulary</button></div>
+  </div>
+
+  <!-- ============ 6b. SHORT SPEAKING FRAME (verbatim source) ============ -->
+  <div class="card study-card skel">
+    <span class="section-tag">Short speaking frame</span>
+    <h2>Short speaking frame</h2>
+    <p class="muted">Use this order:</p>
+    <ol>
+      <li><strong>I can see</strong> → aircraft engine + ground vehicle + damage</li>
+      <li><strong>It may be</strong> → ground collision during towing / pushback / apron operation</li>
+      <li><strong>Possible causes</strong> → poor communication / misjudged distance / wet surface</li>
+      <li><strong>Main risk</strong> → engine damage / fire / aircraft not airworthy</li>
+      <li><strong>Action</strong> → stop operation / secure area / inspect aircraft</li>
+      <li><strong>Conclusion</strong> → do not fly until maintenance clears the aircraft</li>
+    </ol>
   </div>
 
   <!-- ============ 7. SPEAKING BEATS ============ -->
@@ -529,7 +646,7 @@ const SCAN4P = {
   "plane": {
     "see": [
       "passenger aircraft",
-      "engine close to a ground vehicle",
+      "engine close to ground vehicle",
       "damaged engine nacelle",
       "damaged engine cowling",
       "wing and fuselage visible"
@@ -542,22 +659,22 @@ const SCAN4P = {
       "ground damage"
     ],
     "assume": [
-      "a ground vehicle may have hit the engine",
-      "the collision may have happened during pushback or towing",
-      "the aircraft is probably not airworthy",
-      "the damage may be more serious than it looks"
+      "ground vehicle may have hit the engine",
+      "collision may have happened during pushback or towing",
+      "aircraft is probably not airworthy",
+      "damage may be more serious than it looks"
     ],
     "next": [
-      "the crew should stop the operation",
-      "the engine should be shut down if running",
+      "crew should stop the operation",
+      "engine should be shut down if running",
       "maintenance should inspect the aircraft",
-      "the aircraft should not depart until cleared"
+      "aircraft should not depart until cleared"
     ]
   },
   "people": {
     "see": [
       "no people clearly visible",
-      "the ground vehicle driver is likely involved",
+      "ground vehicle driver likely involved",
       "flight crew probably inside the aircraft",
       "ground handling team nearby"
     ],
@@ -569,15 +686,15 @@ const SCAN4P = {
       "maintenance team"
     ],
     "assume": [
-      "the driver may have misjudged the distance",
-      "the ground crew may have had poor communication",
-      "the crew may not have seen the vehicle clearly"
+      "driver may have misjudged distance",
+      "ground crew may have had poor communication",
+      "crew may not have seen the vehicle clearly"
     ],
     "next": [
-      "the ground crew should report the incident",
-      "the flight crew should inform ground control",
+      "ground crew should report the incident",
+      "flight crew should inform ground control",
       "maintenance should be called",
-      "the area should be secured"
+      "area should be secured"
     ]
   },
   "place": {
@@ -585,7 +702,7 @@ const SCAN4P = {
       "apron area",
       "wet pavement",
       "aircraft stand or taxi area",
-      "ground support vehicle close to the aircraft"
+      "ground support vehicle close to aircraft"
     ],
     "call": [
       "apron",
@@ -595,14 +712,14 @@ const SCAN4P = {
       "ramp safety zone"
     ],
     "assume": [
-      "the wet surface may have reduced braking",
-      "the vehicle may have approached too close",
-      "the operation may have been rushed",
-      "the safety zone may not have been respected"
+      "wet surface may have reduced braking",
+      "vehicle may have approached too close",
+      "operation may have been rushed",
+      "safety zone may not have been respected"
     ],
     "next": [
       "stop all movement",
-      "keep a safe distance from the engine",
+      "keep safe distance from engine",
       "check for fuel or oil leakage",
       "follow airport ground safety procedures"
     ]
@@ -611,7 +728,7 @@ const SCAN4P = {
     "see": [
       "cloudy or rainy conditions",
       "wet surface",
-      "low-contrast background",
+      "low contrast background",
       "poor weather for ground operations"
     ],
     "call": [
@@ -621,7 +738,7 @@ const SCAN4P = {
       "poor ground handling conditions"
     ],
     "assume": [
-      "the weather may have contributed",
+      "weather may have contributed",
       "visibility may have been limited",
       "braking distance for the vehicle may have increased"
     ],
@@ -664,7 +781,7 @@ const BEATS = [
   }
 ];
 
-const VOCAB = ["engine nacelle","engine cowling","ground support vehicle","pushback tug","ground handling incident","apron area","hidden damage","aircraft airworthiness","maintenance inspection","fuel or oil leakage","fire risk","secure the area","report the incident","cleared by maintenance"];
+const VOCAB = ["engine nacelle","engine cowling","ground support vehicle","pushback tug","ground handling incident","apron area","hidden damage","aircraft airworthiness","maintenance inspection","fuel or oil leakage","fire risk","stop the operation","secure the area","report the incident","cleared by maintenance"];
 
 const STORY = {
   "l4": [
@@ -677,7 +794,9 @@ const STORY = {
   "l5": [
     "This picture shows a serious ground handling incident involving a commercial passenger aircraft and a ground support vehicle. The engine nacelle is clearly damaged, and the vehicle is positioned dangerously close to the engine, which suggests that there has been contact between the vehicle and the aircraft.",
     "The most likely scenario is a collision during pushback, towing, or ground servicing. However, there could be several contributing factors. The vehicle driver may have misjudged the clearance, the marshaller may not have given clear signals, or the communication between the cockpit and ground crew may have broken down. The wet apron surface is also relevant because it can reduce traction and increase stopping distance for ground vehicles.",
-    "From an operational point of view, this aircraft should be considered unserviceable until a full technical inspection is completed. The visible deformation of the nacelle is only the obvious part of the problem; the real danger is hidden damage to fan blades, engine structure, sensors, wiring, or mounting points. If this aircraft departed without proper inspection, the crew could face an engine malfunction in flight, which would be much more dangerous than a delay on the ground.",
+    "From an operational point of view, this aircraft should be considered unserviceable until a full technical inspection is completed. The visible deformation of the nacelle is only the obvious part of the problem. The real danger is hidden damage to fan blades, engine structure, sensors, wiring, or mounting points. If this aircraft departed without proper inspection, the crew could face an engine malfunction in flight, which would be much more dangerous than a delay on the ground.",
+    "The correct response should be immediate and disciplined. The crew should stop the operation, secure the aircraft, shut down the engine if it is running, and inform ground control. The ground crew should stop the vehicle, secure the area, and check for any fuel, oil, or hydraulic leakage. Maintenance engineers should perform a detailed inspection and decide whether the aircraft is airworthy.",
+    "In my opinion, this picture is a good reminder that apron safety depends on small margins. Aircraft engines are large, expensive, and vulnerable during ground operations. Ground vehicles must maintain safe distance, and all team members must use clear communication and standard procedures.",
     "Safety conclusion: the aircraft must not continue the flight until maintenance clears it. It is always better to delay a flight on the ground than to discover engine damage in the air."
   ]
 };
