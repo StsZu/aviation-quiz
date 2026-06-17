@@ -53,7 +53,8 @@
   - `scenario-ordering-trainer.html` — впорядкування цілих речень трьох повних модельних відповідей.
   - `scenario-description-builder.html` — побудова кожного речення тих самих трьох сценаріїв із чанків.
 - Три сценарії (ground handling incident, runway incursion, crosswind landing) мають повне аудіо-озвучення (ElevenLabs) у `Sentence_builder/audio/`. Підключається полем `audio:"<файл>.mp3"` на об'єкті сценарію + плеєр `<audio>` «Full model answer». Озвучення окремих карток лишається на Web Speech.
-- **Важливо:** підпапка, тож back-link `← All quizzes` → `../index.html`, а картки в `index.html` → `Sentence_builder/<файл>.html` (тег «Sentence Builder»).
+- Хаб-сторінка `Sentence_builder/index.html` лінкує всі три тренажери. На головній `index.html` — **одна** картка (тег «Sentence Builder»), що веде на цей хаб, а не на окремі сторінки.
+- **Важливо:** підпапка, тож back-link `← All quizzes` на кожній сторінці → `../index.html`.
 
 ### Flight Academy Trainer (folder-backed секція)
 

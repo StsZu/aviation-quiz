@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviation English — Sentence Builder</title>
+<style>
+  :root{
+    --bg:#f4f6fb; --panel:#fff; --ink:#1e293b; --muted:#64748b; --faint:#94a3b8;
+    --line:#e2e8f0; --brand:#2563eb; --brand-dark:#1e3a8a;
+    --radius:14px; --shadow:0 6px 16px rgba(15,23,42,.07),0 1px 3px rgba(15,23,42,.05);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent;}
+
+  .site-back{background:#1e3a8a;}
+  .site-back a{display:inline-flex;align-items:center;gap:6px;max-width:880px;margin:0 auto;padding:10px 16px;color:#bae6fd;font-weight:700;font-size:.85rem;text-decoration:none;font-family:"SF Pro Text",Arial,sans-serif;}
+  .site-back a:hover{color:#fff;}
+
+  header{background:linear-gradient(120deg,var(--brand-dark),#312e81);color:#fff;padding:24px 16px;text-align:center;}
+  header .wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;}
+  header .title{display:flex;align-items:center;gap:10px;}
+  header h1{font-size:clamp(1.25rem,4vw,1.95rem);font-weight:800;margin:0;letter-spacing:-.02em;}
+  header .plane{width:28px;height:28px;color:#7dd3fc;flex:none;}
+  header p{margin:0;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#bae6fd;font-weight:600;}
+
+  main{flex:1;width:100%;max-width:880px;margin:0 auto;padding:22px 16px 40px;display:flex;flex-direction:column;}
+
+  .intro{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);}
+  .intro h2{margin:0 0 4px;font-size:1.15rem;font-weight:800;}
+  .intro p{margin:0;font-size:.9rem;color:var(--muted);line-height:1.5;}
+  .flow{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;align-items:center;}
+  .flow .chip{background:#eef2ff;color:#4338ca;border:1px solid #e0e7ff;border-radius:999px;padding:4px 10px;font-size:.66rem;font-weight:700;letter-spacing:.03em;}
+  .flow .arr{color:var(--faint);font-size:.7rem;}
+
+  .modules{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:18px;}
+  .mod{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);
+    text-decoration:none;color:inherit;display:flex;flex-direction:column;gap:8px;transition:transform .12s,box-shadow .12s,border-color .12s;}
+  .mod:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(15,23,42,.12);border-color:#c7d2fe;}
+  .mod .badge{align-self:flex-start;background:var(--brand-dark);color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.08em;padding:4px 10px;border-radius:999px;text-transform:uppercase;}
+  .mod .mt{font-size:1.05rem;font-weight:800;line-height:1.2;}
+  .mod .mt small{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-top:2px;}
+  .mod .mp{font-size:.82rem;color:var(--muted);line-height:1.4;}
+  .mod .cta{margin-top:auto;font-size:.8rem;font-weight:800;color:var(--brand);display:inline-flex;align-items:center;gap:5px;}
+
+  footer{background:#eef2f7;border-top:1px solid var(--line);text-align:center;padding:16px;font-size:.72rem;color:var(--faint);}
+</style>
+</head>
+<body>
+
+<div class="site-back">
+  <a href="../index.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    All quizzes
+  </a>
+</div>
+
+<header>
+  <div class="wrap">
+    <div class="title">
+      <svg class="plane" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+      <h1>Aviation English Sentence Builder</h1>
+    </div>
+    <p>Build it. Order it. Say it aloud.</p>
+  </div>
+</header>
+
+<main>
+  <div class="intro">
+    <h2>ICAO Level 5 — Picture Description</h2>
+    <p>Three connected trainers for the same exam task. Learn the phrases, reproduce three full model answers sentence by sentence, then order the whole description into the correct professional flow.</p>
+    <div class="flow">
+      <span class="chip">SHOW</span><span class="arr">→</span>
+      <span class="chip">LOOKS LIKE</span><span class="arr">→</span>
+      <span class="chip">I CAN SEE</span><span class="arr">→</span>
+      <span class="chip">MAY HAVE</span><span class="arr">→</span>
+      <span class="chip">CAUSES</span><span class="arr">→</span>
+      <span class="chip">RISK</span><span class="arr">→</span>
+      <span class="chip">ACTION</span><span class="arr">→</span>
+      <span class="chip">OPINION</span><span class="arr">→</span>
+      <span class="chip">SAFETY CONCLUSION</span>
+    </div>
+  </div>
+
+  <div class="modules">
+    <a class="mod" href="aviation-english-sentence-builder.html">
+      <span class="badge">Step 1 · Phrases</span>
+      <span class="mt">Sentence Builder<small>Фразовий конструктор</small></span>
+      <span class="mp">Build the core phrases of every story-flow stage from word-cards across nine modules, including the may-have + V3 pattern. EN-build and UA→EN modes.</span>
+      <span class="cta">Start building →</span>
+    </a>
+    <a class="mod" href="scenario-description-builder.html">
+      <span class="badge">Step 2 · Sentences</span>
+      <span class="mt">Full Scenario Descriptions<small>Повні описи сценаріїв</small></span>
+      <span class="mp">Assemble every sentence of three complete model answers — ground handling incident, runway incursion, crosswind landing — chunk by chunk, with full model-answer audio.</span>
+      <span class="cta">Start building →</span>
+    </a>
+    <a class="mod" href="scenario-ordering-trainer.html">
+      <span class="badge">Step 3 · Order</span>
+      <span class="mt">Scenario Ordering Trainer<small>Впорядкування речень</small></span>
+      <span class="mp">Order the whole sentences of the same three descriptions into the correct professional flow, stage by stage, then a full story-flow round. Listen along to each model answer.</span>
+      <span class="cta">Start ordering →</span>
+    </a>
+  </div>
+</main>
+
+<footer>&copy; 2026 Aviation English Training Tool — for educational purposes only.</footer>
+
+</body>
+</html>
