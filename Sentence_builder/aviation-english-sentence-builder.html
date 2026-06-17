@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aviation English Sentence Builder</title>
+<style>
+  /* ===== THEME ===== */
+  :root{
+    --bg:#f4f6fb; --panel:#fff; --ink:#1e293b; --muted:#64748b; --faint:#94a3b8;
+    --line:#e2e8f0; --brand:#2563eb; --brand-dark:#1e3a8a;
+    --ok:#16a34a; --ok-bg:#f0fdf4; --ok-line:#bbf7d0;
+    --warn:#d97706; --warn-bg:#fffbeb; --warn-line:#fde68a;
+    --radius:14px; --shadow:0 6px 16px rgba(15,23,42,.07),0 1px 3px rgba(15,23,42,.05);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{background:var(--bg);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    min-height:100vh;display:flex;flex-direction:column;-webkit-tap-highlight-color:transparent;}
+
+  /* ===== HEADER ===== */
+  header{background:linear-gradient(120deg,var(--brand-dark),#312e81);color:#fff;padding:24px 16px;text-align:center;}
+  header .wrap{max-width:880px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:6px;}
+  header .title{display:flex;align-items:center;gap:10px;}
+  header h1{font-size:clamp(1.25rem,4vw,1.95rem);font-weight:800;margin:0;letter-spacing:-.02em;}
+  header .plane{width:28px;height:28px;color:#7dd3fc;flex:none;}
+  header p{margin:0;font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:#bae6fd;font-weight:600;}
+
+  main{flex:1;width:100%;max-width:880px;margin:0 auto;padding:22px 16px 40px;display:flex;flex-direction:column;}
+  .stack{display:flex;flex-direction:column;gap:18px;}
+  .hidden{display:none !important;}
+
+  /* ===== MENU ===== */
+  .menu-intro{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);}
+  .menu-intro h2{margin:0 0 4px;font-size:1.15rem;font-weight:800;}
+  .menu-intro p{margin:0;font-size:.9rem;color:var(--muted);line-height:1.5;}
+  .flow{display:flex;flex-wrap:wrap;gap:6px;margin-top:14px;align-items:center;}
+  .flow .chip{background:#eef2ff;color:#4338ca;border:1px solid #e0e7ff;border-radius:999px;padding:4px 10px;font-size:.68rem;font-weight:700;letter-spacing:.03em;}
+  .flow .arr{color:var(--faint);font-size:.7rem;}
+
+  .modules{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px;margin-top:18px;}
+  .mod{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);
+    cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:8px;transition:transform .12s,box-shadow .12s,border-color .12s;}
+  .mod:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(15,23,42,.12);border-color:#c7d2fe;}
+  .mod .badge{align-self:flex-start;background:var(--brand-dark);color:#fff;font-size:.66rem;font-weight:800;letter-spacing:.08em;padding:4px 10px;border-radius:999px;text-transform:uppercase;}
+  .mod.core .badge{background:#0f766e;}
+  .mod .mt{font-size:1.05rem;font-weight:800;line-height:1.2;}
+  .mod .mt small{display:block;font-size:.78rem;font-weight:600;color:var(--muted);margin-top:2px;}
+  .mod .mp{font-size:.82rem;color:var(--muted);line-height:1.4;}
+  .mod .count{font-size:.72rem;font-weight:700;color:var(--brand);}
+
+  /* ===== TASK VIEW ===== */
+  .crumbs{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+  .back{background:none;border:none;color:var(--brand);font-weight:700;font-size:.85rem;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px;}
+  .back svg{width:16px;height:16px;}
+  .topbar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+  .pill{background:#e2e8f0;color:#334155;padding:5px 12px;border-radius:999px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;}
+  .mistakes{display:flex;align-items:center;gap:6px;font-size:.85rem;color:var(--muted);font-weight:500;margin-left:auto;}
+  .mistakes svg{width:16px;height:16px;color:#f59e0b;}
+  .mistakes b{color:var(--ink);}
+  .mode{display:flex;gap:6px;}
+  .mode button{border:1px solid var(--line);background:#fff;color:var(--muted);font-size:.72rem;font-weight:700;padding:5px 10px;border-radius:999px;cursor:pointer;}
+  .mode button.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+
+  .track{width:100%;height:8px;background:#e2e8f0;border-radius:999px;overflow:hidden;}
+  .track > div{height:100%;background:linear-gradient(90deg,#38bdf8,#2563eb);border-radius:999px;transition:width .35s ease;width:0;}
+
+  .question{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px 20px;box-shadow:var(--shadow);}
+  .question .label{font-size:.7rem;font-weight:700;color:var(--brand);text-transform:uppercase;letter-spacing:.14em;}
+  .question h2{margin:4px 0 0;font-size:clamp(1.1rem,3.2vw,1.5rem);font-weight:800;line-height:1.28;}
+  .question .hint{margin:6px 0 0;font-size:.85rem;color:var(--muted);font-style:italic;}
+
+  .zone-head{display:flex;justify-content:space-between;align-items:center;padding:0 2px 6px;font-size:.7rem;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.1em;}
+  .zone-head .tip{text-transform:none;font-weight:500;color:var(--muted);}
+  .zone{min-height:96px;background:#eef2f7;border:2px dashed #cbd5e1;border-radius:var(--radius);padding:14px;
+    display:flex;flex-wrap:wrap;gap:12px;align-items:center;align-content:center;justify-content:center;transition:background .2s,border-color .2s;}
+  .zone.over{border-color:var(--brand);background:#eff6ff;}
+  .zone .prompt{color:var(--faint);font-size:.9rem;user-select:none;padding:8px;}
+
+  .card{background:#fff;border:1px solid #d8e0ea;color:var(--ink);padding:13px 17px;border-radius:12px;
+    font-size:clamp(.98rem,2.3vw,1.2rem);font-weight:700;box-shadow:0 4px 10px rgba(15,23,42,.08),0 1px 0 rgba(15,23,42,.04);
+    cursor:grab;user-select:none;touch-action:none;transition:transform .12s ease,box-shadow .12s ease,opacity .12s;}
+  .card:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,23,42,.12);}
+  .card:active{cursor:grabbing;}
+  .card.dragging{opacity:.35;}
+  .card.flying{position:fixed;z-index:1000;pointer-events:none;margin:0;transform:rotate(-2deg) scale(1.04);box-shadow:0 14px 30px rgba(15,23,42,.25);opacity:.95;}
+
+  .result{border-radius:var(--radius);padding:20px;border:1px solid transparent;text-align:center;}
+  .result.ok{background:var(--ok-bg);border-color:var(--ok-line);animation:pulse 1.8s ease-in-out infinite;}
+  .result.err{background:var(--warn-bg);border-color:var(--warn-line);}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(22,163,74,0);}50%{box-shadow:0 0 0 4px rgba(22,163,74,.12);}}
+  .ok-head{display:flex;align-items:center;justify-content:center;gap:10px;color:var(--ok);font-weight:800;font-size:1.45rem;}
+  .ok-head svg{width:30px;height:30px;}
+  .divider{height:1px;background:var(--ok-line);margin:14px 0;}
+  .field{text-align:left;margin-bottom:12px;}
+  .field .k{display:block;font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;margin-bottom:3px;}
+  .field .k.en{color:var(--ok);}.field .k.ua{color:#6366f1;}
+  .sentence-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+  #res-sentence{font-size:1.2rem;font-weight:800;margin:0;line-height:1.3;}
+  #res-translation{font-size:1rem;font-weight:600;color:#334155;margin:0;}
+  .speak-btn{border:none;background:#dbeafe;color:#1d4ed8;width:40px;height:40px;border-radius:999px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;flex:none;transition:background .15s;}
+  .speak-btn:hover{background:#bfdbfe;}.speak-btn svg{width:20px;height:20px;}
+  .speak-note{display:flex;align-items:flex-start;gap:10px;background:#eef2ff;border:1px solid #e0e7ff;border-radius:12px;padding:12px 14px;text-align:left;}
+  .speak-note .emoji{font-size:1.3rem;line-height:1;}
+  .speak-note .k{font-size:.66rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#6366f1;display:block;margin-bottom:2px;}
+  .speak-note p{margin:0;font-size:.9rem;font-weight:600;color:#312e81;}
+  .speak-note .ua{font-style:italic;font-weight:400;color:#475569;}
+  .err-head{display:flex;align-items:center;justify-content:center;gap:8px;color:var(--warn);font-weight:800;font-size:1.12rem;}
+  .err-head svg{width:24px;height:24px;}
+  .err-sub{margin:6px 0 0;font-size:.82rem;color:var(--muted);}
+
+  .controls{display:flex;gap:12px;flex-wrap:wrap;}
+  .btn{flex:1;min-width:130px;border:none;border-radius:12px;padding:14px 20px;font-size:1rem;font-weight:800;cursor:pointer;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .15s,transform .1s;}
+  .btn:active{transform:translateY(1px);}
+  .btn svg{width:20px;height:20px;}
+  .btn.grey{background:#e2e8f0;color:#334155;flex:0 0 auto;}.btn.grey:hover{background:#cbd5e1;}
+  .btn.blue{background:var(--brand);color:#fff;flex:2;box-shadow:var(--shadow);}.btn.blue:hover{background:#1d4ed8;}
+  .btn.green{background:var(--ok);color:#fff;flex:2;box-shadow:var(--shadow);}.btn.green:hover{background:#15803d;}
+
+  /* ===== MODULE DONE ===== */
+  #module-done{background:#fff;border:1px solid var(--line);border-radius:20px;padding:32px 26px;box-shadow:var(--shadow);text-align:center;max-width:540px;margin:0 auto;}
+  #module-done .trophy{width:74px;height:74px;border-radius:999px;background:#eef2ff;color:#4f46e5;display:flex;align-items:center;justify-content:center;font-size:2.1rem;margin:0 auto 14px;}
+  #module-done h2{margin:0;font-size:1.6rem;font-weight:800;}
+  #module-done .sub{margin:4px 0 18px;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:700;}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;background:#f8fafc;border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:18px;}
+  .stats .s .k{font-size:.66rem;text-transform:uppercase;letter-spacing:.1em;color:var(--faint);font-weight:700;}
+  .stats .s .v{font-size:1.7rem;font-weight:900;margin-top:4px;}
+  .stats .s.r{border-left:1px solid var(--line);}
+  .stats .ok-v{color:var(--ok);}.stats .warn-v{color:var(--warn);}
+  #module-done p.msg{font-size:.9rem;color:#475569;line-height:1.6;margin:0 0 20px;}
+  .done-controls{display:flex;gap:12px;flex-wrap:wrap;}
+
+  footer{background:#eef2f7;border-top:1px solid var(--line);text-align:center;padding:16px;font-size:.72rem;color:var(--faint);}
+
+  .site-back{background:#1e3a8a;}
+  .site-back a{display:inline-flex;align-items:center;gap:6px;max-width:880px;margin:0 auto;padding:10px 16px;color:#bae6fd;font-weight:700;font-size:.85rem;text-decoration:none;font-family:"SF Pro Text",Arial,sans-serif;}
+  .site-back a:hover{color:#fff;}
+  .menu-intro .listen{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
+  .menu-intro .listen .lbl{font-size:.82rem;font-weight:700;color:var(--brand-dark);}
+  .menu-intro .listen audio{flex:1;min-width:220px;height:38px;}
+</style>
+</head>
+<body>
+
+<div class="site-back">
+  <a href="../index.html">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+    All quizzes
+  </a>
+</div>
+
+<header>
+  <div class="wrap">
+    <div class="title">
+      <svg class="plane" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+      <h1>Aviation English Sentence Builder</h1>
+    </div>
+    <p>Build the sentence. Say it aloud. Understand the meaning.</p>
+  </div>
+</header>
+
+<main>
+  <!-- ===== MENU ===== -->
+  <section id="menu">
+    <div class="menu-intro">
+      <h2>ICAO Level 5 — Picture Description</h2>
+      <p>Train every phrase and the full story structure used to describe an aviation picture. Work through the modules in order, or jump to any stage.</p>
+      <div class="flow" id="flow"></div>
+      <div class="listen">
+        <span class="lbl">🎧 Listen to the structure: SHOW → LOOKS LIKE → I CAN SEE</span>
+        <audio controls preload="none" src="audio/show-looks-like-i-can-see.mp3"></audio>
+      </div>
+    </div>
+    <div class="modules" id="modules"></div>
+  </section>
+
+  <!-- ===== TASK ===== -->
+  <section id="game" class="stack hidden">
+    <div class="crumbs">
+      <button class="back" onclick="backToMenu()">
+        <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+        All modules
+      </button>
+      <span id="module-tag" class="pill"></span>
+    </div>
+
+    <div class="topbar">
+      <span id="task-indicator" class="pill">Task 1 / 1</span>
+      <div class="mode" id="mode-switch" title="Mode / Режим">
+        <button data-mode="en" class="active">EN build</button>
+        <button data-mode="ua">UA&nbsp;→&nbsp;EN</button>
+      </div>
+      <span class="mistakes">
+        <svg fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1.3l3.9-.4a1 1 0 011.1 1l-3 2.8 2.5 3.3a1 1 0 01-1.6 1.2L10 9.1l-3.4 4.1a1 1 0 01-1.6-1.2l2.5-3.3-3-2.8a1 1 0 011-1l4 .4V3a1 1 0 011-1z"/></svg>
+        Mistakes:&nbsp;<b id="mistakes-counter">0</b>
+      </span>
+    </div>
+
+    <div class="track"><div id="progress-bar"></div></div>
+
+    <div class="question">
+      <span class="label">Question</span>
+      <h2 id="question-text"></h2>
+      <p id="question-hint" class="hint hidden"></p>
+    </div>
+
+    <div>
+      <div class="zone-head"><span>Your answer</span><span class="tip">Tap a card to remove it</span></div>
+      <div id="answer-zone" class="zone"></div>
+    </div>
+
+    <div>
+      <div class="zone-head"><span>Card bank</span><span class="tip">Tap or drag to add</span></div>
+      <div id="card-bank" class="zone"></div>
+    </div>
+
+    <div id="result" class="result hidden">
+      <div id="ok-state" class="hidden">
+        <div class="ok-head">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          SUCCESS / УСПІХ
+        </div>
+        <div class="divider"></div>
+        <div class="field">
+          <span class="k en">Full English Sentence</span>
+          <div class="sentence-row">
+            <p id="res-sentence"></p>
+            <button class="speak-btn" onclick="speak()" title="Listen / Слухати" aria-label="Listen">
+              <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.5 8.5a5 5 0 010 7M18.4 5.6a9 9 0 010 12.8M12 18.8V5.2L7.8 9.5H4.5v5h3.3L12 18.8z"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="field">
+          <span class="k ua">Ukrainian Translation</span>
+          <p id="res-translation"></p>
+        </div>
+        <div class="speak-note">
+          <span class="emoji">🗣️</span>
+          <div>
+            <span class="k">Speaking instruction</span>
+            <p>Now say it aloud 3 times. <span class="ua">Тепер скажи це вголос 3 рази.</span></p>
+          </div>
+        </div>
+      </div>
+      <div id="err-state" class="hidden">
+        <div class="err-head">
+          <svg fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M4.9 19h14.2c1.5 0 2.5-1.7 1.7-3L13.7 4c-.8-1.3-2.7-1.3-3.5 0L3.3 16c-.7 1.3.2 3 1.7 3z"/></svg>
+          Try again / Спробуй ще раз
+        </div>
+        <p class="err-sub">Change the card order and check again. / Зміни порядок карток і перевір ще раз.</p>
+      </div>
+    </div>
+
+    <div class="controls">
+      <button id="btn-reset" class="btn grey" onclick="resetTask()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.6m15.4 2A8 8 0 1121.2 8H18.5"/></svg>
+        Reset
+      </button>
+      <button id="btn-check" class="btn blue" onclick="checkAnswer()">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Check
+      </button>
+      <button id="btn-next" class="btn green hidden" onclick="nextTask()">
+        Next
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7-7 7M21 12H3"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===== MODULE DONE ===== -->
+  <section id="module-done" class="hidden">
+    <div class="trophy">🏆</div>
+    <h2 id="done-title">Module complete!</h2>
+    <p class="sub">Модуль завершено</p>
+    <div class="stats">
+      <div class="s"><div class="k">Correct sentences</div><div class="v ok-v"><span id="final-correct">0</span> / <span id="final-total">0</span></div></div>
+      <div class="s r"><div class="k">Mistakes</div><div class="v warn-v" id="final-mistakes">0</div></div>
+    </div>
+    <p class="msg" id="done-msg"></p>
+    <div class="done-controls">
+      <button class="btn grey" style="flex:1" onclick="backToMenu()">All modules</button>
+      <button id="btn-next-module" class="btn green" style="flex:2" onclick="nextModule()">Next module →</button>
+    </div>
+  </section>
+</main>
+
+<footer>&copy; 2026 Aviation English Training Tool — for educational purposes only.</footer>
+
+<script>
+/* =====================================================================
+   AVIATION ENGLISH SENTENCE BUILDER
+   Single-file vanilla JS. Module-based ICAO Level 5 picture-description course.
+   Pointer-based drag-and-drop works on mouse AND touch (tablet ready).
+   ===================================================================== */
+
+/* 1. DATA --------------------------------------------------------------
+   Each module = one stage of the ICAO "story flow".
+   A task only needs `cards` (in CORRECT order); the bank is shuffled at runtime.
+   `sentence` + `translation` are shown after a correct answer.
+   Optional per-task `question` overrides the module's default prompt. */
+const MODULES = [
+  { code:"Core", core:true, titleEn:"Core structure", titleUa:"Базова структура · may have",
+    prompt:"Build the modal-perfect sentence.",
+    purpose:"The 'may have + V3' pattern that powers stages 4–5.",
+    tasks:[
+      { question:"What may have happened?", cards:["It","may","have","happened","during landing"],
+        sentence:"It may have happened during landing.", translation:"Це могло статися під час посадки." },
+      { question:"What may have happened?", cards:["It","may","have","happened","during takeoff"],
+        sentence:"It may have happened during takeoff.", translation:"Це могло статися під час зльоту." },
+      { question:"What may have happened?", cards:["It","may","have","happened","during approach"],
+        sentence:"It may have happened during approach.", translation:"Це могло статися під час заходу на посадку." },
+      { question:"What may have been the cause?", cards:["There","may","have","been","a communication mistake"],
+        sentence:"There may have been a communication mistake.", translation:"Можливо, була помилка в комунікації." },
+      { question:"What may have been the cause?", cards:["There","may","have","been","a misunderstanding with ATC"],
+        sentence:"There may have been a misunderstanding with ATC.", translation:"Можливо, було непорозуміння з диспетчером (ATC)." },
+      { question:"What may have been the cause?", cards:["There","may","have","been","a technical problem"],
+        sentence:"There may have been a technical problem.", translation:"Можливо, була технічна проблема." },
+      { question:"What may have been the cause?", cards:["There","may","have","been","poor visibility"],
+        sentence:"There may have been poor visibility.", translation:"Можливо, була погана видимість." }
+    ]},
+
+  { code:"1 · Show", titleEn:"Show", titleUa:"Загальна ситуація",
+    prompt:"Introduce the picture (general situation).",
+    purpose:"This picture shows…",
+    tasks:[
+      { cards:["This picture shows","a potentially serious","aviation situation","involving an aircraft","and a ground vehicle"],
+        sentence:"This picture shows a potentially serious aviation situation involving an aircraft and a ground vehicle.",
+        translation:"На цьому знімку показано потенційно серйозну авіаційну ситуацію за участю літака та наземного транспортного засобу." },
+      { cards:["This picture shows","an incident","involving","a commercial aircraft"],
+        sentence:"This picture shows an incident involving a commercial aircraft.",
+        translation:"На цьому знімку показано інцидент за участю комерційного літака." },
+      { cards:["This picture shows","a potentially serious","situation","on the runway"],
+        sentence:"This picture shows a potentially serious situation on the runway.",
+        translation:"На цьому знімку показано потенційно серйозну ситуацію на злітно-посадковій смузі." }
+    ]},
+
+  { code:"2 · Looks like", titleEn:"Looks like", titleUa:"Ідентифікація",
+    prompt:"Identify the type of situation.",
+    purpose:"It looks like… / It appears to be…",
+    tasks:[
+      { cards:["It","looks like","a runway","incursion"],
+        sentence:"It looks like a runway incursion.",
+        translation:"Схоже на несанкціонований виїзд на смугу (runway incursion)." },
+      { cards:["It","appears to be","a crosswind","landing"],
+        sentence:"It appears to be a crosswind landing.",
+        translation:"Схоже, це посадка з боковим вітром." },
+      { cards:["It","seems to be","a serious","safety problem"],
+        sentence:"It seems to be a serious safety problem.",
+        translation:"Здається, це серйозна проблема з безпекою." }
+    ]},
+
+  { code:"3 · I can see", titleEn:"I can see", titleUa:"Видимі факти",
+    prompt:"Describe only what is visible.",
+    purpose:"I can see that… (facts only)",
+    tasks:[
+      { cards:["I can see that","the aircraft","is close to","touchdown"],
+        sentence:"I can see that the aircraft is close to touchdown.",
+        translation:"Я бачу, що літак близький до приземлення." },
+      { cards:["I can see that","the runway","is still","occupied"],
+        sentence:"I can see that the runway is still occupied.",
+        translation:"Я бачу, що смуга все ще зайнята." },
+      { cards:["The weather","appears","acceptable","for landing"],
+        sentence:"The weather appears acceptable for landing.",
+        translation:"Погода виглядає прийнятною для посадки." },
+      { cards:["The runway surface","seems to be","wet","and slippery"],
+        sentence:"The runway surface seems to be wet and slippery.",
+        translation:"Поверхня смуги здається мокрою і слизькою." }
+    ]},
+
+  { code:"4 · May have happened", titleEn:"May have happened", titleUa:"Імовірний сценарій",
+    prompt:"Explain what may have happened.",
+    purpose:"The most likely scenario is…",
+    tasks:[
+      { cards:["The most likely scenario is","that the aircraft","was cleared to land","before the runway","was fully vacated"],
+        sentence:"The most likely scenario is that the aircraft was cleared to land before the runway was fully vacated.",
+        translation:"Найімовірніший сценарій — що літаку дозволили посадку до того, як смуга була повністю звільнена." },
+      { cards:["Another possible","explanation is","a misunderstanding","between ATC","and the crew"],
+        sentence:"Another possible explanation is a misunderstanding between ATC and the crew.",
+        translation:"Інше можливе пояснення — непорозуміння між диспетчером і екіпажем." },
+      { cards:["The crew","may have","misread","the clearance"],
+        sentence:"The crew may have misread the clearance.",
+        translation:"Екіпаж міг неправильно зрозуміти дозвіл." }
+    ]},
+
+  { code:"5 · Causes", titleEn:"Causes", titleUa:"Можливі причини",
+    prompt:"Discuss the contributing factors.",
+    purpose:"Several factors could have contributed…",
+    tasks:[
+      { cards:["Several factors","could have","contributed","to this situation"],
+        sentence:"Several factors could have contributed to this situation.",
+        translation:"Кілька факторів могли спричинити цю ситуацію." },
+      { cards:["Communication","between ATC and the crew","may have","broken down"],
+        sentence:"Communication between ATC and the crew may have broken down.",
+        translation:"Зв'язок між диспетчером і екіпажем міг порушитися." },
+      { cards:["The crew","may have","misunderstood","the instruction"],
+        sentence:"The crew may have misunderstood the instruction.",
+        translation:"Екіпаж міг неправильно зрозуміти вказівку." },
+      { cards:["The driver","may have","misjudged","the clearance"],
+        sentence:"The driver may have misjudged the clearance.",
+        translation:"Водій міг неправильно оцінити дистанцію/дозвіл." }
+    ]},
+
+  { code:"6 · Risk", titleEn:"Risk", titleUa:"Операційний ризик",
+    prompt:"Explain why the situation is dangerous.",
+    purpose:"From an operational point of view…",
+    tasks:[
+      { cards:["From an operational","point of view","this is","a high-risk situation"],
+        sentence:"From an operational point of view, this is a high-risk situation.",
+        translation:"З операційної точки зору, це ситуація високого ризику." },
+      { cards:["In this situation","the real danger","is","a runway collision"],
+        sentence:"In this situation, the real danger is a runway collision.",
+        translation:"У цій ситуації справжня небезпека — зіткнення на смузі." },
+      { cards:["There is","a risk of","a runway","excursion"],
+        sentence:"There is a risk of a runway excursion.",
+        translation:"Існує ризик викочування за межі смуги." },
+      { cards:["The safety margin","is already","significantly","reduced"],
+        sentence:"The safety margin is already significantly reduced.",
+        translation:"Запас безпеки вже суттєво зменшений." }
+    ]},
+
+  { code:"7 · Action", titleEn:"Action", titleUa:"Правильна реакція",
+    prompt:"Describe the correct response.",
+    purpose:"The crew should… / ATC should…",
+    tasks:[
+      { cards:["The correct response","should be","immediate","and disciplined"],
+        sentence:"The correct response should be immediate and disciplined.",
+        translation:"Правильна реакція має бути негайною і дисциплінованою." },
+      { cards:["If there is any doubt","the crew","should","go around"],
+        sentence:"If there is any doubt, the crew should go around.",
+        translation:"Якщо є будь-який сумнів, екіпаж повинен піти на друге коло." },
+      { cards:["ATC should","cancel","the landing","clearance"],
+        sentence:"ATC should cancel the landing clearance.",
+        translation:"Диспетчер повинен скасувати дозвіл на посадку." },
+      { cards:["Maintenance engineers","should perform","a detailed","inspection"],
+        sentence:"Maintenance engineers should perform a detailed inspection.",
+        translation:"Інженери з технічного обслуговування повинні провести детальний огляд." }
+    ]},
+
+  { code:"8 · Opinion", titleEn:"Opinion", titleUa:"Професійна думка",
+    prompt:"Give your professional opinion / lesson learned.",
+    purpose:"In my opinion, this is a good reminder that…",
+    tasks:[
+      { cards:["In my opinion","this picture is","a good reminder that","communication is critical","for flight safety"],
+        sentence:"In my opinion, this picture is a good reminder that communication is critical for flight safety.",
+        translation:"На мою думку, це гарне нагадування, що зв'язок критично важливий для безпеки польотів." },
+      { cards:["A go-around","is not a failure","it is","a normal","safety barrier"],
+        sentence:"A go-around is not a failure; it is a normal safety barrier.",
+        translation:"Відхід на друге коло — це не невдача, а нормальний бар'єр безпеки." },
+      { cards:["It is always better","to delay a flight","than to continue","with an unsafe situation"],
+        sentence:"It is always better to delay a flight than to continue with an unsafe situation.",
+        translation:"Завжди краще затримати рейс, ніж продовжувати в небезпечній ситуації." }
+    ]},
+
+  { code:"9 · Safety conclusion", titleEn:"Safety conclusion", titleUa:"Висновок щодо безпеки",
+    prompt:"Finish with a professional safety message.",
+    purpose:"Safety conclusion: …",
+    tasks:[
+      { cards:["Safety conclusion:","the runway","must be confirmed clear","before landing"],
+        sentence:"Safety conclusion: the runway must be confirmed clear before landing.",
+        translation:"Висновок щодо безпеки: смугу необхідно підтвердити вільною перед посадкою." },
+      { cards:["Safety conclusion:","the operation","must not continue","until it is safe"],
+        sentence:"Safety conclusion: the operation must not continue until it is safe.",
+        translation:"Висновок щодо безпеки: операцію не можна продовжувати, доки вона не стане безпечною." },
+      { cards:["Safety conclusion:","the aircraft","must not be released for flight","until maintenance clears it"],
+        sentence:"Safety conclusion: the aircraft must not be released for flight until maintenance clears it.",
+        translation:"Висновок щодо безпеки: літак не можна випускати в політ, доки технічна служба не дасть дозвіл." }
+    ]}
+];
+
+/* 2. STATE -------------------------------------------------------------- */
+let mIdx = 0;          // module index
+let idx = 0;           // task index inside module
+let correctCount = 0;  // solved tasks in this module run
+let mistakes = 0;      // wrong attempts in this module run
+let module_ = null, task = null;
+let bank = [], answer = [];
+let solved = false;
+let mode = 'en';
+let drag = null;
+
+const $ = id => document.getElementById(id);
+const menuEl=$('menu'), gameEl=$('game'), doneEl=$('module-done');
+const bankEl=$('card-bank'), answerEl=$('answer-zone');
+const questionEl=$('question-text'), hintEl=$('question-hint');
+const indicatorEl=$('task-indicator'), mistakesEl=$('mistakes-counter');
+const barEl=$('progress-bar'), resultEl=$('result');
+const okState=$('ok-state'), errState=$('err-state');
+const btnCheck=$('btn-check'), btnNext=$('btn-next'), btnReset=$('btn-reset');
+
+/* 3. MENU --------------------------------------------------------------- */
+function buildMenu(){
+  // story-flow strip
+  const flow = MODULES.filter(m=>!m.core).map(m=>m.titleEn.toUpperCase());
+  $('flow').innerHTML = flow.map((t,i)=>
+    `<span class="chip">${t}</span>${i<flow.length-1?'<span class="arr">→</span>':''}`).join('');
+
+  // module cards
+  $('modules').innerHTML = MODULES.map((m,i)=>`
+    <button class="mod ${m.core?'core':''}" onclick="openModule(${i})">
+      <span class="badge">${m.code}</span>
+      <span class="mt">${m.titleEn}<small>${m.titleUa}</small></span>
+      <span class="mp">${m.purpose}</span>
+      <span class="count">${m.tasks.length} sentence${m.tasks.length>1?'s':''}</span>
+    </button>`).join('');
+}
+
+function show(screen){
+  menuEl.classList.toggle('hidden', screen!=='menu');
+  gameEl.classList.toggle('hidden', screen!=='game');
+  doneEl.classList.toggle('hidden', screen!=='done');
+}
+
+function backToMenu(){ window.speechSynthesis && window.speechSynthesis.cancel(); show('menu'); }
+
+/* 4. OPEN MODULE -------------------------------------------------------- */
+function openModule(i){
+  mIdx = i; module_ = MODULES[i];
+  idx = 0; correctCount = 0; mistakes = 0;
+  mistakesEl.textContent = '0';
+  $('module-tag').textContent = module_.code;
+  show('game');
+  loadTask(0);
+}
+
+/* 5. LOAD TASK ---------------------------------------------------------- */
+function loadTask(i){
+  idx = i; task = module_.tasks[i]; solved = false;
+  bank = shuffle(task.cards); answer = [];
+
+  indicatorEl.textContent = `Task ${i+1} / ${module_.tasks.length}`;
+  barEl.style.width = ((i+1)/module_.tasks.length*100) + '%';
+
+  if(mode==='ua'){
+    questionEl.textContent = task.translation;
+    hintEl.classList.remove('hidden');
+    hintEl.textContent = 'Build the English sentence from the cards.';
+  } else {
+    questionEl.textContent = task.question || module_.prompt;
+    hintEl.classList.add('hidden');
+  }
+
+  resultEl.className = 'result hidden';
+  okState.classList.add('hidden'); errState.classList.add('hidden');
+  btnCheck.classList.remove('hidden'); btnNext.classList.add('hidden'); btnReset.classList.remove('hidden');
+  render();
+}
+
+/* 6. SHUFFLE (Fisher–Yates, never identical to the correct order) ------- */
+function shuffle(arr){
+  const a=[...arr];
+  for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}
+  if(a.length>1 && JSON.stringify(a)===JSON.stringify(arr)) return shuffle(arr);
+  return a;
+}
+
+/* 7. RENDER ------------------------------------------------------------- */
+function render(){
+  bankEl.innerHTML=''; answerEl.innerHTML='';
+  if(answer.length===0){
+    const p=document.createElement('span'); p.className='prompt';
+    p.textContent='Drop cards here / Перетягни картки сюди'; answerEl.appendChild(p);
+  } else answer.forEach((t,i)=>answerEl.appendChild(makeCard(t,'answer',i)));
+  bank.forEach((t,i)=>bankEl.appendChild(makeCard(t,'bank',i)));
+}
+
+function makeCard(text, zone, i){
+  const c=document.createElement('div');
+  c.className='card'; c.textContent=text; c.dataset.zone=zone; c.dataset.index=i;
+  c.addEventListener('click',()=>{
+    if(c._moved){ c._moved=false; return; }
+    if(solved) return;
+    if(zone==='bank'){ answer.push(text); bank.splice(i,1); }
+    else { bank.push(text); answer.splice(i,1); }
+    render();
+  });
+  c.addEventListener('pointerdown', startDrag);
+  return c;
+}
+
+/* 8. POINTER DRAG-AND-DROP (mouse + touch) ----------------------------- */
+function startDrag(e){
+  if(solved || e.button===2) return;
+  const card=e.currentTarget, r=card.getBoundingClientRect();
+  drag={ card, ghost:null, fromZone:card.dataset.zone, fromIndex:+card.dataset.index,
+    text:card.textContent, offX:e.clientX-r.left, offY:e.clientY-r.top,
+    startX:e.clientX, startY:e.clientY, w:r.width, moved:false };
+  document.addEventListener('pointermove', onDrag);
+  document.addEventListener('pointerup', endDrag);
+}
+function onDrag(e){
+  if(!drag) return;
+  const dx=Math.abs(e.clientX-drag.startX), dy=Math.abs(e.clientY-drag.startY);
+  if(!drag.moved && dx<5 && dy<5) return;
+  if(!drag.moved){
+    drag.moved=true; drag.card.classList.add('dragging');
+    const g=drag.card.cloneNode(true); g.classList.add('flying'); g.style.width=drag.w+'px';
+    document.body.appendChild(g); drag.ghost=g;
+  }
+  drag.ghost.style.left=(e.clientX-drag.offX)+'px';
+  drag.ghost.style.top=(e.clientY-drag.offY)+'px';
+  const z=zoneFromPoint(e.clientX,e.clientY);
+  answerEl.classList.toggle('over', z===answerEl);
+  bankEl.classList.toggle('over', z===bankEl);
+}
+function endDrag(e){
+  document.removeEventListener('pointermove', onDrag);
+  document.removeEventListener('pointerup', endDrag);
+  if(!drag) return;
+  answerEl.classList.remove('over'); bankEl.classList.remove('over');
+  if(drag.moved){
+    drag.card._moved=true;
+    if(drag.ghost) drag.ghost.remove();
+    drag.card.classList.remove('dragging');
+    const z=zoneFromPoint(e.clientX,e.clientY);
+    const targetZone = z===answerEl?'answer' : z===bankEl?'bank' : null;
+    if(targetZone){
+      const at=insertionIndex(z,e.clientX,e.clientY,drag.card);
+      applyMove(drag.fromZone, drag.fromIndex, targetZone, at);
+    }
+    render();
+  }
+  drag=null;
+}
+function zoneFromPoint(x,y){
+  const el=document.elementFromPoint(x,y);
+  if(!el) return null;
+  return el.closest('#answer-zone')||el.closest('#card-bank');
+}
+function insertionIndex(zoneEl,x,y,exclude){
+  const cards=[...zoneEl.querySelectorAll('.card')].filter(c=>c!==exclude);
+  for(let i=0;i<cards.length;i++){
+    const r=cards[i].getBoundingClientRect();
+    if(y<r.bottom && x<r.left+r.width/2) return i;
+  }
+  return cards.length;
+}
+function applyMove(fromZone,fromIndex,toZone,toIndex){
+  const src=fromZone==='answer'?answer:bank, dst=toZone==='answer'?answer:bank;
+  const [tok]=src.splice(fromIndex,1);
+  if(tok===undefined) return;
+  if(src===dst && fromIndex<toIndex) toIndex--;
+  dst.splice(Math.max(0,Math.min(toIndex,dst.length)),0,tok);
+}
+
+/* 9. CHECK -------------------------------------------------------------- */
+function checkAnswer(){
+  if(solved) return;
+  if(answer.join(' ').trim() === task.cards.join(' ').trim()) showSuccess();
+  else showError();
+}
+function showSuccess(){
+  solved=true; correctCount++;
+  resultEl.className='result ok';
+  okState.classList.remove('hidden'); errState.classList.add('hidden');
+  $('res-sentence').textContent=task.sentence;
+  $('res-translation').textContent=task.translation;
+  btnCheck.classList.add('hidden'); btnReset.classList.add('hidden'); btnNext.classList.remove('hidden');
+  btnNext.firstChild.textContent = (idx < module_.tasks.length-1) ? 'Next ' : 'Finish module ';
+  speak();
+  resultEl.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+function showError(){
+  mistakes++; mistakesEl.textContent=mistakes;
+  resultEl.className='result err';
+  okState.classList.add('hidden'); errState.classList.remove('hidden');
+}
+
+/* 10. SPEAK ------------------------------------------------------------- */
+function speak(){
+  if(!('speechSynthesis' in window) || !task) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(task.sentence);
+  u.lang='en-US'; u.rate=0.9;
+  const voices=window.speechSynthesis.getVoices();
+  for(const name of ['Google US English','Samantha','Alex','Daniel']){
+    const v=voices.find(v=>v.name.includes(name)); if(v){ u.voice=v; break; }
+  }
+  window.speechSynthesis.speak(u);
+}
+
+/* 11. NAVIGATION -------------------------------------------------------- */
+function resetTask(){ loadTask(idx); }
+function nextTask(){
+  if(idx < module_.tasks.length-1) loadTask(idx+1);
+  else showModuleDone();
+}
+function showModuleDone(){
+  window.speechSynthesis && window.speechSynthesis.cancel();
+  show('done');
+  $('done-title').textContent = module_.titleEn + ' — complete!';
+  $('final-correct').textContent = correctCount;
+  $('final-total').textContent = module_.tasks.length;
+  $('final-mistakes').textContent = mistakes;
+  const last = mIdx === MODULES.length-1;
+  const btn = $('btn-next-module');
+  if(last){
+    btn.textContent='Back to start';
+    btn.onclick = backToMenu;
+    $('done-msg').textContent = "You have completed the whole ICAO Level 5 picture-description course. Practise the modules aloud until the structure becomes automatic.";
+  } else {
+    btn.textContent = 'Next module: ' + MODULES[mIdx+1].titleEn + ' →';
+    btn.onclick = nextModule;
+    $('done-msg').textContent = "Keep going — the next stage builds on this one in the ICAO story flow.";
+  }
+}
+function nextModule(){ if(mIdx < MODULES.length-1) openModule(mIdx+1); else backToMenu(); }
+
+/* 12. MODE SWITCH ------------------------------------------------------- */
+$('mode-switch').addEventListener('click', e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  mode=b.dataset.mode;
+  [...$('mode-switch').children].forEach(x=>x.classList.toggle('active', x===b));
+  loadTask(idx);
+});
+
+/* warm up voices (populated asynchronously in some browsers) */
+if('speechSynthesis' in window) window.speechSynthesis.getVoices();
+
+/* GO */
+window.addEventListener('DOMContentLoaded', ()=>{ buildMenu(); show('menu'); });
+</script>
+</body>
+</html>

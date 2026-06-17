@@ -45,6 +45,16 @@
 - `technical-problems-1.html` — Technical Problems Crossword: Part 1
 - `technical-problems-2.html` — Technical Problems Crossword: Part 2
 
+### Sentence Builder (folder-backed секція)
+
+- Тренажери побудови речень для опису картинки (ICAO Level 5), drag-and-drop (миша + тач), власний синій «interactive lab» дизайн. **Усі лежать у підпапці `Sentence_builder/`.**
+- Три сторінки (контент = JS-масиви, не редагуй DOM):
+  - `aviation-english-sentence-builder.html` — фразовий конструктор, 9 модулів story-flow (SHOW → … → SAFETY CONCLUSION).
+  - `scenario-ordering-trainer.html` — впорядкування цілих речень трьох повних модельних відповідей.
+  - `scenario-description-builder.html` — побудова кожного речення тих самих трьох сценаріїв із чанків.
+- Три сценарії (ground handling incident, runway incursion, crosswind landing) мають повне аудіо-озвучення (ElevenLabs) у `Sentence_builder/audio/`. Підключається полем `audio:"<файл>.mp3"` на об'єкті сценарію + плеєр `<audio>` «Full model answer». Озвучення окремих карток лишається на Web Speech.
+- **Важливо:** підпапка, тож back-link `← All quizzes` → `../index.html`, а картки в `index.html` → `Sentence_builder/<файл>.html` (тег «Sentence Builder»).
+
 ### Flight Academy Trainer (folder-backed секція)
 
 - Кожен курс = **окрема standalone-сторінка** + **своя папка аудіо** + своя картка в `index.html` (тег «Listen & Read»). Курси не змішуються в одному файлі.

@@ -14,6 +14,11 @@ window.CHANGELOG_TYPES = [
 ];
 
 window.CHANGELOG = [
+  // 2026-06-17
+  { date: "2026-06-17", type: "Describe Picture",title: "Aviation English Sentence Builder",                 href: "Sentence_builder/aviation-english-sentence-builder.html" },
+  { date: "2026-06-17", type: "Describe Picture",title: "Scenario Ordering Trainer",                         href: "Sentence_builder/scenario-ordering-trainer.html" },
+  { date: "2026-06-17", type: "Describe Picture",title: "Full Scenario Descriptions",                        href: "Sentence_builder/scenario-description-builder.html" },
+
   // 2026-06-13
   { date: "2026-06-13", type: "Cockpit Class",   title: "Class: Actor Methods to Remember Texts",               href: "aviation_english_cockpit_class/actor-methods-to-remember-aviation-texts.html" },
 
