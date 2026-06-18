@@ -136,9 +136,6 @@
   .site-back{background:#1e3a8a;}
   .site-back a{display:inline-flex;align-items:center;gap:6px;max-width:880px;margin:0 auto;padding:10px 16px;color:#bae6fd;font-weight:700;font-size:.85rem;text-decoration:none;font-family:"SF Pro Text",Arial,sans-serif;}
   .site-back a:hover{color:#fff;}
-  .menu-intro .listen{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:14px;padding-top:14px;border-top:1px solid var(--line);}
-  .menu-intro .listen .lbl{font-size:.82rem;font-weight:700;color:var(--brand-dark);}
-  .menu-intro .listen audio{flex:1;min-width:220px;height:38px;}
 </style>
 </head>
 <body>
@@ -167,10 +164,6 @@
       <h2>ICAO Level 5 — Picture Description</h2>
       <p>Train every phrase and the full story structure used to describe an aviation picture. Work through the modules in order, or jump to any stage.</p>
       <div class="flow" id="flow"></div>
-      <div class="listen">
-        <span class="lbl">🎧 Listen to the structure: SHOW → LOOKS LIKE → I CAN SEE</span>
-        <audio controls preload="none" src="audio/show-looks-like-i-can-see.mp3"></audio>
-      </div>
     </div>
     <div class="modules" id="modules"></div>
   </section>
@@ -300,24 +293,26 @@
    `sentence` + `translation` are shown after a correct answer.
    Optional per-task `question` overrides the module's default prompt. */
 const MODULES = [
-  { code:"Core", core:true, titleEn:"Core structure", titleUa:"Базова структура · may have",
-    prompt:"Build the modal-perfect sentence.",
-    purpose:"The 'may have + V3' pattern that powers stages 4–5.",
+  { code:"Core", core:true, titleEn:"Answer structure", titleUa:"Структура відповіді · 9 кроків",
+    prompt:"Put the 9 answer stages in the correct ICAO order.",
+    purpose:"The 9-step skeleton of a Level 5 answer.",
     tasks:[
-      { question:"What may have happened?", cards:["It","may","have","happened","during landing"],
-        sentence:"It may have happened during landing.", translation:"Це могло статися під час посадки." },
-      { question:"What may have happened?", cards:["It","may","have","happened","during takeoff"],
-        sentence:"It may have happened during takeoff.", translation:"Це могло статися під час зльоту." },
-      { question:"What may have happened?", cards:["It","may","have","happened","during approach"],
-        sentence:"It may have happened during approach.", translation:"Це могло статися під час заходу на посадку." },
-      { question:"What may have been the cause?", cards:["There","may","have","been","a communication mistake"],
-        sentence:"There may have been a communication mistake.", translation:"Можливо, була помилка в комунікації." },
-      { question:"What may have been the cause?", cards:["There","may","have","been","a misunderstanding with ATC"],
-        sentence:"There may have been a misunderstanding with ATC.", translation:"Можливо, було непорозуміння з диспетчером (ATC)." },
-      { question:"What may have been the cause?", cards:["There","may","have","been","a technical problem"],
-        sentence:"There may have been a technical problem.", translation:"Можливо, була технічна проблема." },
-      { question:"What may have been the cause?", cards:["There","may","have","been","poor visibility"],
-        sentence:"There may have been poor visibility.", translation:"Можливо, була погана видимість." }
+      { question:"Step 1–3: how do you OPEN the answer? Order the first three stages.",
+        cards:["Show","Looks like","I can see"],
+        sentence:"Show → Looks like → I can see",
+        translation:"Крок 1–3 (вступ): показати загальну ситуацію → ідентифікувати її → описати видимі факти. Напр.: «This picture shows an incident on the runway. It looks like a runway incursion. I can see that the runway is still occupied.»" },
+      { question:"Step 4–6: how do you ANALYSE the situation? Order the middle three stages.",
+        cards:["May have happened","Causes","Risk"],
+        sentence:"May have happened → Causes → Risk",
+        translation:"Крок 4–6 (аналіз): що могло статися → можливі причини → операційний ризик. Напр.: «The aircraft may have been cleared too early. Several factors could have contributed. This is a high-risk situation.»" },
+      { question:"Step 7–9: how do you CLOSE the answer? Order the final three stages.",
+        cards:["Action","Opinion","Safety conclusion"],
+        sentence:"Action → Opinion → Safety conclusion",
+        translation:"Крок 7–9 (завершення): правильна реакція → професійна думка → висновок щодо безпеки. Напр.: «If in doubt, the crew should go around. In my opinion, communication is critical. The runway must be confirmed clear before landing.»" },
+      { question:"Now order ALL 9 stages — the full skeleton of a Level 5 answer.",
+        cards:["Show","Looks like","I can see","May have happened","Causes","Risk","Action","Opinion","Safety conclusion"],
+        sentence:"Show → Looks like → I can see → May have happened → Causes → Risk → Action → Opinion → Safety conclusion",
+        translation:"Повний каркас відповіді ICAO Level 5: 1) Show — загальна ситуація, 2) Looks like — ідентифікація, 3) I can see — видимі факти, 4) May have happened — імовірний сценарій, 5) Causes — причини, 6) Risk — ризик, 7) Action — реакція, 8) Opinion — думка, 9) Safety conclusion — висновок." }
     ]},
 
   { code:"1 · Show", titleEn:"Show", titleUa:"Загальна ситуація",
@@ -372,6 +367,20 @@ const MODULES = [
     prompt:"Explain what may have happened.",
     purpose:"The most likely scenario is…",
     tasks:[
+      { question:"What may have happened?", cards:["It","may","have","happened","during landing"],
+        sentence:"It may have happened during landing.", translation:"Це могло статися під час посадки." },
+      { question:"What may have happened?", cards:["It","may","have","happened","during takeoff"],
+        sentence:"It may have happened during takeoff.", translation:"Це могло статися під час зльоту." },
+      { question:"What may have happened?", cards:["It","may","have","happened","during approach"],
+        sentence:"It may have happened during approach.", translation:"Це могло статися під час заходу на посадку." },
+      { question:"What may have been the cause?", cards:["There","may","have","been","a communication mistake"],
+        sentence:"There may have been a communication mistake.", translation:"Можливо, була помилка в комунікації." },
+      { question:"What may have been the cause?", cards:["There","may","have","been","a misunderstanding with ATC"],
+        sentence:"There may have been a misunderstanding with ATC.", translation:"Можливо, було непорозуміння з диспетчером (ATC)." },
+      { question:"What may have been the cause?", cards:["There","may","have","been","a technical problem"],
+        sentence:"There may have been a technical problem.", translation:"Можливо, була технічна проблема." },
+      { question:"What may have been the cause?", cards:["There","may","have","been","poor visibility"],
+        sentence:"There may have been poor visibility.", translation:"Можливо, була погана видимість." },
       { cards:["The most likely scenario is","that the aircraft","was cleared to land","before the runway","was fully vacated"],
         sentence:"The most likely scenario is that the aircraft was cleared to land before the runway was fully vacated.",
         translation:"Найімовірніший сценарій — що літаку дозволили посадку до того, як смуга була повністю звільнена." },
@@ -670,7 +679,7 @@ function showError(){
 function speak(){
   if(!('speechSynthesis' in window) || !task) return;
   window.speechSynthesis.cancel();
-  const u=new SpeechSynthesisUtterance(task.sentence);
+  const u=new SpeechSynthesisUtterance(task.sentence.replace(/\s*→\s*/g,', '));
   u.lang='en-US'; u.rate=0.9;
   const voices=window.speechSynthesis.getVoices();
   for(const name of ['Google US English','Samantha','Alex','Daniel']){
