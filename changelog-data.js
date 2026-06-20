@@ -15,6 +15,7 @@ window.CHANGELOG_TYPES = [
 
 window.CHANGELOG = [
   // 2026-06-20
+  { date: "2026-06-20", type: "Quiz",            title: "Probability Phrases Trainer", href: "icao-probability-phrases-trainer.html" },
   { date: "2026-06-20", type: "Describe Picture",title: "ICAO Picture Description — Card Trainer", href: "icao-picture-description-card-trainer.html" },
 
   // 2026-06-17

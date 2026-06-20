@@ -1,0 +1,2284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICAO Aviation English - Probability Phrases Trainer</title>
+  <!-- Tailwind CSS for modern layout -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap');
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    .mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-xs font-semibold text-slate-500 hover:text-blue-600 transition-colors mr-1 whitespace-nowrap">← All quizzes</a>
+        <div class="bg-blue-600 text-white p-2 rounded-lg shadow-md shadow-blue-200">
+          <i data-lucide="plane" class="w-6 h-6 animate-pulse"></i>
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
+            ICAO Probability Trainer <span class="text-xs bg-blue-100 text-blue-800 px-2 py-0.5 rounded-full font-semibold">Confidence Logic</span>
+          </h1>
+          <p class="text-xs text-slate-500">Master aviation probability, deduction & safety-critical assumptions</p>
+        </div>
+      </div>
+      
+      <!-- Stats Board -->
+      <div class="flex items-center gap-4 bg-slate-100 p-1.5 rounded-xl border border-slate-200 text-sm font-semibold">
+        <div class="px-3 py-1 bg-white rounded-lg shadow-sm flex items-center gap-2">
+          <i data-lucide="award" class="w-4 h-4 text-amber-500"></i>
+          <span>Score: <span id="score-val" class="text-blue-600 font-bold">0</span></span>
+        </div>
+        <div class="px-3 py-1 bg-white rounded-lg shadow-sm flex items-center gap-2">
+          <i data-lucide="alert-circle" class="w-4 h-4 text-rose-500"></i>
+          <span>Mistakes: <span id="mistakes-val" class="text-rose-600 font-bold">0</span></span>
+        </div>
+        <div class="px-3 py-1 bg-white rounded-lg shadow-sm flex items-center gap-2">
+          <i data-lucide="percent" class="w-4 h-4 text-emerald-500"></i>
+          <span>Accuracy: <span id="accuracy-val" class="text-emerald-600 font-bold">100%</span></span>
+        </div>
+        <div class="px-3 py-1 bg-white rounded-lg shadow-sm flex items-center gap-2">
+          <i data-lucide="trending-up" class="w-4 h-4 text-purple-500"></i>
+          <span>Card: <span id="card-progress" class="text-purple-600 font-bold">1/80</span></span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Confidence Indicator Bar (Fixed at top layout) -->
+  <div class="bg-gradient-to-r from-emerald-50 via-amber-50 to-rose-50 border-b border-slate-200 py-2.5 shadow-inner">
+    <div class="max-w-7xl mx-auto px-4 flex justify-between items-center text-xs font-bold text-slate-600">
+      <div class="flex items-center gap-2 text-emerald-700 bg-emerald-100/50 px-2 py-1 rounded">
+        <i data-lucide="shield" class="w-3.5 h-3.5"></i>
+        <span>LOW CONFIDENCE / POSSIBILITY (might, could, could have contributed, could explain)</span>
+      </div>
+      <div class="flex items-center gap-2 text-amber-700 bg-amber-100/50 px-2 py-1 rounded">
+        <i data-lucide="help-circle" class="w-3.5 h-3.5"></i>
+        <span>MEDIUM CONFIDENCE (may have, may have been, there may have been)</span>
+      </div>
+      <div class="flex items-center gap-2 text-rose-700 bg-rose-100/50 px-2 py-1 rounded">
+        <i data-lucide="search" class="w-3.5 h-3.5"></i>
+        <span>STRONG EVIDENCE / DEDUCTION (must have, must have been)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Grid Layout -->
+  <main class="flex-grow max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
+    
+    <!-- Left Panel: Mode Selector & Concept Guide -->
+    <div class="lg:col-span-1 flex flex-col gap-4">
+      
+      <!-- Mode Selection -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <h2 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+          <i data-lucide="gamepad-2" class="text-blue-600 w-5 h-5"></i>
+          <span>Training Mode</span>
+        </h2>
+        <div class="space-y-2">
+          <button onclick="setMode(1)" id="btn-mode-1" class="w-full text-left p-3 rounded-xl border-2 transition-all flex items-center justify-between group bg-blue-50 border-blue-500">
+            <div>
+              <div class="font-bold text-sm text-slate-900">1. Pattern Choice</div>
+              <div class="text-xs text-slate-500 group-hover:text-slate-600">Choose correct confidence phrase</div>
+            </div>
+            <i data-lucide="check-square" class="w-5 h-5 text-blue-600"></i>
+          </button>
+          
+          <button onclick="setMode(2)" id="btn-mode-2" class="w-full text-left p-3 rounded-xl border-2 transition-all flex items-center justify-between group border-slate-200 hover:border-slate-300">
+            <div>
+              <div class="font-bold text-sm text-slate-900">2. Sentence Builder</div>
+              <div class="text-xs text-slate-500 group-hover:text-slate-600">Drag blocks on the Canvas</div>
+            </div>
+            <i data-lucide="grip-horizontal" class="w-5 h-5 text-slate-400"></i>
+          </button>
+
+          <button onclick="setMode(3)" id="btn-mode-3" class="w-full text-left p-3 rounded-xl border-2 transition-all flex items-center justify-between group border-slate-200 hover:border-slate-300">
+            <div>
+              <div class="font-bold text-sm text-slate-900">3. Evidence Logic</div>
+              <div class="text-xs text-slate-500 group-hover:text-slate-600">Match Evidence to Deduction level</div>
+            </div>
+            <i data-lucide="compass" class="w-5 h-5 text-slate-400"></i>
+          </button>
+
+          <button onclick="setMode(4)" id="btn-mode-4" class="w-full text-left p-3 rounded-xl border-2 transition-all flex items-center justify-between group border-slate-200 hover:border-slate-300">
+            <div>
+              <div class="font-bold text-sm text-slate-900">4. Speed Run (5s)</div>
+              <div class="text-xs text-slate-500 group-hover:text-slate-600">10 fast-paced drills with countdown</div>
+            </div>
+            <i data-lucide="zap" class="w-5 h-5 text-slate-400"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Reference Guide -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm flex-grow">
+        <h3 class="font-bold text-slate-900 mb-3 flex items-center gap-2">
+          <i data-lucide="book-open" class="text-slate-700 w-5 h-5"></i>
+          <span>ICAO Logic Helper</span>
+        </h3>
+        <div class="space-y-3 text-xs leading-relaxed">
+          <div class="p-2.5 bg-emerald-50 rounded-lg border border-emerald-100">
+            <span class="font-bold text-emerald-800 block mb-0.5">POSSIBLE EVENT (May have + V3)</span>
+            We aren't 100% sure.
+            <em class="block text-slate-600 mt-1 italic">"The crew may have misunderstood ATC."</em>
+          </div>
+          <div class="p-2.5 bg-sky-50 rounded-lg border border-sky-100">
+            <span class="font-bold text-sky-800 block mb-0.5">BACKGROUND (There may have been)</span>
+            Describing environmental or systemic elements.
+            <em class="block text-slate-600 mt-1 italic">"There may have been standing water."</em>
+          </div>
+          <div class="p-2.5 bg-amber-50 rounded-lg border border-amber-100">
+            <span class="font-bold text-amber-800 block mb-0.5">POSSIBLE CAUSE / EXPLANATION</span>
+            Could have contributed / Could explain.
+            <em class="block text-slate-600 mt-1 italic">"Heavy spray could explain the hydroplaning."</em>
+          </div>
+          <div class="p-2.5 bg-rose-50 rounded-lg border border-rose-100">
+            <span class="font-bold text-rose-800 block mb-0.5">STRONG DEDUCTION (Must have + V3)</span>
+            We have strong physical evidence on camera.
+            <em class="block text-slate-600 mt-1 italic">"The aircraft must have struck a drone."</em>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Middle & Right Panel: Core Game Board (Canvas & Controls) -->
+    <div class="lg:col-span-3 flex flex-col gap-4">
+      
+      <!-- Top Action Bar (Prompt & Timer & Speak) -->
+      <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+        <div class="flex justify-between items-center flex-wrap gap-3">
+          <div class="flex items-center gap-3">
+            <div class="bg-blue-100 text-blue-700 font-bold px-3 py-1.5 rounded-lg text-xs tracking-wider uppercase" id="current-badge">
+              Prompt
+            </div>
+            <span id="speed-timer-container" class="hidden items-center gap-2 bg-rose-100 text-rose-800 px-3 py-1 rounded-full font-bold text-sm animate-pulse">
+              <i data-lucide="timer" class="w-4 h-4"></i>
+              <span id="speed-timer">5</span>s left
+            </span>
+          </div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="speakCorrectSentence()" class="px-3.5 py-1.5 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-colors" title="Hear correct pronunciation">
+              <i data-lucide="volume-2" class="w-4 h-4 text-blue-600"></i>
+              <span>Speak Phrase</span>
+            </button>
+            <button onclick="showHint()" class="px-3.5 py-1.5 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded-xl font-semibold text-xs flex items-center gap-1.5 transition-colors">
+              <i data-lucide="help-circle" class="w-4 h-4"></i>
+              <span>Hint</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-3">
+          <div class="text-xs text-slate-400 font-semibold tracking-wider uppercase mb-1">Observation / Evidence:</div>
+          <div id="prompt-evidence" class="text-xl font-extrabold text-slate-800 tracking-tight leading-snug">
+            Loading card evidence...
+          </div>
+          <div id="prompt-question" class="text-sm text-slate-500 mt-1 italic">
+            What happened based on the visual proof?
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Canvas Container -->
+      <div class="relative bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden flex flex-col items-center">
+        <!-- Interactive Canvas -->
+        <canvas id="trainer-canvas" width="800" height="420" class="w-full bg-slate-50 border-b border-slate-100 block cursor-default"></canvas>
+
+        <!-- Dynamic UI Area (Choices for Pattern Choice or Status Feedback) -->
+        <div class="w-full p-4 bg-white min-h-[100px] flex flex-col justify-center items-center gap-3">
+          
+          <!-- Mode 1 / Mode 3 / Mode 4 Multiple Choice Grid -->
+          <div id="choice-grid" class="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
+            <!-- Dynamically populated buttons -->
+          </div>
+
+          <!-- Drag and Drop Instructions for Mode 2 -->
+          <div id="drag-instructions" class="hidden text-sm text-slate-500 text-center flex items-center gap-2">
+            <i data-lucide="mouse-pointer-click" class="w-4 h-4 text-blue-500 animate-bounce"></i>
+            <span>Drag the phrase blocks above on the canvas into the <strong>Answer Zone</strong> box in the correct grammar order.</span>
+          </div>
+
+          <!-- Bottom Action Buttons -->
+          <div class="flex gap-3 justify-end w-full mt-2">
+            <button id="btn-reset" onclick="resetCurrentCard()" class="px-4 py-2 border border-slate-200 text-slate-600 hover:bg-slate-50 rounded-xl font-semibold text-sm flex items-center gap-2 transition-all">
+              <i data-lucide="refresh-cw" class="w-4 h-4"></i>
+              <span>Reset</span>
+            </button>
+            <button id="btn-check" onclick="checkAnswer()" class="px-5 py-2 bg-blue-600 text-white hover:bg-blue-700 shadow-md shadow-blue-200 rounded-xl font-bold text-sm flex items-center gap-2 transition-all">
+              <i data-lucide="shield-check" class="w-4 h-4"></i>
+              <span>Check Answer</span>
+            </button>
+            <button id="btn-next" onclick="nextCard()" class="px-5 py-2 bg-emerald-600 text-white hover:bg-emerald-700 shadow-md shadow-emerald-200 rounded-xl font-bold text-sm flex items-center gap-2 transition-all">
+              <span>Next Scenario</span>
+              <i data-lucide="arrow-right" class="w-4 h-4"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Feedback Box -->
+      <div id="feedback-panel" class="p-4 rounded-2xl border transition-all hidden">
+        <div class="flex items-start gap-3">
+          <div id="feedback-icon-container" class="p-2 rounded-xl text-white">
+            <i id="feedback-icon" data-lucide="check" class="w-6 h-6"></i>
+          </div>
+          <div class="flex-grow">
+            <h4 id="feedback-title" class="font-extrabold text-base tracking-tight">Status</h4>
+            <p id="feedback-desc" class="text-sm mt-1 leading-relaxed font-medium">Description text</p>
+            <!-- Translation and logic support -->
+            <div id="feedback-explanation" class="mt-2.5 p-2.5 bg-white/60 rounded-lg text-xs text-slate-700 border border-slate-200/50">
+              Пояснення тут.
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Complete Session Dialog -->
+  <div id="session-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 hidden">
+    <div class="bg-white rounded-3xl max-w-xl w-full p-6 shadow-2xl border border-slate-100 transform scale-95 transition-transform duration-300">
+      <div class="text-center">
+        <div class="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-inner">
+          <i data-lucide="trophy" class="w-8 h-8"></i>
+        </div>
+        <h2 class="text-2xl font-black text-slate-900">Session Completed!</h2>
+        <p class="text-slate-500 text-sm mt-1">Excellent job training your ICAO aviation deduction logic.</p>
+      </div>
+
+      <!-- Performance metrics -->
+      <div class="grid grid-cols-3 gap-3 my-6">
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-center">
+          <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Overall Accuracy</div>
+          <div id="modal-accuracy" class="text-2xl font-black text-emerald-600">92%</div>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-center">
+          <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Correct Answers</div>
+          <div id="modal-correct" class="text-2xl font-black text-blue-600">8/10</div>
+        </div>
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-100 text-center">
+          <div class="text-slate-400 text-[10px] font-bold uppercase tracking-wider">Total Mistakes</div>
+          <div id="modal-mistakes" class="text-2xl font-black text-rose-600">2</div>
+        </div>
+      </div>
+
+      <div class="space-y-4">
+        <!-- Pattern analysis -->
+        <div>
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <i data-lucide="smile" class="w-4 h-4 text-emerald-500"></i> Strong Patterns
+          </h4>
+          <div id="strong-patterns-list" class="flex flex-wrap gap-1.5">
+            <!-- Badges -->
+          </div>
+        </div>
+
+        <div>
+          <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-1.5">
+            <i data-lucide="frown" class="w-4 h-4 text-rose-500"></i> Weak Patterns (Need Practice)
+          </h4>
+          <div id="weak-patterns-list" class="flex flex-wrap gap-1.5">
+            <!-- Badges -->
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-6 pt-4 border-t border-slate-100 flex gap-3">
+        <button onclick="restartSession()" class="flex-grow py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-colors shadow-lg shadow-blue-200">
+          Start New Session
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-4 mt-auto">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400 flex flex-wrap justify-between items-center gap-4">
+      <p>&copy; 2026 Aviation English Canvas Trainer. Compliant with ICAO Doc 9835.</p>
+      <div class="flex items-center gap-3 font-semibold text-slate-500">
+        <span>May/Might/Could (Possibility)</span>
+        <span>&bull;</span>
+        <span>Must (Logical Deduction)</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // --- 80 REAL AVIATION CARDS DATA IN COMPLIANCE WITH THE SPECIFICATION ---
+    const CARDS = [
+      // 1. may have (15 cards)
+      {
+        id: "may-have-01",
+        category: "may have",
+        level: 1,
+        prompt: "The aircraft has completed a long flight and the crew appears exhausted.",
+        question: "Select the correct probability logic for a possible human factor:",
+        correctPattern: "may have",
+        correctSentence: "The crew may have made a navigation error.",
+        options: ["may have", "must have", "should have", "there may have been"],
+        blocks: ["The crew", "may have", "made", "a navigation error"],
+        explanationUa: "Ми підозрюємо людську помилку через втому, але не впевнені на 100%. Використовуємо 'may have' для можливої минулої дії.",
+        speak: true
+      },
+      {
+        id: "may-have-02",
+        category: "may have",
+        level: 1,
+        prompt: "The pilot is requesting to repeat the wind direction three times.",
+        question: "What might have happened with communication?",
+        correctPattern: "may have",
+        correctSentence: "The pilot may have misunderstood the ATC instruction.",
+        options: ["may have", "must have", "could explain", "could have contributed"],
+        blocks: ["The pilot", "may have", "misunderstood", "the ATC instruction"],
+        explanationUa: "Оскільки пілот перепитує, можливо він не зрозумів вказівку. Немає жорстких доказів відмови радіо, тому 'may have'.",
+        speak: true
+      },
+      {
+        id: "may-have-03",
+        category: "may have",
+        level: 1,
+        prompt: "An aircraft landed late near the end of a short runway.",
+        question: "Describe the touchdown risk:",
+        correctPattern: "may have",
+        correctSentence: "The pilot may have touched down long.",
+        options: ["may have", "must have", "there may have been", "could explain"],
+        blocks: ["The pilot", "may have", "touched down", "long"],
+        explanationUa: "Посадка в кінці смуги означає, що літак, ймовірно (можливо), здійснив переліт зони приземлення.",
+        speak: true
+      },
+      {
+        id: "may-have-04",
+        category: "may have",
+        level: 1,
+        prompt: "A ground vehicle is seen parked right at the edge of the active runway.",
+        question: "What rule violation may have occurred?",
+        correctPattern: "may have",
+        correctSentence: "The driver may have entered the safety area without clearance.",
+        options: ["may have", "must have been", "could explain", "must have"],
+        blocks: ["The driver", "may have", "entered", "the safety area", "without clearance"],
+        explanationUa: "Транспортний засіб занадто близько. Можливо, водій заїхав без дозволу.",
+        speak: true
+      },
+      {
+        id: "may-have-05",
+        category: "may have",
+        level: 1,
+        prompt: "A flight is suddenly changing route and turning 180 degrees away from a storm front.",
+        question: "What may have happened on board?",
+        correctPattern: "may have",
+        correctSentence: "The crew may have detected severe turbulence ahead.",
+        options: ["may have", "must have been", "could have contributed", "there may have been"],
+        blocks: ["The crew", "may have", "detected", "severe turbulence", "ahead"],
+        explanationUa: "Розворот через погоду. Причиною може бути виявлення турбулентності радаром.",
+        speak: true
+      },
+      {
+        id: "may-have-06",
+        category: "may have",
+        level: 1,
+        prompt: "The aircraft is parked on the taxiway with its APU cover open.",
+        question: "What did the technicians do?",
+        correctPattern: "may have",
+        correctSentence: "The engineers may have discovered an APU issue.",
+        options: ["may have", "must have", "there may have been", "could explain"],
+        blocks: ["The engineers", "may have", "discovered", "an APU issue"],
+        explanationUa: "Техніки відкрили люк, отже, можливо, виявили проблему. Ми припускаємо це як варіант.",
+        speak: true
+      },
+      {
+        id: "may-have-07",
+        category: "may have",
+        level: 2,
+        prompt: "An aircraft tyre is partially deflated after dynamic landing.",
+        question: "Build the sentence for a possible tyre strike:",
+        correctPattern: "may have",
+        correctSentence: "The landing gear may have hit debris on the runway.",
+        options: ["may have", "must have", "could explain", "there may have been"],
+        blocks: ["The landing gear", "may have", "hit", "debris", "on the runway"],
+        explanationUa: "Шина спустила. Можлива подія: наїзд на сторонній предмет (FOD).",
+        speak: true
+      },
+      {
+        id: "may-have-08",
+        category: "may have",
+        level: 2,
+        prompt: "The radar screen shows a sudden transponder loss over a mountainous area.",
+        question: "Formulate a possible electrical issue:",
+        correctPattern: "may have",
+        correctSentence: "The aircraft may have suffered an electrical failure.",
+        options: ["may have", "must have", "could have contributed", "there may have been"],
+        blocks: ["The aircraft", "may have", "suffered", "an electrical failure"],
+        explanationUa: "Зникнення сигналу може вказувати на відмову електрики. Це одна з можливих версій.",
+        speak: true
+      },
+      {
+        id: "may-have-09",
+        category: "may have",
+        level: 2,
+        prompt: "Flight data shows the aircraft speed dropped significantly during climb.",
+        question: "What did the pilot do?",
+        correctPattern: "may have",
+        correctSentence: "The pilot may have experienced a strong windshear.",
+        options: ["may have", "must have been", "could explain", "must have"],
+        blocks: ["The pilot", "may have", "experienced", "a strong windshear"],
+        explanationUa: "Раптове падіння швидкості під час набору висоти може свідчити про зсув вітру.",
+        speak: true
+      },
+      {
+        id: "may-have-10",
+        category: "may have",
+        level: 2,
+        prompt: "A baggage cart is left unattended next to the engine cowl.",
+        question: "What danger may have happened?",
+        correctPattern: "may have",
+        correctSentence: "The cart may have rolled into the engine.",
+        options: ["may have", "must have", "there may have been", "could explain"],
+        blocks: ["The cart", "may have", "rolled", "into the engine"],
+        explanationUa: "Візок залишено без нагляду. Можливо, він покотився у бік двигуна.",
+        speak: true
+      },
+      {
+        id: "may-have-11",
+        category: "may have",
+        level: 2,
+        prompt: "The fuel truck is driving away but the refueling panel is still open.",
+        question: "What did the ground crew forget?",
+        correctPattern: "may have",
+        correctSentence: "The ground crew may have forgotten to close the panel.",
+        options: ["may have", "must have been", "could explain", "there may have been"],
+        blocks: ["The ground crew", "may have", "forgotten", "to close the panel"],
+        explanationUa: "Панель залишилась відкритою. Найбільш вірогідна людська неуважність (забули закрити).",
+        speak: true
+      },
+      {
+        id: "may-have-12",
+        category: "may have",
+        level: 2,
+        prompt: "The pilot is flying significantly slower than standard cruise speed.",
+        question: "What is the possible cause?",
+        correctPattern: "may have",
+        correctSentence: "The pilot may have reduced thrust due to vibrations.",
+        options: ["may have", "must have", "there may have been", "could explain"],
+        blocks: ["The pilot", "may have", "reduced", "thrust", "due to vibrations"],
+        explanationUa: "Зниження швидкості може бути свідомим рішенням через вібрації двигуна.",
+        speak: true
+      },
+      {
+        id: "may-have-13",
+        category: "may have",
+        level: 3,
+        prompt: "The captain is checking the weather map over and over again before departure.",
+        question: "What may have happened to the flight plan?",
+        correctPattern: "may have",
+        correctSentence: "The weather forecast may have changed unexpectedly.",
+        options: ["may have", "must have", "could explain", "there may have been"],
+        blocks: ["The weather forecast", "may have", "changed", "unexpectedly"],
+        explanationUa: "Постійна перевірка карти свідчить про те, що прогноз міг раптово змінитися.",
+        speak: true
+      },
+      {
+        id: "may-have-14",
+        category: "may have",
+        level: 3,
+        prompt: "The flight is holding over its destination airport for more than 40 minutes.",
+        question: "What happened on the ground?",
+        correctPattern: "may have",
+        correctSentence: "The destination runway may have closed temporarily.",
+        options: ["may have", "must have", "could have contributed", "could explain"],
+        blocks: ["The destination runway", "may have", "closed", "temporarily"],
+        explanationUa: "Тривале очікування в зоні тримання вказує на ймовірне тимчасове закриття ЗПС.",
+        speak: true
+      },
+      {
+        id: "may-have-15",
+        category: "may have",
+        level: 3,
+        prompt: "ATC reports no response from the aircraft on the main frequency.",
+        question: "Suggest a radio issue:",
+        correctPattern: "may have",
+        correctSentence: "The crew may have selected the wrong frequency.",
+        options: ["may have", "must have", "there may have been", "could explain"],
+        blocks: ["The crew", "may have", "selected", "the wrong frequency"],
+        explanationUa: "Відсутність зв'язку часто пояснюється тим, що екіпаж помилково налаштував не ту частоту.",
+        speak: true
+      },
+
+      // 2. may have been (15 cards)
+      {
+        id: "may-have-been-01",
+        category: "may have been",
+        level: 1,
+        prompt: "Water is glistening over the entire surface of the runway.",
+        question: "What was the runway condition?",
+        correctPattern: "may have been",
+        correctSentence: "The runway may have been contaminated.",
+        options: ["may have been", "must have been", "there may have been", "could explain"],
+        blocks: ["The runway", "may have been", "contaminated"],
+        explanationUa: "Поверхня блищить від води, тому вона могла бути забруднена (contaminated). Використовуємо пасивний або описовий стан.",
+        speak: true
+      },
+      {
+        id: "may-have-been-02",
+        category: "may have been",
+        level: 1,
+        prompt: "The aircraft used nearly the entire runway length to get airborne.",
+        question: "What can you say about its weight?",
+        correctPattern: "may have been",
+        correctSentence: "The aircraft may have been heavy at landing weight.",
+        options: ["may have been", "must have been", "could explain", "there may have been"],
+        blocks: ["The aircraft", "may have been", "heavy", "at landing weight"],
+        explanationUa: "Дуже довгий розбіг або пробіг свідчить про те, що літак міг бути занадто важким.",
+        speak: true
+      },
+      {
+        id: "may-have-been-03",
+        category: "may have been",
+        level: 1,
+        prompt: "The visual path of the final approach shows rapid altitude adjustments.",
+        question: "How was the stability of the approach?",
+        correctPattern: "may have been",
+        correctSentence: "The approach may have been unstable.",
+        options: ["may have been", "must have been", "could have contributed", "could explain"],
+        blocks: ["The approach", "may have been", "unstable"],
+        explanationUa: "Ступінчаста або нерівна траєкторія вказує на те, що захід на посадку міг бути нестабільним.",
+        speak: true
+      },
+      {
+        id: "may-have-been-04",
+        category: "may have been",
+        level: 1,
+        prompt: "Radio logs show multiple readback corrections during taxi.",
+        question: "Describe the quality of communication:",
+        correctPattern: "may have been",
+        correctSentence: "The communication may have been unclear.",
+        options: ["may have been", "must have been", "there may have been", "could explain"],
+        blocks: ["The communication", "may have been", "unclear"],
+        explanationUa: "Багато виправлень у радіообміні вказують на те, що зв'язок міг бути нечітким.",
+        speak: true
+      },
+      {
+        id: "may-have-been-05",
+        category: "may have been",
+        level: 2,
+        prompt: "The sky is dark grey with low storm clouds rolling in rapidly.",
+        question: "What was happening to the weather?",
+        correctPattern: "may have been",
+        correctSentence: "The weather may have been deteriorating.",
+        options: ["may have been", "must have been", "could explain", "there may have been"],
+        blocks: ["The weather", "may have been", "deteriorating"],
+        explanationUa: "Хмари згущуються. Погода, можливо, погіршувалася під час події.",
+        speak: true
+      },
+      {
+        id: "may-have-been-06",
+        category: "may have been",
+        level: 2,
+        prompt: "The pilot's voice on the radio sounded tense and rushed.",
+        question: "Describe the pilot's possible condition:",
+        correctPattern: "may have been",
+        correctSentence: "The pilot may have been distracted during the landing.",
+        options: ["may have been", "must have been", "could have contributed", "could explain"],
+        blocks: ["The pilot", "may have been", "distracted", "during the landing"],
+        explanationUa: "Напружений голос може свідчити про те, що пілот був відволічений чи перевантажений.",
+        speak: true
+      },
+      {
+        id: "may-have-been-07",
+        category: "may have been",
+        level: 2,
+        prompt: "The cockpit instruments show multiple warning flags glowing red.",
+        question: "What was happening to the flight systems?",
+        correctPattern: "may have been",
+        correctSentence: "The flight systems may have been malfunctioning.",
+        options: ["may have been", "must have been", "could explain", "there may have been"],
+        blocks: ["The flight systems", "may have been", "malfunctioning"],
+        explanationUa: "Червоні індикатори вказують на можливу несправність бортових систем під час польоту.",
+        speak: true
+      },
+      {
+        id: "may-have-been-08",
+        category: "may have been",
+        level: 2,
+        prompt: "The aircraft performed a sudden go-around just 50 feet above the runway.",
+        question: "What was the wind condition?",
+        correctPattern: "may have been",
+        correctSentence: "The crosswind may have been out of limits.",
+        options: ["may have been", "must have been", "there may have been", "could explain"],
+        blocks: ["The crosswind", "may have been", "out of limits"],
+        explanationUa: "Раптове рішення про друге коло на такій висоті свідчить, що боковий вітер міг перевищувати ліміти.",
+        speak: true
+      },
+      {
+        id: "may-have-been-09",
+        category: "may have been",
+        level: 3,
+        prompt: "The cargo door seal is damaged and hanging loose.",
+        question: "What was the state of the pressure seal?",
+        correctPattern: "may have been",
+        correctSentence: "The cargo door may have been improperly closed.",
+        options: ["may have been", "must have been", "could have contributed", "there may have been"],
+        blocks: ["The cargo door", "may have been", "improperly", "closed"],
+        explanationUa: "Ущільнювач пошкоджено, отже, двері багажного відсіку могли бути закриті неправильно.",
+        speak: true
+      },
+      {
+        id: "may-have-been-10",
+        category: "may have been",
+        level: 3,
+        prompt: "An older commercial jet is undergoing major structural inspections.",
+        question: "What is the concern about the airframe?",
+        correctPattern: "may have been",
+        correctSentence: "The airframe may have been weakened by corrosion.",
+        options: ["may have been", "must have been", "could explain", "there may have been"],
+        blocks: ["The airframe", "may have been", "weakened", "by corrosion"],
+        explanationUa: "Для старого літака є ризик, що конструкція планера була ослаблена корозією.",
+        speak: true
+      },
+      {
+        id: "may-have-been-11",
+        category: "may have been",
+        level: 3,
+        prompt: "The windshield is severely shattered after passing through a dark cloud.",
+        question: "What hit the windshield?",
+        correctPattern: "may have been",
+        correctSentence: "The aircraft may have been struck by hail.",
+        options: ["may have been", "must have been", "could explain", "could have contributed"],
+        blocks: ["The aircraft", "may have been", "struck", "by hail"],
+        explanationUa: "Розбите скло після хмари вказує на те, що літак міг зазнати удару градом.",
+        speak: true
+      },
+      {
+        id: "may-have-been-12",
+        category: "may have been",
+        level: 3,
+        prompt: "The taxiway lights are completely off during a night transition.",
+        question: "What was the electrical state of the taxiway?",
+        correctPattern: "may have been",
+        correctSentence: "The airport lighting may have been deactivated.",
+        options: ["may have been", "must have been", "there may have been", "could explain"],
+        blocks: ["The airport lighting", "may have been", "deactivated"],
+        explanationUa: "Вимкнені вогні вночі можуть означати, що освітлення аеропорту було деактивовано або несправне.",
+        speak: true
+      },
+      {
+        id: "may-have-been-13",
+        category: "may have been",
+        level: 3,
+        prompt: "A pilot taxiing near the hangar complains about poor markings.",
+        question: "What was the state of the markings?",
+        correctPattern: "may have been",
+        correctSentence: "The taxiway markings may have been faded.",
+        options: ["may have been", "must have been", "could explain", "there may have been"],
+        blocks: ["The taxiway markings", "may have been", "faded"],
+        explanationUa: "Скарги на маркування вказують на те, що лінії на руліжній доріжці могли стертися.",
+        speak: true
+      },
+      {
+        id: "may-have-been-14",
+        category: "may have been",
+        level: 3,
+        prompt: "The cabin crew reports a strong plastic smell in the aft galley.",
+        question: "What was overheating?",
+        correctPattern: "may have been",
+        correctSentence: "An oven in the galley may have been overheating.",
+        options: ["may have been", "must have been", "could have contributed", "there may have been"],
+        blocks: ["An oven in the galley", "may have been", "overheating"],
+        explanationUa: "Запах горілого пластику на кухні вказує на те, що піч могла перегріватися.",
+        speak: true
+      },
+      {
+        id: "may-have-been-15",
+        category: "may have been",
+        level: 3,
+        prompt: "The rescue fire services are standing by for an arriving narrowbody.",
+        question: "What was the brake state?",
+        correctPattern: "may have been",
+        correctSentence: "The wheel brakes may have been hot.",
+        options: ["may have been", "must have been", "could explain", "there may have been"],
+        blocks: ["The wheel brakes", "may have been", "hot"],
+        explanationUa: "Пожежні чергують біля ЗПС, тому що гальма коліс могли перегрітися після аварійного гальмування.",
+        speak: true
+      },
+
+      // 3. there may have been (15 cards)
+      {
+        id: "there-may-have-been-01",
+        category: "there may have been",
+        level: 1,
+        prompt: "Water has accumulated in deep puddles on the runway.",
+        question: "Describe the presence of water:",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been standing water on the runway.",
+        options: ["there may have been", "may have", "must have", "could explain"],
+        blocks: ["There", "may have been", "standing water", "on the runway"],
+        explanationUa: "Великі калюжі свідчать про те, що на смузі могла бути стояча вода ('there may have been standing water').",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-02",
+        category: "there may have been",
+        level: 1,
+        prompt: "Both the pilot and controller are talking at the exact same moment on frequency.",
+        question: "What kind of error occurred?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a communication error.",
+        options: ["there may have been", "may have been", "must have been", "could have contributed"],
+        blocks: ["There", "may have been", "a communication", "error"],
+        explanationUa: "Одночасний вихід в ефір (blocked transmission) означає, що могла виникнути помилка зв'язку.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-03",
+        category: "there may have been",
+        level: 1,
+        prompt: "The windsock on the airfield is stretched completely flat and pointing sideways.",
+        question: "What wind condition existed?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been strong crosswinds.",
+        options: ["there may have been", "must have", "may have", "could explain"],
+        blocks: ["There", "may have been", "strong", "crosswinds"],
+        explanationUa: "Вітровказівник розтягнутий боком. Імовірно, під час посадки був сильний боковий вітер.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-04",
+        category: "there may have been",
+        level: 1,
+        prompt: "Smoke is rising from the main landing gear hub after touchdown.",
+        question: "What system failed?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a technical malfunction.",
+        options: ["there may have been", "may have", "must have", "could explain"],
+        blocks: ["There", "may have been", "a technical", "malfunction"],
+        explanationUa: "Дим від шасі свідчить про те, що могла виникнути технічна несправність гальм чи гідравліки.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-05",
+        category: "there may have been",
+        level: 2,
+        prompt: "The jet took the wrong exit taxiway after landing, blocking another flight.",
+        question: "Explain the ATC interaction:",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a misunderstanding with ATC.",
+        options: ["there may have been", "may have", "must have been", "could explain"],
+        blocks: ["There", "may have been", "a misunderstanding", "with ATC"],
+        explanationUa: "Неправильний з'їзд зі смуги вказує на можливе непорозуміння з диспетчером.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-06",
+        category: "there may have been",
+        level: 2,
+        prompt: "The dispatch sheet was printed with incorrect weight distribution figures.",
+        question: "What error was introduced during planning?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a documentation error.",
+        options: ["there may have been", "may have been", "must have", "could have contributed"],
+        blocks: ["There", "may have been", "a documentation", "error"],
+        explanationUa: "Помилка в документах з ваги та балансу вказує на можливу помилку документації.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-07",
+        category: "there may have been",
+        level: 2,
+        prompt: "Flickering lights and unstable displays are reported in the terminal building.",
+        question: "What occurred to the grid?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a power surge.",
+        options: ["there may have been", "may have", "must have been", "could explain"],
+        blocks: ["There", "may have been", "a power", "surge"],
+        explanationUa: "Миготіння світла свідчить про можливий стрибок напруги в електромережі аеропорту.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-08",
+        category: "there may have been",
+        level: 2,
+        prompt: "The flight data recorder registered multiple short micro-drops in altitude.",
+        question: "Describe the atmosphere:",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been moderate turbulence during descent.",
+        options: ["there may have been", "may have been", "must have", "could have contributed"],
+        blocks: ["There", "may have been", "moderate turbulence", "during descent"],
+        explanationUa: "Коливання висоти на самописцях вказують на те, що під час зниження була помірна турбулентність.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-09",
+        category: "there may have been",
+        level: 3,
+        prompt: "Security is checking boarding passes twice at the gate area.",
+        question: "What security issue occurred?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a security breach.",
+        options: ["there may have been", "may have", "must have been", "could explain"],
+        blocks: ["There", "may have been", "a security", "breach"],
+        explanationUa: "Повторна перевірка посадкових талонів свідчить про те, що могло бути порушення авіаційної безпеки.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-10",
+        category: "there may have been",
+        level: 3,
+        prompt: "The runway is covered in small, hard chunks of ice after a sudden storm.",
+        question: "Describe the runway contamination:",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been hail accumulation.",
+        options: ["there may have been", "may have been", "must have", "could have contributed"],
+        blocks: ["There", "may have been", "hail", "accumulation"],
+        explanationUa: "Шматки льоду на смузі свідчать про те, що могло відбутися накопичення граду.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-11",
+        category: "there may have been",
+        level: 3,
+        prompt: "Multiple birds are flying away from the runway path as the aircraft takes off.",
+        question: "What hazard was present?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a bird strike hazard.",
+        options: ["there may have been", "may have", "must have been", "could explain"],
+        blocks: ["There", "may have been", "a bird strike", "hazard"],
+        explanationUa: "Велика кількість птахів біля смуги створює потенційну загрозу зіткнення з птахами.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-12",
+        category: "there may have been",
+        level: 3,
+        prompt: "The ground crew is pointing at the rear fuselage underbelly.",
+        question: "What physical damage do they suspect?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a tail strike on takeoff.",
+        options: ["there may have been", "may have been", "must have", "could explain"],
+        blocks: ["There", "may have been", "a tail strike", "on takeoff"],
+        explanationUa: "Екіпаж оглядає хвостову частину знизу. Можливо, відбулося торкання хвостом (tail strike) під час зльоту.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-13",
+        category: "there may have been",
+        level: 3,
+        prompt: "A large oil puddle is spreading under the engine nacelle.",
+        question: "What system leaked?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a hydraulic leak.",
+        options: ["there may have been", "may have", "must have been", "could explain"],
+        blocks: ["There", "may have been", "a hydraulic", "leak"],
+        explanationUa: "Калюжа рідини під двигуном вказує на те, що міг статися витік гідравліки або мастила.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-14",
+        category: "there may have been",
+        level: 3,
+        prompt: "The passengers are coughing as they exit the aircraft cabin.",
+        question: "What was in the air?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been smoke in the cabin.",
+        options: ["there may have been", "may have been", "must have", "could have contributed"],
+        blocks: ["There", "may have been", "smoke", "in the cabin"],
+        explanationUa: "Кашель пасажирів під час виходу натякає на те, що в салоні міг бути дим.",
+        speak: true
+      },
+      {
+        id: "there-may-have-been-15",
+        category: "there may have been",
+        level: 3,
+        prompt: "The snowplow is moving with blue lights flashing across the grass margin.",
+        question: "What runway issue is suspected?",
+        correctPattern: "there may have been",
+        correctSentence: "There may have been a runway excursion.",
+        options: ["there may have been", "may have", "must have been", "could explain"],
+        blocks: ["There", "may have been", "a runway", "excursion"],
+        explanationUa: "Снігоочисник або рятувальна техніка на траві поряд із смугою свідчить про те, що міг бути виїзд за межі ЗПС.",
+        speak: true
+      },
+
+      // 4. could have contributed / could explain (15 cards)
+      {
+        id: "could-have-contributed-01",
+        category: "could have contributed",
+        level: 1,
+        prompt: "The runway is wet and slippery; there was heavy rain during the final approach.",
+        question: "Describe the environmental factor in the slippage:",
+        correctPattern: "could have contributed",
+        correctSentence: "Heavy rain could have contributed to this situation.",
+        options: ["could have contributed", "must have been", "there may have been", "may have"],
+        blocks: ["Heavy rain", "could have contributed", "to this situation"],
+        explanationUa: "Дощ — це супутній фактор. Ми використовуємо 'could have contributed to' для опису можливих причин інциденту.",
+        speak: true
+      },
+      {
+        id: "could-explain-01",
+        category: "could explain",
+        level: 1,
+        prompt: "The runway is covered in standing water, and there is a huge spray behind the tires.",
+        question: "Connect the standing water to the massive spray:",
+        correctPattern: "could explain",
+        correctSentence: "Standing water could explain the spray.",
+        options: ["could explain", "could have contributed", "must have been", "there may have been"],
+        blocks: ["Standing water", "could explain", "the spray"],
+        explanationUa: "Наявність стоячої води логічно пояснює великий водяний шлейф (spray). Формула: [Причина] could explain [Наслідок].",
+        speak: true
+      },
+      {
+        id: "could-have-contributed-02",
+        category: "could have contributed",
+        level: 1,
+        prompt: "The visibility dropped below 200 meters right before the taxi error.",
+        question: "How did the visibility affect the event?",
+        correctPattern: "could have contributed",
+        correctSentence: "Poor visibility could have contributed to this situation.",
+        options: ["could have contributed", "could explain", "must have", "may have been"],
+        blocks: ["Poor visibility", "could have contributed", "to this situation"],
+        explanationUa: "Погана видимість могла сприяти (contributed) виникненню цієї помилки руління.",
+        speak: true
+      },
+      {
+        id: "could-explain-02",
+        category: "could explain",
+        level: 1,
+        prompt: "Strong crosswinds are active; the aircraft landing attitude is heavily banked to the side.",
+        question: "Connect crosswinds to the flight attitude:",
+        correctPattern: "could explain",
+        correctSentence: "Strong crosswinds could explain the aircraft attitude.",
+        options: ["could explain", "could have contributed", "must have", "there may have been"],
+        blocks: ["Strong crosswinds", "could explain", "the aircraft attitude"],
+        explanationUa: "Боковий вітер пояснює великий крен літака під час торкання.",
+        speak: true
+      },
+      {
+        id: "could-have-contributed-03",
+        category: "could have contributed",
+        level: 2,
+        prompt: "The crew has been on duty for 14 hours straight during bad weather.",
+        question: "Describe the human factor influence:",
+        correctPattern: "could have contributed",
+        correctSentence: "Fatigue could have contributed to this situation.",
+        options: ["could have contributed", "could explain", "must have", "may have been"],
+        blocks: ["Fatigue", "could have contributed", "to this situation"],
+        explanationUa: "Втома екіпажу після довгої зміни могла сприяти виникненню критичної ситуації.",
+        speak: true
+      },
+      {
+        id: "could-explain-03",
+        category: "could explain",
+        level: 2,
+        prompt: "There was a double transmission on frequency; two aircraft taxied to the same hold short line.",
+        question: "Explain the taxiway conflict:",
+        correctPattern: "could explain",
+        correctSentence: "A communication error could explain the runway conflict.",
+        options: ["could explain", "could have contributed", "must have been", "may have"],
+        blocks: ["A communication error", "could explain", "the runway conflict"],
+        explanationUa: "Помилка зв'язку через накладання ефіру пояснює небезпечне зближення на руліжних доріжках.",
+        speak: true
+      },
+      {
+        id: "could-have-contributed-04",
+        category: "could have contributed",
+        level: 2,
+        prompt: "The pilot delayed the go-around decision until they were below the threshold.",
+        question: "What made the situation dangerous?",
+        correctPattern: "could have contributed",
+        correctSentence: "A late go-around decision could have contributed to this situation.",
+        options: ["could have contributed", "could explain", "must have", "may have been"],
+        blocks: ["A late go-around decision", "could have contributed", "to this situation"],
+        explanationUa: "Запізніле рішення піти на друге коло могло сприяти погіршенню ситуації (наприклад, жорсткому приземленню).",
+        speak: true
+      },
+      {
+        id: "could-explain-04",
+        category: "could explain",
+        level: 2,
+        prompt: "The left engine intake is completely black with fire soot, and the aircraft is landing on one alternator.",
+        question: "Connect engine failure to the emergency landing:",
+        correctPattern: "could explain",
+        correctSentence: "An engine failure could explain the forced landing.",
+        options: ["could explain", "could have contributed", "must have been", "there may have been"],
+        blocks: ["An engine failure", "could explain", "the forced landing"],
+        explanationUa: "Відмова двигуна (пожежа) пояснює вимушену посадку літака.",
+        speak: true
+      },
+      {
+        id: "could-have-contributed-05",
+        category: "could have contributed",
+        level: 2,
+        prompt: "The taxiway markings are faded and hard to see in the rain.",
+        question: "How did the visual marking affect the excursion?",
+        correctPattern: "could have contributed",
+        correctSentence: "Poor markings could have contributed to this situation.",
+        options: ["could have contributed", "could explain", "must have", "there may have been"],
+        blocks: ["Poor markings", "could have contributed", "to this situation"],
+        explanationUa: "Стерті лінії розмітки могли стати супутнім фактором з'їзду літака з бетону.",
+        speak: true
+      },
+      {
+        id: "could-explain-05",
+        category: "could explain",
+        level: 2,
+        prompt: "There is severe fog; the pilot missed the taxi exit and rolled into the grass.",
+        question: "Explain the delayed reaction:",
+        correctPattern: "could explain",
+        correctSentence: "Poor visibility could explain the delayed reaction.",
+        options: ["could explain", "could have contributed", "must have been", "may have"],
+        blocks: ["Poor visibility", "could explain", "the delayed reaction"],
+        explanationUa: "Густий туман пояснює запізнілу реакцію пілота на вогні з'їзду.",
+        speak: true
+      },
+      {
+        id: "could-have-contributed-06",
+        category: "could have contributed",
+        level: 3,
+        prompt: "The air traffic controller was managing five emergency flights at the same time.",
+        question: "Describe the controller's stress level factor:",
+        correctPattern: "could have contributed",
+        correctSentence: "Controller workload could have contributed to this situation.",
+        options: ["could have contributed", "could explain", "must have", "may have been"],
+        blocks: ["Controller workload", "could have contributed", "to this situation"],
+        explanationUa: "Надвисоке навантаження на диспетчера могло сприяти виникненню небезпечного інциденту.",
+        speak: true
+      },
+      {
+        id: "could-explain-06",
+        category: "could explain",
+        level: 3,
+        prompt: "The nose gear is buckled, and there is a deep trench in the grass before the runway threshold.",
+        question: "Explain the collapsed gear:",
+        correctPattern: "could explain",
+        correctSentence: "A hard touchdown could explain the collapsed gear.",
+        options: ["could explain", "could have contributed", "must have been", "there may have been"],
+        blocks: ["A hard touchdown", "could explain", "the collapsed gear"],
+        explanationUa: "Дуже грубе приземлення до смуги пояснює складання носової стійки шасі.",
+        speak: true
+      },
+      {
+        id: "could-have-contributed-07",
+        category: "could have contributed",
+        level: 3,
+        prompt: "There is severe windshear reported below 300 feet over the threshold.",
+        question: "Suggest how this affected the hard landing:",
+        correctPattern: "could have contributed",
+        correctSentence: "Windshear could have contributed to this situation.",
+        options: ["could have contributed", "could explain", "must have", "may have been"],
+        blocks: ["Windshear", "could have contributed", "to this situation"],
+        explanationUa: "Зсув вітру над порогом міг призвести до жорсткого приземлення літака.",
+        speak: true
+      },
+      {
+        id: "could-explain-07",
+        category: "could explain",
+        level: 3,
+        prompt: "The anti-skid system warning light came on during deceleration.",
+        question: "Explain the blown tyre event:",
+        correctPattern: "could explain",
+        correctSentence: "An anti-skid failure could explain the blown tyre.",
+        options: ["could explain", "could have contributed", "must have been", "there may have been"],
+        blocks: ["An anti-skid failure", "could explain", "the blown tyre"],
+        explanationUa: "Відмова протиюзової системи пояснює розрив шини через заклинювання колеса.",
+        speak: true
+      },
+      {
+        id: "could-have-contributed-08",
+        category: "could have contributed",
+        level: 3,
+        prompt: "The runway was highly contaminated with rubber deposits.",
+        question: "How did rubber deposits affect the braking?",
+        correctPattern: "could have contributed",
+        correctSentence: "Rubber deposits could have contributed to this situation.",
+        options: ["could have contributed", "could explain", "must have been", "there may have been"],
+        blocks: ["Rubber deposits", "could have contributed", "to this situation"],
+        explanationUa: "Накладення гуми на смузі зменшує зчеплення і могло сприяти подовженню пробігу літака.",
+        speak: true
+      },
+
+      // 5. must have / must have been (20 cards)
+      {
+        id: "must-have-01",
+        category: "must have",
+        level: 1,
+        prompt: "The aircraft is nose-down in the water with escape slides deployed on both sides.",
+        question: "What action did the crew definitely take in this emergency?",
+        correctPattern: "must have",
+        correctSentence: "The aircraft must have overturned after ditching.",
+        options: ["must have", "may have", "could have contributed", "there may have been"],
+        blocks: ["The aircraft", "must have", "overturned", "after ditching"],
+        explanationUa: "Ми бачимо літак у воді перевернутим. Це очевидний фізичний факт (strong evidence), тому використовуємо 'must have'.",
+        speak: true
+      },
+      {
+        id: "must-have-02",
+        category: "must have",
+        level: 1,
+        prompt: "The airport baggage vehicle is wedged directly under the engine cowl with metal debris everywhere.",
+        question: "What physical collision occurred?",
+        correctPattern: "must have",
+        correctSentence: "The vehicle must have struck the aircraft.",
+        options: ["must have", "may have", "could explain", "there may have been"],
+        blocks: ["The vehicle", "must have", "struck", "the aircraft"],
+        explanationUa: "Машина застрягла під двигуном, уламки на землі. Вона точно вдарила літак. Жорсткий доказ.",
+        speak: true
+      },
+      {
+        id: "must-have-03",
+        category: "must have",
+        level: 1,
+        prompt: "The landing gear of the aircraft is collapsed, and there are deep skid marks gouged into the concrete.",
+        question: "Deduct the type of touchdown:",
+        correctPattern: "must have",
+        correctSentence: "The aircraft must have touched down hard.",
+        options: ["must have", "may have", "must have been", "could explain"],
+        blocks: ["The aircraft", "must have", "touched down", "hard"],
+        explanationUa: "Зруйноване шасі та сліди на бетоні — це прямий доказ дуже жорсткого приземлення.",
+        speak: true
+      },
+      {
+        id: "must-have-04",
+        category: "must have",
+        level: 1,
+        prompt: "Deep tire tracks are pressed into the mud outside the runway edge lights.",
+        question: "What did the aircraft do?",
+        correctPattern: "must have",
+        correctSentence: "The aircraft must have left the runway.",
+        options: ["must have", "may have", "there may have been", "could explain"],
+        blocks: ["The aircraft", "must have", "left", "the runway"],
+        explanationUa: "Сліди шин на болоті за межами смуги доводять, що літак точно викотився (excursion).",
+        speak: true
+      },
+      {
+        id: "must-have-been-01",
+        category: "must have been",
+        level: 1,
+        prompt: "Water is splashing high over the fuselage as the plane rolls down the runway.",
+        question: "Describe the runway wetness condition:",
+        correctPattern: "must have been",
+        correctSentence: "The runway must have been wet.",
+        options: ["must have been", "may have been", "there may have been", "could explain"],
+        blocks: ["The runway", "must have been", "wet"],
+        explanationUa: "Величезні бризки води над фюзеляжем доводять: смуга точно була дуже мокрою.",
+        speak: true
+      },
+      {
+        id: "must-have-been-02",
+        category: "must have been",
+        level: 1,
+        prompt: "The FDR shows vertical acceleration forces exceeded 4.5G upon impact.",
+        question: "Deduct the force of the landing:",
+        correctPattern: "must have been",
+        correctSentence: "The landing must have been hard.",
+        options: ["must have been", "may have been", "could have contributed", "could explain"],
+        blocks: ["The landing", "must have been", "hard"],
+        explanationUa: "Показник перевантаження 4.5G — незаперечний доказ того, що посадка була надзвичайно жорсткою.",
+        speak: true
+      },
+      {
+        id: "must-have-been-03",
+        category: "must have been",
+        level: 1,
+        prompt: "The aircraft was rolling and yawing heavily back and forth right before touchdown.",
+        question: "Describe the aircraft control difficulty:",
+        correctPattern: "must have been",
+        correctSentence: "The aircraft must have been difficult to control.",
+        options: ["must have been", "may have been", "there may have been", "could explain"],
+        blocks: ["The aircraft", "must have been", "difficult", "to control"],
+        explanationUa: "Сильне хитання літака перед землею показує, що керувати ним у той момент було дуже важко.",
+        speak: true
+      },
+      {
+        id: "must-have-been-04",
+        category: "must have been",
+        level: 1,
+        prompt: "The jet skidded for 2000 meters past the end of the dry runway with reverse thrust deployed.",
+        question: "What was the braking action status?",
+        correctPattern: "must have been",
+        correctSentence: "The braking action must have been poor.",
+        options: ["must have been", "may have been", "could have contributed", "could explain"],
+        blocks: ["The braking action", "must have been", "poor"],
+        explanationUa: "Ковзання на 2 км при ввімкненому реверсі свідчить про вкрай низьку ефективність гальмування.",
+        speak: true
+      },
+      {
+        id: "must-have-05",
+        category: "must have",
+        level: 2,
+        prompt: "The engine fan blades are bent forward, indicating high RPM at the time of ingest.",
+        question: "Deduct the engine status:",
+        correctPattern: "must have",
+        correctSentence: "The engine must have been running at high speed.",
+        options: ["must have", "may have", "there may have been", "could explain"],
+        blocks: ["The engine", "must have", "been running", "at high speed"],
+        explanationUa: "Лопатки загнуті вперед від сили обертання під час удару. Двигун точно працював на високих обертах.",
+        speak: true
+      },
+      {
+        id: "must-have-06",
+        category: "must have",
+        level: 2,
+        prompt: "The ground radar plot shows the regional jet crossed the hold short line while another plane was landing.",
+        question: "Deduct the runway incursion status:",
+        correctPattern: "must have",
+        correctSentence: "The flight must have breached the runway clearance.",
+        options: ["must have", "may have", "could explain", "there may have been"],
+        blocks: ["The flight", "must have", "breached", "the runway clearance"],
+        explanationUa: "Перетин лінії утримання перед літаком, що сідає, доводить факт порушення дозволу.",
+        speak: true
+      },
+      {
+        id: "must-have-07",
+        category: "must have",
+        level: 2,
+        prompt: "The entire tail cone is missing, and there are traces of metal fatigue in the rear bulkhead.",
+        question: "What physical failure happened?",
+        correctPattern: "must have",
+        correctSentence: "The bulkhead must have failed in flight.",
+        options: ["must have", "may have", "could have contributed", "could explain"],
+        blocks: ["The bulkhead", "must have", "failed", "in flight"],
+        explanationUa: "Відсутність хвостового конуса та втомні тріщини свідчать про руйнування перегородки в польоті.",
+        speak: true
+      },
+      {
+        id: "must-have-08",
+        category: "must have",
+        level: 2,
+        prompt: "The cockpit voice recorder captured a loud bang followed by immediate cabin decompression alarms.",
+        question: "What did the crew experience?",
+        correctPattern: "must have",
+        correctSentence: "The crew must have experienced a rapid decompression.",
+        options: ["must have", "may have", "there may have been", "could explain"],
+        blocks: ["The crew", "must have", "experienced", "a rapid decompression"],
+        explanationUa: "Гучний удар та миттєва сигналізація розгерметизації доводять факт вибухової декомпресії.",
+        speak: true
+      },
+      {
+        id: "must-have-been-05",
+        category: "must have been",
+        level: 2,
+        prompt: "All flight displays in the cockpit are black and the emergency mechanical instruments are active.",
+        question: "What was the power state?",
+        correctPattern: "must have been",
+        correctSentence: "There must have been an electrical blackout.",
+        options: ["must have been", "there may have been", "may have been", "could explain"],
+        blocks: ["There", "must have been", "an electrical", "blackout"],
+        explanationUa: "Чорні екрани та робота резервних приладів вказують на повне знеструмлення кабіни.",
+        speak: true
+      },
+      {
+        id: "must-have-been-06",
+        category: "must have been",
+        level: 2,
+        prompt: "The runway surface temperature was measured at -5 degrees with standing water on it.",
+        question: "Describe the icing condition:",
+        correctPattern: "must have been",
+        correctSentence: "The runway must have been icy.",
+        options: ["must have been", "may have been", "there may have been", "could explain"],
+        blocks: ["The runway", "must have been", "icy"],
+        explanationUa: "Вода при -5 градусах на бетоні гарантує, що смуга була вкрита льодом.",
+        speak: true
+      },
+      {
+        id: "must-have-been-07",
+        category: "must have been",
+        level: 3,
+        prompt: "The aircraft is parked with the fuselage severed in two halves behind the wings.",
+        question: "Deduct the structural stress:",
+        correctPattern: "must have been",
+        correctSentence: "The fuselage impact must have been severe.",
+        options: ["must have been", "may have been", "could explain", "could have contributed"],
+        blocks: ["The fuselage impact", "must have been", "severe"],
+        explanationUa: "Фюзеляж розірвано навпіл. Удар об землю без сумніву був надзвичайно руйнівним.",
+        speak: true
+      },
+      {
+        id: "must-have-been-08",
+        category: "must have been",
+        level: 3,
+        prompt: "Both engines are clogged with feathers and organic bird tissue.",
+        question: "What did the aircraft hit?",
+        correctPattern: "must have been",
+        correctSentence: "There must have been a severe bird strike.",
+        options: ["must have been", "there may have been", "may have been", "could explain"],
+        blocks: ["There", "must have been", "a severe bird strike"],
+        explanationUa: "Пір'я та біомаса в обох двигунах доводять факт серйозного зіткнення з птахами.",
+        speak: true
+      },
+      {
+        id: "must-have-been-09",
+        category: "must have been",
+        level: 3,
+        prompt: "The ground crew is checking the fuel tanks; they are completely dry with zero residual fuel.",
+        question: "Deduct the fuel status during the emergency:",
+        correctPattern: "must have been",
+        correctSentence: "The aircraft must have run out of fuel.",
+        options: ["must have", "may have", "could explain", "must have been"],
+        blocks: ["The aircraft", "must have", "run out", "of fuel"],
+        explanationUa: "Абсолютно сухі баки після посадки доводять, що у літака повністю закінчилося пальне в польоті.",
+        speak: true
+      },
+      {
+        id: "must-have-been-10",
+        category: "must have been",
+        level: 3,
+        prompt: "The runway threshold lights are completely shattered, with tire marks directly over the light mounts.",
+        question: "Deduct where the aircraft landed:",
+        correctPattern: "must have",
+        correctSentence: "The pilot must have touched down short of the runway.",
+        options: ["must have", "may have", "there may have been", "could explain"],
+        blocks: ["The pilot", "must have", "touched down", "short of the runway"],
+        explanationUa: "Роздавлені вогні порогу ЗПС доводять, що літак приземлився недолітаючи до смуги.",
+        speak: true
+      },
+      {
+        id: "must-have-09",
+        category: "must have",
+        level: 3,
+        prompt: "The aircraft nose cone is deeply dented in a circular pattern with traces of red paint from the ground tug.",
+        question: "What did the tug do?",
+        correctPattern: "must have",
+        correctSentence: "The ground tug must have collided with the nose cone.",
+        options: ["must have", "may have", "could explain", "there may have been"],
+        blocks: ["The ground tug", "must have", "collided", "with the nose cone"],
+        explanationUa: "Сліди червоної фарби буксирувальника на пом'ятому носі літака є беззаперечним доказом зіткнення.",
+        speak: true
+      },
+      {
+        id: "must-have-10",
+        category: "must have",
+        level: 3,
+        prompt: "The oxygen masks are dangling from the passenger overhead compartments in the entire cabin.",
+        question: "What safety system was triggered?",
+        correctPattern: "must have",
+        correctSentence: "The cabin must have lost pressure.",
+        options: ["must have", "may have", "there may have been", "could explain"],
+        blocks: ["The cabin", "must have", "lost", "pressure"],
+        explanationUa: "Випадіння кисневих масок по всьому салону свідчить про падіння тиску в кабіні.",
+        speak: true
+      }
+    ];
+
+    // --- GAME ENGINE STATE ---
+    let currentMode = 1; // 1: Choice, 2: Builder, 3: Evidence Logic, 4: Speed
+    let currentCardIndex = 0;
+    let cardPool = []; // Current active cards based on mode/session
+    let score = 0;
+    let mistakes = 0;
+    let totalAnswered = 0;
+    let speedTimerVal = 5;
+    let speedTimerInterval = null;
+    let speedQuestionsLeft = 0;
+    let hintUsed = false;
+    
+    // Performance Tracking for weak/strong analysis
+    let patternStats = {
+      "may have": { correct: 0, total: 0 },
+      "may have been": { correct: 0, total: 0 },
+      "there may have been": { correct: 0, total: 0 },
+      "could have contributed": { correct: 0, total: 0 },
+      "could explain": { correct: 0, total: 0 },
+      "must have": { correct: 0, total: 0 },
+      "must have been": { correct: 0, total: 0 }
+    };
+
+    // Canvas config
+    const canvas = document.getElementById("trainer-canvas");
+    const ctx = canvas.getContext("2d");
+    let dragBlocks = []; // Word blocks for Mode 2
+    let dragTargetZones = []; // Targets on canvas
+    let activeDragBlock = null;
+    let dragOffset = { x: 0, y: 0 };
+    let canvasScale = 1;
+
+    // --- DOM INITIALIZATION ---
+    window.onload = function() {
+      // Fix canvas responsiveness
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+
+      // Load Icons
+      if (typeof lucide !== 'undefined') {
+        lucide.createIcons();
+      }
+
+      // Start initial session
+      startNewSession();
+
+      // Mouse and Touch Event Listeners on Canvas
+      canvas.addEventListener('mousedown', handleMouseDown);
+      canvas.addEventListener('mousemove', handleMouseMove);
+      canvas.addEventListener('mouseup', handleMouseUp);
+      
+      canvas.addEventListener('touchstart', handleTouchStart, { passive: false });
+      canvas.addEventListener('touchmove', handleTouchMove, { passive: false });
+      canvas.addEventListener('touchend', handleTouchEnd, { passive: false });
+    };
+
+    function resizeCanvas() {
+      const rect = canvas.getBoundingClientRect();
+      // Set internal resolution
+      canvas.width = 800;
+      canvas.height = 420;
+      canvasScale = 800 / rect.width;
+      draw();
+    }
+
+    // --- SESSION BUILDER ---
+    function startNewSession() {
+      score = 0;
+      mistakes = 0;
+      totalAnswered = 0;
+      updateStatsUI();
+      
+      // Shuffle original cards
+      cardPool = [...CARDS].sort(() => Math.random() - 0.5);
+      
+      // Filter or adjust based on current mode
+      if (currentMode === 4) {
+        // Speed mode gets exactly 10 random cards
+        cardPool = cardPool.slice(0, 10);
+        speedQuestionsLeft = 10;
+        document.getElementById("speed-timer-container").classList.remove("hidden");
+      } else {
+        document.getElementById("speed-timer-container").classList.add("hidden");
+      }
+      
+      currentCardIndex = 0;
+      loadCard(cardPool[currentCardIndex]);
+    }
+
+    function setMode(modeNum) {
+      currentMode = modeNum;
+      
+      // Style active button
+      for (let i = 1; i <= 4; i++) {
+        const btn = document.getElementById(`btn-mode-${i}`);
+        if (i === modeNum) {
+          btn.className = "w-full text-left p-3 rounded-xl border-2 transition-all flex items-center justify-between group bg-blue-50 border-blue-500";
+          btn.querySelector("i").className = "w-5 h-5 text-blue-600";
+        } else {
+          btn.className = "w-full text-left p-3 rounded-xl border-2 transition-all flex items-center justify-between group border-slate-200 hover:border-slate-300";
+          btn.querySelector("i").className = "w-5 h-5 text-slate-400";
+        }
+      }
+
+      // Hide/Show controls
+      if (currentMode === 2) {
+        document.getElementById("choice-grid").classList.add("hidden");
+        document.getElementById("drag-instructions").classList.remove("hidden");
+        document.getElementById("btn-check").classList.remove("hidden");
+        document.getElementById("btn-reset").classList.remove("hidden");
+      } else {
+        document.getElementById("choice-grid").classList.remove("hidden");
+        document.getElementById("drag-instructions").classList.add("hidden");
+        document.getElementById("btn-check").classList.add("hidden");
+        document.getElementById("btn-reset").classList.add("hidden");
+      }
+
+      // Clear timer if not in speed mode
+      if (speedTimerInterval) {
+        clearInterval(speedTimerInterval);
+        speedTimerInterval = null;
+      }
+
+      startNewSession();
+    }
+
+    // --- CARD LOADER ---
+    function loadCard(card) {
+      if (!card) return;
+
+      hintUsed = false;
+      document.getElementById("prompt-evidence").innerText = card.prompt;
+      document.getElementById("prompt-question").innerText = card.question;
+      document.getElementById("card-progress").innerText = `${currentCardIndex + 1}/${cardPool.length}`;
+      document.getElementById("feedback-panel").classList.add("hidden");
+
+      // Set category badge style
+      const badge = document.getElementById("current-badge");
+      badge.innerText = card.category.toUpperCase();
+      
+      if (card.category.includes("must")) {
+        badge.className = "bg-rose-100 text-rose-800 font-bold px-3 py-1.5 rounded-lg text-xs tracking-wider uppercase";
+      } else if (card.category.includes("could")) {
+        badge.className = "bg-emerald-100 text-emerald-800 font-bold px-3 py-1.5 rounded-lg text-xs tracking-wider uppercase";
+      } else {
+        badge.className = "bg-amber-100 text-amber-800 font-bold px-3 py-1.5 rounded-lg text-xs tracking-wider uppercase";
+      }
+
+      // Stop any running speed timer
+      if (speedTimerInterval) {
+        clearInterval(speedTimerInterval);
+      }
+
+      // Handle Game Mode logic
+      if (currentMode === 1) {
+        setupPatternChoiceMode(card);
+      } else if (currentMode === 2) {
+        setupSentenceBuilderMode(card);
+      } else if (currentMode === 3) {
+        setupEvidenceLogicMode(card);
+      } else if (currentMode === 4) {
+        setupSpeedMode(card);
+      }
+
+      draw();
+    }
+
+    // MODE 1: Choice of Pattern
+    function setupPatternChoiceMode(card) {
+      const grid = document.getElementById("choice-grid");
+      grid.innerHTML = "";
+
+      // Ensure options contain the correct pattern
+      let opts = [...card.options];
+      if (!opts.includes(card.correctPattern)) {
+        opts[0] = card.correctPattern;
+      }
+      // Shuffle options
+      opts.sort(() => Math.random() - 0.5);
+
+      opts.forEach(option => {
+        const btn = document.createElement("button");
+        btn.className = "p-4 text-left font-extrabold text-sm border-2 border-slate-200 rounded-xl hover:bg-slate-50 active:bg-slate-100 transition-all flex items-center justify-between text-slate-700 bg-white shadow-sm hover:border-slate-300";
+        btn.innerHTML = `
+          <span>${option}</span>
+          <span class="text-xs text-slate-400 font-semibold uppercase tracking-wider">Select</span>
+        `;
+        btn.onclick = () => submitPatternChoice(option, btn);
+        grid.appendChild(btn);
+      });
+    }
+
+    // MODE 3: Choice based on Evidence levels
+    function setupEvidenceLogicMode(card) {
+      const grid = document.getElementById("choice-grid");
+      grid.innerHTML = "";
+
+      // Options represent deductions
+      let opts = [
+        "Strong Evidence (MUST HAVE)",
+        "Moderate Possibility (MAY HAVE)",
+        "Background Condition (THERE MAY HAVE BEEN)",
+        "Possible Explanation (COULD EXPLAIN)"
+      ];
+
+      // Match correct index
+      let correctLabel = "Moderate Possibility (MAY HAVE)";
+      if (card.category.startsWith("must")) {
+        correctLabel = "Strong Evidence (MUST HAVE)";
+      } else if (card.category.startsWith("there")) {
+        correctLabel = "Background Condition (THERE MAY HAVE BEEN)";
+      } else if (card.category.includes("explain") || card.category.includes("contribute")) {
+        correctLabel = "Possible Explanation (COULD EXPLAIN)";
+      }
+
+      opts.forEach(opt => {
+        const btn = document.createElement("button");
+        btn.className = "p-4 text-left font-extrabold text-sm border-2 border-slate-200 rounded-xl hover:bg-slate-50 active:bg-slate-100 transition-all flex items-center justify-between text-slate-700 bg-white shadow-sm hover:border-slate-300";
+        btn.innerHTML = `
+          <span>${opt}</span>
+          <i data-lucide="chevrons-right" class="w-4 h-4 text-slate-400"></i>
+        `;
+        btn.onclick = () => {
+          submitEvidenceLogic(opt === correctLabel, btn);
+        };
+        grid.appendChild(btn);
+      });
+      lucide.createIcons();
+    }
+
+    // MODE 4: Speed run setup
+    function setupSpeedMode(card) {
+      setupPatternChoiceMode(card);
+      speedTimerVal = 6; // Start slightly higher for render delay
+      updateSpeedTimerUI();
+      
+      speedTimerInterval = setInterval(() => {
+        speedTimerVal--;
+        updateSpeedTimerUI();
+        if (speedTimerVal <= 0) {
+          clearInterval(speedTimerInterval);
+          handleSpeedTimeout();
+        }
+      }, 1000);
+    }
+
+    function updateSpeedTimerUI() {
+      const el = document.getElementById("speed-timer");
+      if (el) el.innerText = speedTimerVal;
+    }
+
+    function handleSpeedTimeout() {
+      mistakes++;
+      totalAnswered++;
+      
+      // Update statistics
+      const card = cardPool[currentCardIndex];
+      patternStats[card.category].total++;
+
+      updateStatsUI();
+      showFeedback(false, "Time Out! " + card.correctSentence, card.explanationUa);
+    }
+
+    // MODE 2: Sentence Builder with Canvas Drag-and-Drop
+    function setupSentenceBuilderMode(card) {
+      dragBlocks = [];
+      dragTargetZones = [];
+
+      // Create shuffled blocks
+      let words = [...card.blocks];
+      words.sort(() => Math.random() - 0.5);
+
+      // Define horizontal layout parameters
+      const startY = 180;
+      const spacing = 15;
+      let currentX = 50;
+
+      // Create draggable block objects
+      words.forEach((word, index) => {
+        ctx.font = "bold 16px Inter";
+        const textWidth = ctx.measureText(word).width;
+        const blockW = textWidth + 30;
+        const blockH = 46;
+
+        dragBlocks.push({
+          id: index,
+          text: word,
+          x: currentX,
+          y: startY,
+          w: blockW,
+          h: blockH,
+          color: "#FFFFFF",
+          isDragging: false
+        });
+
+        currentX += blockW + spacing;
+      });
+
+      // Define target zones at the bottom "Answer Zone"
+      // We create a line of adjacent slot zones based on card blocks
+      let totalBlocksWidth = 0;
+      const slotPadding = 12;
+      const slotHeights = 50;
+      
+      let slotWidths = card.blocks.map(w => {
+        ctx.font = "bold 16px Inter";
+        return ctx.measureText(w).width + 30;
+      });
+
+      const totalSlotsWidth = slotWidths.reduce((a, b) => a + b, 0) + (slotWidths.length - 1) * slotPadding;
+      let startSlotX = (800 - totalSlotsWidth) / 2;
+
+      card.blocks.forEach((originalWord, idx) => {
+        const slotW = slotWidths[idx];
+        dragTargetZones.push({
+          index: idx,
+          expectedText: originalWord,
+          x: startSlotX,
+          y: 310,
+          w: slotW,
+          h: slotHeights,
+          currentBlockId: null
+        });
+        startSlotX += slotW + slotPadding;
+      });
+    }
+
+    // --- CANVAS GRAPHICS DRAW LOOP ---
+    function draw() {
+      // Clear canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Draw modern grid background
+      ctx.strokeStyle = "#F1F5F9";
+      ctx.lineWidth = 1;
+      const gridSize = 40;
+      for (let x = 0; x < canvas.width; x += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, canvas.height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += gridSize) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.stroke();
+      }
+
+      // Render based on Game Mode
+      if (currentMode === 2) {
+        drawSentenceBuilderView();
+      } else {
+        drawConceptualRadarView();
+      }
+    }
+
+    // Draw Visual logic for non-builder modes (Visual Deduction Meter)
+    function drawConceptualRadarView() {
+      const card = cardPool[currentCardIndex];
+      if (!card) return;
+
+      // Draw Title on Canvas
+      ctx.fillStyle = "#1E293B";
+      ctx.font = "bold 18px Inter";
+      ctx.fillText("ICAO Confidence Logic Spectrum", 40, 45);
+
+      // Draw logical radar / pointer
+      ctx.strokeStyle = "#E2E8F0";
+      ctx.lineWidth = 3;
+      ctx.strokeRect(40, 75, 720, 16);
+
+      // Background gradient representing confidence
+      const grad = ctx.createLinearGradient(40, 0, 760, 0);
+      grad.addColorStop(0, '#10B981'); // Emerald
+      grad.addColorStop(0.5, '#F59E0B'); // Amber
+      grad.addColorStop(1, '#EF4444'); // Rose
+      ctx.fillStyle = grad;
+      ctx.fillRect(41, 76, 718, 14);
+
+      // Category Position mapping on the meter
+      let targetX = 360; // default middle (May)
+      let levelText = "MEDIUM CONFIDENCE";
+      let levelColor = "#F59E0B";
+
+      if (card.category.startsWith("must")) {
+        targetX = 660; // High confidence (Must)
+        levelText = "STRONG EVIDENCE / DEDUCTION";
+        levelColor = "#EF4444";
+      } else if (card.category.includes("could") || card.category.includes("might")) {
+        targetX = 140; // Low confidence / possible
+        levelText = "LOW CONFIDENCE / POSSIBILITY";
+        levelColor = "#10B981";
+      }
+
+      // Draw current indicator pin
+      ctx.fillStyle = "#1E293B";
+      ctx.beginPath();
+      ctx.moveTo(targetX, 98);
+      ctx.lineTo(targetX - 10, 115);
+      ctx.lineTo(targetX + 10, 115);
+      ctx.closePath();
+      ctx.fill();
+
+      // Pin glow ring
+      ctx.strokeStyle = levelColor;
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.arc(targetX, 125, 20, 0, Math.PI * 2);
+      ctx.stroke();
+
+      // Inner pin circle
+      ctx.fillStyle = "#1E293B";
+      ctx.beginPath();
+      ctx.arc(targetX, 125, 12, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Label above current indicator
+      ctx.fillStyle = "#1E293B";
+      ctx.font = "bold 14px Inter";
+      ctx.textAlign = "center";
+      ctx.fillText("Current Case Target", targetX, 65);
+
+      // Draw large concept box in center
+      ctx.textAlign = "left";
+      ctx.fillStyle = "#FFFFFF";
+      ctx.shadowColor = "rgba(0, 0, 0, 0.05)";
+      ctx.shadowBlur = 10;
+      ctx.shadowOffsetY = 4;
+      
+      // Draw smooth card shape
+      ctx.beginPath();
+      ctx.roundRect(40, 170, 720, 210, 16);
+      ctx.fill();
+      ctx.shadowColor = "transparent"; // Reset shadow
+
+      ctx.strokeStyle = "#E2E8F0";
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.roundRect(40, 170, 720, 210, 16);
+      ctx.stroke();
+
+      // Content inside the card
+      ctx.fillStyle = levelColor;
+      ctx.font = "bold 13px Inter";
+      ctx.fillText(levelText, 65, 210);
+
+      ctx.fillStyle = "#1E293B";
+      ctx.font = "extrabold 22px Inter";
+      // Wrap long prompt
+      wrapText(ctx, card.prompt, 65, 250, 670, 32);
+
+      // Bottom guidance line
+      ctx.fillStyle = "#64748B";
+      ctx.font = "italic 14px Inter";
+      ctx.fillText("Analyze the evidence and make your selection below.", 65, 345);
+    }
+
+    function drawSentenceBuilderView() {
+      // Header
+      ctx.fillStyle = "#1E293B";
+      ctx.font = "bold 18px Inter";
+      ctx.fillText("Interactive Sentence Builder Mode", 40, 45);
+
+      ctx.fillStyle = "#64748B";
+      ctx.font = "medium 14px Inter";
+      ctx.fillText("Arrange the shuffled grammar tiles below into the target answer zone.", 40, 70);
+
+      // Draw "Answer Zone" dashed bounding box
+      ctx.strokeStyle = "#94A3B8";
+      ctx.lineWidth = 2.5;
+      ctx.setLineDash([8, 6]);
+      ctx.beginPath();
+      ctx.roundRect(30, 275, 740, 110, 16);
+      ctx.stroke();
+      ctx.setLineDash([]); // Reset dash
+
+      // Light background for answer zone
+      ctx.fillStyle = "#F8FAFC";
+      ctx.beginPath();
+      ctx.roundRect(32, 277, 736, 106, 14);
+      ctx.fill();
+
+      // Zone Label
+      ctx.fillStyle = "#64748B";
+      ctx.font = "bold 11px Inter";
+      ctx.fillText("ANSWER ZONE (GRAMMAR CONSTRUCTOR)", 50, 300);
+
+      // Draw Target Slots inside Answer Zone
+      dragTargetZones.forEach(zone => {
+        ctx.fillStyle = "#E2E8F0";
+        ctx.strokeStyle = "#CBD5E1";
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.roundRect(zone.x, zone.y, zone.w, zone.h, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        // Draw helper label inside empty slots
+        if (zone.currentBlockId === null) {
+          ctx.fillStyle = "#94A3B8";
+          ctx.font = "bold 12px Inter";
+          ctx.textAlign = "center";
+          ctx.fillText(`Slot ${zone.index + 1}`, zone.x + zone.w / 2, zone.y + zone.h / 2 + 5);
+        }
+      });
+      ctx.textAlign = "left"; // Reset alignment
+
+      // Draw word blocks
+      dragBlocks.forEach(block => {
+        // Draw shadow under block
+        ctx.fillStyle = "rgba(15, 23, 42, 0.08)";
+        ctx.beginPath();
+        ctx.roundRect(block.x + 2, block.y + 4, block.w, block.h, 10);
+        ctx.fill();
+
+        // Main block body
+        ctx.fillStyle = block.isDragging ? "#EFF6FF" : "#FFFFFF";
+        ctx.strokeStyle = block.isDragging ? "#3B82F6" : "#E2E8F0";
+        ctx.lineWidth = block.isDragging ? 2.5 : 1.5;
+        ctx.beginPath();
+        ctx.roundRect(block.x, block.y, block.w, block.h, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        // Word Text inside block
+        ctx.fillStyle = block.isDragging ? "#1D4ED8" : "#1E293B";
+        ctx.font = "bold 15px Inter";
+        ctx.textAlign = "center";
+        ctx.fillText(block.text, block.x + block.w / 2, block.y + block.h / 2 + 5);
+      });
+      ctx.textAlign = "left"; // Reset alignment
+    }
+
+    // --- CANVAS DRAG AND DROP HANDLERS (MOUSE & TOUCH) ---
+    function handleMouseDown(e) {
+      if (currentMode !== 2) return;
+      const pos = getMousePos(canvas, e);
+      initiateDrag(pos.x, pos.y);
+    }
+
+    function handleMouseMove(e) {
+      if (currentMode !== 2) return;
+      const pos = getMousePos(canvas, e);
+      continueDrag(pos.x, pos.y);
+    }
+
+    function handleMouseUp(e) {
+      if (currentMode !== 2) return;
+      endDrag();
+    }
+
+    // Touch event adapters
+    function handleTouchStart(e) {
+      if (currentMode !== 2) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const pos = getMousePos(canvas, touch);
+      initiateDrag(pos.x, pos.y);
+    }
+
+    function handleTouchMove(e) {
+      if (currentMode !== 2) return;
+      e.preventDefault();
+      const touch = e.touches[0];
+      const pos = getMousePos(canvas, touch);
+      continueDrag(pos.x, pos.y);
+    }
+
+    function handleTouchEnd(e) {
+      if (currentMode !== 2) return;
+      endDrag();
+    }
+
+    function getMousePos(canvasDom, e) {
+      const rect = canvasDom.getBoundingClientRect();
+      return {
+        x: (e.clientX - rect.left) * canvasScale,
+        y: (e.clientY - rect.top) * canvasScale
+      };
+    }
+
+    function initiateDrag(x, y) {
+      // Check collision with blocks starting from topmost (drawn last)
+      for (let i = dragBlocks.length - 1; i >= 0; i--) {
+        const b = dragBlocks[i];
+        if (x >= b.x && x <= b.x + b.w && y >= b.y && y <= b.y + b.h) {
+          activeDragBlock = b;
+          b.isDragging = true;
+          dragOffset.x = x - b.x;
+          dragOffset.y = y - b.y;
+
+          // If block was inside a target zone, free up the zone
+          dragTargetZones.forEach(zone => {
+            if (zone.currentBlockId === b.id) {
+              zone.currentBlockId = null;
+            }
+          });
+          break;
+        }
+      }
+    }
+
+    function continueDrag(x, y) {
+      if (activeDragBlock) {
+        activeDragBlock.x = x - dragOffset.x;
+        activeDragBlock.y = y - dragOffset.y;
+        
+        // Prevent moving completely out of bounds
+        activeDragBlock.x = Math.max(0, Math.min(canvas.width - activeDragBlock.w, activeDragBlock.x));
+        activeDragBlock.y = Math.max(0, Math.min(canvas.height - activeDragBlock.h, activeDragBlock.y));
+        
+        draw();
+      }
+    }
+
+    function endDrag() {
+      if (!activeDragBlock) return;
+
+      activeDragBlock.isDragging = false;
+      
+      // Check collision with any target slot zones
+      let snapped = false;
+      for (let i = 0; i < dragTargetZones.length; i++) {
+        const zone = dragTargetZones[i];
+        
+        // Calculate overlap area or simple midpoint check
+        const blockCenterX = activeDragBlock.x + activeDragBlock.w / 2;
+        const blockCenterY = activeDragBlock.y + activeDragBlock.h / 2;
+
+        if (blockCenterX >= zone.x && blockCenterX <= zone.x + zone.w &&
+            blockCenterY >= zone.y && blockCenterY <= zone.y + zone.h) {
+          
+          // Check if slot is already occupied
+          if (zone.currentBlockId === null) {
+            // Snap to center of zone
+            activeDragBlock.x = zone.x + (zone.w - activeDragBlock.w) / 2;
+            activeDragBlock.y = zone.y + (zone.h - activeDragBlock.h) / 2;
+            zone.currentBlockId = activeDragBlock.id;
+            snapped = true;
+            break;
+          }
+        }
+      }
+
+      // If not snapped, return to neutral middle area to avoid stacking on other blocks
+      if (!snapped) {
+        // Return block back above answer zone
+        activeDragBlock.y = 175;
+      }
+
+      activeDragBlock = null;
+      draw();
+    }
+
+    // --- CHECK & EVALUATE REACTION LOGIC ---
+    function submitPatternChoice(selected, btnElement) {
+      const card = cardPool[currentCardIndex];
+      const isCorrect = (selected === card.correctPattern);
+      
+      evaluateAnswer(isCorrect, card);
+    }
+
+    function submitEvidenceLogic(isCorrect, btnElement) {
+      const card = cardPool[currentCardIndex];
+      evaluateAnswer(isCorrect, card);
+    }
+
+    function checkAnswer() {
+      if (currentMode !== 2) return;
+      const card = cardPool[currentCardIndex];
+
+      // Assemble sentence based on target zones
+      let sentenceParts = [];
+      let missingAny = false;
+
+      // Ensure all target zones have a block snapped
+      for (let i = 0; i < dragTargetZones.length; i++) {
+        const zone = dragTargetZones[i];
+        if (zone.currentBlockId === null) {
+          missingAny = true;
+          break;
+        } else {
+          const block = dragBlocks.find(b => b.id === zone.currentBlockId);
+          sentenceParts.push(block.text);
+        }
+      }
+
+      if (missingAny) {
+        showImmediateError("Завершіть побудову!", "Перетягніть абсолютно всі плитки у відповідні слоти внизу перед перевіркою.");
+        return;
+      }
+
+      const generatedSentence = sentenceParts.join(" ");
+      const targetSentenceClean = card.correctSentence.replace(/[.,]/g, "").toLowerCase().trim();
+      const generatedSentenceClean = generatedSentence.replace(/[.,]/g, "").toLowerCase().trim();
+
+      const isCorrect = (generatedSentenceClean === targetSentenceClean);
+      evaluateAnswer(isCorrect, card);
+    }
+
+    function evaluateAnswer(isCorrect, card) {
+      totalAnswered++;
+      patternStats[card.category].total++;
+
+      if (speedTimerInterval) {
+        clearInterval(speedTimerInterval);
+      }
+
+      if (isCorrect) {
+        score++;
+        patternStats[card.category].correct++;
+        showFeedback(true, "SUCCESS! Correct Choice", card.explanationUa, card.correctSentence);
+      } else {
+        mistakes++;
+        showFeedback(false, "INCORRECT DEDUCTION", card.explanationUa, card.correctSentence);
+      }
+
+      updateStatsUI();
+    }
+
+    function resetCurrentCard() {
+      if (currentMode === 2) {
+        setupSentenceBuilderMode(cardPool[currentCardIndex]);
+        draw();
+      }
+    }
+
+    function showImmediateError(title, desc) {
+      const panel = document.getElementById("feedback-panel");
+      panel.className = "p-4 rounded-2xl border transition-all bg-amber-50 border-amber-200 text-amber-900";
+      document.getElementById("feedback-icon-container").className = "p-2 rounded-xl text-white bg-amber-500 shadow-sm";
+      document.getElementById("feedback-icon").setAttribute("data-lucide", "alert-triangle");
+      document.getElementById("feedback-title").innerText = title;
+      document.getElementById("feedback-desc").innerText = desc;
+      document.getElementById("feedback-explanation").innerText = "Будь ласка, розташуйте всі елементи у нижній панелі.";
+      panel.classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    function showFeedback(isSuccess, title, uaExplanation, sentenceText = "") {
+      const panel = document.getElementById("feedback-panel");
+      
+      if (isSuccess) {
+        panel.className = "p-4 rounded-2xl border transition-all bg-emerald-50 border-emerald-200 text-emerald-900";
+        document.getElementById("feedback-icon-container").className = "p-2 rounded-xl text-white bg-emerald-500 shadow-md shadow-emerald-100";
+        document.getElementById("feedback-icon").setAttribute("data-lucide", "check-circle");
+      } else {
+        panel.className = "p-4 rounded-2xl border transition-all bg-rose-50 border-rose-200 text-rose-900";
+        document.getElementById("feedback-icon-container").className = "p-2 rounded-xl text-white bg-rose-500 shadow-md shadow-rose-100";
+        document.getElementById("feedback-icon").setAttribute("data-lucide", "x-circle");
+      }
+
+      document.getElementById("feedback-title").innerText = title;
+      
+      // Synthesize formatted correction string
+      if (sentenceText) {
+        document.getElementById("feedback-desc").innerHTML = `
+          <div class="font-bold text-slate-800 text-base mb-1">Target phrase:</div>
+          <div class="mono bg-white px-3 py-1.5 rounded-lg border border-slate-200/50 text-blue-700 font-bold mb-2">${sentenceText}</div>
+        `;
+      } else {
+        document.getElementById("feedback-desc").innerText = isSuccess ? "Perfect logical matching." : "Logical pattern discrepancy detected.";
+      }
+
+      document.getElementById("feedback-explanation").innerHTML = `
+        <strong class="text-slate-800 block mb-1">Аналіз ситуації:</strong>
+        ${uaExplanation}
+      `;
+
+      panel.classList.remove("hidden");
+      lucide.createIcons();
+
+      // Automatically speak on success/fail for immediate cognitive connection
+      speakSentence(sentenceText || cardPool[currentCardIndex].correctSentence);
+    }
+
+    function showHint() {
+      const card = cardPool[currentCardIndex];
+      if (!card) return;
+      hintUsed = true;
+      showImmediateError(
+        "💡 Logic Suggestion",
+        `Ця картка належить до категорії: [${card.category.toUpperCase()}]. Речення починається з слова "${card.blocks[0]}"`
+      );
+    }
+
+    function nextCard() {
+      currentCardIndex++;
+      if (currentCardIndex >= cardPool.length) {
+        triggerSessionComplete();
+      } else {
+        loadCard(cardPool[currentCardIndex]);
+      }
+    }
+
+    function restartSession() {
+      document.getElementById("session-modal").classList.add("hidden");
+      startNewSession();
+    }
+
+    function triggerSessionComplete() {
+      // Compute strong / weak categories
+      const strongList = document.getElementById("strong-patterns-list");
+      const weakList = document.getElementById("weak-patterns-list");
+      
+      strongList.innerHTML = "";
+      weakList.innerHTML = "";
+
+      let strongCount = 0;
+      let weakCount = 0;
+
+      Object.keys(patternStats).forEach(pattern => {
+        const stat = patternStats[pattern];
+        if (stat.total > 0) {
+          const ratio = stat.correct / stat.total;
+          const badge = document.createElement("span");
+          badge.className = "px-2.5 py-1 rounded-full text-xs font-bold border";
+          
+          if (ratio >= 0.7) {
+            badge.className += " bg-emerald-50 border-emerald-200 text-emerald-800";
+            badge.innerText = `${pattern} (${Math.round(ratio * 100)}%)`;
+            strongList.appendChild(badge);
+            strongCount++;
+          } else {
+            badge.className += " bg-rose-50 border-rose-200 text-rose-800";
+            badge.innerText = `${pattern} (${Math.round(ratio * 100)}%)`;
+            weakList.appendChild(badge);
+            weakCount++;
+          }
+        }
+      });
+
+      if (strongCount === 0) {
+        strongList.innerHTML = `<span class="text-xs text-slate-400 italic">No strong pattern recorded yet. Practice more.</span>`;
+      }
+      if (weakCount === 0) {
+        weakList.innerHTML = `<span class="text-xs text-emerald-600 italic">Excellent! No weak patterns detected.</span>`;
+      }
+
+      // Populate summary scores
+      const finalAccuracy = Math.round((score / Math.max(1, totalAnswered)) * 100);
+      document.getElementById("modal-accuracy").innerText = `${finalAccuracy}%`;
+      document.getElementById("modal-correct").innerText = `${score}/${totalAnswered}`;
+      document.getElementById("modal-mistakes").innerText = mistakes;
+
+      document.getElementById("session-modal").classList.remove("hidden");
+      lucide.createIcons();
+    }
+
+    // --- SOUND & TTS CONTROLLER ---
+    function speakCorrectSentence() {
+      const card = cardPool[currentCardIndex];
+      if (card) {
+        speakSentence(card.correctSentence);
+      }
+    }
+
+    function speakSentence(text) {
+      if (!('speechSynthesis' in window)) return;
+      
+      // Stop ongoing voice output to prevent superposition
+      window.speechSynthesis.cancel();
+
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = "en-GB";
+      utterance.rate = 0.88; // Comfortably slow rate for pilots
+
+      // Try to find a clear English speaking voice
+      const voices = window.speechSynthesis.getVoices();
+      const preferredVoice = voices.find(v => v.name.includes("Google UK English Male") || v.name.includes("Natural") || v.lang === "en-GB");
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+      }
+
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // --- STATISTICS HELPER ---
+    function updateStatsUI() {
+      document.getElementById("score-val").innerText = score;
+      document.getElementById("mistakes-val").innerText = mistakes;
+      
+      const total = score + mistakes;
+      const accuracy = total > 0 ? Math.round((score / total) * 100) : 100;
+      document.getElementById("accuracy-val").innerText = `${accuracy}%`;
+    }
+
+    // --- CANVAS TEXT WRAPPER UTILITY ---
+    function wrapText(context, text, x, y, maxWidth, lineHeight) {
+      const words = text.split(' ');
+      let line = '';
+
+      for (let n = 0; n < words.length; n++) {
+        let testLine = line + words[n] + ' ';
+        let metrics = context.measureText(testLine);
+        let testWidth = metrics.width;
+        if (testWidth > maxWidth && n > 0) {
+          context.fillText(line, x, y);
+          line = words[n] + ' ';
+          y += lineHeight;
+        } else {
+          line = testLine;
+        }
+      }
+      context.fillText(line, x, y);
+    }
+  </script>
+</body>
+</html>
