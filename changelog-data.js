@@ -14,6 +14,9 @@ window.CHANGELOG_TYPES = [
 ];
 
 window.CHANGELOG = [
+  // 2026-06-20
+  { date: "2026-06-20", type: "Describe Picture",title: "ICAO Picture Description — Card Trainer", href: "icao-picture-description-card-trainer.html" },
+
   // 2026-06-17
   { date: "2026-06-17", type: "Describe Picture",title: "Aviation English Sentence Builder (three trainers)", href: "Sentence_builder/index.html" },
 

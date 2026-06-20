@@ -1,0 +1,2009 @@
+<!DOCTYPE html>
+<html lang="uk" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ICAO Picture Description Card Trainer</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Налаштування Tailwind для підтримки класів темної теми -->
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+    // Миттєве застосування збереженої теми перед рендерингом тіла сторінки
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+    } else {
+      document.documentElement.classList.add('dark');
+    }
+  </script>
+  <!-- Google Fonts (Inter) -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+    }
+    /* Анімація хвиль для режиму говоріння */
+    @keyframes wave {
+      0%, 100% { transform: scaleY(0.3); }
+      50% { transform: scaleY(1); }
+    }
+    .wave-bar {
+      animation: wave 1.2s ease-in-out infinite;
+    }
+    .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+    .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+    .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+    .wave-bar:nth-child(5) { animation-delay: 0.6s; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-950 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white transition-colors duration-200">
+
+  <!-- Шапка додатка -->
+  <header class="border-b border-slate-200 bg-white/80 dark:border-slate-800 dark:bg-slate-900/80 backdrop-blur-md sticky top-0 z-40 px-4 py-3">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="flex items-center gap-3">
+        <a href="index.html" class="text-xs font-semibold text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-300 transition-colors mr-1 whitespace-nowrap">← All quizzes</a>
+        <div class="p-2 bg-indigo-600 rounded-lg text-white shadow-lg shadow-indigo-500/20">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-xl font-extrabold tracking-tight bg-gradient-to-r from-slate-950 via-slate-700 to-indigo-600 dark:from-white dark:via-slate-200 dark:to-indigo-400 bg-clip-text text-transparent">
+            ICAO Picture Description
+          </h1>
+          <p class="text-xs text-slate-500 dark:text-slate-400">Тренувальна система побудови логічної структури відповіді</p>
+        </div>
+      </div>
+
+      <!-- Індикатор загального прогресу та Перемикач теми -->
+      <div class="flex items-center gap-6">
+        <!-- Кнопка перемикання теми -->
+        <button id="theme-toggle" class="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 transition-all shadow-sm border border-slate-200 dark:border-slate-700" aria-label="Toggle Theme">
+          <span id="theme-toggle-dark-icon" class="hidden text-sm">🌙 Темна</span>
+          <span id="theme-toggle-light-icon" class="hidden text-sm">☀️ Світла</span>
+        </button>
+
+        <div class="h-8 w-px bg-slate-200 dark:bg-slate-800"></div>
+
+        <div class="text-right">
+          <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest font-semibold">Точність</div>
+          <div id="global-accuracy" class="text-lg font-bold text-emerald-600 dark:text-emerald-400">100%</div>
+        </div>
+        <div class="h-8 w-px bg-slate-200 dark:bg-slate-800"></div>
+        <div class="text-right">
+          <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-widest font-semibold">Картинка</div>
+          <div id="active-pic-title-header" class="text-sm font-semibold text-indigo-600 dark:text-indigo-300">Оберіть карту</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Головний робочий простір -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Ліва колонка: Вибір картинок та Етапи Навчання -->
+    <aside class="lg:col-span-3 flex flex-col gap-6">
+      
+      <!-- Секція 1: Вибір картинки -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xl">
+        <h2 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">1. Оберіть тему</h2>
+        <div class="flex flex-col gap-2.5" id="picture-selector-list">
+          <!-- Сюди завантажуються картки вибору картинок за допомогою JS -->
+        </div>
+      </div>
+
+      <!-- Секція 2: Кроки навчання (Training Flow Map) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xl flex-1">
+        <h2 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">2. Етап навчання</h2>
+        <nav class="flex flex-col gap-1.5" id="training-steps-list">
+          <button data-flow-step="choose" class="flow-step-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20">
+            <span class="w-6 h-6 rounded-full bg-indigo-100 dark:bg-indigo-500/20 text-indigo-600 dark:text-indigo-300 flex items-center justify-center text-xs font-bold">1</span>
+            Вибір теми
+          </button>
+          
+          <button data-flow-step="sentence" class="flow-step-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50">
+            <span class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs font-bold">2</span>
+            Побудова речень
+          </button>
+          
+          <button data-flow-step="fullstory" class="flow-step-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50">
+            <span class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs font-bold">3</span>
+            Повна історія (D&D)
+          </button>
+          
+          <button data-flow-step="speak" class="flow-step-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800/50">
+            <span class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400 flex items-center justify-center text-xs font-bold">4</span>
+            Режим говоріння
+          </button>
+        </nav>
+
+        <!-- Підказка про важливість структури -->
+        <div class="mt-6 p-3 bg-slate-100 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-lg">
+          <div class="flex items-start gap-2.5">
+            <div class="text-amber-500 mt-0.5">⚠️</div>
+            <div>
+              <h4 class="text-xs font-bold text-amber-600 dark:text-amber-500">Принцип ICAO:</h4>
+              <p class="text-[11px] text-slate-600 dark:text-slate-400 mt-1 leading-relaxed">
+                Тренажер вчить строгої логіки: від візуальних фактів (SHOW, LOOKS LIKE, SEE) через інтерпретацію (MAY HAVE, CAUSES) до оцінки ризиків (RISK), дій (ACTION) та висновку. Порядок блоків незмінний!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Центральна область: Робочий простір з інтерактивними тренажерами -->
+    <section class="lg:col-span-6 flex flex-col gap-6">
+      
+      <!-- Візуальна панель поточної картинки (стилізована SVG-схема) -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden shadow-xl">
+        <div class="px-4 py-3 bg-slate-100/60 dark:bg-slate-800/40 border-b border-slate-200 dark:border-slate-800 flex justify-between items-center">
+          <span class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Візуалізація ситуації</span>
+          <span id="active-pic-badge" class="px-2 py-0.5 text-[10px] font-bold rounded-full bg-indigo-100 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-500/20">Не обрано</span>
+        </div>
+        <div class="p-6 flex items-center justify-center bg-slate-100 dark:bg-slate-950/50 min-h-[220px]" id="picture-illustration-container">
+          <!-- Сюди завантажуватиметься унікальна інтерактивна SVG-ілюстрація для кожної теми -->
+          <div class="text-center py-6">
+            <div class="text-4xl mb-2">🧭</div>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Оберіть тему на панелі ліворуч, щоб розпочати навчання.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Контейнер динамічних завдань -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-xl flex-1 flex flex-col justify-between min-h-[380px]" id="interactive-workspace">
+        <!-- Внутрішній вміст буде змінюватись динамічно залежно від обраного етапу навчання -->
+        <div class="text-center my-auto py-12">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-slate-400 dark:text-slate-600 mb-4 animate-bounce" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122" />
+          </svg>
+          <h3 class="text-lg font-bold text-slate-700 dark:text-slate-300">Готові розпочати?</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto">
+            Будь ласка, оберіть одну з трьох картинок ліворуч, щоб завантажити контент та увійти у тренувальний потік.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Права колонка: Прогрес навчання та Специфікація блоків -->
+    <aside class="lg:col-span-3 flex flex-col gap-6">
+      
+      <!-- Статистика та Поточний рівень -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xl">
+        <h2 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Статистика сесії</h2>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-slate-50 dark:bg-slate-950/60 p-3 rounded-lg border border-slate-200 dark:border-slate-850 text-center">
+            <div class="text-xs text-slate-500 dark:text-slate-400">Спроби</div>
+            <div class="text-xl font-extrabold text-indigo-600 dark:text-indigo-400 mt-1" id="stat-attempts">0</div>
+          </div>
+          <div class="bg-slate-50 dark:bg-slate-950/60 p-3 rounded-lg border border-slate-200 dark:border-slate-850 text-center">
+            <div class="text-xs text-slate-500 dark:text-slate-400">Успішні</div>
+            <div class="text-xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1" id="stat-correct">0</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Чек-лист 9 ICAO Блоків -->
+      <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-xl flex-1 flex flex-col">
+        <div class="flex justify-between items-center mb-3">
+          <h2 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Структура ICAO картки</h2>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400" id="blocks-completed-counter">0/9</span>
+        </div>
+        
+        <div class="flex-1 flex flex-col gap-1.5 overflow-y-auto pr-1" id="icao-checklist-container">
+          <!-- 9 кроків будуть динамічно рендеритись із галочками виконання -->
+          <div class="text-center text-xs text-slate-400 dark:text-slate-500 py-8 italic">Картку не обрано</div>
+        </div>
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Нижня панель керування діями (Check, Reset, Hint, Next) -->
+  <footer class="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 py-4 px-4 sticky bottom-0 z-40 transition-colors">
+    <div class="max-w-7xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-4">
+      
+      <!-- Контейнер для системи підказок та допоміжних статусів -->
+      <div class="flex items-center gap-3 w-full sm:w-auto">
+        <button id="btn-hint" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 border border-slate-200 dark:border-slate-700 disabled:opacity-50 disabled:pointer-events-none" disabled>
+          <span>💡</span> Натяк
+        </button>
+        <div id="hint-text-box" class="text-xs text-amber-600 dark:text-amber-400 font-medium max-w-sm hidden">
+          <!-- Текст підказки буде динамічно оновлюватись -->
+        </div>
+      </div>
+
+      <!-- Головні кнопки дій -->
+      <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+        <button id="btn-reset" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg text-sm font-semibold transition-all border border-slate-200 dark:border-slate-750">
+          Скинути
+        </button>
+        <button id="btn-check" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-sm font-bold shadow-lg shadow-indigo-600/20 transition-all disabled:opacity-50 disabled:pointer-events-none" disabled>
+          Перевірити
+        </button>
+        <button id="btn-next" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-sm font-bold shadow-lg shadow-emerald-600/20 transition-all hidden">
+          Наступний крок ➔
+        </button>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- Модальне вікно успіху -->
+  <div id="success-modal" class="fixed inset-0 bg-slate-950/85 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 max-w-md w-full text-center shadow-2xl relative overflow-hidden">
+      <div class="absolute -top-10 -left-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl"></div>
+      <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-500/10 rounded-full blur-3xl"></div>
+      
+      <div class="w-16 h-16 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
+        🏆
+      </div>
+      
+      <h3 class="text-2xl font-black text-slate-900 dark:text-white">Success — ICAO story completed!</h3>
+      <p class="text-slate-600 dark:text-slate-400 text-sm mt-2 leading-relaxed">
+        Ви успішно зібрали всі 9 логічних блоків опису авіаційної ситуації в правильній послідовності. Ваша структура відповіді бездоганна та відповідає стандартам авіаційної англійської мови.
+      </p>
+
+      <div class="mt-6 p-3 bg-slate-50 dark:bg-slate-950/60 rounded-xl border border-slate-200 dark:border-slate-800 flex justify-around text-center">
+        <div>
+          <div class="text-[10px] uppercase text-slate-500 font-semibold">Точність</div>
+          <div class="text-lg font-bold text-emerald-600 dark:text-emerald-400" id="modal-accuracy">100%</div>
+        </div>
+        <div class="w-px bg-slate-200 dark:bg-slate-800"></div>
+        <div>
+          <div class="text-[10px] uppercase text-slate-500 font-semibold">Пройдено кроків</div>
+          <div class="text-lg font-bold text-indigo-600 dark:text-indigo-400">9 з 9</div>
+        </div>
+      </div>
+
+      <div class="mt-6 flex gap-3">
+        <button id="modal-btn-speak" class="flex-1 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm rounded-lg transition-all shadow-lg shadow-indigo-600/20">
+          🗣️ Практика говоріння
+        </button>
+        <button id="modal-btn-close" class="px-4 py-2.5 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold text-sm rounded-lg transition-all border border-slate-200 dark:border-slate-700">
+          Закрити
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript логіка додатка -->
+  <script>
+    // ----------------------------------------------------
+    // Базові дані для трьох картинок
+    // ----------------------------------------------------
+    const pictures = [
+      {
+        id: "military-tanker-landing",
+        title: "Military Tanker Landing",
+        subtitle: "Wet Runway",
+        badge: "Військовий танкер",
+        icon: "✈️🌧️",
+        svg: `<svg viewBox="0 0 400 200" class="w-full h-full max-h-[180px]" xmlns="http://www.w3.org/2000/svg">
+          <!-- Небо -->
+          <rect width="400" height="200" fill="#1e293b"/>
+          <path d="M -50,50 Q 50,20 150,40 T 350,30 T 450,50 L 400,200 L -50,200 Z" fill="#334155" opacity="0.3"/>
+          <!-- Смуга -->
+          <polygon points="100,200 300,200 230,110 170,110" fill="#0f172a" />
+          <polygon points="195,110 205,110 203,200 197,200" fill="#e2e8f0" opacity="0.6"/>
+          <!-- Літак -->
+          <g transform="translate(200, 105) scale(0.95)">
+            <!-- Корпус -->
+            <ellipse cx="0" cy="0" rx="45" ry="12" fill="#64748b" />
+            <!-- Хвіст -->
+            <path d="M -35,-5 L -42,-25 L -32,-25 L -20,-5 Z" fill="#475569" />
+            <path d="M -42,-25 L -32,-25 L -35,-27 Z" fill="#334155" />
+            <!-- Крила -->
+            <path d="M -10,2 L 35,18 L 25,23 L -15,5 Z" fill="#475569" />
+            <path d="M -10,-2 L 35,-18 L 25,-23 L -15,-5 Z" fill="#475569" />
+            <!-- Двигуни під крилами -->
+            <rect x="5" y="8" width="16" height="6" rx="2" fill="#334155"/>
+            <rect x="5" y="-14" width="16" height="6" rx="2" fill="#334155"/>
+            <!-- Кабіна -->
+            <ellipse cx="30" cy="-3" rx="8" ry="4" fill="#38bdf8" opacity="0.8"/>
+            <!-- Шасі та бризки води -->
+            <line x1="-15" y1="0" x2="-15" y2="15" stroke="#334155" stroke-width="3" />
+            <line x1="10" y1="5" x2="15" y2="15" stroke="#334155" stroke-width="3" />
+            <!-- Сильні бризки -->
+            <path d="M -25,15 Q -40,5 -60,8 M 5,15 Q 15,3 30,5 M 10,12 Q -10,-5 -30,0" stroke="#cbd5e1" stroke-width="4" fill="none" opacity="0.7" stroke-linecap="round"/>
+            <path d="M -15,15 Q -50,-10 -90,-12 M 15,15 Q 40,-5 70,2" stroke="#e2e8f0" stroke-width="6" fill="none" opacity="0.5" stroke-linecap="round"/>
+          </g>
+          <!-- Дощ -->
+          <line x1="50" y1="10" x2="40" y2="40" stroke="#94a3b8" stroke-width="1" opacity="0.3"/>
+          <line x1="150" y1="20" x2="140" y2="50" stroke="#94a3b8" stroke-width="1" opacity="0.3"/>
+          <line x1="250" y1="15" x2="240" y2="45" stroke="#94a3b8" stroke-width="1" opacity="0.3"/>
+          <line x1="350" y1="30" x2="340" y2="60" stroke="#94a3b8" stroke-width="1" opacity="0.3"/>
+        </svg>`,
+        blocks: [
+          {
+            type: "SHOW",
+            heading: "SHOW — General situation",
+            question: "What does the picture show?",
+            sentence: "This picture shows a large military aircraft on the runway.",
+            chunks: ["This picture shows", "a large military aircraft", "on the runway."],
+            keywords: ["picture", "military aircraft", "runway"],
+            pattern: "This picture shows + [object] + on the runway."
+          },
+          {
+            type: "LOOKS LIKE",
+            heading: "LOOKS LIKE — Identification",
+            question: "What does it look like?",
+            sentence: "It looks like a wide-body military transport or tanker aircraft in the final stage of landing.",
+            chunks: ["It looks like", "a wide-body military transport", "or tanker aircraft", "in the final stage of landing."],
+            keywords: ["looks like", "wide-body transport", "tanker", "final stage of landing"],
+            pattern: "It looks like + [aircraft type] + in the final stage of landing."
+          },
+          {
+            type: "I CAN SEE",
+            heading: "I CAN SEE — Visible facts",
+            question: "What can you see in the picture?",
+            sentence: "I can see that the aircraft is rolling at high speed on the runway. There is heavy spray rising from the wheels and engines. The runway looks wet, and the weather appears cloudy.",
+            chunks: ["I can see that", "the aircraft is rolling at high speed", "on the runway.", "There is heavy spray", "rising from the wheels", "and engines.", "The runway looks wet,", "and the weather appears cloudy."],
+            keywords: ["rolling high speed", "heavy spray", "wheels engines", "runway wet", "weather cloudy"],
+            pattern: "I can see + [aircraft state] + [visible runway details] + [weather condition]."
+          },
+          {
+            type: "MAY HAVE HAPPENED",
+            heading: "MAY HAVE HAPPENED — Likely scenario",
+            question: "What may have happened?",
+            sentence: "The most likely scenario is a normal landing on a wet runway. The crew may have used thrust reversers and spoilers to slow the aircraft down. The aircraft may have needed more distance to stop. It may have happened in rainy weather.",
+            chunks: ["The most likely scenario is", "a normal landing on a wet runway.", "The crew may have used", "thrust reversers and spoilers", "to slow the aircraft down.", "The aircraft may have needed", "more distance to stop.", "It may have happened", "in rainy weather."],
+            keywords: ["likely scenario", "normal landing", "wet runway", "used thrust reversers", "needed more distance", "rainy weather"],
+            pattern: "The most likely scenario is + [scenario] + the crew may have used + [systems]."
+          },
+          {
+            type: "CAUSES",
+            heading: "CAUSES — Possible causes",
+            question: "What are the possible causes?",
+            sentence: "Several factors could explain this situation. There may have been standing water on the runway after rain. The aircraft may have been heavy at landing weight. The runway may have been contaminated, so strong deceleration was needed.",
+            chunks: ["Several factors could explain", "this situation.", "There may have been", "standing water on the runway", "after rain.", "The aircraft may have been", "heavy at landing weight.", "The runway may have been contaminated,", "so strong deceleration was needed."],
+            keywords: ["factors explain", "standing water", "landing weight", "contaminated runway", "strong deceleration"],
+            pattern: "Several factors could explain + [standing water / heavy weight / contaminated runway]."
+          },
+          {
+            type: "RISK",
+            heading: "RISK — Operational risk",
+            question: "What is the operational risk?",
+            sentence: "From an operational point of view, this is a risky landing situation on a wet runway. The main risks are aquaplaning, reduced braking action, and runway excursion. There may also be directional control problems in crosswind conditions.",
+            chunks: ["From an operational point of view,", "this is a risky landing situation", "on a wet runway.", "The main risks are", "aquaplaning,", "reduced braking action,", "and runway excursion.", "There may also be", "directional control problems", "in crosswind conditions."],
+            keywords: ["operational point of view", "risky landing", "aquaplaning", "reduced braking", "runway excursion", "crosswind"],
+            pattern: "From an operational point of view + [situation] + the main risks are + [risks]."
+          },
+          {
+            type: "ACTION",
+            heading: "ACTION — Correct response",
+            question: "What is the correct response?",
+            sentence: "The correct response is to maintain control and slow the aircraft down safely. The crew should use reverse thrust, spoilers, and anti-skid braking. The crew should keep the aircraft on the centreline. ATC should provide braking action and wind information. If there is any doubt before touchdown, the crew should go around.",
+            chunks: ["The correct response is", "to maintain control", "and slow the aircraft down safely.", "The crew should use", "reverse thrust, spoilers,", "and anti-skid braking.", "The crew should keep", "the aircraft on the centreline.", "ATC should provide", "braking action and wind information.", "If there is any doubt,", "the crew should go around."],
+            keywords: ["correct response", "maintain control", "use reverse thrust", "keep centreline", "ATC provide info", "go around"],
+            pattern: "The correct response is + [action] + the crew should + [use systems] + ATC should + [provide information]."
+          },
+          {
+            type: "OPINION",
+            heading: "OPINION — Opinion",
+            question: "What is your opinion on this?",
+            sentence: "In my opinion, this picture is a good reminder that a wet runway can make even a normal landing more demanding. From a safety perspective, good braking performance is an important safety barrier.",
+            chunks: ["In my opinion,", "this picture is a good reminder", "that a wet runway can make", "even a normal landing more demanding.", "From a safety perspective,", "good braking performance", "is an important safety barrier."],
+            keywords: ["my opinion", "good reminder", "wet runway", "demanding landing", "safety perspective", "braking performance"],
+            pattern: "In my opinion + [reminder of difficulty] + from a safety perspective + [critical barrier]."
+          },
+          {
+            type: "SAFETY CONCLUSION",
+            heading: "SAFETY CONCLUSION",
+            question: "What is your safety conclusion?",
+            sentence: "The safety conclusion is that a wet runway requires careful deceleration, good directional control, and strict adherence to procedures. The crew must keep the aircraft under control until it slows to taxi speed.",
+            chunks: ["The safety conclusion is that", "a wet runway requires", "careful deceleration,", "good directional control,", "and strict adherence to procedures.", "The crew must keep", "the aircraft under control", "until it slows to taxi speed."],
+            keywords: ["safety conclusion", "wet runway requires", "careful deceleration", "directional control", "adherence to procedures", "taxi speed"],
+            pattern: "The safety conclusion is + [requirements] + the crew must keep + [state] + until taxi speed."
+          }
+        ]
+      },
+      {
+        id: "gibraltar-apron",
+        title: "Gibraltar Apron",
+        subtitle: "Turnaround Under the Rock",
+        badge: "Перон Гібралтару",
+        icon: "✈️⛰️",
+        svg: `<svg viewBox="0 0 400 200" class="w-full h-full max-h-[180px]" xmlns="http://www.w3.org/2000/svg">
+          <!-- Небо -->
+          <rect width="400" height="200" fill="#38bdf8"/>
+          <!-- Хмаринка -->
+          <path d="M 320,40 Q 340,30 350,45 Q 370,45 365,60 Q 340,70 320,60 Z" fill="#ffffff" opacity="0.8" />
+          <!-- Велична Скеля Гібралтару -->
+          <path d="M 0,200 L 0,80 Q 40,75 80,60 Q 120,45 150,55 Q 180,65 210,120 Q 240,160 270,200 Z" fill="#475569" />
+          <path d="M 50,200 L 60,110 Q 100,90 140,105 Q 160,115 190,160 Z" fill="#334155" opacity="0.5"/>
+          <!-- Перон/ЗПС -->
+          <rect y="150" width="400" height="50" fill="#64748b" />
+          <line x1="0" y1="150" x2="400" y2="150" stroke="#475569" stroke-width="2" />
+          <!-- Розмітка перону -->
+          <line x1="260" y1="165" x2="380" y2="165" stroke="#f59e0b" stroke-dasharray="8,8" stroke-width="2" />
+          <!-- Літак на обслуговуванні -->
+          <g transform="translate(290, 145) scale(0.85)">
+            <ellipse cx="0" cy="0" rx="35" ry="9" fill="#f1f5f9" />
+            <path d="M -25,-3 L -30,-18 L -22,-18 L -15,-3 Z" fill="#cbd5e1" />
+            <path d="M -5,2 L 20,10 L 15,14 L -10,4 Z" fill="#e2e8f0" />
+            <path d="M -5,-2 L 20,-10 L 15,-14 L -10,-4 Z" fill="#cbd5e1" />
+            <ellipse cx="20" cy="-1" rx="5" ry="3" fill="#1e293b"/>
+          </g>
+          <!-- Обладнання та конуси -->
+          <polygon points="230,165 240,165 235,152" fill="#f97316" />
+          <polygon points="360,175 370,175 365,162" fill="#f97316" />
+          <!-- Сервісний автомобіль -->
+          <g transform="translate(210, 150) scale(0.7)">
+            <rect x="0" y="0" width="24" height="12" rx="2" fill="#e2e8f0" />
+            <rect x="15" y="-5" width="8" height="7" rx="1" fill="#f1f5f9" />
+            <circle cx="5" cy="12" r="3" fill="#1e293b"/>
+            <circle cx="19" cy="12" r="3" fill="#1e293b"/>
+          </g>
+        </svg>`,
+        blocks: [
+          {
+            type: "SHOW",
+            heading: "SHOW — General situation",
+            question: "What does the picture show?",
+            sentence: "This picture shows an aviation situation involving an aircraft parked on the apron.",
+            chunks: ["This picture shows", "an aviation situation", "involving an aircraft", "parked on the apron."],
+            keywords: ["picture shows", "aviation situation", "aircraft parked", "apron"],
+            pattern: "This picture shows + [situation] + involving + [aircraft state]."
+          },
+          {
+            type: "LOOKS LIKE",
+            heading: "LOOKS LIKE — Identification",
+            question: "What does it look like?",
+            sentence: "It looks like a narrow-body commercial aircraft during a turnaround.",
+            chunks: ["It looks like", "a narrow-body commercial aircraft", "during a turnaround."],
+            keywords: ["looks like", "narrow-body commercial", "turnaround"],
+            pattern: "It looks like + [aircraft category] + during + [process]."
+          },
+          {
+            type: "I CAN SEE",
+            heading: "I CAN SEE — Visible facts",
+            question: "What can you see in the picture?",
+            sentence: "I can see an aircraft parked on the apron with passenger stairs attached. There are ground service vehicles, tugs, and traffic cones around the aircraft. A steep cliff rises behind the airfield.",
+            chunks: ["I can see an aircraft", "parked on the apron", "with passenger stairs attached.", "There are ground service vehicles,", "tugs, and traffic cones", "around the aircraft.", "A steep cliff rises", "behind the airfield."],
+            keywords: ["parked with stairs", "service vehicles", "tugs cones", "steep cliff behind"],
+            pattern: "I can see + [aircraft state] + there are [vehicles] + a [geographic feature] rises."
+          },
+          {
+            type: "MAY HAVE HAPPENED",
+            heading: "MAY HAVE HAPPENED — Likely scenario",
+            question: "What may have happened?",
+            sentence: "The most likely scenario is a routine turnaround. The aircraft may have arrived recently. The crew may have parked the aircraft on the apron after landing.",
+            chunks: ["The most likely scenario is", "a routine turnaround.", "The aircraft may have arrived recently.", "The crew may have parked the aircraft", "on the apron after landing."],
+            keywords: ["likely scenario", "routine turnaround", "arrived recently", "parked on apron"],
+            pattern: "The most likely scenario is + [scenario] + the aircraft may have + [past action]."
+          },
+          {
+            type: "CAUSES",
+            heading: "CAUSES — Possible context",
+            question: "What explains this situation?",
+            sentence: "Several normal operational factors could explain this situation. Passengers may have been boarding or disembarking. The aircraft may have been prepared for the next departure.",
+            chunks: ["Several normal operational factors", "could explain this situation.", "Passengers may have been", "boarding or disembarking.", "The aircraft may have been prepared", "for the next departure."],
+            keywords: ["operational factors", "boarding", "disembarking", "prepared for departure"],
+            pattern: "Several normal operational factors + could explain + [boarding / departure preparation]."
+          },
+          {
+            type: "RISK",
+            heading: "RISK — Operational risk",
+            question: "What is the operational risk?",
+            sentence: "From an operational point of view, this is a busy apron area with vehicles, equipment, and people around the aircraft. There is a risk of a ground collision or a person being struck by a vehicle.",
+            chunks: ["From an operational point of view,", "this is a busy apron area", "with vehicles, equipment,", "and people around the aircraft.", "There is a risk of", "a ground collision", "or a person being struck by a vehicle."],
+            keywords: ["operational point of view", "busy apron", "risk of ground collision", "struck by vehicle"],
+            pattern: "From an operational point of view + [apron state] + there is a risk of + [collisions]."
+          },
+          {
+            type: "ACTION",
+            heading: "ACTION — Correct response",
+            question: "What is the correct response?",
+            sentence: "The correct response is to keep the apron area safe and controlled. Ground crew should stay clear of moving vehicles. The crew should check that the aircraft is chocked before engine start. ATC should manage traffic and keep people separated from vehicles.",
+            chunks: ["The correct response is", "to keep the apron area safe and controlled.", "Ground crew should stay clear", "of moving vehicles.", "The crew should check", "that the aircraft is chocked before engine start.", "ATC should manage traffic", "and keep people separated from vehicles."],
+            keywords: ["apron safe controlled", "stay clear", "moving vehicles", "aircraft chocked", "ATC manage traffic"],
+            pattern: "The correct response is + [goal] + ground crew should + [actions] + ATC should + [traffic management]."
+          },
+          {
+            type: "OPINION",
+            heading: "OPINION — Opinion",
+            question: "What is your opinion on this?",
+            sentence: "In my opinion, this picture is a good reminder that airport safety depends on ground discipline.",
+            chunks: ["In my opinion,", "this picture is a good reminder", "that airport safety", "depends on ground discipline."],
+            keywords: ["my opinion", "good reminder", "airport safety", "ground discipline"],
+            pattern: "In my opinion + [reminder] + that safety depends on [element]."
+          },
+          {
+            type: "SAFETY CONCLUSION",
+            heading: "SAFETY CONCLUSION",
+            question: "What is your safety conclusion?",
+            sentence: "The safety conclusion is that normal ground operations still require strict safety control.",
+            chunks: ["The safety conclusion is that", "normal ground operations", "still require strict safety control."],
+            keywords: ["safety conclusion", "normal ground operations", "require strict safety control"],
+            pattern: "The safety conclusion is that + [operations type] + still require + [standards]."
+          }
+        ]
+      },
+      {
+        id: "aircraft-in-water",
+        title: "Aircraft in Water",
+        subtitle: "Nose-Over Ditching",
+        badge: "Аварія на воді",
+        icon: "✈️🌊",
+        svg: `<svg viewBox="0 0 400 200" class="w-full h-full max-h-[180px]" xmlns="http://www.w3.org/2000/svg">
+          <!-- Озеро/Вода -->
+          <rect width="400" height="130" fill="#1e3a8a"/>
+          <rect y="130" width="400" height="70" fill="#172554"/>
+          <!-- Коливання води (хвилі) -->
+          <path d="M 0,130 Q 50,120 100,130 T 200,130 T 300,130 T 400,130" stroke="#3b82f6" stroke-width="3" fill="none" />
+          <path d="M 0,160 Q 70,150 140,160 T 280,160 T 400,160" stroke="#1d4ed8" stroke-width="2" fill="none" opacity="0.6"/>
+          <!-- Хвойний ліс на задньому плані (берег) -->
+          <polygon points="0,130 0,90 20,110 40,85 60,115 80,90 100,120 120,95 150,130" fill="#064e3b" />
+          <polygon points="300,130 320,100 340,120 360,95 380,115 400,90 400,130" fill="#064e3b" />
+          <!-- Літак, що капотував (ніс у воді, хвіст догори) -->
+          <g transform="translate(190, 130) rotate(-45)">
+            <!-- Фюзеляж (біло-синій) -->
+            <path d="M -40,-6 L 10,-6 L 25,0 L 10,6 L -40,6 Z" fill="#ffffff" stroke="#1e293b" stroke-width="1.5" />
+            <path d="M -40,-3 L 10,-3 L 15,3 L -40,3 Z" fill="#2563eb" /> <!-- Синя смуга -->
+            <!-- Хвіст стирчить майже вертикально -->
+            <path d="M -30,-6 L -45,-20 L -38,-20 L -22,-6 Z" fill="#ffffff" stroke="#1e293b" stroke-width="1.5" />
+            <path d="M -45,-20 L -38,-20 L -41,-23 Z" fill="#2563eb" />
+            <!-- Крило -->
+            <path d="M -5,5 L 0,35 L -10,32 L -12,5 Z" fill="#cbd5e1" stroke="#1e293b" stroke-width="1" />
+            <!-- Пропелер затоплений у воді -->
+            <ellipse cx="25" cy="0" rx="3" ry="8" fill="#475569" opacity="0.8"/>
+          </g>
+          <!-- Рятувальні кола/бризки навколо літака -->
+          <circle cx="210" cy="140" r="18" stroke="#ffffff" stroke-width="2" fill="none" opacity="0.5" stroke-dasharray="5,5"/>
+          <circle cx="210" cy="140" r="28" stroke="#93c5fd" stroke-width="1" fill="none" opacity="0.3"/>
+        </svg>`,
+        blocks: [
+          {
+            type: "SHOW",
+            heading: "SHOW — General situation",
+            question: "What does the picture show?",
+            sentence: "This picture shows a serious aviation accident involving a light aircraft in water.",
+            chunks: ["This picture shows", "a serious aviation accident", "involving a light aircraft", "in water."],
+            keywords: ["serious aviation accident", "light aircraft in water"],
+            pattern: "This picture shows + [accident type] + involving + [aircraft] in water."
+          },
+          {
+            type: "LOOKS LIKE",
+            heading: "LOOKS LIKE — Identification",
+            question: "What does it look like?",
+            sentence: "It looks like a light single-engine aircraft lying nose-down in a lake.",
+            chunks: ["It looks like", "a light single-engine aircraft", "lying nose-down in a lake."],
+            keywords: ["looks like", "single-engine aircraft", "lying nose-down", "lake"],
+            pattern: "It looks like + [aircraft type] + lying [position] + in a lake."
+          },
+          {
+            type: "I CAN SEE",
+            heading: "I CAN SEE — Visible facts",
+            question: "What can you see in the picture?",
+            sentence: "I can see a small white-and-blue aircraft partially submerged in a lake. The aircraft is nose-down in the water, with its tail pointing almost straight up.",
+            chunks: ["I can see a small", "white-and-blue aircraft", "partially submerged in a lake.", "The aircraft is nose-down in the water,", "with its tail pointing", "almost straight up."],
+            keywords: ["white-and-blue", "partially submerged", "nose-down", "tail pointing up"],
+            pattern: "I can see + [aircraft description] + partially [state] + tail pointing [direction]."
+          },
+          {
+            type: "MAY HAVE HAPPENED",
+            heading: "MAY HAVE HAPPENED — Likely scenario",
+            question: "What may have happened?",
+            sentence: "The most likely scenario is a forced landing, or ditching, on water. The aircraft may have ditched in the lake and then flipped onto its nose.",
+            chunks: ["The most likely scenario is", "a forced landing,", "or ditching, on water.", "The aircraft may have ditched", "in the lake and then flipped", "onto its nose."],
+            keywords: ["forced landing", "ditching on water", "ditched in lake", "flipped onto nose"],
+            pattern: "The most likely scenario is + [emergency landing type] + the aircraft may have + [sequence of events]."
+          },
+          {
+            type: "CAUSES",
+            heading: "CAUSES — Possible causes",
+            question: "What are the possible causes?",
+            sentence: "Several factors could have contributed to this accident. There may have been an engine failure or a fuel problem. The pilot may have lost control at low altitude. A misjudged approach could also have played a part.",
+            chunks: ["Several factors could have", "contributed to this accident.", "There may have been", "an engine failure or a fuel problem.", "The pilot may have lost control", "at low altitude.", "A misjudged approach", "could also have played a part."],
+            keywords: ["factors contributed", "engine failure", "fuel problem", "lost control", "misjudged approach"],
+            pattern: "Several factors could have + [contributed] + there may have been + [failures] + or pilot [actions]."
+          },
+          {
+            type: "RISK",
+            heading: "RISK — Operational risk",
+            question: "What is the operational risk?",
+            sentence: "From an operational point of view, this is a high-risk situation because the occupants may have difficulty escaping after ditching. There is a high risk of injury, drowning, disorientation, and cold-water shock.",
+            chunks: ["From an operational point of view,", "this is a high-risk situation", "because the occupants may have difficulty", "escaping after ditching.", "There is a high risk of", "injury, drowning, disorientation,", "and cold-water shock."],
+            keywords: ["high-risk situation", "difficulty escaping", "injury drowning", "disorientation", "cold-water shock"],
+            pattern: "From an operational point of view + [situation classification] + because occupants [problem] + high risk of [threats]."
+          },
+          {
+            type: "ACTION",
+            heading: "ACTION — Correct response",
+            question: "What is the correct response?",
+            sentence: "The correct response is immediate evacuation and rescue. The occupants should release their harnesses, open the canopy or door, and escape as quickly as possible. Rescuers should reach the aircraft immediately and provide first aid.",
+            chunks: ["The correct response is", "immediate evacuation and rescue.", "The occupants should release their harnesses,", "open the canopy or door,", "and escape as quickly as possible.", "Rescuers should reach the aircraft immediately", "and provide first aid."],
+            keywords: ["immediate evacuation rescue", "release harnesses", "open canopy door", "escape quickly", "rescuers reach", "provide first aid"],
+            pattern: "The correct response is + [priorities] + the occupants should + [evacuation steps] + rescuers should + [actions]."
+          },
+          {
+            type: "OPINION",
+            heading: "OPINION — Opinion",
+            question: "What is your opinion on this?",
+            sentence: "In my opinion, this picture is a strong reminder that flight preparation, ditching drills, and lifejackets are critical for survival. From a safety perspective, surviving the impact is only the first step. The real challenge is escaping from the aircraft and surviving in the water.",
+            chunks: ["In my opinion,", "this picture is a strong reminder", "that flight preparation,", "ditching drills, and lifejackets", "are critical for survival.", "From a safety perspective,", "surviving the impact", "is only the first step.", "The real challenge is escaping", "from the aircraft and surviving in the water."],
+            keywords: ["strong reminder", "flight preparation", "ditching drills", "critical for survival", "surviving impact", "escaping", "surviving in water"],
+            pattern: "In my opinion + [reminder of equipment/drills] + from a safety perspective + [impact vs survival]."
+          },
+          {
+            type: "SAFETY CONCLUSION",
+            heading: "SAFETY CONCLUSION",
+            question: "What is your safety conclusion?",
+            sentence: "Safety conclusion: this is a serious accident, and safety must always come first. The absolute priority is the rapid escape and rescue of the occupants.",
+            chunks: ["Safety conclusion:", "this is a serious accident,", "and safety must always come first.", "The absolute priority is the rapid escape", "and rescue of the occupants."],
+            keywords: ["serious accident", "safety comes first", "absolute priority", "rapid escape", "rescue of occupants"],
+            pattern: "Safety conclusion + [safety priority statement] + the absolute priority is + [life-saving action]."
+          }
+        ]
+      }
+    ];
+
+    // ----------------------------------------------------
+    // Стан програми (State)
+    // ----------------------------------------------------
+    let state = {
+      activePicture: null,       // Поточний обраний об'єкт картини
+      currentFlowStep: "choose", // choose | sentence | fullstory | speak
+      currentBlockIndex: 0,      // Індекс блоку (0-8) при побудові речень
+      currentLevel: 1,           // Рівень складності (1-5)
+      
+      // Конструктор речень (Level 2/3/4)
+      assembledChunks: [],       // Користувацька збірка блоків
+      
+      // Повна збірка (Step 3: Full Story D&D)
+      fullStoryPositions: Array(9).fill(null), // Збережені картки у 9 позиціях
+      
+      // Статистика
+      attemptsCount: 0,
+      correctCount: 0,
+      accuracy: 100,
+      
+      // Кількість запитів на підказку для поточного етапу
+      hintRequestCount: 0
+    };
+
+    // ----------------------------------------------------
+    // Ініціалізація та Керування елементами DOM
+    // ----------------------------------------------------
+    document.addEventListener("DOMContentLoaded", () => {
+      renderPictureSelectors();
+      setupEventListeners();
+      initTheme();
+      updateUI();
+    });
+
+    // Логіка керування темою (Theme management)
+    function initTheme() {
+      const themeToggleDarkIcon = document.getElementById('theme-toggle-dark-icon');
+      const themeToggleLightIcon = document.getElementById('theme-toggle-light-icon');
+      
+      // Оновлюємо вигляд кнопки відповідно до активного класу
+      function updateToggleButtons() {
+        const isDark = document.documentElement.classList.contains('dark');
+        if (isDark) {
+          themeToggleLightIcon.classList.remove('hidden');
+          themeToggleDarkIcon.classList.add('hidden');
+        } else {
+          themeToggleDarkIcon.classList.remove('hidden');
+          themeToggleLightIcon.classList.add('hidden');
+        }
+      }
+
+      updateToggleButtons();
+
+      document.getElementById('theme-toggle').addEventListener('click', () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        if (isDark) {
+          document.documentElement.classList.remove('dark');
+          localStorage.setItem('theme', 'light');
+        } else {
+          document.documentElement.classList.add('dark');
+          localStorage.setItem('theme', 'dark');
+        }
+        updateToggleButtons();
+      });
+    }
+
+    // Рендер кнопок вибору картинок
+    function renderPictureSelectors() {
+      const container = document.getElementById("picture-selector-list");
+      container.innerHTML = "";
+      
+      pictures.forEach(pic => {
+        const btn = document.createElement("button");
+        btn.className = `w-full text-left p-3 rounded-lg border transition-all flex items-center gap-3 bg-white dark:bg-slate-950/40 border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 hover:bg-slate-50 dark:hover:bg-slate-900`;
+        btn.setAttribute("data-pic-id", pic.id);
+        btn.innerHTML = `
+          <div class="text-2xl">${pic.icon}</div>
+          <div class="flex-1 min-w-0">
+            <h3 class="font-bold text-sm text-slate-800 dark:text-slate-100 truncate">${pic.title}</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 truncate">${pic.subtitle}</p>
+          </div>
+          <span class="text-xs text-slate-400 dark:text-slate-500">➔</span>
+        `;
+        
+        btn.addEventListener("click", () => selectPicture(pic.id));
+        container.appendChild(btn);
+      });
+    }
+
+    // Логіка вибору картинки
+    function selectPicture(picId) {
+      const pic = pictures.find(p => p.id === picId);
+      if (!pic) return;
+      
+      state.activePicture = pic;
+      state.currentFlowStep = "sentence"; // Автоматично переходимо на крок 2
+      state.currentBlockIndex = 0;
+      state.currentLevel = 1;
+      state.assembledChunks = [];
+      state.hintRequestCount = 0;
+      
+      // Скидання повної збірки
+      state.fullStoryPositions = Array(9).fill(null);
+
+      // Візуальне оновлення кнопок вибору картинок
+      document.querySelectorAll("[data-pic-id]").forEach(el => {
+        if (el.getAttribute("data-pic-id") === picId) {
+          el.className = "w-full text-left p-3 rounded-lg border transition-all flex items-center gap-3 bg-indigo-50 dark:bg-indigo-500/10 border-indigo-500/50 shadow-md shadow-indigo-500/5";
+        } else {
+          el.className = "w-full text-left p-3 rounded-lg border transition-all flex items-center gap-3 bg-white dark:bg-slate-950/40 border-slate-200 dark:border-slate-800 hover:border-indigo-500/40 hover:bg-slate-50 dark:hover:bg-slate-900";
+        }
+      });
+
+      // Оновлення заголовків
+      document.getElementById("active-pic-title-header").innerText = pic.title;
+      document.getElementById("active-pic-badge").innerText = pic.badge;
+      
+      // Малювання SVG ілюстрації
+      document.getElementById("picture-illustration-container").innerHTML = pic.svg;
+
+      // Оновлення UI та завантаження першого блоку
+      updateFlowSidebar();
+      updateUI();
+    }
+
+    // Налаштування слухачів подій для статичних елементів керування
+    function setupEventListeners() {
+      // Кнопки навігації етапів (ліва колонка)
+      document.querySelectorAll(".flow-step-btn").forEach(btn => {
+        btn.addEventListener("click", (e) => {
+          if (!state.activePicture && btn.getAttribute("data-flow-step") !== "choose") {
+            showToast("Будь ласка, спочатку оберіть картинку!");
+            return;
+          }
+          const step = btn.getAttribute("data-flow-step");
+          state.currentFlowStep = step;
+          state.hintRequestCount = 0;
+          updateFlowSidebar();
+          updateUI();
+        });
+      });
+
+      // Кнопка Перевірити
+      document.getElementById("btn-check").addEventListener("click", () => {
+        handleCheckAction();
+      });
+
+      // Кнопка Скинути
+      document.getElementById("btn-reset").addEventListener("click", () => {
+        resetCurrentTask();
+      });
+
+      // Кнопка Підказка
+      document.getElementById("btn-hint").addEventListener("click", () => {
+        triggerHint();
+      });
+
+      // Кнопка Наступний крок
+      document.getElementById("btn-next").addEventListener("click", () => {
+        handleNextStepAction();
+      });
+
+      // Модальні кнопки успіху
+      document.getElementById("modal-btn-close").addEventListener("click", () => {
+        document.getElementById("success-modal").classList.add("hidden");
+      });
+      document.getElementById("modal-btn-speak").addEventListener("click", () => {
+        document.getElementById("success-modal").classList.add("hidden");
+        state.currentFlowStep = "speak";
+        updateFlowSidebar();
+        updateUI();
+      });
+    }
+
+    // Візуальне оновлення навігаційної карти навчання ліворуч
+    function updateFlowSidebar() {
+      document.querySelectorAll(".flow-step-btn").forEach(btn => {
+        const step = btn.getAttribute("data-flow-step");
+        const span = btn.querySelector("span");
+        
+        if (step === state.currentFlowStep) {
+          btn.className = "flow-step-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-bold transition-all text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 shadow-inner";
+          span.className = "w-6 h-6 rounded-full bg-indigo-600 dark:bg-indigo-500 text-white flex items-center justify-center text-xs font-bold ring-2 ring-indigo-500/30";
+        } else {
+          // Якщо картинка обрана, то доступні всі кроки, якщо ні - то заблоковані (крім першого)
+          const isEnabled = state.activePicture || step === "choose";
+          btn.className = `flow-step-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all ${
+            isEnabled 
+              ? "text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800" 
+              : "text-slate-400 dark:text-slate-600 cursor-not-allowed opacity-40"
+          }`;
+          span.className = `w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+            isEnabled ? "bg-slate-200 dark:bg-slate-800 text-slate-500 dark:text-slate-400" : "bg-slate-100 dark:bg-slate-900 text-slate-400 dark:text-slate-600"
+          }`;
+        }
+      });
+    }
+
+    // Оновлення статистики
+    function updateStats(isSuccess) {
+      state.attemptsCount++;
+      if (isSuccess) state.correctCount++;
+      
+      state.accuracy = Math.round((state.correctCount / state.attemptsCount) * 100);
+      
+      document.getElementById("stat-attempts").innerText = state.attemptsCount;
+      document.getElementById("stat-correct").innerText = state.correctCount;
+      document.getElementById("global-accuracy").innerText = `${state.accuracy}%`;
+      document.getElementById("modal-accuracy").innerText = `${state.accuracy}%`;
+    }
+
+    // ----------------------------------------------------
+    // СТРУКТУРНЕ РЕНДЕРЕННЯ РОБОЧОГО ПРОСТОРУ (Update UI)
+    // ----------------------------------------------------
+    function updateUI() {
+      // Скидаємо блок підказок
+      const hintBox = document.getElementById("hint-text-box");
+      hintBox.classList.add("hidden");
+      hintBox.innerHTML = "";
+      
+      const checkBtn = document.getElementById("btn-check");
+      const nextBtn = document.getElementById("btn-next");
+      const hintBtn = document.getElementById("btn-hint");
+      
+      checkBtn.classList.remove("hidden");
+      checkBtn.disabled = true;
+      nextBtn.classList.add("hidden");
+      hintBtn.disabled = true;
+
+      // Якщо немає обраної картинки - примусово показуємо стартове вікно вибору
+      if (!state.activePicture) {
+        renderChoosePictureIntro();
+        return;
+      }
+
+      hintBtn.disabled = false;
+
+      // Оновлюємо чек-лист 9 блоків праворуч
+      render9BlocksChecklist();
+
+      // Рендеримо відповідний екран навчання
+      switch(state.currentFlowStep) {
+        case "choose":
+          renderChoosePictureIntro();
+          break;
+        case "sentence":
+          renderSentencePracticeWorkspace();
+          break;
+        case "fullstory":
+          renderFullStoryWorkspace();
+          break;
+        case "speak":
+          renderSpeakModeWorkspace();
+          break;
+      }
+    }
+
+    // Стартовий екран вибору картинки
+    function renderChoosePictureIntro() {
+      const workspace = document.getElementById("interactive-workspace");
+      workspace.innerHTML = `
+        <div class="text-center my-auto py-8 text-slate-700 dark:text-slate-300">
+          <div class="text-5xl mb-4">📖</div>
+          <h3 class="text-xl font-bold text-slate-900 dark:text-white">Оберіть авіаційну ситуацію</h3>
+          <p class="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto">
+            Для запуску тренажера виберіть одну з карток у лівій колонці. Кожна ситуація містить 9 структурованих описів для підготовки до екзамену ICAO.
+          </p>
+          <div class="mt-6 flex flex-wrap justify-center gap-3">
+            ${pictures.map(p => `
+              <button onclick="selectPicture('${p.id}')" class="px-4 py-2 bg-slate-100 hover:bg-slate-250 dark:bg-slate-800 dark:hover:bg-slate-700 text-sm font-semibold rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 transition-all">
+                ${p.icon} ${p.title}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      // Вимикаємо кнопки
+      document.getElementById("btn-check").disabled = true;
+      document.getElementById("btn-hint").disabled = true;
+    }
+
+    // Рендер правого чек-листа 9 кроків
+    function render9BlocksChecklist() {
+      const container = document.getElementById("icao-checklist-container");
+      container.innerHTML = "";
+      
+      const pic = state.activePicture;
+      if (!pic) return;
+
+      let completedCount = 0;
+
+      pic.blocks.forEach((block, index) => {
+        let statusIcon = "○";
+        let statusClass = "text-slate-400 dark:text-slate-500 border-slate-300 dark:border-slate-800";
+        let titleClass = "text-slate-500 dark:text-slate-400";
+        
+        const isCurrentPractice = state.currentFlowStep === "sentence" && state.currentBlockIndex === index;
+
+        if (state.currentFlowStep === "sentence" && index < state.currentBlockIndex) {
+          statusIcon = "✓";
+          statusClass = "text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+          titleClass = "text-slate-800 dark:text-slate-300 font-medium";
+          completedCount++;
+        } else if (state.currentFlowStep === "fullstory" || state.currentFlowStep === "speak") {
+          statusIcon = "✓";
+          statusClass = "text-emerald-600 dark:text-emerald-400 border-emerald-500/30 bg-emerald-500/10";
+          titleClass = "text-slate-800 dark:text-slate-300 font-medium";
+          completedCount = 9;
+        } else if (isCurrentPractice) {
+          statusIcon = "●";
+          statusClass = "text-indigo-600 dark:text-indigo-400 border-indigo-500/30 bg-indigo-500/10 animate-pulse";
+          titleClass = "text-slate-900 dark:text-white font-bold";
+        }
+
+        const div = document.createElement("div");
+        div.className = `flex items-center gap-2.5 p-2 rounded-lg border text-xs transition-all ${
+          isCurrentPractice ? "bg-slate-100 dark:bg-slate-850 border-slate-300 dark:border-slate-700" : "bg-transparent border-transparent"
+        }`;
+        div.innerHTML = `
+          <div class="w-5 h-5 rounded-full border flex items-center justify-center font-bold text-[10px] ${statusClass}">
+            ${statusIcon}
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="${titleClass} truncate">${block.heading.split(' — ')[0]}</div>
+            <div class="text-[10px] text-slate-400 dark:text-slate-500 truncate">${block.heading.split(' — ')[1] || ''}</div>
+          </div>
+        `;
+        
+        div.classList.add("cursor-pointer", "hover:bg-slate-150/50", "dark:hover:bg-slate-800/40");
+        div.addEventListener("click", () => {
+          state.currentFlowStep = "sentence";
+          state.currentBlockIndex = index;
+          state.hintRequestCount = 0;
+          updateFlowSidebar();
+          updateUI();
+        });
+
+        container.appendChild(div);
+      });
+
+      document.getElementById("blocks-completed-counter").innerText = `${completedCount}/9`;
+    }
+
+    // КРОК 2: ТРЕНУВАННЯ РЕЧЕНЬ
+    function renderSentencePracticeWorkspace() {
+      const workspace = document.getElementById("interactive-workspace");
+      const block = state.activePicture.blocks[state.currentBlockIndex];
+      
+      workspace.innerHTML = `
+        <div class="flex flex-col flex-1 h-full">
+          <!-- Панель вибору рівнів складності -->
+          <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
+            <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Крок 2: Рівень складності</span>
+            <div class="flex bg-slate-100 dark:bg-slate-950/80 p-0.5 rounded-lg border border-slate-200 dark:border-slate-800">
+              ${[1, 2, 3, 4, 5].map(lvl => `
+                <button onclick="setDifficultyLevel(${lvl})" class="px-2.5 py-1 rounded text-xs font-bold transition-all ${
+                  state.currentLevel === lvl 
+                    ? 'bg-indigo-600 text-white shadow shadow-indigo-600/30' 
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200'
+                }">
+                  L${lvl}
+                </button>
+              `).join('')}
+            </div>
+          </div>
+
+          <!-- Контентне питання та навігація кроків -->
+          <div class="mb-4">
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-xs text-indigo-600 dark:text-indigo-400 font-extrabold uppercase tracking-widest">${block.heading}</span>
+              <span class="text-[10px] bg-slate-200 dark:bg-slate-800 px-2 py-0.5 rounded text-slate-600 dark:text-slate-400">Блок ${state.currentBlockIndex + 1} з 9</span>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+              <span class="text-indigo-600 dark:text-indigo-400">❓</span> ${block.question}
+            </h3>
+          </div>
+
+          <!-- Ігрова робоча область відповідно до поточного рівня складності -->
+          <div class="flex-1 flex flex-col justify-center bg-slate-50 dark:bg-slate-950/40 border border-slate-200 dark:border-slate-800/60 rounded-xl p-4 mb-4" id="sentence-play-zone">
+            <!-- Сюди рендериться специфічний шаблон гри за рівнем складності -->
+          </div>
+
+          <!-- Кнопка прослуховування речення (TTS) -->
+          <div class="flex justify-between items-center">
+            <button onclick="speakSentence('${block.sentence.replace(/'/g, "\\'")}')" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 rounded-lg text-xs font-semibold flex items-center gap-2 text-slate-700 dark:text-slate-300 transition-all border border-slate-200 dark:border-slate-700">
+              🔊 Слухати вимову (TTS)
+            </button>
+            <div class="text-[10px] text-slate-500 dark:text-slate-500 italic">Спробуйте зібрати правильну ICAO структуру</div>
+          </div>
+        </div>
+      `;
+
+      generateLevelInterface();
+    }
+
+    // Перемикач рівнів складності
+    function setDifficultyLevel(lvl) {
+      state.currentLevel = lvl;
+      state.assembledChunks = [];
+      state.hintRequestCount = 0;
+      updateUI();
+    }
+
+    // Генерація шаблону ігрового процесу для Рівнів 1-5
+    function generateLevelInterface() {
+      const zone = document.getElementById("sentence-play-zone");
+      const block = state.activePicture.blocks[state.currentBlockIndex];
+      const checkBtn = document.getElementById("btn-check");
+
+      switch(state.currentLevel) {
+        case 1:
+          const isMultiSentence = block.sentence.split('.').filter(s => s.trim().length > 0).length > 1;
+          let sentencesList = [];
+          
+          if (isMultiSentence) {
+            sentencesList = block.sentence.split('.').map(s => s.trim() + ".").filter(s => s.length > 2);
+          } else {
+            sentencesList = [block.sentence];
+            const otherSentences = state.activePicture.blocks
+              .filter((b, idx) => idx !== state.currentBlockIndex)
+              .map(b => b.sentence);
+            
+            const shuffledOthers = otherSentences.sort(() => 0.5 - Math.random()).slice(0, 3);
+            sentencesList = [...sentencesList, ...shuffledOthers];
+          }
+
+          const shuffledSelections = sentencesList.map((text, i) => ({ text, isCorrect: text === block.sentence || isMultiSentence, originalIndex: i }))
+                                                  .sort(() => 0.5 - Math.random());
+
+          if (isMultiSentence) {
+            state.assembledChunks = []; 
+            zone.innerHTML = `
+              <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 text-center">Розташуйте речення блоку в логічній послідовності (клікайте для вибору):</p>
+              <div class="flex flex-col gap-2">
+                ${shuffledSelections.map((item, idx) => `
+                  <button id="card-l1-${idx}" onclick="selectLevel1Sentence(${idx}, '${item.text.replace(/'/g, "\\'")}')" class="text-left p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-medium text-slate-800 dark:text-slate-100 transition-all">
+                    ${item.text}
+                  </button>
+                `).join('')}
+              </div>
+              <div class="mt-4 p-3 bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg min-h-[50px] flex flex-col justify-center">
+                <div class="text-[10px] uppercase text-slate-500 dark:text-slate-500 font-bold mb-1">Ваша збірка:</div>
+                <div id="l1-workspace" class="text-sm font-medium text-indigo-600 dark:text-indigo-300">Клікніть на речення вище у правильному порядку...</div>
+              </div>
+            `;
+            checkBtn.disabled = false;
+          } else {
+            zone.innerHTML = `
+              <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 text-center font-semibold">Оберіть одне правильне речення, яке відповідає на запитання:</p>
+              <div class="flex flex-col gap-2">
+                ${shuffledSelections.map((item, idx) => `
+                  <button onclick="checkLevel1SingleChoice(this, ${item.isCorrect})" class="text-left p-3 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 hover:bg-slate-50 dark:hover:bg-slate-850 text-sm font-medium text-slate-800 dark:text-slate-100 transition-all">
+                    ${item.text}
+                  </button>
+                `).join('')}
+              </div>
+            `;
+            checkBtn.disabled = true;
+          }
+          break;
+
+        case 2:
+          const shuffledChunks = [...block.chunks].sort(() => 0.5 - Math.random());
+          state.assembledChunks = []; 
+
+          zone.innerHTML = `
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 text-center">Побудуйте правильне речення, натискаючи блоки по черзі:</p>
+            
+            <!-- Робоче поле побудови -->
+            <div class="p-3 bg-slate-100/50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg min-h-[70px] flex flex-wrap gap-2 items-center mb-4" id="l2-workspace">
+              <span class="text-xs text-slate-400 dark:text-slate-500 italic">Клікніть на блоки нижче, щоб сформувати речення...</span>
+            </div>
+
+            <!-- Доступні шматки речення -->
+            <div class="flex flex-wrap gap-2 justify-center">
+              ${shuffledChunks.map((chunk, idx) => `
+                <button id="chunk-btn-${idx}" onclick="addChunkToWorkspace('${chunk.replace(/'/g, "\\'")}', 'chunk-btn-${idx}')" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-100 border border-slate-200 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-500 text-xs font-semibold rounded-lg transition-all shadow">
+                  ${chunk}
+                </button>
+              `).join('')}
+            </div>
+          `;
+          checkBtn.disabled = false;
+          break;
+
+        case 3:
+          zone.innerHTML = `
+            <div class="text-center mb-4">
+              <span class="text-[10px] text-slate-500 dark:text-slate-500 uppercase tracking-widest font-extrabold block mb-1">Ключові слова (Keywords)</span>
+              <div class="flex flex-wrap justify-center gap-1.5">
+                ${block.keywords.map(kw => `
+                  <span class="px-2 py-1 bg-amber-500/10 border border-amber-300 dark:border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs font-bold rounded-md">
+                    ${kw}
+                  </span>
+                `).join(' ➔ ')}
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 text-center">Виберіть правильний вступний мовний фрейм (Grammar Frame):</p>
+            <div class="grid grid-cols-2 gap-2.5 mb-4">
+              ${[
+                "This picture shows...",
+                "It looks like...",
+                "I can see...",
+                "The safety conclusion is..."
+              ].map(frame => {
+                const cleanBlockType = block.type.replace('_', ' ');
+                const isCorrectFrame = 
+                  (cleanBlockType === "SHOW" && frame.startsWith("This picture")) ||
+                  (cleanBlockType === "LOOKS LIKE" && frame.startsWith("It looks like")) ||
+                  (cleanBlockType === "I CAN SEE" && frame.startsWith("I can see")) ||
+                  (cleanBlockType !== "SHOW" && cleanBlockType !== "LOOKS LIKE" && cleanBlockType !== "I CAN SEE" && !frame.startsWith("This picture") && !frame.startsWith("It looks like") && !frame.startsWith("I can see"));
+                
+                return `
+                  <button onclick="selectGrammarFrame(this, ${isCorrectFrame})" class="py-2.5 px-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-bold text-slate-700 dark:text-slate-300 hover:border-indigo-500 dark:hover:border-indigo-500 transition-all text-center">
+                    ${frame}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+
+            <!-- Додаткова область для збирання речення з блоків -->
+            <div class="hidden" id="l3-chunks-zone">
+              <div class="p-3 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg min-h-[50px] flex flex-wrap gap-1.5 items-center mb-2" id="l3-workspace"></div>
+              <div class="flex flex-wrap gap-1.5 justify-center" id="l3-chunks-pool"></div>
+            </div>
+          `;
+          checkBtn.disabled = true; 
+          break;
+
+        case 4:
+          const correctWords = block.keywords.slice(0, 3); 
+          const distractorWords = ["runway excursion", "uncontrolled descent", "severe turbulence", "commercial airport", "landing gear failure", "heavy rain"];
+          
+          const filteredDistractors = distractorWords.filter(w => !correctWords.includes(w)).slice(0, 3);
+          const allOptions = [...correctWords, ...filteredDistractors].sort(() => 0.5 - Math.random());
+
+          state.assembledChunks = Array(correctWords.length).fill(null); 
+
+          let patternHTML = block.pattern;
+          correctWords.forEach((kw, idx) => {
+            patternHTML = patternHTML.replace(kw, `<span id="slot-l4-${idx}" class="px-2 py-0.5 border-b-2 border-dashed border-indigo-400 text-indigo-600 dark:text-indigo-300 font-bold">[ Слоти ${idx+1} ]</span>`);
+          });
+
+          zone.innerHTML = `
+            <div class="p-4 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl mb-4 text-center">
+              <span class="text-[10px] text-slate-500 dark:text-slate-500 font-bold uppercase tracking-wider block mb-1">Структурний шаблон речення</span>
+              <div class="text-sm font-semibold text-slate-700 dark:text-slate-300 leading-relaxed">${patternHTML}</div>
+            </div>
+
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 text-center">Заповніть пусті слоти, вибравши відповідні фрази за порядком (Слот 1, потім 2...):</p>
+            <div class="flex flex-wrap gap-2 justify-center">
+              ${allOptions.map((opt, idx) => `
+                <button onclick="fillPatternSlot('${opt.replace(/'/g, "\\'")}', this)" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-xs font-semibold rounded-lg border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 hover:border-indigo-500 transition-all">
+                  ${opt}
+                </button>
+              `).join('')}
+            </div>
+          `;
+          checkBtn.disabled = false;
+          break;
+
+        case 5:
+          zone.innerHTML = `
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3 text-center">Запишіть повну відповідь англійською мовою. Ваша відповідь буде оцінена за наявністю ключових авіаційних словосполучень:</p>
+            
+            <textarea id="l5-text-input" rows="4" class="w-full bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-slate-600 focus:outline-none focus:border-indigo-500 transition-all" placeholder="Введіть ваш опис ситуації англійською тут..."></textarea>
+            
+            <div class="mt-3 flex justify-between items-center text-[11px] text-slate-500">
+              <span>Рекомендована довжина: від 10 слів.</span>
+              <button onclick="revealL5ModelAnswer()" class="text-indigo-600 dark:text-indigo-400 hover:underline font-semibold">Показати еталонну відповідь</button>
+            </div>
+            <div id="l5-feedback-box" class="mt-3 p-3 rounded-lg bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hidden text-xs leading-relaxed"></div>
+          `;
+          
+          const textarea = document.getElementById("l5-text-input");
+          textarea.addEventListener("input", () => {
+            checkBtn.disabled = textarea.value.trim().length === 0;
+          });
+          checkBtn.disabled = true;
+          break;
+      }
+    }
+
+    // Level 1: Складання речень у мульти-реченнєвому блоці
+    function selectLevel1Sentence(idx, text) {
+      const card = document.getElementById(`card-l1-${idx}`);
+      
+      const alreadyIndex = state.assembledChunks.indexOf(text);
+      if (alreadyIndex > -1) {
+        state.assembledChunks.splice(alreadyIndex, 1);
+        card.classList.remove("border-indigo-500", "bg-indigo-50/50", "dark:bg-indigo-500/10", "text-indigo-600", "dark:text-indigo-300");
+        card.classList.add("border-slate-200", "dark:border-slate-800", "bg-white", "dark:bg-slate-900/60", "text-slate-800", "dark:text-slate-100");
+      } else {
+        state.assembledChunks.push(text);
+        card.classList.remove("border-slate-200", "dark:border-slate-800", "bg-white", "dark:bg-slate-900/60", "text-slate-800", "dark:text-slate-100");
+        card.classList.add("border-indigo-500", "bg-indigo-50/50", "dark:bg-indigo-500/10", "text-indigo-600", "dark:text-indigo-300");
+      }
+
+      const workspace = document.getElementById("l1-workspace");
+      if (state.assembledChunks.length > 0) {
+        workspace.innerHTML = state.assembledChunks.map((s, i) => `<div class="mb-1"><span class="text-xs text-indigo-600 dark:text-indigo-400 font-bold">${i+1}.</span> ${s}</div>`).join('');
+      } else {
+        workspace.innerText = "Клікніть на речення вище у правильному порядку...";
+      }
+    }
+
+    // Level 1: Вибір правильного речення (Single Choice)
+    function checkLevel1SingleChoice(btn, isCorrect) {
+      const checkBtn = document.getElementById("btn-check");
+      
+      if (isCorrect) {
+        btn.className = "text-left p-3 rounded-lg border border-emerald-500 bg-emerald-50 dark:bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-sm font-medium transition-all shadow-lg";
+        showToast("Правильно! Відповідь вірна.");
+        updateStats(true);
+        speakSentence(btn.innerText);
+        setTimeout(() => {
+          showNextStepBtn();
+        }, 800);
+      } else {
+        btn.className = "text-left p-3 rounded-lg border border-red-500 bg-red-50 dark:bg-red-500/10 text-red-700 dark:text-red-300 text-sm font-medium transition-all animate-shake";
+        showToast("Невірно, спробуйте ще раз.");
+        updateStats(false);
+      }
+    }
+
+    // Level 2: Додавання шматка речення
+    function addChunkToWorkspace(chunk, btnId) {
+      const btn = document.getElementById(btnId);
+      btn.classList.add("opacity-30", "pointer-events-none");
+
+      state.assembledChunks.push({ chunk, btnId });
+
+      renderL2Workspace();
+    }
+
+    // Рендер робочої зони для Level 2
+    function renderL2Workspace() {
+      const workspace = document.getElementById("l2-workspace");
+      workspace.innerHTML = "";
+
+      if (state.assembledChunks.length === 0) {
+        workspace.innerHTML = `<span class="text-xs text-slate-400 dark:text-slate-500 italic">Клікніть на блоки нижче, щоб сформувати речення...</span>`;
+        return;
+      }
+
+      state.assembledChunks.forEach((item, index) => {
+        const span = document.createElement("span");
+        span.className = "px-2.5 py-1 bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/30 text-indigo-600 dark:text-indigo-300 text-xs font-semibold rounded-md flex items-center gap-1.5 cursor-pointer hover:bg-red-50 hover:dark:bg-red-500/10 hover:border-red-300 hover:dark:border-red-500/30 hover:text-red-600 hover:dark:text-red-300 transition-all";
+        span.innerHTML = `${item.chunk} <span class="text-[10px] text-slate-400">×</span>`;
+        
+        span.addEventListener("click", () => {
+          const origBtn = document.getElementById(item.btnId);
+          if (origBtn) origBtn.classList.remove("opacity-30", "pointer-events-none");
+          
+          state.assembledChunks.splice(index, 1);
+          renderL2Workspace();
+        });
+
+        workspace.appendChild(span);
+      });
+    }
+
+    // Level 3: Клік на Grammar Frame
+    function selectGrammarFrame(btn, isCorrect) {
+      if (!isCorrect) {
+        btn.className = "py-2.5 px-3 bg-red-55/40 dark:bg-red-500/10 border border-red-300 dark:border-red-500/30 rounded-lg text-xs font-bold text-red-600 dark:text-red-400 transition-all text-center";
+        showToast("Цей граматичний фрейм не підходить для поточної секції ICAO.");
+        updateStats(false);
+        return;
+      }
+
+      btn.className = "py-2.5 px-3 bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/30 rounded-lg text-xs font-bold text-emerald-700 dark:text-emerald-300 transition-all text-center";
+      showToast("Чудово! Фрейм обрано правильно.");
+      updateStats(true);
+
+      const block = state.activePicture.blocks[state.currentBlockIndex];
+      const chunksZone = document.getElementById("l3-chunks-zone");
+      chunksZone.classList.remove("hidden");
+
+      const workspace = document.getElementById("l3-workspace");
+      workspace.innerHTML = `<span class="text-xs text-indigo-600 dark:text-indigo-300 font-bold">${btn.innerText.slice(0, -3)}</span>`;
+
+      const remainingChunks = [...block.chunks].slice(1).sort(() => 0.5 - Math.random());
+      const pool = document.getElementById("l3-chunks-pool");
+      pool.innerHTML = "";
+
+      state.assembledChunks = []; 
+
+      remainingChunks.forEach((chunk, idx) => {
+        const chunkBtn = document.createElement("button");
+        chunkBtn.id = `l3-chunk-${idx}`;
+        chunkBtn.className = "px-2 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-xs text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700 rounded-md transition-all";
+        chunkBtn.innerText = chunk;
+        
+        chunkBtn.addEventListener("click", () => {
+          chunkBtn.classList.add("opacity-30", "pointer-events-none");
+          state.assembledChunks.push({ chunk, btnId: `l3-chunk-${idx}` });
+          
+          workspace.innerHTML = `<span class="text-xs text-indigo-600 dark:text-indigo-300 font-bold">${btn.innerText.slice(0, -3)}</span> ` + 
+            state.assembledChunks.map(item => `<span class="text-xs text-slate-800 dark:text-slate-200">${item.chunk}</span>`).join(' ');
+        });
+
+        pool.appendChild(chunkBtn);
+      });
+
+      document.getElementById("btn-check").disabled = false;
+    }
+
+    // Level 4: Заповнення слотів патерну
+    function fillPatternSlot(word, btn) {
+      const emptySlotIndex = state.assembledChunks.findIndex(val => val === null);
+      if (emptySlotIndex === -1) {
+        showToast("Усі слоти вже заповнено! Натисніть Перевірити.");
+        return;
+      }
+
+      state.assembledChunks[emptySlotIndex] = word;
+      btn.classList.add("opacity-30", "pointer-events-none");
+
+      const slotEl = document.getElementById(`slot-l4-${emptySlotIndex}`);
+      slotEl.innerText = word;
+      slotEl.className = "px-2 py-0.5 border-b-2 border-emerald-500 text-emerald-600 dark:text-emerald-300 font-extrabold";
+    }
+
+    // Level 5: Показ модельної відповіді
+    function revealL5ModelAnswer() {
+      const block = state.activePicture.blocks[state.currentBlockIndex];
+      const feedbackBox = document.getElementById("l5-feedback-box");
+      feedbackBox.classList.remove("hidden");
+      feedbackBox.className = "mt-3 p-3 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-200 dark:border-indigo-500/20 text-xs leading-relaxed text-indigo-700 dark:text-indigo-300";
+      feedbackBox.innerHTML = `
+        <strong>Model Answer:</strong><br>${block.sentence}
+      `;
+    }
+
+    // КНОПКА ПЕРЕВІРИТИ
+    function handleCheckAction() {
+      const block = state.activePicture.blocks[state.currentBlockIndex];
+      const checkBtn = document.getElementById("btn-check");
+      let isSuccess = false;
+
+      switch(state.currentLevel) {
+        case 1:
+          const targetSentences = block.sentence.split('.').map(s => s.trim() + ".").filter(s => s.length > 2);
+          const assembledStr = state.assembledChunks.join(' ');
+          const targetStr = targetSentences.join(' ');
+          
+          if (cleanString(assembledStr) === cleanString(targetStr)) {
+            isSuccess = true;
+          }
+          break;
+
+        case 2:
+          const userSentence = state.assembledChunks.map(c => c.chunk).join(' ');
+          if (cleanString(userSentence) === cleanString(block.sentence)) {
+            isSuccess = true;
+          }
+          break;
+
+        case 3:
+          const fullUserSentenceL3 = block.chunks[0] + " " + state.assembledChunks.map(c => c.chunk).join(' ');
+          if (cleanString(fullUserSentenceL3) === cleanString(block.sentence)) {
+            isSuccess = true;
+          }
+          break;
+
+        case 4:
+          const targetWords = block.keywords.slice(0, 3);
+          isSuccess = state.assembledChunks.every((val, idx) => val === targetWords[idx]);
+          break;
+
+        case 5:
+          const userText = document.getElementById("l5-text-input").value;
+          const feedbackBox = document.getElementById("l5-feedback-box");
+          feedbackBox.classList.remove("hidden");
+
+          const evaluation = evaluateL5Answer(userText, block.sentence, block.keywords);
+          
+          if (evaluation.accuracy >= 65) {
+            isSuccess = true;
+            feedbackBox.className = "mt-3 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-350 dark:border-emerald-500/20 text-xs leading-relaxed text-emerald-700 dark:text-emerald-300";
+            feedbackBox.innerHTML = `
+              <strong>Результат: ПРИЙНЯТО (${evaluation.accuracy}% збігу)</strong><br>
+              Використано ключових слів: ${evaluation.matchedKeywords.join(', ') || 'немає'}.<br>
+              <span class="mt-1 block text-slate-500 dark:text-slate-400">Рекомендована відповідь: ${block.sentence}</span>
+            `;
+          } else {
+            feedbackBox.className = "mt-3 p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-xs leading-relaxed text-red-700 dark:text-red-300";
+            feedbackBox.innerHTML = `
+              <strong>Результат: ПОТРЕБУЄ КОРЕКЦІЇ (${evaluation.accuracy}% збігу)</strong><br>
+              Не знайдено важливих термінів. Спробуйте вписати опис точніше до ситуації.<br>
+              Необхідно включити хоча б декілька ключових авіаційних слів.
+            `;
+          }
+          break;
+      }
+
+      if (isSuccess) {
+        showToast("Чудова робота! Все вірно.");
+        updateStats(true);
+        speakSentence(block.sentence);
+        showNextStepBtn();
+      } else {
+        if (state.currentLevel !== 5) {
+          showToast("Помилка в структурі речення. Спробуйте ще раз.");
+          updateStats(false);
+          const zone = document.getElementById("sentence-play-zone");
+          zone.classList.add("animate-shake");
+          setTimeout(() => zone.classList.remove("animate-shake"), 500);
+        }
+      }
+    }
+
+    function showNextStepBtn() {
+      document.getElementById("btn-check").classList.add("hidden");
+      document.getElementById("btn-next").classList.remove("hidden");
+    }
+
+    function cleanString(str) {
+      return str.toLowerCase().replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    function evaluateL5Answer(user, target, keywords) {
+      const userWords = user.toLowerCase().split(/\s+/).map(w => w.replace(/[^a-z]/g, ''));
+      let matched = [];
+      
+      keywords.forEach(kw => {
+        const kwLower = kw.toLowerCase();
+        const hasMatch = userWords.some(uw => uw.includes(kwLower) || kwLower.includes(uw)) || user.toLowerCase().includes(kwLower);
+        if (hasMatch) {
+          matched.push(kw);
+        }
+      });
+
+      const keywordRatio = matched.length / keywords.length;
+      let lengthBonus = Math.min(userWords.length / 12, 1); 
+      
+      let finalAccuracy = Math.round((keywordRatio * 70) + (lengthBonus * 30));
+      if (finalAccuracy > 100) finalAccuracy = 100;
+
+      return {
+        accuracy: finalAccuracy,
+        matchedKeywords: matched
+      };
+    }
+
+    function resetCurrentTask() {
+      state.assembledChunks = [];
+      state.hintRequestCount = 0;
+      updateUI();
+    }
+
+    // ----------------------------------------------------
+    // СИСТЕМА ПОСТУПОВИХ ПІДКАЗОК (Hint System)
+    // ----------------------------------------------------
+    function triggerHint() {
+      const block = state.activePicture.blocks[state.currentBlockIndex];
+      const hintBox = document.getElementById("hint-text-box");
+      hintBox.classList.remove("hidden");
+      
+      state.hintRequestCount++;
+
+      if (state.currentFlowStep === "sentence") {
+        if (state.hintRequestCount === 1) {
+          hintBox.innerHTML = `💡 <strong>Підказка 1:</strong> Це блок опису <u>${block.type}</u>. Тут ми формулюємо відповідь на запитання: "<em>${block.question}</em>"`;
+        } else if (state.hintRequestCount === 2) {
+          const firstThree = block.sentence.split(' ').slice(0, 3).join(' ');
+          hintBox.innerHTML = `💡 <strong>Підказка 2:</strong> Речення починається зі слів: "<strong>${firstThree}...</strong>"`;
+        } else if (state.hintRequestCount === 3) {
+          hintBox.innerHTML = `💡 <strong>Підказка 3:</strong> Граматичний патерн: <code class="text-slate-800 dark:text-slate-200 text-[11px] bg-slate-100 dark:bg-slate-950 px-1 py-0.5 rounded">${block.pattern}</code>`;
+        } else {
+          hintBox.innerHTML = `💡 <strong>Підказка 4 (Відповідь):</strong> <span class="text-emerald-600 dark:text-emerald-400 font-bold">${block.sentence}</span>`;
+        }
+      } else if (state.currentFlowStep === "fullstory") {
+        hintBox.innerHTML = `💡 <strong>Підказка:</strong> Наступним логічним блоком є <strong>${pictures[0].blocks[state.fullStoryPositions.filter(p=>p!==null).length]?.type || 'завершення'}</strong>.`;
+      } else {
+        hintBox.innerHTML = `💡 Повторюйте авіаційні структури вголос для впевненої розмовної мови!`;
+      }
+    }
+
+    // НАСТУПНИЙ КРОК
+    function handleNextStepAction() {
+      const pic = state.activePicture;
+      
+      if (state.currentFlowStep === "sentence") {
+        if (state.currentBlockIndex < 8) {
+          state.currentBlockIndex++;
+          state.assembledChunks = [];
+          state.hintRequestCount = 0;
+          updateUI();
+        } else {
+          showToast("Вітаємо! Всі 9 блоків речень пройдено. Тепер зберіть повну історію.");
+          state.currentFlowStep = "fullstory";
+          state.hintRequestCount = 0;
+          updateFlowSidebar();
+          updateUI();
+        }
+      }
+    }
+
+    // КРОК 3: ПОЛНА ІСТОРІЯ (Drag & Drop / Click-to-Sort)
+    function renderFullStoryWorkspace() {
+      const workspace = document.getElementById("interactive-workspace");
+      const pic = state.activePicture;
+
+      const shuffledCards = pic.blocks.map((b, idx) => ({
+        originalIndex: idx,
+        type: b.type,
+        sentence: b.sentence
+      })).sort(() => 0.5 - Math.random());
+
+      workspace.innerHTML = `
+        <div class="flex flex-col flex-1 h-full">
+          <div class="border-b border-slate-200 dark:border-slate-800 pb-2 mb-3">
+            <h3 class="text-sm font-extrabold text-slate-800 dark:text-white">Крок 3: Побудова повної ICAO історії</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Встановіть відповідність між 9 заголовками та текстом. Клікайте на картку тексту, а потім на пустий слот.</p>
+          </div>
+
+          <div class="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[350px] overflow-y-auto pr-1">
+            
+            <!-- Ліва сторона: 9 Послідовних Слотів -->
+            <div class="flex flex-col gap-2" id="dnd-slots-container">
+              ${pic.blocks.map((block, idx) => `
+                <div id="slot-zone-${idx}" onclick="handleSlotClick(${idx})" class="p-2 min-h-[55px] bg-slate-50 dark:bg-slate-950/60 border border-dashed border-slate-200 dark:border-slate-800 rounded-lg flex flex-col justify-center transition-all cursor-pointer hover:border-indigo-500/40">
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-[9px] font-extrabold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase">${idx+1}. ${block.type}</span>
+                    <span id="slot-status-${idx}" class="text-[9px] text-slate-400 dark:text-slate-500">Порожній слот</span>
+                  </div>
+                  <div id="slot-text-${idx}" class="text-xs text-slate-500 dark:text-slate-400 font-medium leading-normal italic">Очікування вибору картки...</div>
+                </div>
+              `).join('')}
+            </div>
+
+            <!-- Права сторона: Доступні текстові картки (Scrambled) -->
+            <div class="flex flex-col gap-2" id="dnd-cards-container">
+              ${shuffledCards.map((card, idx) => `
+                <div id="dnd-card-${card.originalIndex}" onclick="selectDndCard(${card.originalIndex})" class="p-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs leading-relaxed text-slate-700 dark:text-slate-200 cursor-pointer hover:border-indigo-500 hover:bg-slate-50 dark:hover:bg-slate-850 transition-all select-none shadow">
+                  ${card.sentence}
+                </div>
+              `).join('')}
+            </div>
+
+          </div>
+        </div>
+      `;
+
+      state.activeSelectedCardIndex = null;
+      document.getElementById("btn-check").disabled = false;
+    }
+
+    function selectDndCard(originalIndex) {
+      if (state.activeSelectedCardIndex !== null) {
+        const prevCard = document.getElementById(`dnd-card-${state.activeSelectedCardIndex}`);
+        if (prevCard) prevCard.classList.remove("ring-2", "ring-indigo-500", "bg-indigo-50", "dark:bg-indigo-500/10");
+      }
+
+      state.activeSelectedCardIndex = originalIndex;
+      const newCard = document.getElementById(`dnd-card-${originalIndex}`);
+      newCard.classList.add("ring-2", "ring-indigo-500", "bg-indigo-50", "dark:bg-indigo-500/10");
+      showToast("Картку обрано. Тепер клікніть на відповідний слот зліва!");
+    }
+
+    function handleSlotClick(slotIndex) {
+      if (state.activeSelectedCardIndex === null) {
+        if (state.fullStoryPositions[slotIndex] !== null) {
+          const cardIdx = state.fullStoryPositions[slotIndex];
+          state.fullStoryPositions[slotIndex] = null;
+          
+          const cardEl = document.getElementById(`dnd-card-${cardIdx}`);
+          if (cardEl) cardEl.classList.remove("hidden");
+          
+          document.getElementById(`slot-zone-${slotIndex}`).className = "p-2 min-h-[55px] bg-slate-50 dark:bg-slate-950/60 border border-dashed border-slate-200 dark:border-slate-800 rounded-lg flex flex-col justify-center transition-all cursor-pointer hover:border-indigo-500/40";
+          document.getElementById(`slot-status-${slotIndex}`).className = "text-[9px] text-slate-400 dark:text-slate-500";
+          document.getElementById(`slot-status-${slotIndex}`).innerText = "Порожній слот";
+          document.getElementById(`slot-text-${slotIndex}`).className = "text-xs text-slate-500 dark:text-slate-400 font-medium leading-normal italic";
+          document.getElementById(`slot-text-${slotIndex}`).innerText = "Очікування вибору картки...";
+        }
+        return;
+      }
+
+      const cardIndex = state.activeSelectedCardIndex;
+      const targetSentence = state.activePicture.blocks[cardIndex].sentence;
+
+      state.fullStoryPositions[slotIndex] = cardIndex;
+
+      document.getElementById(`dnd-card-${cardIndex}`).classList.add("hidden");
+
+      const slotZone = document.getElementById(`slot-zone-${slotIndex}`);
+      slotZone.className = "p-2.5 min-h-[55px] bg-indigo-50/50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-500/40 rounded-lg flex flex-col justify-center transition-all cursor-pointer";
+      
+      document.getElementById(`slot-status-${slotIndex}`).className = "text-[9px] text-indigo-600 dark:text-indigo-400 font-extrabold";
+      document.getElementById(`slot-status-${slotIndex}`).innerText = "Заповнено";
+      
+      const textEl = document.getElementById(`slot-text-${slotIndex}`);
+      textEl.className = "text-xs text-slate-800 dark:text-slate-200 font-medium leading-relaxed";
+      textEl.innerText = targetSentence;
+
+      state.activeSelectedCardIndex = null;
+    }
+
+    function checkFullStoryAssembly() {
+      const pic = state.activePicture;
+      let allCorrect = true;
+
+      for (let i = 0; i < 9; i++) {
+        const placedCardIndex = state.fullStoryPositions[i];
+        const slotZone = document.getElementById(`slot-zone-${i}`);
+        
+        if (placedCardIndex === i) {
+          slotZone.className = "p-2.5 min-h-[55px] bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-500/40 rounded-lg flex flex-col justify-center transition-all";
+          document.getElementById(`slot-status-${i}`).className = "text-[9px] text-emerald-600 dark:text-emerald-400 font-extrabold";
+          document.getElementById(`slot-status-${i}`).innerText = "✓ ПРАВИЛЬНО";
+        } else {
+          allCorrect = false;
+          slotZone.className = "p-2.5 min-h-[55px] bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-500/40 rounded-lg flex flex-col justify-center transition-all animate-shake";
+          document.getElementById(`slot-status-${i}`).className = "text-[9px] text-red-600 dark:text-red-400 font-extrabold";
+          document.getElementById(`slot-status-${i}`).innerText = "❌ НЕВІРНО";
+        }
+      }
+
+      updateStats(allCorrect);
+
+      if (allCorrect) {
+        setTimeout(() => {
+          document.getElementById("success-modal").classList.remove("hidden");
+        }, 800);
+      } else {
+        showToast("Деякі блоки розміщені неправильно. Виправте помилки!");
+      }
+    }
+
+    // КРОК 4: РЕЖИМ ГОВОРІННЯ
+    function renderSpeakModeWorkspace() {
+      const workspace = document.getElementById("interactive-workspace");
+      const pic = state.activePicture;
+
+      workspace.innerHTML = `
+        <div class="flex flex-col flex-1 h-full text-center justify-between">
+          <div class="border-b border-slate-200 dark:border-slate-800 pb-2">
+            <h3 class="text-sm font-extrabold text-slate-800 dark:text-white">Крок 4: Тренування вимови та говоріння</h3>
+            <p class="text-xs text-slate-500 dark:text-slate-400">Проговоріть повний опис картинки за 9-кроковою структурою ICAO.</p>
+          </div>
+
+          <!-- Секція симуляції запису -->
+          <div class="my-6 p-4 bg-slate-50 dark:bg-slate-950/60 rounded-2xl border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center min-h-[160px]">
+            <div id="speak-step-title" class="text-sm text-indigo-600 dark:text-indigo-400 font-extrabold uppercase tracking-widest mb-1">SHOW — General situation</div>
+            <div id="speak-prompt-text" class="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto italic mb-4">"Промовте вголос речення для першого блоку..."</div>
+
+            <!-- Анімований індикатор звукової хвилі -->
+            <div class="flex items-end justify-center gap-1.5 h-10 mb-4 hidden" id="audio-wave-animation">
+              <span class="wave-bar w-1.5 h-full bg-indigo-500 rounded-full"></span>
+              <span class="wave-bar w-1.5 h-full bg-indigo-400 rounded-full"></span>
+              <span class="wave-bar w-1.5 h-full bg-indigo-300 rounded-full"></span>
+              <span class="wave-bar w-1.5 h-full bg-indigo-400 rounded-full"></span>
+              <span class="wave-bar w-1.5 h-full bg-indigo-500 rounded-full"></span>
+            </div>
+
+            <!-- Зона тексту для повторення -->
+            <div id="speak-model-sentence" class="text-sm font-bold text-slate-800 dark:text-white px-4 py-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl leading-relaxed max-w-lg mb-2 hidden"></div>
+
+            <!-- Кнопка прослуховування оригінальної вимови -->
+            <button id="btn-speak-listen" class="text-xs text-indigo-600 dark:text-indigo-400 hover:underline font-bold mb-1 hidden">
+              🔊 Слухати вимову (TTS)
+            </button>
+          </div>
+
+          <!-- Кнопки керування записом -->
+          <div class="flex flex-col items-center gap-3">
+            <div class="flex gap-3 w-full">
+              <button id="btn-speak-trigger" onclick="startSpeechPractice()" class="flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2">
+                🎤 Почати говоріння
+              </button>
+              <button id="btn-speak-next" onclick="advanceSpeakStep()" class="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-emerald-600/20 hidden">
+                Наступний блок ➔
+              </button>
+            </div>
+            <div class="text-[10px] text-slate-400 dark:text-slate-500 leading-normal max-w-sm">
+              * Додаток використовує локальний синтезатор мовлення для відпрацювання авіаційної фразеології та правильних наголосів.
+            </div>
+          </div>
+        </div>
+      `;
+
+      state.speakStepIndex = 0;
+      updateSpeakStepUI();
+      document.getElementById("btn-check").disabled = true;
+    }
+
+    function updateSpeakStepUI() {
+      const pic = state.activePicture;
+      const block = pic.blocks[state.speakStepIndex];
+      
+      document.getElementById("speak-step-title").innerText = block.heading;
+      
+      const promptEl = document.getElementById("speak-prompt-text");
+      promptEl.innerHTML = `<strong>Питання ICAO:</strong> "${block.question}"`;
+
+      const modelSentenceEl = document.getElementById("speak-model-sentence");
+      modelSentenceEl.innerText = block.sentence;
+      modelSentenceEl.classList.remove("hidden");
+
+      const listenBtn = document.getElementById("btn-speak-listen");
+      listenBtn.classList.remove("hidden");
+      listenBtn.onclick = () => speakSentence(block.sentence);
+
+      document.getElementById("audio-wave-animation").classList.add("hidden");
+      const triggerBtn = document.getElementById("btn-speak-trigger");
+      triggerBtn.classList.remove("hidden");
+      triggerBtn.innerText = "🎤 Готово! Я проговорив(ла)";
+      triggerBtn.className = "flex-1 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm rounded-xl transition-all shadow-lg shadow-indigo-600/20 flex items-center justify-center gap-2";
+      
+      document.getElementById("btn-speak-next").classList.add("hidden");
+    }
+
+    function startSpeechPractice() {
+      const wave = document.getElementById("audio-wave-animation");
+      wave.classList.remove("hidden");
+
+      const triggerBtn = document.getElementById("btn-speak-trigger");
+      triggerBtn.classList.add("hidden");
+
+      const nextBtn = document.getElementById("btn-speak-next");
+      nextBtn.classList.remove("hidden");
+
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        const recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.interimResults = false;
+        recognition.maxAlternatives = 1;
+
+        recognition.start();
+
+        recognition.onresult = function(event) {
+          const speechResult = event.results[0][0].transcript;
+          showToast(`Розпізнано: "${speechResult}"`);
+        };
+
+        recognition.onerror = function() {
+          // Помилка виникає, якщо немає дозволу
+        };
+      }
+    }
+
+    function advanceSpeakStep() {
+      if (state.speakStepIndex < 8) {
+        state.speakStepIndex++;
+        updateSpeakStepUI();
+      } else {
+        showToast("Вітаємо! Ви успішно проговорили всю авіаційну карту опису!");
+        state.currentFlowStep = "choose";
+        state.activePicture = null;
+        updateFlowSidebar();
+        updateUI();
+      }
+    }
+
+    function speakSentence(text) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-GB';
+        utterance.rate = 0.92;
+
+        const voices = window.speechSynthesis.getVoices();
+        const premiumVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Google') || v.name.includes('Natural')));
+        if (premiumVoice) {
+          utterance.voice = premiumVoice;
+        }
+
+        window.speechSynthesis.speak(utterance);
+      } else {
+        showToast("Вибачте, ваш браузер не підтримує синтез мовлення.");
+      }
+    }
+
+    function handleCheckActionFromButton() {
+      if (state.currentFlowStep === "fullstory") {
+        checkFullStoryAssembly();
+      } else if (state.currentFlowStep === "sentence") {
+        handleCheckAction();
+      }
+    }
+
+    function handleCheckAction() {
+      const block = state.activePicture.blocks[state.currentBlockIndex];
+      const checkBtn = document.getElementById("btn-check");
+      let isSuccess = false;
+
+      switch(state.currentLevel) {
+        case 1:
+          const targetSentences = block.sentence.split('.').map(s => s.trim() + ".").filter(s => s.length > 2);
+          const assembledStr = state.assembledChunks.join(' ');
+          const targetStr = targetSentences.join(' ');
+          
+          if (cleanString(assembledStr) === cleanString(targetStr)) {
+            isSuccess = true;
+          }
+          break;
+
+        case 2:
+          const userSentence = state.assembledChunks.map(c => c.chunk).join(' ');
+          if (cleanString(userSentence) === cleanString(block.sentence)) {
+            isSuccess = true;
+          }
+          break;
+
+        case 3:
+          const fullUserSentenceL3 = block.chunks[0] + " " + state.assembledChunks.map(c => c.chunk).join(' ');
+          if (cleanString(fullUserSentenceL3) === cleanString(block.sentence)) {
+            isSuccess = true;
+          }
+          break;
+
+        case 4:
+          const targetWords = block.keywords.slice(0, 3);
+          isSuccess = state.assembledChunks.every((val, idx) => val === targetWords[idx]);
+          break;
+
+        case 5:
+          const userText = document.getElementById("l5-text-input").value;
+          const feedbackBox = document.getElementById("l5-feedback-box");
+          feedbackBox.classList.remove("hidden");
+
+          const evaluation = evaluateL5Answer(userText, block.sentence, block.keywords);
+          
+          if (evaluation.accuracy >= 65) {
+            isSuccess = true;
+            feedbackBox.className = "mt-3 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-300 dark:border-emerald-500/20 text-xs leading-relaxed text-emerald-700 dark:text-emerald-300";
+            feedbackBox.innerHTML = `
+              <strong>Результат: ПРИЙНЯТО (${evaluation.accuracy}% збігу)</strong><br>
+              Використано ключових слів: ${evaluation.matchedKeywords.join(', ') || 'немає'}.<br>
+              <span class="mt-1 block text-slate-500 dark:text-slate-400">Рекомендована відповідь: ${block.sentence}</span>
+            `;
+          } else {
+            feedbackBox.className = "mt-3 p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-xs leading-relaxed text-red-700 dark:text-red-300";
+            feedbackBox.innerHTML = `
+              <strong>Результат: ПОТРЕБУЄ КОРЕКЦІЇ (${evaluation.accuracy}% збігу)</strong><br>
+              Не знайдено важливих термінів. Спробуйте вписати опис точніше до ситуації.<br>
+              Необхідно включити хоча б декілька ключових авіаційних слів.
+            `;
+          }
+          break;
+      }
+
+      if (isSuccess) {
+        showToast("Чудова робота! Все вірно.");
+        updateStats(true);
+        speakSentence(block.sentence);
+        showNextStepBtn();
+      } else {
+        if (state.currentLevel !== 5) {
+          showToast("Помилка в структурі речення. Спробуйте ще раз.");
+          updateStats(false);
+          const zone = document.getElementById("sentence-play-zone");
+          zone.classList.add("animate-shake");
+          setTimeout(() => zone.classList.remove("animate-shake"), 500);
+        }
+      }
+    }
+
+    function showToast(message) {
+      const toast = document.createElement("div");
+      toast.className = "fixed bottom-24 left-1/2 -translate-x-1/2 px-4 py-3 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-white text-xs font-bold rounded-xl shadow-2xl z-50 animate-bounce flex items-center gap-2";
+      toast.innerHTML = `<span>✈️</span> ${message}`;
+      document.body.appendChild(toast);
+      
+      setTimeout(() => {
+        toast.remove();
+      }, 3000);
+    }
+
+    function handleCheckAction() {
+      if (state.currentFlowStep === "fullstory") {
+        checkFullStoryAssembly();
+      } else if (state.currentFlowStep === "sentence") {
+        handleSentenceCheck();
+      }
+    }
+
+    function handleSentenceCheck() {
+      const block = state.activePicture.blocks[state.currentBlockIndex];
+      let isSuccess = false;
+
+      switch(state.currentLevel) {
+        case 1:
+          const isMulti = block.sentence.split('.').filter(s => s.trim().length > 0).length > 1;
+          if (isMulti) {
+            const targetSentences = block.sentence.split('.').map(s => s.trim() + ".").filter(s => s.length > 2);
+            const assembledStr = state.assembledChunks.join(' ');
+            const targetStr = targetSentences.join(' ');
+            if (cleanString(assembledStr) === cleanString(targetStr)) isSuccess = true;
+          } else {
+            // Однореченнєвий режим перевіряється по кліку
+          }
+          break;
+        case 2:
+          const userSentence = state.assembledChunks.map(c => c.chunk).join(' ');
+          if (cleanString(userSentence) === cleanString(block.sentence)) isSuccess = true;
+          break;
+        case 3:
+          const fullUserSentenceL3 = block.chunks[0] + " " + state.assembledChunks.map(c => c.chunk).join(' ');
+          if (cleanString(fullUserSentenceL3) === cleanString(block.sentence)) isSuccess = true;
+          break;
+        case 4:
+          const targetWords = block.keywords.slice(0, 3);
+          isSuccess = state.assembledChunks.every((val, idx) => val === targetWords[idx]);
+          break;
+        case 5:
+          const userText = document.getElementById("l5-text-input").value;
+          const evaluation = evaluateL5Answer(userText, block.sentence, block.keywords);
+          const feedbackBox = document.getElementById("l5-feedback-box");
+          feedbackBox.classList.remove("hidden");
+          
+          if (evaluation.accuracy >= 65) {
+            isSuccess = true;
+            feedbackBox.className = "mt-3 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-xs leading-relaxed text-emerald-700 dark:text-emerald-300";
+            feedbackBox.innerHTML = `
+              <strong>Результат: ПРИЙНЯТО (${evaluation.accuracy}% збігу)</strong><br>
+              Використано ключових слів: ${evaluation.matchedKeywords.join(', ') || 'немає'}.<br>
+              <span class="mt-1 block text-slate-500 dark:text-slate-400">Рекомендована відповідь: ${block.sentence}</span>
+            `;
+          } else {
+            feedbackBox.className = "mt-3 p-3 rounded-lg bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-xs leading-relaxed text-red-700 dark:text-red-300";
+            feedbackBox.innerHTML = `
+              <strong>Результат: ПОТРЕБУЄ КОРЕКЦІЇ (${evaluation.accuracy}% збігу)</strong><br>
+              Не знайдено важливих термінів. Спробуйте вписати опис точніше до ситуації.<br>
+              Необхідно включити хоча б декілька ключових авіаційних слів.
+            `;
+          }
+          break;
+      }
+
+      if (isSuccess) {
+        showToast("Чудова робота! Все вірно.");
+        updateStats(true);
+        speakSentence(block.sentence);
+        showNextStepBtn();
+      } else {
+        if (state.currentLevel !== 5) {
+          showToast("Помилка в структурі речення. Спробуйте ще раз.");
+          updateStats(false);
+          const zone = document.getElementById("sentence-play-zone");
+          zone.classList.add("animate-shake");
+          setTimeout(() => zone.classList.remove("animate-shake"), 500);
+        }
+      }
+    }
+  </script>
+
+  <!-- Додавання анімації струсу для невірних відповідей -->
+  <style>
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-6px); }
+      40%, 80% { transform: translateX(6px); }
+    }
+    .animate-shake {
+      animation: shake 0.4s ease-in-out;
+    }
+  </style>
+</body>
+</html>
